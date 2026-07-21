@@ -12,7 +12,7 @@
 
 | Role | Hex | Tailwind |
 |------|-----|----------|
-| Primary | `#8B5CF6` | `bg-primary` / `text-primary` |
+| Primary | `#DC2626` | `bg-primary` / `text-primary` |
 | On Primary | `#FFFFFF` | `text-primary-foreground` |
 | Secondary | `#C4B5FD` | `bg-secondary` |
 | Accent | `#059669` | `text-accent` |

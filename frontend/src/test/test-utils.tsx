@@ -1,6 +1,8 @@
 import type { ReactElement } from "react";
 import { render, type RenderOptions } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "../hooks/useAuth";
 
 function createWrapper() {
   const queryClient = new QueryClient({
@@ -8,7 +10,15 @@ function createWrapper() {
   });
 
   return function Wrapper({ children }: { children: React.ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+    return (
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
+    );
   };
 }
 

@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
-interface Props {
-  onLogin: (token: string) => void;
-  navigate: (page: string) => void;
-}
-
-export default function RegisterPage({ onLogin, navigate }: Props) {
+export default function RegisterPage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -22,7 +21,8 @@ export default function RegisterPage({ onLogin, navigate }: Props) {
     e.preventDefault();
     try {
       const res = await api.auth.register({ email, password, name: name || undefined });
-      onLogin(res.accessToken);
+      login(res.accessToken);
+      navigate("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("register.registrationFailed"));
     }
@@ -32,17 +32,17 @@ export default function RegisterPage({ onLogin, navigate }: Props) {
     <div className="flex min-h-screen items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4 flex items-center gap-1 text-xs">
         <button
-          className={`px-1.5 py-0.5 rounded ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+          className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
           onClick={() => i18n.changeLanguage("en")}
         >
-          EN
+          {t("common.languageEn")}
         </button>
         <span className="text-muted-foreground">|</span>
         <button
-          className={`px-1.5 py-0.5 rounded ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+          className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
           onClick={() => i18n.changeLanguage("ru")}
         >
-          RU
+          {t("common.languageRu")}
         </button>
       </div>
       <Card className="w-full max-w-sm">
@@ -68,7 +68,7 @@ export default function RegisterPage({ onLogin, navigate }: Props) {
             <Button type="submit" className="w-full">{t("register.signUp")}</Button>
             <p className="text-center text-sm text-muted-foreground">
               {t("register.hasAccount")}{" "}
-              <button type="button" className="text-primary hover:underline" onClick={() => navigate("login")}>
+              <button type="button" className="text-primary hover:underline cursor-pointer" onClick={() => navigate("/login")}>
                 {t("register.signIn")}
               </button>
             </p>

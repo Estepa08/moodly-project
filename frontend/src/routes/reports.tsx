@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import Spinner from "../components/ui/spinner";
 import { useState } from "react";
 
 interface Report {
@@ -17,18 +19,14 @@ interface Report {
   downloadUrl?: string;
 }
 
-interface Props {
-  navigate: (page: string, params?: Record<string, string>) => void;
-}
-
-export default function ReportsPage({ navigate }: Props) {
+export default function ReportsPage() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [format, setFormat] = useState<"pdf" | "csv">("pdf");
   const [periodFrom, setPeriodFrom] = useState("");
   const [periodTo, setPeriodTo] = useState("");
 
-  const { data: reports } = useQuery<Report[]>({
+  const { data: reports, isLoading } = useQuery<Report[]>({
     queryKey: ["reports"],
     queryFn: () => api.reports.list() as Promise<Report[]>,
   });
@@ -37,15 +35,21 @@ export default function ReportsPage({ navigate }: Props) {
     mutationFn: () => api.reports.create({ format, periodFrom, periodTo }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reports"] });
+      toast.success(t("reports.created"));
     },
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-16">
+        <Spinner size={32} />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-4">
-      <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-primary">{t("reports.title")}</h1>
-        <Button variant="ghost" onClick={() => navigate("dashboard")}>{t("common.back")}</Button>
-      </header>
+    <div className="space-y-4">
+      <h1 className="text-xl font-bold text-primary">{t("reports.title")}</h1>
 
       <Card>
         <CardHeader>
@@ -94,6 +98,10 @@ export default function ReportsPage({ navigate }: Props) {
           </CardContent>
         </Card>
       ))}
+
+      {reports?.length === 0 && (
+        <p className="text-muted-foreground text-center py-8">{t("reports.noReports")}</p>
+      )}
     </div>
   );
 }

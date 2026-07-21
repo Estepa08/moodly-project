@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { renderWithProviders, screen, waitFor } from "../../test/test-utils";
+import { render, screen, waitFor } from "../../test/test-utils";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "../../hooks/useAuth";
 import TestDetailPage from "../test-detail";
 import userEvent from "@testing-library/user-event";
 
@@ -11,6 +14,8 @@ vi.mock("../../lib/api", () => ({
       submitResult: vi.fn(),
     },
   },
+  setToken: vi.fn(),
+  getToken: vi.fn(() => null),
 }));
 
 vi.mock("../../components/RadarChart", () => ({
@@ -24,11 +29,24 @@ vi.mock("../../components/RadarChart", () => ({
 }));
 
 describe("TestDetailPage", () => {
-  const navigate = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
+
+  function renderAt(path: string) {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return render(
+      <MemoryRouter initialEntries={[path]}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <Routes>
+              <Route path="/tests/:testId" element={<TestDetailPage />} />
+            </Routes>
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>,
+    );
+  }
 
   it("renders test questions one at a time", async () => {
     const { api } = await import("../../lib/api");
@@ -55,7 +73,7 @@ describe("TestDetailPage", () => {
       ],
     });
 
-    renderWithProviders(<TestDetailPage navigate={navigate} testId="1" />);
+    renderAt("/tests/1");
 
     await waitFor(() => {
       expect(screen.getByText("Feeling nervous?")).toBeInTheDocument();
@@ -89,7 +107,7 @@ describe("TestDetailPage", () => {
     });
 
     const user = userEvent.setup();
-    renderWithProviders(<TestDetailPage navigate={navigate} testId="1" />);
+    renderAt("/tests/1");
 
     await waitFor(() => {
       expect(screen.getByText("Feeling nervous?")).toBeInTheDocument();
@@ -126,7 +144,7 @@ describe("TestDetailPage", () => {
     });
 
     const user = userEvent.setup();
-    renderWithProviders(<TestDetailPage navigate={navigate} testId="2" />);
+    renderAt("/tests/2");
 
     await waitFor(() => expect(screen.getByText("Test question 1?")).toBeInTheDocument());
     await user.click(screen.getByText("Moderately"));

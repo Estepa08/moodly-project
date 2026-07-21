@@ -5,7 +5,9 @@
     "logout": "Выйти",
     "saving": "Сохранение...",
     "sending": "Отправка...",
-    "generating": "Генерация..."
+    "generating": "Генерация...",
+    "languageEn": "EN",
+    "languageRu": "RU"
   },
   "nav": {
     "dashboard": "Дашборд",
@@ -53,14 +55,39 @@
     "testsTaken": "Пройдено тестов",
     "lastScore": "Последний балл",
     "entriesCount": "Всего записей",
-    "cdProfile": "Профиль когнитивных искажений"
+    "cdProfile": "Профиль когнитивных искажений",
+    "entrySaved": "Запись сохранена!",
+    "parameterTrends": "Динамика параметров",
+    "weeklyAverages": "Средние за период",
+    "testProgress": "Прогресс тестов",
+    "dateRange": "Период",
+    "thisWeek": "Неделя",
+    "twoWeeks": "2 недели",
+    "oneMonth": "Месяц",
+    "threeMonths": "3 месяца",
+    "allTime": "Всё время",
+    "selectParameters": "Выберите параметры",
+    "noTrendData": "Нет записей за этот период",
+    "noTestData": "Результатов тестов пока нет",
+    "anxiety": "Тревожность",
+    "sleep": "Сон",
+    "mood": "Настроение",
+    "energy": "Энергия",
+    "focus": "Фокус"
   },
   "onboarding": {
     "getStarted": "Начать",
-    "next": "Далее"
+    "next": "Далее",
+    "skip": "Пропустить"
   },
   "tests": {
-    "title": "Тесты"
+    "title": "Тесты",
+    "abbreviation": {
+      "gad7": "GAD-7",
+      "bai": "BAI",
+      "bdc": "BDC",
+      "cd": "CD"
+    }
   },
   "testDetail": {
     "result": "Результат",
@@ -73,14 +100,18 @@
   },
   "testResults": {
     "title": "Результаты тестов",
-    "noResults": "Результатов пока нет."
+    "noResults": "Результатов пока нет.",
+    "showFull": "Показать полностью",
+    "showLess": "Скрыть"
   },
   "feedback": {
     "title": "Обратная связь",
     "sendFeedback": "Отправить отзыв",
     "yourMessage": "Ваше сообщение",
     "placeholder": "Поделитесь мыслями...",
-    "send": "Отправить"
+    "send": "Отправить",
+    "sent": "Отзыв отправлен!",
+    "noFeedback": "Отзывов пока нет."
   },
   "reports": {
     "title": "Отчёты",
@@ -91,7 +122,9 @@
     "from": "От",
     "to": "До",
     "submit": "Сгенерировать",
-    "download": "Скачать"
+    "download": "Скачать",
+    "created": "Генерация отчёта начата!",
+    "noReports": "Отчётов пока нет."
   },
   "cognitiveDistortions": {
     "yourProfile": "Профиль когнитивных искажений",

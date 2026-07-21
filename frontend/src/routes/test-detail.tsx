@@ -1,8 +1,10 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import Spinner from "../components/ui/spinner";
 import { useState } from "react";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 import RadarChart from "../components/RadarChart";
@@ -19,39 +21,36 @@ interface TestData {
   }[];
 }
 
-interface Props {
-  navigate: (page: string, params?: Record<string, string>) => void;
-  testId: string;
+interface ResultData {
+  score: number;
+  interpretation: string;
+  recommendation: string;
+  flags?: {
+    distortions?: Record<string, { score: number; level: string }>;
+    templateKey?: string;
+    recommendationKey?: string;
+    highKeys?: string[];
+    moderateKeys?: string[];
+  };
 }
 
-export default function TestDetailPage({ navigate, testId }: Props) {
+export default function TestDetailPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { testId } = useParams<{ testId: string }>();
   const { tQuestion, tOption, tInterpretation, tRecommendation, tTestTitle, tCDInterpretation, tCDRecommendation } = useTestTranslation();
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
-
-  interface ResultData {
-    score: number;
-    interpretation: string;
-    recommendation: string;
-    flags?: {
-      distortions?: Record<string, { score: number; level: string }>;
-      templateKey?: string;
-      recommendationKey?: string;
-      highKeys?: string[];
-      moderateKeys?: string[];
-    };
-  }
-
   const [result, setResult] = useState<ResultData | null>(null);
 
-  const { data: test } = useQuery<TestData>({
+  const { data: test, isLoading } = useQuery<TestData>({
     queryKey: ["test", testId],
-    queryFn: () => api.tests.get(testId) as Promise<TestData>,
+    queryFn: () => api.tests.get(testId!) as Promise<TestData>,
+    enabled: !!testId,
   });
 
   const submitMutation = useMutation({
-    mutationFn: () => api.tests.submitResult(testId, { answers }),
+    mutationFn: () => api.tests.submitResult(testId!, { answers }),
     onSuccess: (data) => {
       setResult(data as ResultData);
     },
@@ -70,7 +69,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
       ? tCDRecommendation(cdFlags.recommendationKey || "minimal", result.recommendation)
       : tRecommendation(result.recommendation);
     return (
-      <div className="max-w-lg mx-auto p-4">
+      <div className="max-w-lg mx-auto">
         <Card>
           <CardHeader>
             <CardTitle>{tTestTitle(test.title)} — {t("testDetail.result")}</CardTitle>
@@ -96,14 +95,20 @@ export default function TestDetailPage({ navigate, testId }: Props) {
               <p className="font-medium">{t("testDetail.recommendation")}</p>
               <p className="text-muted-foreground">{recommendationText}</p>
             </div>
-            <Button className="w-full" onClick={() => navigate("test-results")}>{t("testDetail.viewAll")}</Button>
+            <Button className="w-full" onClick={() => navigate("/results")}>{t("testDetail.viewAll")}</Button>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  if (!test) return null;
+  if (isLoading || !test) {
+    return (
+      <div className="flex justify-center py-16">
+        <Spinner size={32} />
+      </div>
+    );
+  }
 
   const question = test.questions[questionIndex];
   const isLast = questionIndex === test.questions.length - 1;
@@ -120,10 +125,10 @@ export default function TestDetailPage({ navigate, testId }: Props) {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-4 space-y-4">
+    <div className="max-w-lg mx-auto space-y-4">
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-primary">{tTestTitle(test.title)}</h1>
-        <Button variant="ghost" size="sm" onClick={() => navigate("tests")}>{t("testDetail.exit")}</Button>
+        <Button variant="ghost" size="sm" onClick={() => navigate("/tests")}>{t("testDetail.exit")}</Button>
       </header>
 
       <div className="flex gap-1">

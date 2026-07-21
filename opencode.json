@@ -1,0 +1,14 @@
+{
+  "skills": [
+    {
+      "name": "moodly-ui-ux",
+      "description": "Moodly product UX principles — calmness, accessibility, non-judgmental tone for mental health tracker",
+      "location": "skills/moodly-ui-ux/SKILL.md"
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "description": "General UI/UX design intelligence — 84 styles, 192 color palettes, 74 font pairings, 192 product types, 98 UX guidelines, 104 icon entries, 16 GSAP motion presets, 25 chart types across 22 stacks",
+      "location": "~/.claude/skills/ui-ux-pro-max/SKILL.md"
+    }
+  ]
+}

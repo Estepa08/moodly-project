@@ -5,7 +5,9 @@
     "logout": "Logout",
     "saving": "Saving...",
     "sending": "Sending...",
-    "generating": "Generating..."
+    "generating": "Generating...",
+    "languageEn": "EN",
+    "languageRu": "RU"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -53,14 +55,39 @@
     "testsTaken": "Tests Taken",
     "lastScore": "Last Score",
     "entriesCount": "Total Entries",
-    "cdProfile": "Cognitive Distortions Profile"
+    "cdProfile": "Cognitive Distortions Profile",
+    "entrySaved": "Entry saved!",
+    "parameterTrends": "Parameter Trends",
+    "weeklyAverages": "Weekly Averages",
+    "testProgress": "Test Progress",
+    "dateRange": "Period",
+    "thisWeek": "This Week",
+    "twoWeeks": "2 Weeks",
+    "oneMonth": "1 Month",
+    "threeMonths": "3 Months",
+    "allTime": "All Time",
+    "selectParameters": "Select parameters",
+    "noTrendData": "No entries for this period",
+    "noTestData": "No test results yet",
+    "anxiety": "Anxiety",
+    "sleep": "Sleep",
+    "mood": "Mood",
+    "energy": "Energy",
+    "focus": "Focus"
   },
   "onboarding": {
     "getStarted": "Get Started",
-    "next": "Next"
+    "next": "Next",
+    "skip": "Skip"
   },
   "tests": {
-    "title": "Tests"
+    "title": "Tests",
+    "abbreviation": {
+      "gad7": "GAD-7",
+      "bai": "BAI",
+      "bdc": "BDC",
+      "cd": "CD"
+    }
   },
   "testDetail": {
     "result": "Result",
@@ -73,14 +100,18 @@
   },
   "testResults": {
     "title": "Test Results",
-    "noResults": "No test results yet."
+    "noResults": "No test results yet.",
+    "showFull": "Show full",
+    "showLess": "Show less"
   },
   "feedback": {
     "title": "Feedback",
     "sendFeedback": "Send Feedback",
     "yourMessage": "Your message",
     "placeholder": "Share your thoughts...",
-    "send": "Send"
+    "send": "Send",
+    "sent": "Feedback sent!",
+    "noFeedback": "No feedback yet."
   },
   "reports": {
     "title": "Reports",
@@ -91,7 +122,9 @@
     "from": "From",
     "to": "To",
     "submit": "Generate",
-    "download": "Download"
+    "download": "Download",
+    "created": "Report generation started!",
+    "noReports": "No reports yet."
   },
   "cognitiveDistortions": {
     "yourProfile": "Cognitive Distortion Profile",

@@ -1,61 +1,49 @@
-import { useState } from "react";
-import { setToken, getToken } from "./lib/api";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "./hooks/useAuth";
+import Layout from "./components/Layout";
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
-import Dashboard from "./routes/dashboard";
 import OnboardingPage from "./routes/onboarding";
+import Dashboard from "./routes/dashboard";
 import TestsPage from "./routes/tests";
 import TestDetailPage from "./routes/test-detail";
 import TestResultsPage from "./routes/test-results";
 import FeedbackPage from "./routes/feedback";
 import ReportsPage from "./routes/reports";
 
-type Page =
-  | "login"
-  | "register"
-  | "onboarding"
-  | "dashboard"
-  | "tests"
-  | "test-detail"
-  | "test-results"
-  | "feedback"
-  | "reports";
+function ProtectedRoute() {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return (
+    <Layout>
+      <Outlet />
+    </Layout>
+  );
+}
+
+function PublicRoute() {
+  const { isAuthenticated } = useAuth();
+  if (isAuthenticated) return <Navigate to="/" replace />;
+  return <Outlet />;
+}
 
 export default function App() {
-  const [page, setPage] = useState<Page>(getToken() ? "dashboard" : "login");
-  const [pageParams, setPageParams] = useState<Record<string, string>>({});
-
-  const navigate = (p: string, params?: Record<string, string>) => {
-    setPage(p as Page);
-    if (params) setPageParams(params);
-  };
-
-  const handleLogin = (token: string) => {
-    setToken(token);
-    navigate("onboarding");
-  };
-
-  const handleLogout = () => {
-    setToken(null);
-    navigate("login");
-  };
-
-  const commonProps = {
-    navigate,
-    onLogout: handleLogout,
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      {page === "login" && <LoginPage onLogin={handleLogin} navigate={navigate} />}
-      {page === "register" && <RegisterPage onLogin={handleLogin} navigate={navigate} />}
-      {page === "onboarding" && <OnboardingPage {...commonProps} />}
-      {page === "dashboard" && <Dashboard {...commonProps} />}
-      {page === "tests" && <TestsPage {...commonProps} />}
-      {page === "test-detail" && <TestDetailPage {...commonProps} testId={pageParams.testId || ""} />}
-      {page === "test-results" && <TestResultsPage {...commonProps} />}
-      {page === "feedback" && <FeedbackPage {...commonProps} />}
-      {page === "reports" && <ReportsPage {...commonProps} />}
-    </div>
+    <Routes>
+      <Route element={<PublicRoute />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/tests" element={<TestsPage />} />
+        <Route path="/tests/:testId" element={<TestDetailPage />} />
+        <Route path="/results" element={<TestResultsPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

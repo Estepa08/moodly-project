@@ -8,28 +8,28 @@ vi.mock("../../lib/api", () => ({
   api: {
     reports: { create: vi.fn(), list: vi.fn(), get: vi.fn(), download: vi.fn(() => "/reports/1/download"), delete: vi.fn() },
   },
+  setToken: vi.fn(),
+  getToken: vi.fn(() => null),
 }));
 
 describe("ReportsPage", () => {
-  const navigate = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("renders report generator form", async () => {
     (api.reports.list as Mock).mockResolvedValueOnce([]);
-    renderWithProviders(<ReportsPage navigate={navigate} />);
-    expect(screen.getByText("Generate Report")).toBeInTheDocument();
+    renderWithProviders(<ReportsPage />);
+    expect(await screen.findByText("Generate Report")).toBeInTheDocument();
     expect(screen.getByText("Format")).toBeInTheDocument();
   });
 
   it("submits report generation", async () => {
     (api.reports.list as Mock).mockResolvedValueOnce([]);
     (api.reports.create as Mock).mockResolvedValueOnce({ status: "pending" });
-    renderWithProviders(<ReportsPage navigate={navigate} />);
+    renderWithProviders(<ReportsPage />);
 
-    const fromInput = screen.getByLabelText("From");
+    const fromInput = await screen.findByLabelText("From");
     const toInput = screen.getByLabelText("To");
     await userEvent.clear(fromInput);
     await userEvent.type(fromInput, "2026-01-01");

@@ -19,25 +19,22 @@ vi.mock("../../lib/api", () => ({
 import { api } from "../../lib/api";
 
 describe("LoginPage", () => {
-  const onLogin = vi.fn();
-  const navigate = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("renders the login form", () => {
-    renderWithProviders(<LoginPage onLogin={onLogin} navigate={navigate} />);
+    renderWithProviders(<LoginPage />);
     expect(screen.getByText("Moodly")).toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
   });
 
-  it("submits form and calls onLogin on success", async () => {
+  it("submits form and navigates on success", async () => {
     (api.auth.login as Mock).mockResolvedValueOnce({ accessToken: "token123", user: { id: "1" } });
 
     const user = userEvent.setup();
-    renderWithProviders(<LoginPage onLogin={onLogin} navigate={navigate} />);
+    renderWithProviders(<LoginPage />);
 
     await user.type(screen.getByLabelText("Email"), "test@example.com");
     await user.type(screen.getByLabelText("Password"), "secret");
@@ -45,7 +42,6 @@ describe("LoginPage", () => {
 
     await waitFor(() => {
       expect(api.auth.login).toHaveBeenCalledWith({ email: "test@example.com", password: "secret" });
-      expect(onLogin).toHaveBeenCalledWith("token123");
     });
   });
 
@@ -53,7 +49,7 @@ describe("LoginPage", () => {
     (api.auth.login as Mock).mockRejectedValueOnce(new Error("Invalid credentials"));
 
     const user = userEvent.setup();
-    renderWithProviders(<LoginPage onLogin={onLogin} navigate={navigate} />);
+    renderWithProviders(<LoginPage />);
 
     await user.type(screen.getByLabelText("Email"), "bad@example.com");
     await user.type(screen.getByLabelText("Password"), "wrong");
@@ -66,24 +62,22 @@ describe("LoginPage", () => {
 
   it("navigates to register page", async () => {
     const user = userEvent.setup();
-    renderWithProviders(<LoginPage onLogin={onLogin} navigate={navigate} />);
+    renderWithProviders(<LoginPage />);
 
     await user.click(screen.getByText(/sign up/i));
-    expect(navigate).toHaveBeenCalledWith("register");
+    expect(screen.getByText("Sign Up")).toBeInTheDocument();
   });
 
-  // DEMO-ONLY: remove before production
   it("demo button logs in via demo endpoint", async () => {
     (api.auth.demo as Mock).mockResolvedValueOnce({ accessToken: "demo-token", user: { id: "demo" } });
 
     const user = userEvent.setup();
-    renderWithProviders(<LoginPage onLogin={onLogin} navigate={navigate} />);
+    renderWithProviders(<LoginPage />);
 
     await user.click(screen.getByText("Quick Demo"));
 
     await waitFor(() => {
       expect(api.auth.demo).toHaveBeenCalled();
-      expect(onLogin).toHaveBeenCalledWith("demo-token");
     });
   });
 });

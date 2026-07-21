@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { useState } from "react";
+import Spinner from "../components/ui/spinner";
+import { useState, useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -14,17 +16,16 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import RadarChart from "../components/RadarChart";
 import type { DistortionEntry } from "../components/RadarChart";
-import {
-  LayoutDashboard,
-  ClipboardList,
-  BarChart3,
-  FileText,
-  MessageSquare,
-  LogOut,
-} from "lucide-react";
+import { Moon, Sun, Zap, Eye, TrendingUp, TrendingDown, Minus } from "lucide-react";
+
+interface Test {
+  id: string;
+  title: string;
+}
 
 interface Parameter {
   id: string;
@@ -54,40 +55,100 @@ interface TestResult {
   completedAt: string;
 }
 
-interface Props {
-  navigate: (page: string, params?: Record<string, string>) => void;
-  onLogout: () => void;
+const PERIODS = [
+  { key: "1w", labelKey: "dashboard.thisWeek", days: 7 },
+  { key: "2w", labelKey: "dashboard.twoWeeks", days: 14 },
+  { key: "1m", labelKey: "dashboard.oneMonth", days: 30 },
+  { key: "3m", labelKey: "dashboard.threeMonths", days: 90 },
+  { key: "all", labelKey: "dashboard.allTime", days: Infinity },
+] as const;
+
+const PARAM_COLORS: Record<string, string> = {
+  Anxiety: "#8B5CF6",
+  Sleep: "#6366f1",
+  Mood: "#059669",
+  Energy: "#f59e0b",
+  Focus: "#ec4899",
+};
+
+const PARAM_ICONS: Record<string, typeof Sun> = {
+  Sleep: Moon,
+  Mood: Sun,
+  Energy: Zap,
+  Focus: Eye,
+};
+
+const SEVERITY_COLORS: Record<string, string> = {
+  minimal: "#059669",
+  mild: "#eab308",
+  moderate: "#f97316",
+  severe: "#ea1515",
+};
+
+const TEST_ABBR_KEYS: Record<string, string> = {
+  "GAD-7": "tests.abbreviation.gad7",
+  "Burns Anxiety Inventory": "tests.abbreviation.bai",
+  "Burns Depression Checklist": "tests.abbreviation.bdc",
+  "Cognitive Distortions Assessment": "tests.abbreviation.cd",
+};
+
+function getSeverity(score: number, interpretation: string): string {
+  const lower = interpretation.toLowerCase();
+  if (lower.includes("severe") || lower.includes("high")) return "severe";
+  if (lower.includes("moderate") || lower.includes("mod")) return "moderate";
+  if (lower.includes("mild")) return "mild";
+  return "minimal";
 }
 
-const navItems = [
-  { labelKey: "nav.dashboard", page: "dashboard" as const, icon: LayoutDashboard },
-  { labelKey: "nav.tests", page: "tests" as const, icon: ClipboardList },
-  { labelKey: "nav.results", page: "test-results" as const, icon: BarChart3 },
-  { labelKey: "nav.reports", page: "reports" as const, icon: FileText },
-  { labelKey: "nav.feedback", page: "feedback" as const, icon: MessageSquare },
-];
+function getDateRange(period: string): { from?: string; to?: string } {
+  const p = PERIODS.find((x) => x.key === period);
+  if (!p || p.days === Infinity) return {};
+  const from = new Date(Date.now() - p.days * 24 * 60 * 60 * 1000).toISOString();
+  return { from, to: new Date().toISOString() };
+}
 
-export default function Dashboard({ navigate, onLogout }: Props) {
+export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [selectedParam, setSelectedParam] = useState<string>("");
   const [entryValue, setEntryValue] = useState("");
   const [entryNote, setEntryNote] = useState("");
+  const [period, setPeriod] = useState("2w");
+  const [visibleParams, setVisibleParams] = useState<Set<string>>(new Set(["Mood", "Sleep", "Anxiety"]));
 
-  const { data: params } = useQuery<Parameter[]>({
+  const { data: params, isLoading: paramsLoading } = useQuery<Parameter[]>({
     queryKey: ["parameters"],
     queryFn: () => api.parameters.list() as Promise<Parameter[]>,
   });
 
-  const { data: entries } = useQuery<Entry[]>({
-    queryKey: ["entries", selectedParam],
-    queryFn: () => api.entries.list({ parameterId: selectedParam || undefined }) as Promise<Entry[]>,
+  const { data: allEntries, isLoading: entriesLoading } = useQuery<Entry[]>({
+    queryKey: ["entries", period],
+    queryFn: () => {
+      const range = getDateRange(period);
+      return api.entries.list(range) as Promise<Entry[]>;
+    },
   });
 
-  const { data: testResults } = useQuery<TestResult[]>({
+  const { data: testResults, isLoading: resultsLoading } = useQuery<TestResult[]>({
     queryKey: ["testResults"],
     queryFn: () => api.testResults.list() as Promise<TestResult[]>,
   });
+
+  const { data: tests } = useQuery<Test[]>({
+    queryKey: ["tests"],
+    queryFn: () => api.tests.list() as Promise<Test[]>,
+  });
+
+  const testAbbrMap = useMemo(() => {
+    const map = new Map<string, string>();
+    if (tests) {
+      for (const test of tests) {
+        const key = TEST_ABBR_KEYS[test.title];
+        map.set(test.id, key ? t(key) : test.title.slice(0, 8));
+      }
+    }
+    return map;
+  }, [tests, t]);
 
   const cdResult = testResults?.find((r) => r.flags?.distortions);
   const cdDistortions = cdResult?.flags?.distortions;
@@ -95,15 +156,109 @@ export default function Dashboard({ navigate, onLogout }: Props) {
     ? Object.entries(cdDistortions).map(([key, val]) => ({ key, score: val.score }))
     : [];
 
+  const paramMap = useMemo(() => {
+    const map = new Map<string, string>();
+    if (params) {
+      for (const p of params) map.set(p.id, p.name);
+    }
+    return map;
+  }, [params]);
+
+  const paramNames = useMemo(() => {
+    if (!params) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
+    return params.map((p) => p.name);
+  }, [params]);
+
+  const entriesByParam = useMemo(() => {
+    if (!allEntries) return new Map<string, Entry[]>();
+    const map = new Map<string, Entry[]>();
+    for (const e of allEntries) {
+      const name = paramMap.get(e.parameterId) ?? e.parameterId;
+      if (!map.has(name)) map.set(name, []);
+      map.get(name)!.push(e);
+    }
+    return map;
+  }, [allEntries, paramMap]);
+
+  const trendData = useMemo(() => {
+    if (!allEntries || allEntries.length === 0) return [];
+    const grouped = new Map<string, Record<string, number | string>>();
+    const sorted = [...allEntries].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+    for (const e of sorted) {
+      const day = new Date(e.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      const name = paramMap.get(e.parameterId) ?? e.parameterId;
+      if (!grouped.has(day)) grouped.set(day, { date: day });
+      const row = grouped.get(day)!;
+      row[name] = e.value;
+    }
+    return Array.from(grouped.values());
+  }, [allEntries, paramMap, i18n.language]);
+
+  const weeklyAverages = useMemo(() => {
+    if (!allEntries) return [];
+    const range = getDateRange(period);
+    const currentStart = range.from ? new Date(range.from).getTime() : 0;
+    const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
+    const periodMs = currentEnd - currentStart;
+
+    const prevStart = new Date(currentStart - periodMs).getTime();
+    const prevEnd = currentStart;
+
+    const calcAvg = (entries: Entry[], start: number, end: number) => {
+      const filtered = entries.filter((e) => {
+        const t = new Date(e.createdAt).getTime();
+        return t >= start && t < end;
+      });
+      if (filtered.length === 0) return null;
+      return filtered.reduce((s, e) => s + e.value, 0) / filtered.length;
+    };
+
+    return paramNames.map((name) => {
+      let id = "";
+      for (const [pid, pname] of paramMap) {
+        if (pname === name) { id = pid; break; }
+      }
+      const paramEntries = id ? (entriesByParam.get(name) ?? []) : [];
+      const current = calcAvg(paramEntries, currentStart, currentEnd);
+      const previous = calcAvg(paramEntries, prevStart, prevEnd);
+      let trend: "up" | "down" | "flat" = "flat";
+      if (current !== null && previous !== null) {
+        trend = current > previous ? "up" : current < previous ? "down" : "flat";
+      }
+      return { name, average: current, trend, visible: true };
+    });
+  }, [allEntries, period, paramNames, paramMap, entriesByParam]);
+
+  const testTimeline = useMemo(() => {
+    if (!testResults || !params) return [];
+    const grouped = new Map<string, TestResult[]>();
+    for (const r of testResults) {
+      if (!grouped.has(r.testId)) grouped.set(r.testId, []);
+      grouped.get(r.testId)!.push(r);
+    }
+    return Array.from(grouped.entries())
+      .map(([testId, results]) => {
+        const sorted = results.sort(
+          (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime(),
+        );
+        const last = sorted[sorted.length - 1];
+        return {
+          testId,
+          label: testAbbrMap.get(testId) ?? testId.slice(0, 8),
+          results: sorted,
+          lastSeverity: getSeverity(last.score, last.interpretation),
+          lastScore: last.score,
+        };
+      });
+  }, [testResults, params, testAbbrMap]);
+
   const today = new Date().toDateString();
-  const todaysEntries = entries?.filter(
-    (e) => new Date(e.createdAt).toDateString() === today,
-  );
-  const latestEntry = todaysEntries && todaysEntries.length > 0
-    ? todaysEntries[todaysEntries.length - 1]
-    : entries && entries.length > 0
-      ? entries[entries.length - 1]
-      : null;
+  const entriesForHistory = selectedParam ? (allEntries?.filter((e) => e.parameterId === selectedParam) ?? []) : [];
 
   const createEntry = useMutation({
     mutationFn: () =>
@@ -116,185 +271,279 @@ export default function Dashboard({ navigate, onLogout }: Props) {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
       setEntryValue("");
       setEntryNote("");
+      toast.success(t("dashboard.entrySaved"));
     },
   });
 
+  const toggleParam = (name: string) => {
+    setVisibleParams((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+  };
+
+  const loading = paramsLoading || entriesLoading || resultsLoading;
+
   return (
-    <div className="flex min-h-screen bg-background">
-      <aside className="hidden md:flex flex-col w-56 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2">
-        <div className="text-lg font-serif font-bold text-primary mb-6 px-3" />
-        {navItems.map((item) => (
-          <button
-            key={item.page}
-            onClick={() => navigate(item.page)}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-primary hover:bg-secondary/50 transition-all duration-150 active:scale-[0.97] cursor-pointer"
-          >
-            <item.icon className="w-5 h-5" />
-            <span className="text-sm font-medium">{t(item.labelKey)}</span>
-          </button>
-        ))}
-        <div className="flex-1" />
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-150 active:scale-[0.97] cursor-pointer"
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="text-sm font-medium">{t("common.logout")}</span>
-        </button>
-      </aside>
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="sticky top-0 z-10 bg-card/80 backdrop-blur-md mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-primary font-serif">{t("common.moodly")}</h1>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-xs md:hidden">
-              {navItems.slice(0, 4).map((item) => (
-                <Button key={item.page} variant="ghost" size="sm" onClick={() => navigate(item.page)}>
-                  <item.icon className="w-4 h-4" />
-                </Button>
-              ))}
-            </div>
-            <div className="flex items-center gap-1 text-xs">
-              <button
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
-                onClick={() => i18n.changeLanguage("en")}
-              >
-                EN
-              </button>
-              <span className="text-muted-foreground">|</span>
-              <button
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
-                onClick={() => i18n.changeLanguage("ru")}
-              >
-                RU
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <main className="flex-1 px-4 pb-8 space-y-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Card className="shadow-neumorphic-sm">
-              <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground">{t("dashboard.moodToday")}</p>
-                <p className="text-2xl font-bold text-primary mt-1">
-                  {latestEntry ? latestEntry.value : "—"}
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-neumorphic-sm">
-              <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground">{t("dashboard.testsTaken")}</p>
-                <p className="text-2xl font-bold text-primary mt-1">
-                  {testResults?.length ?? "—"}
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-neumorphic-sm">
-              <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground">{t("dashboard.lastScore")}</p>
-                <p className="text-2xl font-bold text-accent mt-1">
-                  {testResults && testResults.length > 0 ? testResults[0].score : "—"}
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="shadow-neumorphic-sm">
-              <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground">{t("dashboard.entriesCount")}</p>
-                <p className="text-2xl font-bold text-accent mt-1">
-                  {entries?.length ?? "—"}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {radarData.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{t("dashboard.cdProfile")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RadarChart data={radarData} />
-              </CardContent>
-            </Card>
-          )}
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{t("dashboard.quickEntry")}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>{t("dashboard.parameter")}</Label>
-                  <select
-                    className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
-                    value={selectedParam}
-                    onChange={(e) => setSelectedParam(e.target.value)}
-                  >
-                    <option value="">{t("dashboard.select")}</option>
-                    {params?.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name} {p.unit ? `(${p.unit})` : ""}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label>{t("dashboard.value")}</Label>
-                  <Input
-                    type="number"
-                    value={entryValue}
-                    onChange={(e) => setEntryValue(e.target.value)}
-                    placeholder={t("dashboard.valuePlaceholder")}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>{t("dashboard.note")}</Label>
-                  <Input
-                    value={entryNote}
-                    onChange={(e) => setEntryNote(e.target.value)}
-                    placeholder={t("dashboard.notePlaceholder")}
-                  />
-                </div>
-                <Button
-                  className="w-full"
-                  disabled={!selectedParam || !entryValue || createEntry.isPending}
-                  onClick={() => createEntry.mutate()}
-                >
-                  {createEntry.isPending ? t("common.saving") : t("dashboard.saveEntry")}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">{t("dashboard.history")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {entries && entries.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={entries.slice().reverse()}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
-                      <XAxis
-                        dataKey="createdAt"
-                        tickFormatter={(v: string) => new Date(v).toLocaleDateString()}
-                        fontSize={10}
-                        stroke="#a1a1aa"
-                      />
-                      <YAxis fontSize={10} stroke="#a1a1aa" />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="value" stroke="#8B5CF6" dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noEntries")}</p>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </main>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-primary font-serif">{t("dashboard.dateRange")}</h2>
+        <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
+          {PERIODS.map((p) => (
+            <button
+              key={p.key}
+              onClick={() => setPeriod(p.key)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
+                period === p.key
+                  ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
+                  : "text-muted-foreground hover:text-primary"
+              }`}
+            >
+              {t(p.labelKey)}
+            </button>
+          ))}
+        </div>
       </div>
+
+      <Card className="shadow-neumorphic">
+        <CardHeader>
+          <CardTitle className="text-base">{t("dashboard.parameterTrends")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : trendData.length > 0 ? (
+            <>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
+                  <XAxis dataKey="date" fontSize={10} stroke="#a1a1aa" />
+                  <YAxis domain={[0, 10]} fontSize={10} stroke="#a1a1aa" />
+                  <Tooltip />
+                  <Legend />
+                  {paramNames.map((name) =>
+                    visibleParams.has(name) ? (
+                      <Line
+                        key={name}
+                        type="monotone"
+                        dataKey={name}
+                        stroke={PARAM_COLORS[name] ?? "#8B5CF6"}
+                        strokeWidth={2}
+                        dot={false}
+                        connectNulls
+                      />
+                    ) : null,
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap gap-2 mt-3">
+                {paramNames.map((name) => (
+                  <button
+                    key={name}
+                    onClick={() => toggleParam(name)}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer ${
+                      visibleParams.has(name)
+                        ? "bg-primary/10 text-primary shadow-neumorphic-sm"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: PARAM_COLORS[name] ?? "#8B5CF6" }}
+                    />
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTrendData")}</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="shadow-neumorphic">
+          <CardHeader>
+            <CardTitle className="text-base">{t("dashboard.quickEntry")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>{t("dashboard.parameter")}</Label>
+              <select
+                className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
+                value={selectedParam}
+                onChange={(e) => setSelectedParam(e.target.value)}
+              >
+                <option value="">{t("dashboard.select")}</option>
+                {params?.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} {p.unit ? `(${p.unit})` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label>{t("dashboard.value")}</Label>
+              <Input
+                type="number"
+                value={entryValue}
+                onChange={(e) => setEntryValue(e.target.value)}
+                placeholder={t("dashboard.valuePlaceholder")}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("dashboard.note")}</Label>
+              <Input
+                value={entryNote}
+                onChange={(e) => setEntryNote(e.target.value)}
+                placeholder={t("dashboard.notePlaceholder")}
+              />
+            </div>
+            <Button
+              className="w-full"
+              disabled={!selectedParam || !entryValue || createEntry.isPending}
+              onClick={() => createEntry.mutate()}
+            >
+              {createEntry.isPending ? t("common.saving") : t("dashboard.saveEntry")}
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-neumorphic">
+          <CardHeader>
+            <CardTitle className="text-base">{t("dashboard.weeklyAverages")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex justify-center py-8"><Spinner size={32} /></div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {weeklyAverages.map((avg) => {
+                  const Icon = PARAM_ICONS[avg.name];
+                  const avgValue = avg.average;
+                  const colorClass = avgValue !== null
+                    ? avgValue >= 7 ? "text-accent" : avgValue >= 4 ? "text-primary" : "text-destructive"
+                    : "text-muted-foreground";
+                  const TrendIcon = avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
+                  const trendColor = avg.trend === "up" ? "text-accent" : avg.trend === "down" ? "text-destructive" : "text-muted-foreground";
+                  return (
+                    <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        {Icon && <Icon className="w-4 h-4 text-primary" />}
+                        <span className="text-xs text-muted-foreground">{avg.name}</span>
+                      </div>
+                      <div className="flex items-end gap-2">
+                        <span className={`text-2xl font-bold font-serif ${colorClass}`}>
+                          {avgValue !== null ? avgValue.toFixed(1) : "—"}
+                        </span>
+                        <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {radarData.length > 0 && (
+        <Card className="shadow-neumorphic">
+          <CardHeader>
+            <CardTitle className="text-base">{t("dashboard.cdProfile")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RadarChart data={radarData} />
+          </CardContent>
+        </Card>
+      )}
+
+      <Card className="shadow-neumorphic">
+        <CardHeader>
+          <CardTitle className="text-base">{t("dashboard.testProgress")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {resultsLoading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : testTimeline.length > 0 ? (
+            <div className="space-y-4">
+              {testTimeline.map((group) => {
+                const severityColor = SEVERITY_COLORS[group.lastSeverity] ?? "#8B5CF6";
+                return (
+                  <div key={group.testId} className="flex items-center gap-3">
+                    <div className="w-10 text-xs font-semibold text-muted-foreground shrink-0">
+                      {group.label}
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-1 overflow-x-auto">
+                      {group.results.map((r, idx) => {
+                        const sev = getSeverity(r.score, r.interpretation);
+                        const color = SEVERITY_COLORS[sev] ?? "#8B5CF6";
+                        return (
+                          <div key={r.id} className="flex items-center gap-0">
+                            <div
+                              className={`w-5 h-5 rounded-full border-2 transition-all duration-150 ${
+                                idx === group.results.length - 1
+                                  ? "shadow-neumorphic-sm scale-110"
+                                  : ""
+                              }`}
+                              style={{
+                                backgroundColor: `${color}50`,
+                                borderColor: color,
+                              }}
+                              title={`${r.score} — ${r.interpretation}`}
+                            />
+                            {idx < group.results.length - 1 && (
+                              <div className="w-3 h-0.5 bg-border" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="text-xs font-medium shrink-0" style={{ color: severityColor }}>
+                      {group.lastScore}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTestData")}</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="shadow-neumorphic">
+        <CardHeader>
+          <CardTitle className="text-base">{t("dashboard.history")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!selectedParam ? (
+            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.select")}</p>
+          ) : entriesLoading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : entriesForHistory.length > 0 ? (
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={entriesForHistory.slice().reverse()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
+                <XAxis
+                  dataKey="createdAt"
+                  tickFormatter={(v: string) => new Date(v).toLocaleDateString()}
+                  fontSize={10}
+                  stroke="#a1a1aa"
+                />
+                <YAxis fontSize={10} stroke="#a1a1aa" />
+                <Tooltip />
+                <Line type="monotone" dataKey="value" stroke="#8B5CF6" dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noEntries")}</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

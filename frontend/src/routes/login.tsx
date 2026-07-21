@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
-interface Props {
-  onLogin: (token: string) => void;
-  navigate: (page: string) => void;
-}
-
-export default function LoginPage({ onLogin, navigate }: Props) {
+export default function LoginPage() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,19 +22,20 @@ export default function LoginPage({ onLogin, navigate }: Props) {
     setError("");
     try {
       const res = await api.auth.login({ email, password });
-      onLogin(res.accessToken);
+      login(res.accessToken);
+      navigate("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("login.loginFailed"));
     }
   };
 
-  // DEMO-ONLY: remove before production
   const handleDemo = async () => {
     setDemoLoading(true);
     setError("");
     try {
       const res = await api.auth.demo();
-      onLogin(res.accessToken);
+      login(res.accessToken);
+      navigate("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("login.demoFailed"));
     } finally {
@@ -47,17 +47,17 @@ export default function LoginPage({ onLogin, navigate }: Props) {
     <div className="flex min-h-screen items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4 flex items-center gap-1 text-xs">
         <button
-          className={`px-1.5 py-0.5 rounded ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+          className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
           onClick={() => i18n.changeLanguage("en")}
         >
-          EN
+          {t("common.languageEn")}
         </button>
         <span className="text-muted-foreground">|</span>
         <button
-          className={`px-1.5 py-0.5 rounded ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+          className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
           onClick={() => i18n.changeLanguage("ru")}
         >
-          RU
+          {t("common.languageRu")}
         </button>
       </div>
       <Card className="w-full max-w-sm">
@@ -77,13 +77,12 @@ export default function LoginPage({ onLogin, navigate }: Props) {
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button type="submit" className="w-full">{t("login.signIn")}</Button>
-            {/* DEMO-ONLY: remove before production */}
             <Button type="button" variant="secondary" className="w-full" onClick={handleDemo} disabled={demoLoading}>
               {demoLoading ? t("login.starting") : t("login.quickDemo")}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t("login.noAccount")}{" "}
-              <button type="button" className="text-primary hover:underline" onClick={() => navigate("register")}>
+              <button type="button" className="text-primary hover:underline cursor-pointer" onClick={() => navigate("/register")}>
                 {t("login.signUp")}
               </button>
             </p>

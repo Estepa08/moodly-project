@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import Spinner from "../components/ui/spinner";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 
 interface Test {
@@ -11,27 +13,32 @@ interface Test {
   description?: string;
 }
 
-interface Props {
-  navigate: (page: string, params?: Record<string, string>) => void;
-}
-
-export default function TestsPage({ navigate }: Props) {
+export default function TestsPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { tTestTitle, tTestDescription } = useTestTranslation();
-  const { data: tests } = useQuery<Test[]>({
+  const { data: tests, isLoading } = useQuery<Test[]>({
     queryKey: ["tests"],
     queryFn: () => api.tests.list() as Promise<Test[]>,
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-16">
+        <Spinner size={32} />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-4">
+    <div className="space-y-4">
       <header className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-primary">{t("tests.title")}</h1>
-        <Button variant="ghost" onClick={() => navigate("dashboard")}>{t("common.back")}</Button>
+        <Button variant="ghost" onClick={() => navigate("/")}>{t("common.back")}</Button>
       </header>
 
       {tests?.map((test) => (
-        <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("test-detail", { testId: test.id })}>
+        <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/tests/${test.id}`)}>
           <CardHeader>
             <CardTitle>{tTestTitle(test.title)}</CardTitle>
             {test.description && <p className="text-sm text-muted-foreground">{tTestDescription(test.description)}</p>}
