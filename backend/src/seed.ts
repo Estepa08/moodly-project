@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { prisma } from "./lib/prisma.js";
 
 const parameters = [
@@ -238,6 +239,10 @@ const onboardingStories = [
 
 async function seed() {
   await prisma.testResult.deleteMany();
+  await prisma.report.deleteMany();
+  await prisma.feedback.deleteMany();
+  await prisma.entry.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.test.deleteMany();
   await prisma.parameter.deleteMany();
   await prisma.onboardingStory.deleteMany();
@@ -253,6 +258,86 @@ async function seed() {
   for (const s of onboardingStories) {
     await prisma.onboardingStory.create({ data: s });
   }
+
+  const hashed = await bcrypt.hash("demo123", 10);
+  const demoUser = await prisma.user.create({
+    data: {
+      email: "demo@moodly.app",
+      password: hashed,
+      name: "Demo User",
+    },
+  });
+
+  const allTests = await prisma.test.findMany();
+
+  const gad7 = allTests.find((t) => t.title === "GAD-7")!;
+  const bai = allTests.find((t) => t.title === "Burns Anxiety Inventory")!;
+  const bdc = allTests.find((t) => t.title === "Burns Depression Checklist")!;
+  const cd = allTests.find((t) => t.title === "Cognitive Distortions Assessment")!;
+
+  const now = new Date();
+
+  await prisma.testResult.create({
+    data: {
+      testId: gad7.id,
+      userId: demoUser.id,
+      score: 12,
+      interpretation: "Moderate anxiety",
+      recommendation: "Consider consulting a therapist. Therapy or counseling may be beneficial.",
+      completedAt: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  await prisma.testResult.create({
+    data: {
+      testId: bai.id,
+      userId: demoUser.id,
+      score: 22,
+      interpretation: "Mild anxiety",
+      recommendation: "May benefit from therapy or self-help techniques (e.g., CBT).",
+      completedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  await prisma.testResult.create({
+    data: {
+      testId: bdc.id,
+      userId: demoUser.id,
+      score: 28,
+      interpretation: "Mild depression",
+      recommendation: "Monitor symptoms. Consider therapy if persistent.",
+      completedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  await prisma.testResult.create({
+    data: {
+      testId: cd.id,
+      userId: demoUser.id,
+      score: 45,
+      interpretation: "Significant All-or-Nothing Thinking, Discounting the Positive, Should Statements. Moderate Overgeneralization, Mental Filter, Jumping to Conclusions, Personalization. Consider working on these thinking patterns with CBT techniques.",
+      recommendation: "Your results indicate several strongly held cognitive distortions. Cognitive Behavioral Therapy (CBT) is highly effective for addressing these patterns. Consider journaling your thoughts and challenging distorted thinking with evidence.",
+      flags: {
+        distortions: {
+          allOrNothing: { score: 7, level: "high" },
+          overgeneralization: { score: 4, level: "moderate" },
+          mentalFilter: { score: 4, level: "moderate" },
+          discountingPositive: { score: 7, level: "high" },
+          jumpingToConclusions: { score: 5, level: "moderate" },
+          magnification: { score: 2, level: "low" },
+          emotionalReasoning: { score: 1, level: "low" },
+          shouldStatements: { score: 9, level: "high" },
+          labeling: { score: 1, level: "low" },
+          personalization: { score: 5, level: "moderate" },
+        },
+        templateKey: "severe",
+        recommendationKey: "severe",
+        highKeys: ["allOrNothing", "discountingPositive", "shouldStatements"],
+        moderateKeys: ["overgeneralization", "mentalFilter", "jumpingToConclusions", "personalization"],
+      },
+      completedAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+    },
+  });
 
   console.log("Seed completed");
 }

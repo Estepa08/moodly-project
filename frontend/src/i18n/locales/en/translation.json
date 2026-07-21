@@ -48,7 +48,12 @@
     "notePlaceholder": "How are you feeling?",
     "saveEntry": "Save Entry",
     "history": "History",
-    "noEntries": "No entries yet. Start tracking above."
+    "noEntries": "No entries yet. Start tracking above.",
+    "moodToday": "Latest Entry",
+    "testsTaken": "Tests Taken",
+    "lastScore": "Last Score",
+    "entriesCount": "Total Entries",
+    "cdProfile": "Cognitive Distortions Profile"
   },
   "onboarding": {
     "getStarted": "Get Started",

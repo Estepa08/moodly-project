@@ -5,6 +5,8 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { useState } from "react";
 import { useTestTranslation } from "../hooks/useTestTranslation";
+import RadarChart from "../components/RadarChart";
+import type { DistortionEntry } from "../components/RadarChart";
 
 interface TestData {
   id: string;
@@ -85,22 +87,9 @@ export default function TestDetailPage({ navigate, testId }: Props) {
             {cdDistortions && cdKeys.length > 0 && (
               <div>
                 <p className="font-medium mb-2">{t("cognitiveDistortions.yourProfile")}</p>
-                <div className="space-y-2">
-                  {cdKeys.map((key) => {
-                    const d = cdDistortions[key];
-                    const color = d.level === "high" ? "bg-red-500" : d.level === "moderate" ? "bg-yellow-500" : "bg-green-500";
-                    const label = t(`cognitiveDistortions.${key}`);
-                    return (
-                      <div key={key} className="flex items-center gap-2">
-                        <span className="text-sm flex-1">{label}</span>
-                        <div className="flex items-center gap-1">
-                          <div className={`w-2.5 h-2.5 rounded-full ${color}`} />
-                          <span className="text-xs text-muted-foreground w-10 text-right">{d.score}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <RadarChart
+                  data={cdKeys.map((key) => ({ key, score: cdDistortions[key].score }))}
+                />
               </div>
             )}
             <div>

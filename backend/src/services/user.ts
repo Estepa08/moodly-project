@@ -59,9 +59,14 @@ export const userService = {
 
   // DEMO-ONLY: remove before production
   async createDemo() {
+    const existing = await prisma.user.findFirst({
+      where: { email: "demo@moodly.app" },
+    });
+    if (existing) return stripUser(existing);
+
     const hashed = await bcrypt.hash("demo123", 10);
     const user = await prisma.user.create({
-      data: { email: `demo-${Date.now()}@moodly.local`, password: hashed, name: "Demo User" },
+      data: { email: "demo@moodly.app", password: hashed, name: "Demo User" },
     });
     return stripUser(user);
   },

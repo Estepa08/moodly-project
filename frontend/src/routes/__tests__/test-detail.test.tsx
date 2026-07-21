@@ -13,6 +13,16 @@ vi.mock("../../lib/api", () => ({
   },
 }));
 
+vi.mock("../../components/RadarChart", () => ({
+  default: ({ data }: { data: { key: string; score: number }[] }) => (
+    <div>
+      {data.map((d) => (
+        <span key={d.key}>{d.key}</span>
+      ))}
+    </div>
+  ),
+}));
+
 describe("TestDetailPage", () => {
   const navigate = vi.fn();
 
@@ -124,8 +134,8 @@ describe("TestDetailPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Cognitive Distortion Profile")).toBeInTheDocument();
     });
-    expect(screen.getByText("All-or-Nothing Thinking")).toBeInTheDocument();
-    expect(screen.getByText("Should Statements")).toBeInTheDocument();
-    expect(screen.getByText("Personalization")).toBeInTheDocument();
+    expect(screen.getByText("allOrNothing")).toBeInTheDocument();
+    expect(screen.getByText("shouldStatements")).toBeInTheDocument();
+    expect(screen.getByText("personalization")).toBeInTheDocument();
   });
 });
