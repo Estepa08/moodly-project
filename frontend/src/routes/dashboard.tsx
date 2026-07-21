@@ -329,8 +329,7 @@ export default function Dashboard() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
                   <XAxis dataKey="date" fontSize={10} stroke="#a1a1aa" />
                   <YAxis domain={[0, 10]} fontSize={10} stroke="#a1a1aa" />
-                  <Tooltip />
-                  <Legend />
+                  <Tooltip formatter={(value: number, name: string) => [value, t(PARAM_NAME_KEYS[name] ?? name)]} />
                   {paramNames.map((name) =>
                     visibleParams.has(name) ? (
                       <Line
