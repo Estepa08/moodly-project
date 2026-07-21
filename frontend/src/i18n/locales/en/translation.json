@@ -11,6 +11,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "breathing": "Breathing",
     "tests": "Tests",
     "results": "Results",
     "reports": "Reports",
@@ -102,7 +103,9 @@
     "title": "Test Results",
     "noResults": "No test results yet.",
     "showFull": "Show full",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "high": "High:",
+    "moderate": "Moderate:"
   },
   "feedback": {
     "title": "Feedback",
@@ -125,6 +128,28 @@
     "download": "Download",
     "created": "Report generation started!",
     "noReports": "No reports yet."
+  },
+  "breathing": {
+    "title": "Breathing Exercise",
+    "subtitle": "Calm your anxiety creature with deep breathing",
+    "description": "The 4-7-8 breathing technique helps activate your parasympathetic nervous system, reducing stress and anxiety. Complete 4 cycles to see your creature calm down.",
+    "begin": "Begin Exercise",
+    "start": "Start",
+    "cancel": "Cancel",
+    "inhale": "Inhale through nose",
+    "hold": "Hold your breath",
+    "exhale": "Exhale through mouth",
+    "cycle": "Cycle",
+    "calmness": "Calmness",
+    "done": "Exercise Complete!",
+    "sessionComplete": "You breathed for {{duration}} seconds. Your creature feels calmer.",
+    "calmnessNow": "Current calmness level",
+    "doAnother": "Do Another",
+    "howItWorks": "How it works",
+    "step1": "Press Start and follow the breathing circle",
+    "step2": "Inhale as the circle expands (4 seconds)",
+    "step3": "Hold your breath while the circle pauses (7 seconds)",
+    "step4": "Exhale slowly as the circle contracts (8 seconds)"
   },
   "cognitiveDistortions": {
     "yourProfile": "Cognitive Distortion Profile",

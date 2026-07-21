@@ -18,6 +18,7 @@ model User {
   testResults TestResult[]
   feedback    Feedback[]
   reports     Report[]
+  breathingSessions BreathingSession[]
 }
 
 model Parameter {
@@ -98,6 +99,26 @@ model Report {
   periodTo    DateTime
   createdAt   DateTime @default(now())
   downloadUrl String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model CreatureState {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  calmness       Int      @default(50)
+  lastExerciseAt DateTime?
+}
+
+model BreathingSession {
+  id              String   @id @default(cuid())
+  userId          String
+  duration        Int
+  initialCalmness Int
+  finalCalmness   Int
+  completedAt     DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 

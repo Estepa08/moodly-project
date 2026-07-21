@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ChevronRight } from "lucide-react";
 import { api } from "../lib/api";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
@@ -61,7 +62,7 @@ export default function TestResultsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-primary">{t("testResults.title")}</h1>
+      <h1 className="text-xl font-bold text-primary font-serif">{t("testResults.title")}</h1>
 
       {results?.length === 0 && (
         <p className="text-muted-foreground text-center py-8">{t("testResults.noResults")}</p>
@@ -108,7 +109,7 @@ export default function TestResultsPage() {
                   {highKeys.length > 0 && (
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-xs text-muted-foreground">
-                        {i18n.language.startsWith("ru") ? "Выражены:" : "High:"}
+                        {t("testResults.high")}
                       </span>
                       {highKeys.map((key) => (
                         <span
@@ -123,7 +124,7 @@ export default function TestResultsPage() {
                   {moderateKeys.length > 0 && (
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-xs text-muted-foreground">
-                        {i18n.language.startsWith("ru") ? "Умеренно:" : "Moderate:"}
+                        {t("testResults.moderate")}
                       </span>
                       {moderateKeys.map((key) => (
                         <span
@@ -144,7 +145,7 @@ export default function TestResultsPage() {
 
               {isLongText && (
                 <button
-                  className="text-xs text-primary hover:underline mt-1 cursor-pointer"
+                  className="text-xs text-primary hover:underline mt-1 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() =>
                     setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))
                   }
@@ -154,10 +155,10 @@ export default function TestResultsPage() {
               )}
 
               <button
-                className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer"
+                className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setShowRec((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
               >
-                <span className={showRec[r.id] ? "rotate-90" : ""}>▸</span>
+                <ChevronRight className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`} />
                 {t("testDetail.recommendation")}
               </button>
 

@@ -78,6 +78,14 @@ const PARAM_ICONS: Record<string, typeof Sun> = {
   Focus: Eye,
 };
 
+const PARAM_NAME_KEYS: Record<string, string> = {
+  Anxiety: "dashboard.anxiety",
+  Sleep: "dashboard.sleep",
+  Mood: "dashboard.mood",
+  Energy: "dashboard.energy",
+  Focus: "dashboard.focus",
+};
+
 const SEVERITY_COLORS: Record<string, string> = {
   minimal: "#059669",
   mild: "#eab308",
@@ -295,7 +303,7 @@ export default function Dashboard() {
             <button
               key={p.key}
               onClick={() => setPeriod(p.key)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 period === p.key
                   ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                   : "text-muted-foreground hover:text-primary"
@@ -343,7 +351,7 @@ export default function Dashboard() {
                   <button
                     key={name}
                     onClick={() => toggleParam(name)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       visibleParams.has(name)
                         ? "bg-primary/10 text-primary shadow-neumorphic-sm"
                         : "bg-muted text-muted-foreground"
@@ -353,7 +361,7 @@ export default function Dashboard() {
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: PARAM_COLORS[name] ?? "#8B5CF6" }}
                     />
-                    {name}
+                    {t(PARAM_NAME_KEYS[name] ?? name)}
                   </button>
                 ))}
               </div>
@@ -380,7 +388,7 @@ export default function Dashboard() {
                 <option value="">{t("dashboard.select")}</option>
                 {params?.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name} {p.unit ? `(${p.unit})` : ""}
+                    {t(PARAM_NAME_KEYS[p.name] ?? p.name)}{p.unit ? ` (${p.unit})` : ""}
                   </option>
                 ))}
               </select>
@@ -433,7 +441,7 @@ export default function Dashboard() {
                     <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
                       <div className="flex items-center gap-2 mb-2">
                         {Icon && <Icon className="w-4 h-4 text-primary" />}
-                        <span className="text-xs text-muted-foreground">{avg.name}</span>
+                        <span className="text-xs text-muted-foreground">{t(PARAM_NAME_KEYS[avg.name] ?? avg.name)}</span>
                       </div>
                       <div className="flex items-end gap-2">
                         <span className={`text-2xl font-bold font-serif ${colorClass}`}>

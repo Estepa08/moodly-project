@@ -10,6 +10,7 @@ import TestDetailPage from "./routes/test-detail";
 import TestResultsPage from "./routes/test-results";
 import FeedbackPage from "./routes/feedback";
 import ReportsPage from "./routes/reports";
+import BreathingPage from "./routes/breathing";
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="/results" element={<TestResultsPage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/breathing" element={<BreathingPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

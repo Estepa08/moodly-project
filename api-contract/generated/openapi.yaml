@@ -12,6 +12,7 @@ tags:
   - name: Feedback
   - name: OnboardingStories
   - name: Reports
+  - name: Breathing
 paths:
   /auth/login:
     post:
@@ -60,6 +61,40 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserCreate'
+  /creature:
+    get:
+      operationId: Creature_getState
+      description: Получить текущее состояние существа и уровень спокойствия
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatureState'
+      tags:
+        - Breathing
+  /creature/exercise/complete:
+    post:
+      operationId: Creature_completeExercise
+      description: Завершить дыхательное упражнение, обновить уровень спокойствия
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatureState'
+      tags:
+        - Breathing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BreathingCompleteRequest'
   /entries:
     get:
       operationId: Entries_list
@@ -463,6 +498,66 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/User'
+    BreathingCompleteRequest:
+      type: object
+      required:
+        - duration
+      properties:
+        duration:
+          type: integer
+          format: int32
+          description: Длительность упражнения в секундах
+      description: Результат завершённого дыхательного упражнения
+    BreathingSession:
+      type: object
+      required:
+        - id
+        - userId
+        - duration
+        - initialCalmness
+        - finalCalmness
+        - completedAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        duration:
+          type: integer
+          format: int32
+          description: Длительность упражнения в секундах
+        initialCalmness:
+          type: integer
+          format: int32
+          description: Уровень спокойствия до упражнения
+        finalCalmness:
+          type: integer
+          format: int32
+          description: Уровень спокойствия после упражнения
+        completedAt:
+          type: string
+          format: date-time
+      description: Сессия дыхательного упражнения
+    CreatureState:
+      type: object
+      required:
+        - id
+        - userId
+        - calmness
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        calmness:
+          type: integer
+          format: int32
+          description: 'Уровень спокойствия: 0 — крайне тревожно, 100 — полное спокойствие'
+        lastExerciseAt:
+          type: string
+          format: date-time
+          description: Дата последнего дыхательного упражнения
+      description: Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно).
     Entry:
       type: object
       required:

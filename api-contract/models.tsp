@@ -163,6 +163,37 @@ model ReportCreate {
   periodTo: utcDateTime;
 }
 
+// ---------- Creature / Breathing ----------
+
+@doc("Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно).")
+model CreatureState {
+  id: string;
+  userId: string;
+  @doc("Уровень спокойствия: 0 — крайне тревожно, 100 — полное спокойствие")
+  calmness: int32;
+  @doc("Дата последнего дыхательного упражнения")
+  lastExerciseAt?: utcDateTime;
+}
+
+@doc("Сессия дыхательного упражнения")
+model BreathingSession {
+  id: string;
+  userId: string;
+  @doc("Длительность упражнения в секундах")
+  duration: int32;
+  @doc("Уровень спокойствия до упражнения")
+  initialCalmness: int32;
+  @doc("Уровень спокойствия после упражнения")
+  finalCalmness: int32;
+  completedAt: utcDateTime;
+}
+
+@doc("Результат завершённого дыхательного упражнения")
+model BreathingCompleteRequest {
+  @doc("Длительность упражнения в секундах")
+  duration: int32;
+}
+
 // ---------- Errors ----------
 
 @error

@@ -18,6 +18,7 @@
 | Accent | `#059669` | `text-accent` |
 | Background | `#FAF5FF` | `bg-background` |
 | Foreground | `#4C1D95` | `text-foreground` |
+| Card Foreground | `#4C1D95` | `text-card-foreground` |
 | Card | `#FFFFFF` | `bg-card` |
 | Muted | `#EDEFF9` | `bg-muted` / `text-muted-foreground` |
 | Border | `#EDE9FE` | `border-border` |

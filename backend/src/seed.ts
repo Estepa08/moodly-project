@@ -269,74 +269,109 @@ async function seed() {
   });
 
   const allTests = await prisma.test.findMany();
+  const allParams = await prisma.parameter.findMany();
 
   const gad7 = allTests.find((t) => t.title === "GAD-7")!;
   const bai = allTests.find((t) => t.title === "Burns Anxiety Inventory")!;
   const bdc = allTests.find((t) => t.title === "Burns Depression Checklist")!;
   const cd = allTests.find((t) => t.title === "Cognitive Distortions Assessment")!;
 
+  const paramMap = new Map(allParams.map((p) => [p.name, p.id]));
+
   const now = new Date();
+  const DAY = 24 * 60 * 60 * 1000;
 
-  await prisma.testResult.create({
-    data: {
-      testId: gad7.id,
-      userId: demoUser.id,
-      score: 12,
-      interpretation: "Moderate anxiety",
-      recommendation: "Consider consulting a therapist. Therapy or counseling may be beneficial.",
-      completedAt: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000),
-    },
+  // ─── Entries: 14 days, 5 parameters, realistic daily values ───
+  const dailyValues: Record<string, number[]> = {
+    Anxiety: [7, 6, 8, 5, 4, 6, 3, 5, 7, 6, 4, 3, 5, 4],
+    Sleep:   [4, 5, 3, 6, 7, 5, 8, 6, 4, 5, 7, 8, 6, 7],
+    Mood:    [5, 4, 3, 6, 5, 7, 8, 6, 4, 5, 7, 8, 6, 7],
+    Energy:  [3, 4, 2, 5, 6, 4, 7, 5, 3, 4, 6, 7, 5, 6],
+    Focus:   [4, 3, 2, 5, 4, 6, 7, 5, 3, 4, 6, 5, 7, 6],
+  };
+
+  const entryData: { userId: string; parameterId: string; value: number; createdAt: Date }[] = [];
+  for (let day = 0; day < 14; day++) {
+    const date = new Date(now.getTime() - (13 - day) * DAY);
+    date.setHours(10 + (day % 12), 0, 0, 0);
+    for (const [name, values] of Object.entries(dailyValues)) {
+      const paramId = paramMap.get(name);
+      if (paramId) {
+        entryData.push({
+          userId: demoUser.id,
+          parameterId: paramId,
+          value: values[day],
+          createdAt: date,
+        });
+      }
+    }
+  }
+  await prisma.entry.createMany({ data: entryData });
+
+  // ─── Creature State: initial value for demo user ───
+  await prisma.creatureState.upsert({
+    where: { userId: demoUser.id },
+    create: { userId: demoUser.id, calmness: 45, lastExerciseAt: null },
+    update: {},
   });
 
-  await prisma.testResult.create({
-    data: {
-      testId: bai.id,
-      userId: demoUser.id,
-      score: 22,
-      interpretation: "Mild anxiety",
-      recommendation: "May benefit from therapy or self-help techniques (e.g., CBT).",
-      completedAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
-    },
-  });
+  // ─── Test Results: multiple per test to show timeline ───
+  await prisma.testResult.createMany({
+    data: [
+      // GAD-7: decreasing anxiety over 2 weeks
+      { testId: gad7.id, userId: demoUser.id, score: 15, interpretation: "Moderate anxiety", recommendation: "Consider consulting a therapist.", completedAt: new Date(now.getTime() - 14 * DAY) },
+      { testId: gad7.id, userId: demoUser.id, score: 13, interpretation: "Moderate anxiety", recommendation: "Consider consulting a therapist.", completedAt: new Date(now.getTime() - 10 * DAY) },
+      { testId: gad7.id, userId: demoUser.id, score: 10, interpretation: "Mild anxiety", recommendation: "Monitor symptoms. Self-help techniques may help.", completedAt: new Date(now.getTime() - 5 * DAY) },
+      { testId: gad7.id, userId: demoUser.id, score: 8, interpretation: "Mild anxiety", recommendation: "Continue self-care practices.", completedAt: new Date(now.getTime() - 1 * DAY) },
 
-  await prisma.testResult.create({
-    data: {
-      testId: bdc.id,
-      userId: demoUser.id,
-      score: 28,
-      interpretation: "Mild depression",
-      recommendation: "Monitor symptoms. Consider therapy if persistent.",
-      completedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000),
-    },
-  });
+      // BAI: mild decreasing
+      { testId: bai.id, userId: demoUser.id, score: 26, interpretation: "Mild anxiety", recommendation: "Consider self-help techniques.", completedAt: new Date(now.getTime() - 12 * DAY) },
+      { testId: bai.id, userId: demoUser.id, score: 22, interpretation: "Mild anxiety", recommendation: "May benefit from therapy or self-help techniques.", completedAt: new Date(now.getTime() - 7 * DAY) },
+      { testId: bai.id, userId: demoUser.id, score: 18, interpretation: "Mild anxiety", recommendation: "Continue self-care practices.", completedAt: new Date(now.getTime() - 2 * DAY) },
 
-  await prisma.testResult.create({
-    data: {
-      testId: cd.id,
-      userId: demoUser.id,
-      score: 45,
-      interpretation: "Significant All-or-Nothing Thinking, Discounting the Positive, Should Statements. Moderate Overgeneralization, Mental Filter, Jumping to Conclusions, Personalization. Consider working on these thinking patterns with CBT techniques.",
-      recommendation: "Your results indicate several strongly held cognitive distortions. Cognitive Behavioral Therapy (CBT) is highly effective for addressing these patterns. Consider journaling your thoughts and challenging distorted thinking with evidence.",
-      flags: {
-        distortions: {
-          allOrNothing: { score: 7, level: "high" },
-          overgeneralization: { score: 4, level: "moderate" },
-          mentalFilter: { score: 4, level: "moderate" },
-          discountingPositive: { score: 7, level: "high" },
-          jumpingToConclusions: { score: 5, level: "moderate" },
-          magnification: { score: 2, level: "low" },
-          emotionalReasoning: { score: 1, level: "low" },
-          shouldStatements: { score: 9, level: "high" },
-          labeling: { score: 1, level: "low" },
-          personalization: { score: 5, level: "moderate" },
+      // BDC: moderate → mild depression
+      { testId: bdc.id, userId: demoUser.id, score: 36, interpretation: "Moderate depression", recommendation: "Consider consulting a therapist.", completedAt: new Date(now.getTime() - 13 * DAY) },
+      { testId: bdc.id, userId: demoUser.id, score: 32, interpretation: "Moderate depression", recommendation: "Consider consulting a therapist.", completedAt: new Date(now.getTime() - 8 * DAY) },
+      { testId: bdc.id, userId: demoUser.id, score: 28, interpretation: "Mild depression", recommendation: "Monitor symptoms. Consider therapy if persistent.", completedAt: new Date(now.getTime() - 3 * DAY) },
+
+      // CD: first baseline, then current with improvement
+      { testId: cd.id, userId: demoUser.id, score: 58, interpretation: "Moderate cognitive distortions. All-or-Nothing Thinking and Should Statements are most prominent.", recommendation: "Your results indicate several cognitive distortions. CBT is highly effective.", flags: {
+          distortions: {
+            allOrNothing: { score: 8, level: "high" },
+            overgeneralization: { score: 6, level: "high" },
+            mentalFilter: { score: 5, level: "moderate" },
+            discountingPositive: { score: 7, level: "high" },
+            jumpingToConclusions: { score: 6, level: "high" },
+            magnification: { score: 4, level: "moderate" },
+            emotionalReasoning: { score: 3, level: "moderate" },
+            shouldStatements: { score: 9, level: "high" },
+            labeling: { score: 3, level: "moderate" },
+            personalization: { score: 7, level: "high" },
+          },
+          templateKey: "severe",
+          recommendationKey: "severe",
         },
-        templateKey: "severe",
-        recommendationKey: "severe",
-        highKeys: ["allOrNothing", "discountingPositive", "shouldStatements"],
-        moderateKeys: ["overgeneralization", "mentalFilter", "jumpingToConclusions", "personalization"],
-      },
-      completedAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
-    },
+        completedAt: new Date(now.getTime() - 14 * DAY) },
+      { testId: cd.id, userId: demoUser.id, score: 45, interpretation: "Significant All-or-Nothing Thinking, Discounting the Positive, Should Statements. Moderate Overgeneralization, Mental Filter, Jumping to Conclusions, Personalization.", recommendation: "Your results indicate several strongly held cognitive distortions. CBT is highly effective.", flags: {
+          distortions: {
+            allOrNothing: { score: 7, level: "high" },
+            overgeneralization: { score: 4, level: "moderate" },
+            mentalFilter: { score: 4, level: "moderate" },
+            discountingPositive: { score: 7, level: "high" },
+            jumpingToConclusions: { score: 5, level: "moderate" },
+            magnification: { score: 2, level: "low" },
+            emotionalReasoning: { score: 1, level: "low" },
+            shouldStatements: { score: 9, level: "high" },
+            labeling: { score: 1, level: "low" },
+            personalization: { score: 5, level: "moderate" },
+          },
+          templateKey: "severe",
+          recommendationKey: "severe",
+          highKeys: ["allOrNothing", "discountingPositive", "shouldStatements"],
+          moderateKeys: ["overgeneralization", "mentalFilter", "jumpingToConclusions", "personalization"],
+        },
+        completedAt: new Date(now.getTime() - 1 * DAY) },
+    ],
   });
 
   console.log("Seed completed");

@@ -47,14 +47,14 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4 relative">
       <div className="absolute top-4 right-4 flex items-center gap-1 text-xs">
         <button
-          className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+          className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
           onClick={() => i18n.changeLanguage("en")}
         >
           {t("common.languageEn")}
         </button>
         <span className="text-muted-foreground">|</span>
         <button
-          className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+          className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
           onClick={() => i18n.changeLanguage("ru")}
         >
           {t("common.languageRu")}
@@ -75,14 +75,14 @@ export default function LoginPage() {
               <Label htmlFor="password">{t("login.password")}</Label>
               <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full">{t("login.signIn")}</Button>
             <Button type="button" variant="secondary" className="w-full" onClick={handleDemo} disabled={demoLoading}>
               {demoLoading ? t("login.starting") : t("login.quickDemo")}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
               {t("login.noAccount")}{" "}
-              <button type="button" className="text-primary hover:underline cursor-pointer" onClick={() => navigate("/register")}>
+              <button type="button" className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => navigate("/register")}>
                 {t("login.signUp")}
               </button>
             </p>

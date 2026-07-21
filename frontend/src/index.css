@@ -5,13 +5,13 @@
 @layer base {
   :root {
     --background: 270 100% 98%;
-    --foreground: 267 45% 35%;
+    --foreground: 264 67% 35%;
     --card: 0 0% 100%;
-    --card-foreground: 267 45% 35%;
+    --card-foreground: 264 67% 35%;
     --primary: 261 90% 66%;
     --primary-foreground: 0 0% 100%;
     --secondary: 261 90% 85%;
-    --secondary-foreground: 267 45% 35%;
+    --secondary-foreground: 264 67% 35%;
     --accent: 161 94% 30%;
     --accent-foreground: 0 0% 100%;
     --muted: 230 33% 96%;

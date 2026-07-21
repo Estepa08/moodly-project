@@ -52,7 +52,7 @@ export default function OnboardingPage() {
               <div key={i} className={`h-1.5 w-8 rounded-full ${i === step ? "bg-primary" : "bg-muted"}`} />
             ))}
           </div>
-          <h2 className="text-xl font-semibold text-foreground">{current.title}</h2>
+          <h2 className="text-xl font-semibold text-foreground font-serif">{current.title}</h2>
           <p className="text-muted-foreground">{current.content}</p>
           <div className="flex gap-2">
             <Button variant="ghost" onClick={goToDashboard}>

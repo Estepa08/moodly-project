@@ -55,7 +55,7 @@ export default function RadarChart({ data, maxValue, className }: Props) {
           },
           dots: {
             text: {
-              fill: "#57318a",
+              fill: "#4C1D95",
               fontSize: 10,
             },
           },

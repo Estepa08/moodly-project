@@ -11,10 +11,12 @@ import {
   MessageSquare,
   LogOut,
   User,
+  Wind,
 } from "lucide-react";
 
 const navItems = [
   { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard },
+  { labelKey: "nav.breathing", path: "/breathing", icon: Wind },
   { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
   { labelKey: "nav.results", path: "/results", icon: BarChart3 },
   { labelKey: "nav.reports", path: "/reports", icon: FileText },
@@ -54,7 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.97] cursor-pointer ${
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               location.pathname === item.path
                 ? "text-primary font-semibold bg-secondary/50"
                 : "text-muted-foreground hover:text-primary hover:bg-secondary/50"
@@ -67,7 +69,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex-1" />
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-150 active:scale-[0.97] cursor-pointer"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <LogOut className="w-5 h-5" />
           <span className="text-sm font-medium">{t("common.logout")}</span>
@@ -83,7 +85,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                  className={`p-1.5 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer ${
+                  className={`p-1.5 rounded-lg hover:bg-secondary/50 transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     location.pathname === item.path ? "text-primary" : "text-muted-foreground"
                   }`}
                 >
@@ -92,21 +94,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ))}
               <button
                 onClick={handleLogout}
-                className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
             <div className="flex items-center gap-1 text-xs">
               <button
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
                 onClick={() => i18n.changeLanguage("en")}
               >
                 {t("common.languageEn")}
               </button>
               <span className="text-muted-foreground">|</span>
               <button
-                className={`px-1.5 py-0.5 rounded cursor-pointer ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
                 onClick={() => i18n.changeLanguage("ru")}
               >
                 {t("common.languageRu")}

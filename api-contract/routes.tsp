@@ -131,3 +131,16 @@ interface Reports {
   @route("/{id}")
   delete(@path id: string): void;
 }
+
+@tag("Breathing")
+@route("/creature")
+interface Creature {
+  @get
+  @doc("Получить текущее состояние существа и уровень спокойствия")
+  getState(): CreatureState;
+
+  @post
+  @route("/exercise/complete")
+  @doc("Завершить дыхательное упражнение, обновить уровень спокойствия")
+  completeExercise(@body body: BreathingCompleteRequest): CreatureState;
+}

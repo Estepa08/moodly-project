@@ -101,4 +101,12 @@ export const api = {
     download: (id: string) => `${BASE_URL}/reports/${id}/download`,
     delete: (id: string) => request<void>(`/reports/${id}`, { method: "DELETE" }),
   },
+  creature: {
+    getState: () => request<{ id: string; userId: string; calmness: number; lastExerciseAt?: string }>("/creature"),
+    completeExercise: (duration: number) =>
+      request<{ id: string; userId: string; calmness: number; lastExerciseAt?: string }>("/creature/exercise/complete", {
+        method: "POST",
+        body: JSON.stringify({ duration }),
+      }),
+  },
 };
