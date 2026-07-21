@@ -57,4 +57,22 @@ export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post("/auth/logout", { preHandler: [fastify.authenticate] }, async () => {
     return;
   });
+
+  // DEMO-ONLY: remove before production
+  fastify.post("/auth/demo", async (request, reply) => {
+    const demoEmail = `demo-${Date.now()}@moodly.local`;
+    const demoPassword = "demo123";
+
+    const hashed = await bcrypt.hash(demoPassword, 10);
+    const user = await prisma.user.create({
+      data: { email: demoEmail, password: hashed, name: "Demo User" },
+    });
+
+    const accessToken = await reply.jwtSign({ userId: user.id });
+    return {
+      accessToken,
+      user: { id: user.id, email: user.email, name: user.name, createdAt: user.createdAt },
+    };
+  });
+  // DEMO-ONLY: end
 }

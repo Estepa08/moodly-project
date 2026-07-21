@@ -9,6 +9,7 @@ vi.mock("../../lib/api", () => ({
       login: vi.fn(),
       register: vi.fn(),
       logout: vi.fn(),
+      demo: vi.fn(),
     },
   },
   setToken: vi.fn(),
@@ -69,5 +70,20 @@ describe("LoginPage", () => {
 
     await user.click(screen.getByText(/sign up/i));
     expect(navigate).toHaveBeenCalledWith("register");
+  });
+
+  // DEMO-ONLY: remove before production
+  it("demo button logs in via demo endpoint", async () => {
+    (api.auth.demo as Mock).mockResolvedValueOnce({ accessToken: "demo-token", user: { id: "demo" } });
+
+    const user = userEvent.setup();
+    renderWithProviders(<LoginPage onLogin={onLogin} navigate={navigate} />);
+
+    await user.click(screen.getByText("Quick Demo"));
+
+    await waitFor(() => {
+      expect(api.auth.demo).toHaveBeenCalled();
+      expect(onLogin).toHaveBeenCalledWith("demo-token");
+    });
   });
 });

@@ -14,14 +14,30 @@ export default function LoginPage({ onLogin, navigate }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [demoLoading, setDemoLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
     try {
       const res = await api.auth.login({ email, password });
       onLogin(res.accessToken);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
+    }
+  };
+
+  // DEMO-ONLY: remove before production
+  const handleDemo = async () => {
+    setDemoLoading(true);
+    setError("");
+    try {
+      const res = await api.auth.demo();
+      onLogin(res.accessToken);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Demo login failed");
+    } finally {
+      setDemoLoading(false);
     }
   };
 
@@ -44,6 +60,10 @@ export default function LoginPage({ onLogin, navigate }: Props) {
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button type="submit" className="w-full">Sign In</Button>
+            {/* DEMO-ONLY: remove before production */}
+            <Button type="button" variant="secondary" className="w-full" onClick={handleDemo} disabled={demoLoading}>
+              {demoLoading ? "Starting..." : "Quick Demo"}
+            </Button>
             <p className="text-center text-sm text-zinc-500">
               Don&apos;t have an account?{" "}
               <button type="button" className="text-moodly-600 hover:underline" onClick={() => navigate("register")}>

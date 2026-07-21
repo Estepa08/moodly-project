@@ -8,7 +8,7 @@ vi.mock("../../lib/api", () => ({
   api: {
     parameters: { list: vi.fn() },
     entries: { list: vi.fn(), create: vi.fn() },
-    auth: { logout: vi.fn() },
+    auth: { logout: vi.fn(), demo: vi.fn() },
     tests: { list: vi.fn(), get: vi.fn(), submitResult: vi.fn() },
     testResults: { list: vi.fn(), get: vi.fn() },
     feedback: { create: vi.fn(), listMine: vi.fn() },

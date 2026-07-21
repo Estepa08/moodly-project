@@ -42,6 +42,8 @@ export const api = {
     login: (body: { email: string; password: string }) =>
       request<{ accessToken: string; user: unknown }>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
+    // DEMO-ONLY: remove before production
+    demo: () => request<{ accessToken: string; user: unknown }>("/auth/demo", { method: "POST" }),
   },
   users: {
     me: () => request<unknown>("/users/me"),
