@@ -76,7 +76,7 @@ export default function Dashboard({ navigate, onLogout }: Props) {
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-moodly-700">Moodly</h1>
+        <h1 className="text-xl font-bold text-primary">Moodly</h1>
         <div className="flex gap-2">
           {navItems.map((item) => (
             <Button
@@ -103,7 +103,7 @@ export default function Dashboard({ navigate, onLogout }: Props) {
             <div className="space-y-2">
               <Label>Parameter</Label>
               <select
-                className="flex h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm"
+                className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
                 value={selectedParam}
                 onChange={(e) => setSelectedParam(e.target.value)}
               >
@@ -159,11 +159,11 @@ export default function Dashboard({ navigate, onLogout }: Props) {
                   />
                   <YAxis fontSize={10} stroke="#a1a1aa" />
                   <Tooltip />
-                  <Line type="monotone" dataKey="value" stroke="#16a34a" dot={false} />
+                  <Line type="monotone" dataKey="value" stroke="#8B5CF6" dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-sm text-zinc-400 text-center py-8">No entries yet. Start tracking above.</p>
+              <p className="text-sm text-muted-foreground text-center py-8">No entries yet. Start tracking above.</p>
             )}
           </CardContent>
         </Card>

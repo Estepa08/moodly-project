@@ -4,11 +4,38 @@
 
 @layer base {
   :root {
-    --radius: 0.5rem;
-  }
-}
+    --background: 270 100% 98%;
+    --foreground: 267 45% 35%;
+    --card: 0 0% 100%;
+    --card-foreground: 267 45% 35%;
+    --primary: 261 90% 66%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 261 90% 85%;
+    --secondary-foreground: 267 45% 35%;
+    --accent: 162 100% 33%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 230 33% 96%;
+    --muted-foreground: 215 16% 45%;
+    --destructive: 0 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 261 75% 90%;
+    --input: 261 75% 90%;
+    --ring: 261 90% 66%;
 
-body {
-  @apply bg-white text-zinc-900 antialiased;
-  font-family: system-ui, -apple-system, sans-serif;
+    --radius: 0.75rem;
+
+    --shadow-neumorphic-light: rgba(255, 255, 255, 0.8);
+    --shadow-neumorphic-dark: rgba(180, 160, 200, 0.4);
+  }
+
+  body {
+    @apply antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Raleway", system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Lora", Georgia, serif;
+  }
 }

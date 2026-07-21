@@ -37,11 +37,11 @@ export default function OnboardingPage({ navigate }: Props) {
         <CardContent className="pt-6 text-center space-y-6">
           <div className="flex justify-center gap-1.5">
             {stories.map((_, i) => (
-              <div key={i} className={`h-1.5 w-8 rounded-full ${i === step ? "bg-moodly-600" : "bg-zinc-200"}`} />
+              <div key={i} className={`h-1.5 w-8 rounded-full ${i === step ? "bg-primary" : "bg-muted"}`} />
             ))}
           </div>
-          <h2 className="text-xl font-semibold text-zinc-800">{current.title}</h2>
-          <p className="text-zinc-600">{current.content}</p>
+          <h2 className="text-xl font-semibold text-foreground">{current.title}</h2>
+          <p className="text-muted-foreground">{current.content}</p>
           <Button onClick={() => (isLast ? navigate("dashboard") : setStep(step + 1))}>
             {isLast ? "Get Started" : "Next"}
           </Button>

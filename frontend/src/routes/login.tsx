@@ -45,8 +45,8 @@ export default function LoginPage({ onLogin, navigate }: Props) {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-moodly-700">Moodly</CardTitle>
-          <p className="text-sm text-zinc-500 mt-1">Sign in to your account</p>
+          <CardTitle className="text-2xl text-primary">Moodly</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -64,9 +64,9 @@ export default function LoginPage({ onLogin, navigate }: Props) {
             <Button type="button" variant="secondary" className="w-full" onClick={handleDemo} disabled={demoLoading}>
               {demoLoading ? "Starting..." : "Quick Demo"}
             </Button>
-            <p className="text-center text-sm text-zinc-500">
+            <p className="text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <button type="button" className="text-moodly-600 hover:underline" onClick={() => navigate("register")}>
+              <button type="button" className="text-primary hover:underline" onClick={() => navigate("register")}>
                 Sign Up
               </button>
             </p>

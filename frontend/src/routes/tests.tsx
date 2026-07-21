@@ -22,7 +22,7 @@ export default function TestsPage({ navigate }: Props) {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-moodly-700">Tests</h1>
+        <h1 className="text-xl font-bold text-primary">Tests</h1>
         <Button variant="ghost" onClick={() => navigate("dashboard")}>Back</Button>
       </header>
 
@@ -30,7 +30,7 @@ export default function TestsPage({ navigate }: Props) {
         <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("test-detail", { testId: test.id })}>
           <CardHeader>
             <CardTitle>{test.title}</CardTitle>
-            {test.description && <p className="text-sm text-zinc-500">{test.description}</p>}
+            {test.description && <p className="text-sm text-muted-foreground">{test.description}</p>}
           </CardHeader>
         </Card>
       ))}

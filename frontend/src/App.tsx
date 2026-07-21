@@ -46,7 +46,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-background">
       {page === "login" && <LoginPage onLogin={handleLogin} navigate={navigate} />}
       {page === "register" && <RegisterPage onLogin={handleLogin} navigate={navigate} />}
       {page === "onboarding" && <OnboardingPage {...commonProps} />}

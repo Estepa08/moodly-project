@@ -30,8 +30,8 @@ export default function RegisterPage({ onLogin, navigate }: Props) {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-moodly-700">Create Account</CardTitle>
-          <p className="text-sm text-zinc-500 mt-1">Start tracking your mental health</p>
+          <CardTitle className="text-2xl text-primary">Create Account</CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">Start tracking your mental health</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,9 +49,9 @@ export default function RegisterPage({ onLogin, navigate }: Props) {
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button type="submit" className="w-full">Sign Up</Button>
-            <p className="text-center text-sm text-zinc-500">
+            <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
-              <button type="button" className="text-moodly-600 hover:underline" onClick={() => navigate("login")}>
+              <button type="button" className="text-primary hover:underline" onClick={() => navigate("login")}>
                 Sign In
               </button>
             </p>

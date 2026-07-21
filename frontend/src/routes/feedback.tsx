@@ -36,7 +36,7 @@ export default function FeedbackPage({ navigate }: Props) {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-moodly-700">Feedback</h1>
+        <h1 className="text-xl font-bold text-primary">Feedback</h1>
         <Button variant="ghost" onClick={() => navigate("dashboard")}>Back</Button>
       </header>
 
@@ -58,8 +58,8 @@ export default function FeedbackPage({ navigate }: Props) {
       {feedbacks?.map((f) => (
         <Card key={f.id}>
           <CardContent className="pt-4">
-            <p className="text-sm text-zinc-600">{f.message}</p>
-            <p className="text-xs text-zinc-400 mt-1">{new Date(f.createdAt).toLocaleDateString()}</p>
+            <p className="text-sm text-muted-foreground">{f.message}</p>
+            <p className="text-xs text-muted-foreground mt-1">{new Date(f.createdAt).toLocaleDateString()}</p>
           </CardContent>
         </Card>
       ))}

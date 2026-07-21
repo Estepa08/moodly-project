@@ -46,16 +46,16 @@ export default function TestDetailPage({ navigate, testId }: Props) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="text-3xl font-bold text-moodly-700">{result.score}</div>
-              <p className="text-sm text-zinc-500">Score</p>
+              <div className="text-3xl font-bold text-primary">{result.score}</div>
+              <p className="text-sm text-muted-foreground">Score</p>
             </div>
             <div>
               <p className="font-medium">Interpretation</p>
-              <p className="text-zinc-600">{result.interpretation}</p>
+              <p className="text-muted-foreground">{result.interpretation}</p>
             </div>
             <div>
               <p className="font-medium">Recommendation</p>
-              <p className="text-zinc-600">{result.recommendation}</p>
+              <p className="text-muted-foreground">{result.recommendation}</p>
             </div>
             <Button className="w-full" onClick={() => navigate("test-results")}>View All Results</Button>
           </CardContent>
@@ -83,13 +83,13 @@ export default function TestDetailPage({ navigate, testId }: Props) {
   return (
     <div className="max-w-lg mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-moodly-700">{test.title}</h1>
+        <h1 className="text-lg font-semibold text-primary">{test.title}</h1>
         <Button variant="ghost" size="sm" onClick={() => navigate("tests")}>Exit</Button>
       </header>
 
       <div className="flex gap-1">
         {test.questions.map((_, i) => (
-          <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= questionIndex ? "bg-moodly-600" : "bg-zinc-200"}`} />
+          <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= questionIndex ? "bg-primary" : "bg-muted"}`} />
         ))}
       </div>
 
@@ -112,7 +112,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
         </CardContent>
       </Card>
 
-      <p className="text-xs text-zinc-400 text-center">
+      <p className="text-xs text-muted-foreground text-center">
         Question {questionIndex + 1} of {test.questions.length}
       </p>
     </div>

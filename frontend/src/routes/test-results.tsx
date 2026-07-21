@@ -25,12 +25,12 @@ export default function TestResultsPage({ navigate }: Props) {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-moodly-700">Test Results</h1>
+        <h1 className="text-xl font-bold text-primary">Test Results</h1>
         <Button variant="ghost" onClick={() => navigate("dashboard")}>Back</Button>
       </header>
 
       {results?.length === 0 && (
-        <p className="text-zinc-400 text-center py-8">No test results yet.</p>
+        <p className="text-muted-foreground text-center py-8">No test results yet.</p>
       )}
 
       {results?.map((r) => (
@@ -38,12 +38,12 @@ export default function TestResultsPage({ navigate }: Props) {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>{r.interpretation}</span>
-              <span className="text-sm font-mono text-moodly-700">{r.score}</span>
+              <span className="text-sm font-mono text-primary">{r.score}</span>
             </CardTitle>
-            <p className="text-xs text-zinc-400">{new Date(r.completedAt).toLocaleDateString()}</p>
+            <p className="text-xs text-muted-foreground">{new Date(r.completedAt).toLocaleDateString()}</p>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-zinc-600">{r.recommendation}</p>
+            <p className="text-sm text-muted-foreground">{r.recommendation}</p>
           </CardContent>
         </Card>
       ))}

@@ -41,7 +41,7 @@ export default function ReportsPage({ navigate }: Props) {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-moodly-700">Reports</h1>
+        <h1 className="text-xl font-bold text-primary">Reports</h1>
         <Button variant="ghost" onClick={() => navigate("dashboard")}>Back</Button>
       </header>
 
@@ -53,7 +53,7 @@ export default function ReportsPage({ navigate }: Props) {
           <div className="space-y-2">
             <Label>Format</Label>
             <select
-              className="flex h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm"
+              className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
               value={format}
               onChange={(e) => setFormat(e.target.value as "pdf" | "csv")}
             >
@@ -82,7 +82,7 @@ export default function ReportsPage({ navigate }: Props) {
           <CardContent className="pt-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium capitalize">{r.format}</p>
-              <p className="text-xs text-zinc-400">{new Date(r.createdAt).toLocaleDateString()} — {r.status}</p>
+              <p className="text-xs text-muted-foreground">{new Date(r.createdAt).toLocaleDateString()} — {r.status}</p>
             </div>
             {r.status === "ready" && (
               <Button size="sm" variant="outline" asChild>
