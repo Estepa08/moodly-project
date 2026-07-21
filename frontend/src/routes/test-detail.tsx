@@ -4,6 +4,7 @@ import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { useState } from "react";
+import { useTestTranslation } from "../hooks/useTestTranslation";
 
 interface TestData {
   id: string;
@@ -23,9 +24,24 @@ interface Props {
 
 export default function TestDetailPage({ navigate, testId }: Props) {
   const { t } = useTranslation();
+  const { tQuestion, tOption, tInterpretation, tRecommendation, tTestTitle, tCDInterpretation, tCDRecommendation } = useTestTranslation();
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
-  const [result, setResult] = useState<{ score: number; interpretation: string; recommendation: string } | null>(null);
+
+  interface ResultData {
+    score: number;
+    interpretation: string;
+    recommendation: string;
+    flags?: {
+      distortions?: Record<string, { score: number; level: string }>;
+      templateKey?: string;
+      recommendationKey?: string;
+      highKeys?: string[];
+      moderateKeys?: string[];
+    };
+  }
+
+  const [result, setResult] = useState<ResultData | null>(null);
 
   const { data: test } = useQuery<TestData>({
     queryKey: ["test", testId],
@@ -35,16 +51,27 @@ export default function TestDetailPage({ navigate, testId }: Props) {
   const submitMutation = useMutation({
     mutationFn: () => api.tests.submitResult(testId, { answers }),
     onSuccess: (data) => {
-      setResult(data as { score: number; interpretation: string; recommendation: string });
+      setResult(data as ResultData);
     },
   });
 
+  const cdDistortions = result?.flags?.distortions;
+  const cdKeys = cdDistortions ? Object.keys(cdDistortions) : [];
+
   if (result && test) {
+    const cdFlags = result.flags;
+    const isCD = cdFlags?.templateKey !== undefined;
+    const interpretationText = isCD && cdFlags
+      ? tCDInterpretation(cdFlags.templateKey!, cdFlags.highKeys || [], cdFlags.moderateKeys || [], result.interpretation)
+      : tInterpretation(result.interpretation);
+    const recommendationText = isCD && cdFlags
+      ? tCDRecommendation(cdFlags.recommendationKey || "minimal", result.recommendation)
+      : tRecommendation(result.recommendation);
     return (
       <div className="max-w-lg mx-auto p-4">
         <Card>
           <CardHeader>
-            <CardTitle>{test.title} — {t("testDetail.result")}</CardTitle>
+            <CardTitle>{tTestTitle(test.title)} — {t("testDetail.result")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
@@ -53,11 +80,32 @@ export default function TestDetailPage({ navigate, testId }: Props) {
             </div>
             <div>
               <p className="font-medium">{t("testDetail.interpretation")}</p>
-              <p className="text-muted-foreground">{result.interpretation}</p>
+              <p className="text-muted-foreground">{interpretationText}</p>
             </div>
+            {cdDistortions && cdKeys.length > 0 && (
+              <div>
+                <p className="font-medium mb-2">{t("cognitiveDistortions.yourProfile")}</p>
+                <div className="space-y-2">
+                  {cdKeys.map((key) => {
+                    const d = cdDistortions[key];
+                    const color = d.level === "high" ? "bg-red-500" : d.level === "moderate" ? "bg-yellow-500" : "bg-green-500";
+                    const label = t(`cognitiveDistortions.${key}`);
+                    return (
+                      <div key={key} className="flex items-center gap-2">
+                        <span className="text-sm flex-1">{label}</span>
+                        <div className="flex items-center gap-1">
+                          <div className={`w-2.5 h-2.5 rounded-full ${color}`} />
+                          <span className="text-xs text-muted-foreground w-10 text-right">{d.score}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <div>
               <p className="font-medium">{t("testDetail.recommendation")}</p>
-              <p className="text-muted-foreground">{result.recommendation}</p>
+              <p className="text-muted-foreground">{recommendationText}</p>
             </div>
             <Button className="w-full" onClick={() => navigate("test-results")}>{t("testDetail.viewAll")}</Button>
           </CardContent>
@@ -85,7 +133,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
   return (
     <div className="max-w-lg mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-primary">{test.title}</h1>
+        <h1 className="text-lg font-semibold text-primary">{tTestTitle(test.title)}</h1>
         <Button variant="ghost" size="sm" onClick={() => navigate("tests")}>{t("testDetail.exit")}</Button>
       </header>
 
@@ -97,7 +145,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-medium">{question.text}</CardTitle>
+          <CardTitle className="text-base font-medium">{tQuestion(question.id, question.text)}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {question.options.map((option) => (
@@ -108,7 +156,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
               onClick={() => handleAnswer(option.id)}
               disabled={submitMutation.isPending}
             >
-              {option.text}
+              {tOption(option.id, option.text)}
             </Button>
           ))}
         </CardContent>

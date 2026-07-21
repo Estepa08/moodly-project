@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { useTestTranslation } from "../hooks/useTestTranslation";
 
 interface Test {
   id: string;
@@ -16,6 +17,7 @@ interface Props {
 
 export default function TestsPage({ navigate }: Props) {
   const { t } = useTranslation();
+  const { tTestTitle, tTestDescription } = useTestTranslation();
   const { data: tests } = useQuery<Test[]>({
     queryKey: ["tests"],
     queryFn: () => api.tests.list() as Promise<Test[]>,
@@ -31,8 +33,8 @@ export default function TestsPage({ navigate }: Props) {
       {tests?.map((test) => (
         <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate("test-detail", { testId: test.id })}>
           <CardHeader>
-            <CardTitle>{test.title}</CardTitle>
-            {test.description && <p className="text-sm text-muted-foreground">{test.description}</p>}
+            <CardTitle>{tTestTitle(test.title)}</CardTitle>
+            {test.description && <p className="text-sm text-muted-foreground">{tTestDescription(test.description)}</p>}
           </CardHeader>
         </Card>
       ))}

@@ -87,5 +87,18 @@
     "to": "To",
     "submit": "Generate",
     "download": "Download"
+  },
+  "cognitiveDistortions": {
+    "yourProfile": "Cognitive Distortion Profile",
+    "allOrNothing": "All-or-Nothing Thinking",
+    "overgeneralization": "Overgeneralization",
+    "mentalFilter": "Mental Filter",
+    "discountingPositive": "Discounting the Positive",
+    "jumpingToConclusions": "Jumping to Conclusions",
+    "magnification": "Magnification / Minimization",
+    "emotionalReasoning": "Emotional Reasoning",
+    "shouldStatements": "Should Statements",
+    "labeling": "Labeling",
+    "personalization": "Personalization"
   }
 }

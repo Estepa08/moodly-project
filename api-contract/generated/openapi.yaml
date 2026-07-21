@@ -725,6 +725,8 @@ components:
           type: string
         recommendation:
           type: string
+        flags:
+          description: Дополнительные флаги/профили (например, per-distortion scores для теста когнитивных искажений)
         completedAt:
           type: string
           format: date-time

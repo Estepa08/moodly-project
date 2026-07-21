@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { useTestTranslation } from "../hooks/useTestTranslation";
 
 interface TestResult {
   id: string;
@@ -11,6 +12,7 @@ interface TestResult {
   interpretation: string;
   recommendation: string;
   completedAt: string;
+  flags?: { distortions?: Record<string, { score: number; level: string }> };
 }
 
 interface Props {
@@ -19,6 +21,7 @@ interface Props {
 
 export default function TestResultsPage({ navigate }: Props) {
   const { t, i18n } = useTranslation();
+  const { tInterpretation, tRecommendation } = useTestTranslation();
   const { data: results } = useQuery<TestResult[]>({
     queryKey: ["test-results"],
     queryFn: () => api.testResults.list() as Promise<TestResult[]>,
@@ -39,13 +42,13 @@ export default function TestResultsPage({ navigate }: Props) {
         <Card key={r.id}>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>{r.interpretation}</span>
+              <span>{tInterpretation(r.interpretation)}</span>
               <span className="text-sm font-mono text-primary">{r.score}</span>
             </CardTitle>
             <p className="text-xs text-muted-foreground">{new Date(r.completedAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US")}</p>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">{r.recommendation}</p>
+            <p className="text-sm text-muted-foreground">{tRecommendation(r.recommendation)}</p>
           </CardContent>
         </Card>
       ))}

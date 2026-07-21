@@ -92,4 +92,40 @@ describe("TestDetailPage", () => {
     });
     expect(screen.getByText("Keep monitoring.")).toBeInTheDocument();
   });
+
+  it("shows cognitive distortion profile when flags.distortions present", async () => {
+    const { api } = await import("../../lib/api");
+    (api.tests.get as Mock).mockResolvedValueOnce({
+      id: "2",
+      title: "Cognitive Distortions Assessment",
+      questions: [
+        { id: "q1", text: "Test question 1?", options: [{ id: "a1", text: "Not at all", score: 0 }, { id: "a2", text: "Moderately", score: 2 }] },
+      ],
+    });
+    (api.tests.submitResult as Mock).mockResolvedValueOnce({
+      score: 2,
+      interpretation: "Some distortions detected",
+      recommendation: "Consider CBT techniques.",
+      flags: {
+        distortions: {
+          allOrNothing: { score: 8, level: "high" },
+          shouldStatements: { score: 6, level: "moderate" },
+          personalization: { score: 1, level: "low" },
+        },
+      },
+    });
+
+    const user = userEvent.setup();
+    renderWithProviders(<TestDetailPage navigate={navigate} testId="2" />);
+
+    await waitFor(() => expect(screen.getByText("Test question 1?")).toBeInTheDocument());
+    await user.click(screen.getByText("Moderately"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Cognitive Distortion Profile")).toBeInTheDocument();
+    });
+    expect(screen.getByText("All-or-Nothing Thinking")).toBeInTheDocument();
+    expect(screen.getByText("Should Statements")).toBeInTheDocument();
+    expect(screen.getByText("Personalization")).toBeInTheDocument();
+  });
 });

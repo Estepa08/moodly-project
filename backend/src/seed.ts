@@ -8,6 +8,21 @@ const parameters = [
   { name: "Focus", description: "Ability to concentrate", unit: "/10" },
 ];
 
+const baiOptions = [
+  { id: "bai-o-0", text: "Not at all", score: 0 },
+  { id: "bai-o-1", text: "Somewhat", score: 1 },
+  { id: "bai-o-2", text: "Moderately", score: 2 },
+  { id: "bai-o-3", text: "A lot", score: 3 },
+];
+
+const bdcOptions = [
+  { id: "bdc-o-0", text: "Not at all", score: 0 },
+  { id: "bdc-o-1", text: "Somewhat", score: 1 },
+  { id: "bdc-o-2", text: "Moderately", score: 2 },
+  { id: "bdc-o-3", text: "A lot", score: 3 },
+  { id: "bdc-o-4", text: "Extremely", score: 4 },
+];
+
 const tests = [
   {
     title: "GAD-7",
@@ -85,6 +100,122 @@ const tests = [
       },
     ],
   },
+  {
+    title: "Burns Anxiety Inventory",
+    description: "BAI — anxiety assessment by Dr. David Burns. 33 items across anxious feelings, thoughts, and physical symptoms.",
+    questions: [
+      { id: "bai-1", text: "Anxiety, nervousness, worry or fear", options: baiOptions },
+      { id: "bai-2", text: "Feeling that things around you are strange, unreal or foggy", options: baiOptions },
+      { id: "bai-3", text: "Feeling detached from all or part of your body", options: baiOptions },
+      { id: "bai-4", text: "Sudden unexpected panic spells", options: baiOptions },
+      { id: "bai-5", text: "Apprehension or a sense of impending doom", options: baiOptions },
+      { id: "bai-6", text: "Feeling tense, stressed, uptight or on edge", options: baiOptions },
+      { id: "bai-7", text: "Difficulty concentrating", options: baiOptions },
+      { id: "bai-8", text: "Racing thoughts or mind jumping from one thing to the next", options: baiOptions },
+      { id: "bai-9", text: "Frightening fantasies or daydreams", options: baiOptions },
+      { id: "bai-10", text: "Feeling that you're on the verge of losing control", options: baiOptions },
+      { id: "bai-11", text: "Fears of cracking up or going crazy", options: baiOptions },
+      { id: "bai-12", text: "Fears of fainting or passing out", options: baiOptions },
+      { id: "bai-13", text: "Fears of physical illness or heart attacks or dying", options: baiOptions },
+      { id: "bai-14", text: "Concerns about looking foolish or inadequate in front of others", options: baiOptions },
+      { id: "bai-15", text: "Fears of being alone, isolated, or abandoned", options: baiOptions },
+      { id: "bai-16", text: "Fears of criticism or disapproval", options: baiOptions },
+      { id: "bai-17", text: "Fears that something terrible is about to happen", options: baiOptions },
+      { id: "bai-18", text: "Skipping, racing or pounding of the heart (palpitations)", options: baiOptions },
+      { id: "bai-19", text: "Pain, pressure or tightness in the chest", options: baiOptions },
+      { id: "bai-20", text: "Tingling or numbness in the toes or fingers", options: baiOptions },
+      { id: "bai-21", text: "Butterflies or discomfort in the stomach", options: baiOptions },
+      { id: "bai-22", text: "Constipation or diarrhea", options: baiOptions },
+      { id: "bai-23", text: "Restlessness or jumpiness", options: baiOptions },
+      { id: "bai-24", text: "Tight, tense muscles", options: baiOptions },
+      { id: "bai-25", text: "Sweating not brought on by heat", options: baiOptions },
+      { id: "bai-26", text: "A lump in the throat", options: baiOptions },
+      { id: "bai-27", text: "Trembling or shaking", options: baiOptions },
+      { id: "bai-28", text: "Rubbery or jelly legs", options: baiOptions },
+      { id: "bai-29", text: "Feeling dizzy, lightheaded or off balance", options: baiOptions },
+      { id: "bai-30", text: "Choking or smothering sensations or difficulty breathing", options: baiOptions },
+      { id: "bai-31", text: "Headaches or pains in the neck or back", options: baiOptions },
+      { id: "bai-32", text: "Hot flashes or cold chills", options: baiOptions },
+      { id: "bai-33", text: "Feeling tired, weak, or easily exhausted", options: baiOptions },
+    ],
+  },
+  {
+    title: "Burns Depression Checklist",
+    description: "BDC — depression assessment by Dr. David Burns. 25 items across thoughts, activities, physical symptoms, and suicidal urges.",
+    questions: [
+      { id: "bdc-1", text: "Feeling sad or down in the dumps", options: bdcOptions },
+      { id: "bdc-2", text: "Feeling unhappy or blue", options: bdcOptions },
+      { id: "bdc-3", text: "Crying spells or tearfulness", options: bdcOptions },
+      { id: "bdc-4", text: "Feeling discouraged", options: bdcOptions },
+      { id: "bdc-5", text: "Feeling hopeless", options: bdcOptions },
+      { id: "bdc-6", text: "Low self-esteem", options: bdcOptions },
+      { id: "bdc-7", text: "Feeling worthless or inadequate", options: bdcOptions },
+      { id: "bdc-8", text: "Guilt or shame", options: bdcOptions },
+      { id: "bdc-9", text: "Criticizing yourself or blaming yourself", options: bdcOptions },
+      { id: "bdc-10", text: "Difficulty making decisions", options: bdcOptions },
+      { id: "bdc-11", text: "Loss of interest in family, friends or colleagues", options: bdcOptions },
+      { id: "bdc-12", text: "Loneliness", options: bdcOptions },
+      { id: "bdc-13", text: "Spending less time with family or friends", options: bdcOptions },
+      { id: "bdc-14", text: "Loss of motivation", options: bdcOptions },
+      { id: "bdc-15", text: "Loss of interest in work or other activities", options: bdcOptions },
+      { id: "bdc-16", text: "Avoiding work or other activities", options: bdcOptions },
+      { id: "bdc-17", text: "Loss of pleasure or satisfaction in life", options: bdcOptions },
+      { id: "bdc-18", text: "Feeling tired", options: bdcOptions },
+      { id: "bdc-19", text: "Difficulty sleeping or sleeping too much", options: bdcOptions },
+      { id: "bdc-20", text: "Decreased or increased appetite", options: bdcOptions },
+      { id: "bdc-21", text: "Loss of interest in sex", options: bdcOptions },
+      { id: "bdc-22", text: "Worrying about your health", options: bdcOptions },
+      { id: "bdc-23", text: "Do you have any suicidal thoughts?", options: bdcOptions },
+      { id: "bdc-24", text: "Would you like to end your life?", options: bdcOptions },
+      { id: "bdc-25", text: "Do you have a plan for harming yourself?", options: bdcOptions },
+    ],
+  },
+  {
+    title: "Cognitive Distortions Assessment",
+    description: "Identifies which of the 10 cognitive distortions (by Dr. David Burns) are most prevalent in your thinking patterns. 30 questions across all distortion types.",
+    questions: [
+      // 1. All-or-Nothing Thinking
+      { id: "cd-1-1", text: "If I'm not perfect at something, I see it as a total failure", options: baiOptions },
+      { id: "cd-1-2", text: "Things in my life are either all good or all bad — there's no middle ground", options: baiOptions },
+      { id: "cd-1-3", text: "One small mistake ruins the entire effort for me", options: baiOptions },
+      // 2. Overgeneralization
+      { id: "cd-2-1", text: "After a single setback, I expect the same thing to happen again and again", options: baiOptions },
+      { id: "cd-2-2", text: "I use words like 'always' and 'never' when thinking about negative events", options: baiOptions },
+      { id: "cd-2-3", text: "One negative experience is enough for me to believe a pattern exists", options: baiOptions },
+      // 3. Mental Filter
+      { id: "cd-3-1", text: "I focus on one negative detail and let it color my entire view of a situation", options: baiOptions },
+      { id: "cd-3-2", text: "Even when many things go well, I dwell on the one thing that went wrong", options: baiOptions },
+      { id: "cd-3-3", text: "I have trouble seeing positives when there's any negative at all", options: baiOptions },
+      // 4. Discounting the Positive
+      { id: "cd-4-1", text: "When I do something well, I tell myself it was no big deal", options: baiOptions },
+      { id: "cd-4-2", text: "I dismiss compliments or positive feedback from others", options: baiOptions },
+      { id: "cd-4-3", text: "I believe my achievements don't count because anyone could have done them", options: baiOptions },
+      // 5. Jumping to Conclusions
+      { id: "cd-5-1", text: "I assume people are reacting negatively to me without checking", options: baiOptions },
+      { id: "cd-5-2", text: "I predict things will turn out badly before I even try", options: baiOptions },
+      { id: "cd-5-3", text: "I feel like I can read people's minds and know they think poorly of me", options: baiOptions },
+      // 6. Magnification / Minimization
+      { id: "cd-6-1", text: "I blow small problems way out of proportion", options: baiOptions },
+      { id: "cd-6-2", text: "I downplay my own strengths and achievements", options: baiOptions },
+      { id: "cd-6-3", text: "When something goes wrong, it feels like a catastrophe", options: baiOptions },
+      // 7. Emotional Reasoning
+      { id: "cd-7-1", text: "I believe my feelings are facts — if I feel it, it must be true", options: baiOptions },
+      { id: "cd-7-2", text: "I trust my negative emotions as accurate guides to reality", options: baiOptions },
+      { id: "cd-7-3", text: "If I feel inadequate, I assume I actually am inadequate", options: baiOptions },
+      // 8. Should Statements
+      { id: "cd-8-1", text: "I often tell myself I 'should' do more or be better", options: baiOptions },
+      { id: "cd-8-2", text: "I criticize myself with 'shoulds', 'musts', and 'ought-tos'", options: baiOptions },
+      { id: "cd-8-3", text: "I feel guilty when I don't meet my own impossible standards", options: baiOptions },
+      // 9. Labeling
+      { id: "cd-9-1", text: "When I make a mistake, I call myself harsh names", options: baiOptions },
+      { id: "cd-9-2", text: "I define myself by my flaws rather than describing specific behaviors", options: baiOptions },
+      { id: "cd-9-3", text: "I label other people based on a single action of theirs", options: baiOptions },
+      // 10. Personalization
+      { id: "cd-10-1", text: "I blame myself for things that aren't really my fault", options: baiOptions },
+      { id: "cd-10-2", text: "I feel responsible for other people's feelings or reactions", options: baiOptions },
+      { id: "cd-10-3", text: "I take things personally even when they're not about me", options: baiOptions },
+    ],
+  },
 ];
 
 const onboardingStories = [
@@ -106,6 +237,11 @@ const onboardingStories = [
 ];
 
 async function seed() {
+  await prisma.testResult.deleteMany();
+  await prisma.test.deleteMany();
+  await prisma.parameter.deleteMany();
+  await prisma.onboardingStory.deleteMany();
+
   for (const p of parameters) {
     await prisma.parameter.create({ data: p });
   }

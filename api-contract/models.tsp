@@ -102,6 +102,8 @@ model TestResult {
   score: int32;
   interpretation: string;
   recommendation: string;
+  @doc("Дополнительные флаги/профили (например, per-distortion scores для теста когнитивных искажений)")
+  flags?: unknown;
   completedAt: utcDateTime;
 }
 

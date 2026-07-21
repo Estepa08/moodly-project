@@ -415,6 +415,8 @@ export interface components {
             score: number;
             interpretation: string;
             recommendation: string;
+            /** @description Дополнительные флаги/профили (например, per-distortion scores для теста когнитивных искажений) */
+            flags?: unknown;
             /** Format: date-time */
             completedAt: string;
         };
