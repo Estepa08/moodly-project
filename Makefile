@@ -76,6 +76,9 @@ db-seed:
 
 db-setup: db-generate db-push db-seed
 
+db-studio:
+	cd backend && npx prisma studio
+
 db-reset:
 	cd backend && npx prisma db push --force-reset
 	cd backend && npm run db:seed

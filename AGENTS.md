@@ -29,6 +29,7 @@ npm install
 npx prisma generate    # Prisma Client из schema.prisma
 npx prisma db push     # создать/синхронизировать таблицы в БД
 npm run db:seed        # наполнить справочники: параметры, тесты, онбординг
+npm run db:studio      # Prisma Studio → localhost:5555 (UI для просмотра/правки данных)
 npm run dev            # tsx watch → localhost:3001
 ```
 
