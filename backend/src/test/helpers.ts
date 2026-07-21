@@ -10,7 +10,7 @@ import testResultRoutes from "../routes/test-results.js";
 import feedbackRoutes from "../routes/feedback.js";
 import onboardingRoutes from "../routes/onboarding-stories.js";
 import reportRoutes from "../routes/reports.js";
-import { PrismaClient } from "@prisma/client";
+import { setErrorHandler } from "../lib/handle-error.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const fastify = Fastify({ logger: false });
@@ -27,13 +27,8 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(onboardingRoutes);
   await fastify.register(reportRoutes);
 
+  setErrorHandler(fastify);
+
   await fastify.ready();
   return fastify;
-}
-
-export async function seedTestData(prisma: PrismaClient) {
-  const parameter = await prisma.parameter.create({
-    data: { name: "Anxiety", description: "Test", unit: "/10" },
-  });
-  return { parameter };
 }

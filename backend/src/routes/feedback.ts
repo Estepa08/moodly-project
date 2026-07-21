@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { prisma } from "../lib/prisma.js";
+import { feedbackService } from "../services/feedback.js";
 
 interface FeedbackCreateBody {
   message: string;
@@ -7,15 +7,10 @@ interface FeedbackCreateBody {
 
 export default async function feedbackRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: FeedbackCreateBody }>("/feedback", { preHandler: [fastify.authenticate] }, async (request) => {
-    return prisma.feedback.create({
-      data: { userId: request.userId, message: request.body.message },
-    });
+    return feedbackService.create(request.userId, request.body.message);
   });
 
   fastify.get("/feedback/me", { preHandler: [fastify.authenticate] }, async (request) => {
-    return prisma.feedback.findMany({
-      where: { userId: request.userId },
-      orderBy: { createdAt: "desc" },
-    });
+    return feedbackService.listByUser(request.userId);
   });
 }

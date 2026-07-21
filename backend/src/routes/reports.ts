@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { prisma } from "../lib/prisma.js";
+import { reportService } from "../services/report.js";
 
 interface ReportCreateBody {
   format: "pdf" | "csv";
@@ -9,55 +9,31 @@ interface ReportCreateBody {
 
 export default async function reportRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: ReportCreateBody }>("/reports", { preHandler: [fastify.authenticate] }, async (request) => {
-    const { format, periodFrom, periodTo } = request.body;
+    const report = await reportService.create({ userId: request.userId, ...request.body });
 
-    const report = await prisma.report.create({
-      data: {
-        userId: request.userId,
-        format,
-        status: "pending",
-        periodFrom: new Date(periodFrom),
-        periodTo: new Date(periodTo),
-      },
-    });
-
-    // Stub: generate report asynchronously, set status to "ready" and add downloadUrl
     setTimeout(async () => {
-      await prisma.report.update({
-        where: { id: report.id },
-        data: { status: "ready", downloadUrl: `/reports/${report.id}/download` },
-      });
+      await reportService.markReady(report.id);
     }, 100);
 
     return report;
   });
 
   fastify.get("/reports", { preHandler: [fastify.authenticate] }, async (request) => {
-    return prisma.report.findMany({
-      where: { userId: request.userId },
-      orderBy: { createdAt: "desc" },
-    });
+    return reportService.list(request.userId);
   });
 
   fastify.get<{ Params: { id: string } }>("/reports/:id", { preHandler: [fastify.authenticate] }, async (request) => {
-    return prisma.report.findFirstOrThrow({
-      where: { id: request.params.id, userId: request.userId },
-    });
+    return reportService.getById(request.params.id, request.userId);
   });
 
   fastify.get<{ Params: { id: string } }>("/reports/:id/download", { preHandler: [fastify.authenticate] }, async (request, reply) => {
-    const report = await prisma.report.findFirstOrThrow({
-      where: { id: request.params.id, userId: request.userId },
-    });
+    const report = await reportService.getById(request.params.id, request.userId);
 
     if (report.status !== "ready") {
       return reply.status(400).send({ code: "REPORT_NOT_READY", message: "Report generation is not complete" });
     }
 
-    const entries = await prisma.entry.findMany({
-      where: { userId: request.userId, createdAt: { gte: report.periodFrom, lte: report.periodTo } },
-      include: { parameter: true },
-    });
+    const entries = await reportService.getEntriesForPeriod(request.userId, report.periodFrom, report.periodTo);
 
     if (report.format === "csv") {
       const { stringify } = await import("csv-stringify/sync");
@@ -98,13 +74,10 @@ export default async function reportRoutes(fastify: FastifyInstance) {
     }
 
     doc.end();
-    return;
   });
 
   fastify.delete<{ Params: { id: string } }>("/reports/:id", { preHandler: [fastify.authenticate] }, async (request, reply) => {
-    await prisma.report.deleteMany({
-      where: { id: request.params.id, userId: request.userId },
-    });
+    await reportService.delete(request.params.id, request.userId);
     reply.status(204);
   });
 }

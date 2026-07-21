@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
-import { prisma } from "../lib/prisma.js";
+import { onboardingService } from "../services/onboarding.js";
 
 export default async function onboardingRoutes(fastify: FastifyInstance) {
   fastify.get("/onboarding-stories", { preHandler: [fastify.authenticate] }, async () => {
-    return prisma.onboardingStory.findMany({ orderBy: { order: "asc" } });
+    return onboardingService.list();
   });
 }

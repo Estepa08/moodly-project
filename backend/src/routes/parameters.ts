@@ -1,8 +1,8 @@
 import type { FastifyInstance } from "fastify";
-import { prisma } from "../lib/prisma.js";
+import { parameterService } from "../services/parameter.js";
 
 export default async function parameterRoutes(fastify: FastifyInstance) {
   fastify.get("/parameters", { preHandler: [fastify.authenticate] }, async () => {
-    return prisma.parameter.findMany({ orderBy: { name: "asc" } });
+    return parameterService.list();
   });
 }

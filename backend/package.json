@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "@fastify/cors": "^10.0.0",
+    "@fastify/helmet": "^13.1.0",
     "@fastify/jwt": "^9.0.0",
+    "@fastify/rate-limit": "^11.1.0",
     "@prisma/client": "^6.0.0",
     "bcrypt": "^5.1.0",
     "csv-stringify": "^6.0.0",
