@@ -1,4 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function TestDetailPage({ navigate, testId }: Props) {
+  const { t } = useTranslation();
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
   const [result, setResult] = useState<{ score: number; interpretation: string; recommendation: string } | null>(null);
@@ -42,22 +44,22 @@ export default function TestDetailPage({ navigate, testId }: Props) {
       <div className="max-w-lg mx-auto p-4">
         <Card>
           <CardHeader>
-            <CardTitle>{test.title} — Result</CardTitle>
+            <CardTitle>{test.title} — {t("testDetail.result")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{result.score}</div>
-              <p className="text-sm text-muted-foreground">Score</p>
+              <p className="text-sm text-muted-foreground">{t("testDetail.score")}</p>
             </div>
             <div>
-              <p className="font-medium">Interpretation</p>
+              <p className="font-medium">{t("testDetail.interpretation")}</p>
               <p className="text-muted-foreground">{result.interpretation}</p>
             </div>
             <div>
-              <p className="font-medium">Recommendation</p>
+              <p className="font-medium">{t("testDetail.recommendation")}</p>
               <p className="text-muted-foreground">{result.recommendation}</p>
             </div>
-            <Button className="w-full" onClick={() => navigate("test-results")}>View All Results</Button>
+            <Button className="w-full" onClick={() => navigate("test-results")}>{t("testDetail.viewAll")}</Button>
           </CardContent>
         </Card>
       </div>
@@ -84,7 +86,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
     <div className="max-w-lg mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-primary">{test.title}</h1>
-        <Button variant="ghost" size="sm" onClick={() => navigate("tests")}>Exit</Button>
+        <Button variant="ghost" size="sm" onClick={() => navigate("tests")}>{t("testDetail.exit")}</Button>
       </header>
 
       <div className="flex gap-1">
@@ -113,7 +115,7 @@ export default function TestDetailPage({ navigate, testId }: Props) {
       </Card>
 
       <p className="text-xs text-muted-foreground text-center">
-        Question {questionIndex + 1} of {test.questions.length}
+        {t("testDetail.questionProgress", { current: questionIndex + 1, total: test.questions.length })}
       </p>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export default function TestResultsPage({ navigate }: Props) {
+  const { t, i18n } = useTranslation();
   const { data: results } = useQuery<TestResult[]>({
     queryKey: ["test-results"],
     queryFn: () => api.testResults.list() as Promise<TestResult[]>,
@@ -25,12 +27,12 @@ export default function TestResultsPage({ navigate }: Props) {
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-primary">Test Results</h1>
-        <Button variant="ghost" onClick={() => navigate("dashboard")}>Back</Button>
+        <h1 className="text-xl font-bold text-primary">{t("testResults.title")}</h1>
+        <Button variant="ghost" onClick={() => navigate("dashboard")}>{t("common.back")}</Button>
       </header>
 
       {results?.length === 0 && (
-        <p className="text-muted-foreground text-center py-8">No test results yet.</p>
+        <p className="text-muted-foreground text-center py-8">{t("testResults.noResults")}</p>
       )}
 
       {results?.map((r) => (
@@ -40,7 +42,7 @@ export default function TestResultsPage({ navigate }: Props) {
               <span>{r.interpretation}</span>
               <span className="text-sm font-mono text-primary">{r.score}</span>
             </CardTitle>
-            <p className="text-xs text-muted-foreground">{new Date(r.completedAt).toLocaleDateString()}</p>
+            <p className="text-xs text-muted-foreground">{new Date(r.completedAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US")}</p>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">{r.recommendation}</p>

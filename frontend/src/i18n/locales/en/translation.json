@@ -1,0 +1,91 @@
+{
+  "common": {
+    "moodly": "Moodly",
+    "back": "Back",
+    "logout": "Logout",
+    "saving": "Saving...",
+    "sending": "Sending...",
+    "generating": "Generating..."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tests": "Tests",
+    "results": "Results",
+    "reports": "Reports",
+    "feedback": "Feedback"
+  },
+  "login": {
+    "title": "Moodly",
+    "subtitle": "Sign in to your account",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "quickDemo": "Quick Demo",
+    "starting": "Starting...",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign Up",
+    "loginFailed": "Login failed",
+    "demoFailed": "Demo login failed"
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "Start tracking your mental health",
+    "name": "Name (optional)",
+    "email": "Email",
+    "password": "Password",
+    "signUp": "Sign Up",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign In",
+    "registrationFailed": "Registration failed"
+  },
+  "dashboard": {
+    "quickEntry": "Quick Entry",
+    "parameter": "Parameter",
+    "select": "Select...",
+    "value": "Value",
+    "valuePlaceholder": "0-10",
+    "note": "Note (optional)",
+    "notePlaceholder": "How are you feeling?",
+    "saveEntry": "Save Entry",
+    "history": "History",
+    "noEntries": "No entries yet. Start tracking above."
+  },
+  "onboarding": {
+    "getStarted": "Get Started",
+    "next": "Next"
+  },
+  "tests": {
+    "title": "Tests"
+  },
+  "testDetail": {
+    "result": "Result",
+    "score": "Score",
+    "interpretation": "Interpretation",
+    "recommendation": "Recommendation",
+    "viewAll": "View All Results",
+    "exit": "Exit",
+    "questionProgress": "Question {{current}} of {{total}}"
+  },
+  "testResults": {
+    "title": "Test Results",
+    "noResults": "No test results yet."
+  },
+  "feedback": {
+    "title": "Feedback",
+    "sendFeedback": "Send Feedback",
+    "yourMessage": "Your message",
+    "placeholder": "Share your thoughts...",
+    "send": "Send"
+  },
+  "reports": {
+    "title": "Reports",
+    "cardTitle": "Generate Report",
+    "format": "Format",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "from": "From",
+    "to": "To",
+    "submit": "Generate",
+    "download": "Download"
+  }
+}

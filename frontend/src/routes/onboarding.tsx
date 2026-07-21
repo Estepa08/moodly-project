@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function OnboardingPage({ navigate }: Props) {
+  const { t } = useTranslation();
   const [step, setStep] = useState(0);
 
   const { data: stories } = useQuery<OnboardingStory[]>({
@@ -43,7 +45,7 @@ export default function OnboardingPage({ navigate }: Props) {
           <h2 className="text-xl font-semibold text-foreground">{current.title}</h2>
           <p className="text-muted-foreground">{current.content}</p>
           <Button onClick={() => (isLast ? navigate("dashboard") : setStep(step + 1))}>
-            {isLast ? "Get Started" : "Next"}
+            {isLast ? t("onboarding.getStarted") : t("onboarding.next")}
           </Button>
         </CardContent>
       </Card>

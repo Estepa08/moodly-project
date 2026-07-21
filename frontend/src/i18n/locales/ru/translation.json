@@ -1,0 +1,91 @@
+{
+  "common": {
+    "moodly": "Moodly",
+    "back": "Назад",
+    "logout": "Выйти",
+    "saving": "Сохранение...",
+    "sending": "Отправка...",
+    "generating": "Генерация..."
+  },
+  "nav": {
+    "dashboard": "Дашборд",
+    "tests": "Тесты",
+    "results": "Результаты",
+    "reports": "Отчёты",
+    "feedback": "Обратная связь"
+  },
+  "login": {
+    "title": "Moodly",
+    "subtitle": "Войдите в аккаунт",
+    "email": "Email",
+    "password": "Пароль",
+    "signIn": "Войти",
+    "quickDemo": "Быстрый демо-вход",
+    "starting": "Загрузка...",
+    "noAccount": "Нет аккаунта?",
+    "signUp": "Зарегистрироваться",
+    "loginFailed": "Ошибка входа",
+    "demoFailed": "Ошибка демо-входа"
+  },
+  "register": {
+    "title": "Создать аккаунт",
+    "subtitle": "Начните отслеживать своё ментальное здоровье",
+    "name": "Имя (необязательно)",
+    "email": "Email",
+    "password": "Пароль",
+    "signUp": "Зарегистрироваться",
+    "hasAccount": "Уже есть аккаунт?",
+    "signIn": "Войти",
+    "registrationFailed": "Ошибка регистрации"
+  },
+  "dashboard": {
+    "quickEntry": "Быстрая запись",
+    "parameter": "Параметр",
+    "select": "Выберите...",
+    "value": "Значение",
+    "valuePlaceholder": "0-10",
+    "note": "Заметка (необязательно)",
+    "notePlaceholder": "Как вы себя чувствуете?",
+    "saveEntry": "Сохранить",
+    "history": "История",
+    "noEntries": "Записей пока нет. Начните отслеживание выше."
+  },
+  "onboarding": {
+    "getStarted": "Начать",
+    "next": "Далее"
+  },
+  "tests": {
+    "title": "Тесты"
+  },
+  "testDetail": {
+    "result": "Результат",
+    "score": "Баллы",
+    "interpretation": "Интерпретация",
+    "recommendation": "Рекомендация",
+    "viewAll": "Все результаты",
+    "exit": "Выйти",
+    "questionProgress": "Вопрос {{current}} из {{total}}"
+  },
+  "testResults": {
+    "title": "Результаты тестов",
+    "noResults": "Результатов пока нет."
+  },
+  "feedback": {
+    "title": "Обратная связь",
+    "sendFeedback": "Отправить отзыв",
+    "yourMessage": "Ваше сообщение",
+    "placeholder": "Поделитесь мыслями...",
+    "send": "Отправить"
+  },
+  "reports": {
+    "title": "Отчёты",
+    "cardTitle": "Сгенерировать отчёт",
+    "format": "Формат",
+    "pdf": "PDF",
+    "csv": "CSV",
+    "from": "От",
+    "to": "До",
+    "submit": "Сгенерировать",
+    "download": "Скачать"
+  }
+}

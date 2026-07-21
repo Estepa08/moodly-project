@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export default function Dashboard({ navigate, onLogout }: Props) {
+  const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [selectedParam, setSelectedParam] = useState<string>("");
   const [entryValue, setEntryValue] = useState("");
@@ -66,17 +68,17 @@ export default function Dashboard({ navigate, onLogout }: Props) {
   });
 
   const navItems = [
-    { label: "Dashboard", page: "dashboard" as const },
-    { label: "Tests", page: "tests" as const },
-    { label: "Results", page: "test-results" as const },
-    { label: "Reports", page: "reports" as const },
-    { label: "Feedback", page: "feedback" as const },
+    { label: t("nav.dashboard"), page: "dashboard" as const },
+    { label: t("nav.tests"), page: "tests" as const },
+    { label: t("nav.results"), page: "test-results" as const },
+    { label: t("nav.reports"), page: "reports" as const },
+    { label: t("nav.feedback"), page: "feedback" as const },
   ];
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-primary">Moodly</h1>
+        <h1 className="text-xl font-bold text-primary">{t("common.moodly")}</h1>
         <div className="flex gap-2">
           {navItems.map((item) => (
             <Button
@@ -88,8 +90,23 @@ export default function Dashboard({ navigate, onLogout }: Props) {
               {item.label}
             </Button>
           ))}
+          <div className="flex items-center gap-1 text-xs">
+            <button
+              className={`px-1.5 py-0.5 rounded ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+              onClick={() => i18n.changeLanguage("en")}
+            >
+              EN
+            </button>
+            <span className="text-muted-foreground">|</span>
+            <button
+              className={`px-1.5 py-0.5 rounded ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+              onClick={() => i18n.changeLanguage("ru")}
+            >
+              RU
+            </button>
+          </div>
           <Button variant="ghost" size="sm" onClick={onLogout}>
-            Logout
+            {t("common.logout")}
           </Button>
         </div>
       </header>
@@ -97,17 +114,17 @@ export default function Dashboard({ navigate, onLogout }: Props) {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Quick Entry</CardTitle>
+            <CardTitle>{t("dashboard.quickEntry")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label>Parameter</Label>
+              <Label>{t("dashboard.parameter")}</Label>
               <select
                 className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
                 value={selectedParam}
                 onChange={(e) => setSelectedParam(e.target.value)}
               >
-                <option value="">Select...</option>
+                <option value="">{t("dashboard.select")}</option>
                 {params?.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name} {p.unit ? `(${p.unit})` : ""}
@@ -116,20 +133,20 @@ export default function Dashboard({ navigate, onLogout }: Props) {
               </select>
             </div>
             <div className="space-y-2">
-              <Label>Value</Label>
+              <Label>{t("dashboard.value")}</Label>
               <Input
                 type="number"
                 value={entryValue}
                 onChange={(e) => setEntryValue(e.target.value)}
-                placeholder="0-10"
+                placeholder={t("dashboard.valuePlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label>Note (optional)</Label>
+              <Label>{t("dashboard.note")}</Label>
               <Input
                 value={entryNote}
                 onChange={(e) => setEntryNote(e.target.value)}
-                placeholder="How are you feeling?"
+                placeholder={t("dashboard.notePlaceholder")}
               />
             </div>
             <Button
@@ -137,14 +154,14 @@ export default function Dashboard({ navigate, onLogout }: Props) {
               disabled={!selectedParam || !entryValue || createEntry.isPending}
               onClick={() => createEntry.mutate()}
             >
-              {createEntry.isPending ? "Saving..." : "Save Entry"}
+              {createEntry.isPending ? t("common.saving") : t("dashboard.saveEntry")}
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>History</CardTitle>
+            <CardTitle>{t("dashboard.history")}</CardTitle>
           </CardHeader>
           <CardContent>
             {entries && entries.length > 0 ? (
@@ -163,7 +180,7 @@ export default function Dashboard({ navigate, onLogout }: Props) {
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-8">No entries yet. Start tracking above.</p>
+              <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noEntries")}</p>
             )}
           </CardContent>
         </Card>
