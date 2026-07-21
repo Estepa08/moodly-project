@@ -1,0 +1,778 @@
+openapi: 3.0.0
+info:
+  title: Mental Health Tracker API
+  version: 0.0.0
+tags:
+  - name: Auth
+  - name: Users
+  - name: Parameters
+  - name: Entries
+  - name: Tests
+  - name: TestResults
+  - name: Feedback
+  - name: OnboardingStories
+  - name: Reports
+paths:
+  /auth/login:
+    post:
+      operationId: Auth_login
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+  /auth/logout:
+    post:
+      operationId: Auth_logout
+      parameters: []
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Auth
+  /auth/register:
+    post:
+      operationId: Auth_register
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+  /entries:
+    get:
+      operationId: Entries_list
+      parameters:
+        - name: parameterId
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          explode: false
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entry'
+      tags:
+        - Entries
+    post:
+      operationId: Entries_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+      tags:
+        - Entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryCreate'
+  /entries/{id}:
+    get:
+      operationId: Entries_get
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+      tags:
+        - Entries
+    patch:
+      operationId: Entries_update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entry'
+      tags:
+        - Entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntryUpdate'
+    delete:
+      operationId: Entries_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Entries
+  /feedback:
+    post:
+      operationId: FeedbackApi_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+      tags:
+        - Feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackCreate'
+  /feedback/me:
+    get:
+      operationId: FeedbackApi_listMine
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'
+      tags:
+        - Feedback
+  /onboarding-stories:
+    get:
+      operationId: OnboardingStories_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OnboardingStory'
+      tags:
+        - OnboardingStories
+  /parameters:
+    get:
+      operationId: Parameters_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Parameter'
+      tags:
+        - Parameters
+  /reports:
+    post:
+      operationId: Reports_create
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+      tags:
+        - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+    get:
+      operationId: Reports_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Report'
+      tags:
+        - Reports
+  /reports/{id}:
+    get:
+      operationId: Reports_get
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+      tags:
+        - Reports
+    delete:
+      operationId: Reports_delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Reports
+  /reports/{id}/download:
+    get:
+      operationId: Reports_download
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      tags:
+        - Reports
+  /test-results:
+    get:
+      operationId: TestResults_list
+      parameters:
+        - name: testId
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TestResult'
+      tags:
+        - TestResults
+  /test-results/{id}:
+    get:
+      operationId: TestResults_get
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestResult'
+      tags:
+        - TestResults
+  /tests:
+    get:
+      operationId: Tests_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Test'
+      tags:
+        - Tests
+  /tests/{id}:
+    get:
+      operationId: Tests_get
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+      tags:
+        - Tests
+  /tests/{id}/results:
+    post:
+      operationId: Tests_submitResult
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestResult'
+      tags:
+        - Tests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestResultSubmit'
+  /users/me:
+    get:
+      operationId: Users_getMe
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      tags:
+        - Users
+    patch:
+      operationId: Users_updateMe
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+    delete:
+      operationId: Users_deleteMe
+      parameters: []
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Users
+security:
+  - BearerAuth: []
+components:
+  schemas:
+    AuthResponse:
+      type: object
+      required:
+        - accessToken
+        - user
+      properties:
+        accessToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+    Entry:
+      type: object
+      required:
+        - id
+        - userId
+        - parameterId
+        - value
+        - createdAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        parameterId:
+          type: string
+        value:
+          type: number
+          format: double
+        note:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      description: Запись значения параметра в конкретный момент времени
+    EntryCreate:
+      type: object
+      required:
+        - parameterId
+        - value
+      properties:
+        parameterId:
+          type: string
+        value:
+          type: number
+          format: double
+        note:
+          type: string
+    EntryUpdate:
+      type: object
+      properties:
+        value:
+          type: number
+          format: double
+        note:
+          type: string
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    Feedback:
+      type: object
+      required:
+        - id
+        - userId
+        - message
+        - createdAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      description: Обратная связь от пользователя (сбор ОС)
+    FeedbackCreate:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    OnboardingStory:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - order
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        order:
+          type: integer
+          format: int32
+      description: Обучающая история для онбординга новых пользователей после регистрации
+    Parameter:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        unit:
+          type: string
+      description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
+    Report:
+      type: object
+      required:
+        - id
+        - userId
+        - format
+        - status
+        - periodFrom
+        - periodTo
+        - createdAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        format:
+          $ref: '#/components/schemas/ReportFormat'
+        status:
+          $ref: '#/components/schemas/ReportStatus'
+        periodFrom:
+          type: string
+          format: date-time
+        periodTo:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        downloadUrl:
+          type: string
+      description: Отчёт для выгрузки статистики врачу (PDF/CSV), без участия врача в самом приложении
+    ReportCreate:
+      type: object
+      required:
+        - format
+        - periodFrom
+        - periodTo
+      properties:
+        format:
+          $ref: '#/components/schemas/ReportFormat'
+        periodFrom:
+          type: string
+          format: date-time
+        periodTo:
+          type: string
+          format: date-time
+    ReportFormat:
+      type: string
+      enum:
+        - pdf
+        - csv
+    ReportStatus:
+      type: string
+      enum:
+        - pending
+        - ready
+        - failed
+      description: Статус генерации отчёта
+    Test:
+      type: object
+      required:
+        - id
+        - title
+        - questions
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestQuestion'
+      description: 'Психологический тест, построенный на справочниках/книгах по психологии. Шаблон: вопросы + правила подсчёта баллов.'
+    TestAnswer:
+      type: object
+      required:
+        - questionId
+        - optionId
+      properties:
+        questionId:
+          type: string
+        optionId:
+          type: string
+    TestQuestion:
+      type: object
+      required:
+        - id
+        - text
+        - options
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestQuestionOption'
+    TestQuestionOption:
+      type: object
+      required:
+        - id
+        - text
+        - score
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        score:
+          type: integer
+          format: int32
+    TestResult:
+      type: object
+      required:
+        - id
+        - testId
+        - userId
+        - score
+        - interpretation
+        - recommendation
+        - completedAt
+      properties:
+        id:
+          type: string
+        testId:
+          type: string
+        userId:
+          type: string
+        score:
+          type: integer
+          format: int32
+        interpretation:
+          type: string
+        recommendation:
+          type: string
+        completedAt:
+          type: string
+          format: date-time
+      description: 'Конкретная попытка прохождения теста пользователем: ответы, посчитанный балл и рекомендация'
+    TestResultSubmit:
+      type: object
+      required:
+        - answers
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestAnswer'
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - createdAt
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      description: Пользователь приложения
+    UserCreate:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: Bearer
