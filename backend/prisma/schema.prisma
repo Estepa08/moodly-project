@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+
+  entries     Entry[]
+  testResults TestResult[]
+  feedback    Feedback[]
+  reports     Report[]
+}
+
+model Parameter {
+  id          String @id @default(cuid())
+  name        String
+  description String?
+  unit        String?
+
+  entries Entry[]
+}
+
+model Entry {
+  id          String   @id @default(cuid())
+  userId      String
+  parameterId String
+  value       Float
+  note        String?
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  parameter Parameter @relation(fields: [parameterId], references: [id])
+
+  @@index([userId])
+  @@index([parameterId])
+  @@index([userId, parameterId])
+}
+
+model Test {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  questions   Json
+
+  results TestResult[]
+}
+
+model TestResult {
+  id             String   @id @default(cuid())
+  testId         String
+  userId         String
+  score          Int
+  interpretation String
+  recommendation String
+  completedAt    DateTime @default(now())
+
+  test Test @relation(fields: [testId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([testId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  message   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model OnboardingStory {
+  id      String @id @default(cuid())
+  title   String
+  content String
+  order   Int
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  userId      String
+  format      String
+  status      String   @default("pending")
+  periodFrom  DateTime
+  periodTo    DateTime
+  createdAt   DateTime @default(now())
+  downloadUrl String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
