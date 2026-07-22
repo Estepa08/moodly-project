@@ -7,7 +7,8 @@
     "sending": "Отправка...",
     "generating": "Генерация...",
     "languageEn": "EN",
-    "languageRu": "RU"
+    "languageRu": "RU",
+    "skipToContent": "Перейти к содержимому"
   },
   "nav": {
     "dashboard": "Дашборд",
@@ -54,6 +55,8 @@
     "save": "Сохранить",
     "saveAnother": "Записать ещё",
     "selectParamFirst": "Сначала выберите параметр",
+    "tooFast": "Не так быстро",
+    "saveError": "Не удалось сохранить запись",
     "history": "История",
     "noEntries": "Записей пока нет. Начните отслеживание выше.",
     "moodToday": "Последняя запись",

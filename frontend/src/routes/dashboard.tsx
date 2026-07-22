@@ -1,60 +1,20 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { api } from "../lib/api";
-import { Button } from "../components/ui/button";
+import { useParameters } from "../hooks/useParameters";
+import { useEntries, useCreateEntry } from "../hooks/useEntries";
+import { useTests, useTestResults } from "../hooks/useTests";
+import type { components } from "../lib/api-types";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Label } from "../components/ui/label";
-import { Slider } from "../components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import Spinner from "../components/ui/spinner";
-import { useState, useMemo, useRef, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
 import RadarChart from "../components/RadarChart";
 import type { DistortionEntry } from "../components/RadarChart";
-import { Moon, Sun, Zap, Eye, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import DashboardQuickEntry from "../components/DashboardQuickEntry";
+import ParameterTrendsChart from "../components/ParameterTrendsChart";
+import WeeklyAveragesGrid from "../components/WeeklyAveragesGrid";
+import TestTimeline from "../components/TestTimeline";
+import EntryHistory from "../components/EntryHistory";
 
-interface Test {
-  id: string;
-  title: string;
-}
-
-interface Parameter {
-  id: string;
-  name: string;
-  description?: string;
-  unit?: string;
-}
-
-interface Entry {
-  id: string;
-  parameterId: string;
-  value: number;
-  note?: string;
-  createdAt: string;
-}
-
-interface TestResult {
-  id: string;
-  testId: string;
-  score: number;
-  interpretation: string;
-  recommendation: string;
-  flags?: {
-    distortions?: Record<string, { score: number; level: string }>;
-    templateKey?: string;
-  };
-  completedAt: string;
-}
+type Entry = components["schemas"]["Entry"];
+type TestResult = components["schemas"]["TestResult"];
 
 const PERIODS = [
   { key: "1w", labelKey: "dashboard.thisWeek", days: 7 },
@@ -64,50 +24,12 @@ const PERIODS = [
   { key: "all", labelKey: "dashboard.allTime", days: Infinity },
 ] as const;
 
-const PARAM_COLORS: Record<string, string> = {
-  Anxiety: "#8B5CF6",
-  Sleep: "#0ea5e9",
-  Mood: "#059669",
-  Energy: "#f59e0b",
-  Focus: "#ec4899",
-};
-
-const PARAM_ICONS: Record<string, typeof Sun> = {
-  Sleep: Moon,
-  Mood: Sun,
-  Energy: Zap,
-  Focus: Eye,
-};
-
-const PARAM_NAME_KEYS: Record<string, string> = {
-  Anxiety: "dashboard.anxiety",
-  Sleep: "dashboard.sleep",
-  Mood: "dashboard.mood",
-  Energy: "dashboard.energy",
-  Focus: "dashboard.focus",
-};
-
-const SEVERITY_COLORS: Record<string, string> = {
-  minimal: "#059669",
-  mild: "#eab308",
-  moderate: "#f97316",
-  severe: "#ea1515",
-};
-
 const TEST_ABBR_KEYS: Record<string, string> = {
   "GAD-7": "tests.abbreviation.gad7",
   "Burns Anxiety Inventory": "tests.abbreviation.bai",
   "Burns Depression Checklist": "tests.abbreviation.bdc",
   "Cognitive Distortions Assessment": "tests.abbreviation.cd",
 };
-
-function getSeverity(score: number, interpretation: string): string {
-  const lower = interpretation.toLowerCase();
-  if (lower.includes("severe") || lower.includes("high")) return "severe";
-  if (lower.includes("moderate") || lower.includes("mod")) return "moderate";
-  if (lower.includes("mild")) return "mild";
-  return "minimal";
-}
 
 function getDateRange(period: string): { from?: string; to?: string } {
   const p = PERIODS.find((x) => x.key === period);
@@ -118,57 +40,21 @@ function getDateRange(period: string): { from?: string; to?: string } {
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
-  const queryClient = useQueryClient();
   const [selectedParam, setSelectedParam] = useState<string>("");
   const [moodValue, setMoodValue] = useState([7.5]);
   const [period, setPeriod] = useState("2w");
   const [visibleParams, setVisibleParams] = useState<Set<string>>(new Set(["Mood", "Sleep", "Anxiety"]));
-  const isSavingRef = useRef(false);
-  const [showSaved, setShowSaved] = useState(false);
 
-  useEffect(() => {
-    if (showSaved) setShowSaved(false);
-  }, [selectedParam, moodValue[0]]);
+  const { data: params } = useParameters();
+  const { data: allEntries, isLoading: entriesLoading } = useEntries(getDateRange(period));
+  const { data: testResults, isLoading: resultsLoading } = useTestResults();
+  const { data: tests } = useTests();
+  const createEntry = useCreateEntry();
 
-  const { data: params, isLoading: paramsLoading } = useQuery<Parameter[]>({
-    queryKey: ["parameters"],
-    queryFn: () => api.parameters.list() as Promise<Parameter[]>,
-  });
-
-  const { data: allEntries, isLoading: entriesLoading } = useQuery<Entry[]>({
-    queryKey: ["entries", period],
-    queryFn: () => {
-      const range = getDateRange(period);
-      return api.entries.list(range) as Promise<Entry[]>;
-    },
-  });
-
-  const { data: testResults, isLoading: resultsLoading } = useQuery<TestResult[]>({
-    queryKey: ["testResults"],
-    queryFn: () => api.testResults.list() as Promise<TestResult[]>,
-  });
-
-  const { data: tests } = useQuery<Test[]>({
-    queryKey: ["tests"],
-    queryFn: () => api.tests.list() as Promise<Test[]>,
-  });
-
-  const testAbbrMap = useMemo(() => {
-    const map = new Map<string, string>();
-    if (tests) {
-      for (const test of tests) {
-        const key = TEST_ABBR_KEYS[test.title];
-        map.set(test.id, key ? t(key) : test.title.slice(0, 8));
-      }
-    }
-    return map;
-  }, [tests, t]);
-
-  const cdResult = testResults?.find((r) => r.flags?.distortions);
-  const cdDistortions = cdResult?.flags?.distortions;
-  const radarData: DistortionEntry[] = cdDistortions
-    ? Object.entries(cdDistortions).map(([key, val]) => ({ key, score: val.score }))
-    : [];
+  const paramNames = useMemo(() => {
+    if (!params) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
+    return params.map((p) => p.name);
+  }, [params]);
 
   const paramMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -176,11 +62,6 @@ export default function Dashboard() {
       for (const p of params) map.set(p.id, p.name);
     }
     return map;
-  }, [params]);
-
-  const paramNames = useMemo(() => {
-    if (!params) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
-    return params.map((p) => p.name);
   }, [params]);
 
   const entriesByParam = useMemo(() => {
@@ -219,7 +100,6 @@ export default function Dashboard() {
     const currentStart = range.from ? new Date(range.from).getTime() : 0;
     const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
     const periodMs = currentEnd - currentStart;
-
     const prevStart = new Date(currentStart - periodMs).getTime();
     const prevEnd = currentStart;
 
@@ -248,8 +128,19 @@ export default function Dashboard() {
     });
   }, [allEntries, period, paramNames, paramMap, entriesByParam]);
 
+  const testAbbrMap = useMemo(() => {
+    const map = new Map<string, string>();
+    if (tests) {
+      for (const test of tests) {
+        const key = TEST_ABBR_KEYS[test.title];
+        map.set(test.id, key ? t(key) : test.title.slice(0, 8));
+      }
+    }
+    return map;
+  }, [tests, t]);
+
   const testTimeline = useMemo(() => {
-    if (!testResults || !params) return [];
+    if (!testResults) return [];
     const grouped = new Map<string, TestResult[]>();
     for (const r of testResults) {
       if (!grouped.has(r.testId)) grouped.set(r.testId, []);
@@ -261,28 +152,28 @@ export default function Dashboard() {
           (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime(),
         );
         const last = sorted[sorted.length - 1];
+        const lower = last.interpretation.toLowerCase();
+        const lastSeverity = lower.includes("severe") || lower.includes("high") ? "severe"
+          : lower.includes("moderate") || lower.includes("mod") ? "moderate"
+          : lower.includes("mild") ? "mild" : "minimal";
         return {
           testId,
           label: testAbbrMap.get(testId) ?? testId.slice(0, 8),
           results: sorted,
-          lastSeverity: getSeverity(last.score, last.interpretation),
+          lastSeverity,
           lastScore: last.score,
         };
       });
-  }, [testResults, params, testAbbrMap]);
+  }, [testResults, testAbbrMap]);
 
-  const today = new Date().toDateString();
+  const cdResult = testResults?.find((r) => (r.flags as Record<string, unknown> | undefined)?.distortions);
+  const cdDistortions = (cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined)?.distortions;
+  const radarData: DistortionEntry[] = cdDistortions
+    ? Object.entries(cdDistortions).map(([key, val]) => ({ key, score: val.score }))
+    : [];
+
   const entriesForHistory = selectedParam ? (allEntries?.filter((e) => e.parameterId === selectedParam) ?? []) : [];
-
-  const createEntry = useMutation({
-    mutationFn: (data: { parameterId: string; value: number }) =>
-      api.entries.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["entries"] });
-      toast.success(t("dashboard.entrySaved"));
-      setShowSaved(true);
-    },
-  });
+  const loading = entriesLoading || resultsLoading;
 
   const toggleParam = (name: string) => {
     setVisibleParams((prev) => {
@@ -293,8 +184,6 @@ export default function Dashboard() {
     });
   };
 
-  const loading = paramsLoading || entriesLoading || resultsLoading;
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -303,6 +192,7 @@ export default function Dashboard() {
           {PERIODS.map((p) => (
             <button
               key={p.key}
+              aria-pressed={period === p.key}
               onClick={() => setPeriod(p.key)}
               className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 period === p.key
@@ -316,167 +206,27 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <Card className="shadow-neumorphic">
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Sun className="w-4 h-4 text-accent" />
-            {t("dashboard.quickEntry")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label>{t("dashboard.parameter")}</Label>
-            <Select
-              value={selectedParam}
-              onValueChange={setSelectedParam}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("dashboard.select")} />
-              </SelectTrigger>
-              <SelectContent>
-                {params?.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {t(PARAM_NAME_KEYS[p.name] ?? p.name)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+      <DashboardQuickEntry
+        params={params}
+        selectedParam={selectedParam}
+        onParamChange={setSelectedParam}
+        moodValue={moodValue}
+        onMoodChange={setMoodValue}
+        createEntry={createEntry}
+      />
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-destructive font-medium">{t("dashboard.moodAwful")}</span>
-              <span className="text-lg font-bold font-serif text-primary">{moodValue[0].toFixed(1)}</span>
-              <span className="text-accent font-medium">{t("dashboard.moodGreat")}</span>
-            </div>
-            <Slider
-              value={moodValue}
-              onValueChange={setMoodValue}
-              min={0}
-              max={10}
-              step={0.5}
-              style={{ "--slider-fill": "linear-gradient(to right, #ea1515, #f97316, #eab308, #8B5CF6, #059669)" } as React.CSSProperties}
-            />
-          </div>
+      <ParameterTrendsChart
+        trendData={trendData}
+        paramNames={paramNames}
+        visibleParams={visibleParams}
+        onToggleParam={toggleParam}
+        loading={loading}
+      />
 
-          <Button
-            className="w-full"
-            disabled={createEntry.isPending}
-            onClick={() => {
-              if (showSaved) {
-                setSelectedParam("");
-                setShowSaved(false);
-                return;
-              }
-              if (!selectedParam) {
-                toast.error(t("dashboard.selectParamFirst"));
-                return;
-              }
-              if (isSavingRef.current) return;
-              isSavingRef.current = true;
-              createEntry.mutate(
-                { parameterId: selectedParam, value: moodValue[0] },
-                { onSettled: () => { isSavingRef.current = false; } },
-              );
-            }}
-          >
-            {createEntry.isPending ? t("common.saving") : showSaved ? t("dashboard.saveAnother") : t("dashboard.save")}
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-neumorphic">
-        <CardHeader>
-          <CardTitle className="text-base">{t("dashboard.parameterTrends")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
-          ) : trendData.length > 0 ? (
-            <>
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={trendData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
-                  <XAxis dataKey="date" fontSize={10} stroke="#a1a1aa" />
-                  <YAxis domain={[0, 10]} fontSize={10} stroke="#a1a1aa" />
-                  <Tooltip formatter={(value: number, name: string) => [value, t(PARAM_NAME_KEYS[name] ?? name)]} />
-                  {paramNames.map((name) =>
-                    visibleParams.has(name) ? (
-                      <Line
-                        key={name}
-                        type="monotone"
-                        dataKey={name}
-                        stroke={PARAM_COLORS[name] ?? "#8B5CF6"}
-                        strokeWidth={2}
-                        dot={false}
-                        connectNulls
-                      />
-                    ) : null,
-                  )}
-                </LineChart>
-              </ResponsiveContainer>
-              <div className="flex flex-wrap gap-2 mt-3">
-                {paramNames.map((name) => (
-                  <button
-                    key={name}
-                    onClick={() => toggleParam(name)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                      visibleParams.has(name)
-                        ? "bg-primary/10 text-primary shadow-neumorphic-sm"
-                        : "bg-muted text-muted-foreground shadow-neumorphic-inset"
-                    }`}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: PARAM_COLORS[name] ?? "#8B5CF6" }}
-                    />
-                    {t(PARAM_NAME_KEYS[name] ?? name)}
-                  </button>
-                ))}
-              </div>
-            </>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTrendData")}</p>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-neumorphic">
-        <CardHeader>
-          <CardTitle className="text-base">{t("dashboard.weeklyAverages")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
-          ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {weeklyAverages.map((avg) => {
-                const Icon = PARAM_ICONS[avg.name];
-                const avgValue = avg.average;
-                const colorClass = avgValue !== null
-                  ? avgValue >= 7 ? "text-accent" : avgValue >= 4 ? "text-primary" : "text-destructive"
-                  : "text-muted-foreground";
-                const TrendIcon = avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
-                const trendColor = avg.trend === "up" ? "text-accent" : avg.trend === "down" ? "text-destructive" : "text-muted-foreground";
-                return (
-                  <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      {Icon && <Icon className="w-4 h-4 text-primary" />}
-                      <span className="text-xs text-muted-foreground">{t(PARAM_NAME_KEYS[avg.name] ?? avg.name)}</span>
-                    </div>
-                    <div className="flex items-end gap-2">
-                      <span className={`text-2xl font-bold font-serif ${colorClass}`}>
-                        {avgValue !== null ? avgValue.toFixed(1) : "—"}
-                      </span>
-                      <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <WeeklyAveragesGrid
+        weeklyAverages={weeklyAverages}
+        loading={loading}
+      />
 
       {radarData.length > 0 && (
         <Card className="shadow-neumorphic">
@@ -489,89 +239,16 @@ export default function Dashboard() {
         </Card>
       )}
 
-      <Card className="shadow-neumorphic">
-        <CardHeader>
-          <CardTitle className="text-base">{t("dashboard.testProgress")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {resultsLoading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
-          ) : testTimeline.length > 0 ? (
-            <div className="space-y-4">
-              {testTimeline.map((group) => {
-                const severityColor = SEVERITY_COLORS[group.lastSeverity] ?? "#8B5CF6";
-                return (
-                  <div key={group.testId} className="flex items-center gap-3">
-                    <div className="w-10 text-xs font-semibold text-muted-foreground shrink-0">
-                      {group.label}
-                    </div>
-                    <div className="flex items-center gap-1.5 flex-1 overflow-x-auto">
-                      {group.results.map((r, idx) => {
-                        const sev = getSeverity(r.score, r.interpretation);
-                        const color = SEVERITY_COLORS[sev] ?? "#8B5CF6";
-                        return (
-                          <div key={r.id} className="flex items-center gap-0">
-                            <div
-                              className={`w-5 h-5 rounded-full border-2 transition-all duration-150 ${
-                                idx === group.results.length - 1
-                                  ? "shadow-neumorphic-sm scale-110"
-                                  : ""
-                              }`}
-                              style={{
-                                backgroundColor: `${color}50`,
-                                borderColor: color,
-                              }}
-                              title={`${r.score} — ${r.interpretation}`}
-                            />
-                            {idx < group.results.length - 1 && (
-                              <div className="w-3 h-0.5 bg-border" />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    <div className="text-xs font-medium shrink-0" style={{ color: severityColor }}>
-                      {group.lastScore}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTestData")}</p>
-          )}
-        </CardContent>
-      </Card>
+      <TestTimeline
+        testTimeline={testTimeline}
+        loading={resultsLoading}
+      />
 
-      <Card className="shadow-neumorphic">
-        <CardHeader>
-          <CardTitle className="text-base">{t("dashboard.history")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {!selectedParam ? (
-            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.select")}</p>
-          ) : entriesLoading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
-          ) : entriesForHistory.length > 0 ? (
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={entriesForHistory.slice().reverse()}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
-                <XAxis
-                  dataKey="createdAt"
-                  tickFormatter={(v: string) => new Date(v).toLocaleDateString()}
-                  fontSize={10}
-                  stroke="#a1a1aa"
-                />
-                <YAxis fontSize={10} stroke="#a1a1aa" />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#8B5CF6" dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noEntries")}</p>
-          )}
-        </CardContent>
-      </Card>
+      <EntryHistory
+        selectedParam={selectedParam}
+        entries={entriesForHistory}
+        loading={entriesLoading}
+      />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { CircleArrowUp, Timer, Wind } from "lucide-react";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 interface BreathingGuideProps {
   onComplete: (duration: number) => void;
@@ -16,6 +18,7 @@ const TOTAL_CYCLES = 4;
 
 export default function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
   const { t } = useTranslation();
+  const reducedMotion = useReducedMotion();
   const [cycle, setCycle] = useState(1);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
@@ -93,23 +96,27 @@ export default function BreathingGuide({ onComplete, onCancel }: BreathingGuideP
     <div className="flex flex-col items-center gap-6">
       <div className="relative flex items-center justify-center w-48 h-48">
         <div
-          className="rounded-full transition-all duration-100"
+          className={`rounded-full ${reducedMotion ? "" : "transition-all duration-100"}`}
           style={{
             width: `${48 + circleScale * 96}px`,
             height: `${48 + circleScale * 96}px`,
             backgroundColor: isInhale
-              ? "rgba(139, 92, 246, 0.3)"
+              ? "hsl(var(--primary) / 0.3)"
               : isHold
-                ? "rgba(99, 102, 241, 0.3)"
-                : "rgba(5, 150, 105, 0.3)",
-            boxShadow: isExhale ? "0 0 40px rgba(5, 150, 105, 0.2)" : "0 0 40px rgba(139, 92, 246, 0.2)",
-            transition: "background-color 0.4s ease, box-shadow 0.4s ease",
+                ? "hsl(var(--primary) / 0.3)"
+                : "hsl(var(--accent) / 0.3)",
+            boxShadow: isExhale ? "0 0 40px hsl(var(--accent) / 0.2)" : "0 0 40px hsl(var(--primary) / 0.2)",
+            transition: reducedMotion ? "none" : "background-color 0.4s ease, box-shadow 0.4s ease",
           }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-6xl">
-            {isInhale ? "🌬️" : isHold ? "⏳" : "💨"}
-          </span>
+          {isInhale ? (
+            <CircleArrowUp className="w-14 h-14 text-primary" />
+          ) : isHold ? (
+            <Timer className="w-14 h-14 text-primary" />
+          ) : (
+            <Wind className="w-14 h-14 text-primary" />
+          )}
         </div>
       </div>
 
@@ -125,14 +132,14 @@ export default function BreathingGuide({ onComplete, onCancel }: BreathingGuideP
       <div className="flex gap-3">
         {!running ? (
           <button
-            className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97]"
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onClick={() => setRunning(true)}
           >
             {t("breathing.start")}
           </button>
         ) : (
           <button
-            className="px-6 py-2 bg-destructive text-white rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97]"
+            className="px-6 py-2 bg-destructive text-white rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onClick={() => {
               completedRef.current = true;
               cancelAnimationFrame(rafRef.current);

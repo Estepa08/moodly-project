@@ -1,17 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
-import { useState } from "react";
-
-interface OnboardingStory {
-  id: string;
-  title: string;
-  content: string;
-  order: number;
-}
 
 const ONBOARDING_DONE_KEY = "moodly_onboarding_done";
 
@@ -20,9 +13,9 @@ export default function OnboardingPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
 
-  const { data: stories } = useQuery<OnboardingStory[]>({
+  const { data: stories } = useQuery({
     queryKey: ["onboarding"],
-    queryFn: () => api.onboarding.list() as Promise<OnboardingStory[]>,
+    queryFn: () => api.onboarding.list(),
   });
 
   const goToDashboard = () => {

@@ -26,6 +26,14 @@
 
     --shadow-neumorphic-light: rgba(255, 255, 255, 0.8);
     --shadow-neumorphic-dark: rgba(180, 160, 200, 0.4);
+
+    --param-sleep: 199 89% 48%;
+    --param-energy: 38 92% 50%;
+    --param-focus: 330 81% 60%;
+    --severity-mild: 46 93% 47%;
+    --severity-moderate: 25 95% 53%;
+    --chart-grid: 240 6% 90%;
+    --chart-tick: 240 5% 65%;
   }
 
   body {

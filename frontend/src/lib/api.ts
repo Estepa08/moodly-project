@@ -1,3 +1,26 @@
+import type { components } from "./api-types";
+
+type AuthResponse = components["schemas"]["AuthResponse"];
+type Entry = components["schemas"]["Entry"];
+type EntryCreate = components["schemas"]["EntryCreate"];
+type Parameter = components["schemas"]["Parameter"];
+type Test = components["schemas"]["Test"];
+type TestResult = components["schemas"]["TestResult"];
+type Feedback = components["schemas"]["Feedback"];
+type FeedbackCreate = components["schemas"]["FeedbackCreate"];
+type OnboardingStory = components["schemas"]["OnboardingStory"];
+type Report = components["schemas"]["Report"];
+type ReportCreate = components["schemas"]["ReportCreate"];
+type User = components["schemas"]["User"];
+type UserUpdate = components["schemas"]["UserUpdate"];
+
+interface CreatureState {
+  id: string;
+  userId: string;
+  calmness: number;
+  lastExerciseAt?: string;
+}
+
 const BASE_URL = "/api";
 
 let accessToken: string | null = null;
@@ -40,21 +63,20 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 export const api = {
   auth: {
     register: (body: { email: string; password: string; name?: string }) =>
-      request<{ accessToken: string; user: unknown }>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
+      request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
     login: (body: { email: string; password: string }) =>
-      request<{ accessToken: string; user: unknown }>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
+      request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
-    // DEMO-ONLY: remove before production
-    demo: () => request<{ accessToken: string; user: unknown }>("/auth/demo", { method: "POST" }),
+    demo: () => request<AuthResponse>("/auth/demo", { method: "POST" }),
   },
   users: {
-    me: () => request<unknown>("/users/me"),
-    update: (body: { name?: string }) =>
-      request<unknown>("/users/me", { method: "PATCH", body: JSON.stringify(body) }),
+    me: () => request<User>("/users/me"),
+    update: (body: UserUpdate) =>
+      request<User>("/users/me", { method: "PATCH", body: JSON.stringify(body) }),
     delete: () => request<void>("/users/me", { method: "DELETE" }),
   },
   parameters: {
-    list: () => request<{ id: string; name: string; description?: string; unit?: string }[]>("/parameters"),
+    list: () => request<Parameter[]>("/parameters"),
   },
   entries: {
     list: (params?: { parameterId?: string; from?: string; to?: string }) => {
@@ -63,48 +85,48 @@ export const api = {
       if (params?.from) q.set("from", params.from);
       if (params?.to) q.set("to", params.to);
       const qs = q.toString();
-      return request<unknown[]>(`/entries${qs ? `?${qs}` : ""}`);
+      return request<Entry[]>(`/entries${qs ? `?${qs}` : ""}`);
     },
-    create: (body: { parameterId: string; value: number; note?: string }) =>
-      request<unknown>("/entries", { method: "POST", body: JSON.stringify(body) }),
-    get: (id: string) => request<unknown>(`/entries/${id}`),
+    create: (body: EntryCreate) =>
+      request<Entry>("/entries", { method: "POST", body: JSON.stringify(body) }),
+    get: (id: string) => request<Entry>(`/entries/${id}`),
     update: (id: string, body: { value?: number; note?: string }) =>
-      request<unknown>(`/entries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+      request<Entry>(`/entries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id: string) => request<void>(`/entries/${id}`, { method: "DELETE" }),
   },
   tests: {
-    list: () => request<{ id: string; title: string; description?: string }[]>("/tests"),
-    get: (id: string) => request<unknown>(`/tests/${id}`),
+    list: () => request<Pick<Test, "id" | "title" | "description">[]>("/tests"),
+    get: (id: string) => request<Test>(`/tests/${id}`),
     submitResult: (id: string, body: { answers: { questionId: string; optionId: string }[] }) =>
-      request<unknown>(`/tests/${id}/results`, { method: "POST", body: JSON.stringify(body) }),
+      request<TestResult>(`/tests/${id}/results`, { method: "POST", body: JSON.stringify(body) }),
   },
   testResults: {
     list: (testId?: string) => {
       const q = testId ? `?testId=${testId}` : "";
-      return request<unknown[]>(`/test-results${q}`);
+      return request<TestResult[]>(`/test-results${q}`);
     },
-    get: (id: string) => request<unknown>(`/test-results/${id}`),
+    get: (id: string) => request<TestResult>(`/test-results/${id}`),
   },
   feedback: {
-    create: (body: { message: string }) =>
-      request<unknown>("/feedback", { method: "POST", body: JSON.stringify(body) }),
-    listMine: () => request<unknown[]>("/feedback/me"),
+    create: (body: FeedbackCreate) =>
+      request<Feedback>("/feedback", { method: "POST", body: JSON.stringify(body) }),
+    listMine: () => request<Feedback[]>("/feedback/me"),
   },
   onboarding: {
-    list: () => request<unknown[]>("/onboarding-stories"),
+    list: () => request<OnboardingStory[]>("/onboarding-stories"),
   },
   reports: {
-    create: (body: { format: "pdf" | "csv"; periodFrom: string; periodTo: string }) =>
-      request<unknown>("/reports", { method: "POST", body: JSON.stringify(body) }),
-    list: () => request<unknown[]>("/reports"),
-    get: (id: string) => request<unknown>(`/reports/${id}`),
+    create: (body: ReportCreate) =>
+      request<Report>("/reports", { method: "POST", body: JSON.stringify(body) }),
+    list: () => request<Report[]>("/reports"),
+    get: (id: string) => request<Report>(`/reports/${id}`),
     download: (id: string) => `${BASE_URL}/reports/${id}/download`,
     delete: (id: string) => request<void>(`/reports/${id}`, { method: "DELETE" }),
   },
   creature: {
-    getState: () => request<{ id: string; userId: string; calmness: number; lastExerciseAt?: string }>("/creature"),
+    getState: () => request<CreatureState>("/creature"),
     completeExercise: (duration: number) =>
-      request<{ id: string; userId: string; calmness: number; lastExerciseAt?: string }>("/creature/exercise/complete", {
+      request<CreatureState>("/creature/exercise/complete", {
         method: "POST",
         body: JSON.stringify({ duration }),
       }),

@@ -1,37 +1,17 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { api } from "../lib/api";
+import { useState } from "react";
+import { useFeedbackList, useSubmitFeedback } from "../hooks/useFeedback";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import Spinner from "../components/ui/spinner";
-import { useState } from "react";
-
-interface FeedbackItem {
-  id: string;
-  message: string;
-  createdAt: string;
-}
 
 export default function FeedbackPage() {
   const { t, i18n } = useTranslation();
-  const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
 
-  const { data: feedbacks, isLoading } = useQuery<FeedbackItem[]>({
-    queryKey: ["feedback"],
-    queryFn: () => api.feedback.listMine() as Promise<FeedbackItem[]>,
-  });
-
-  const submitFeedback = useMutation({
-    mutationFn: () => api.feedback.create({ message }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["feedback"] });
-      setMessage("");
-      toast.success(t("feedback.sent"));
-    },
-  });
+  const { data: feedbacks, isLoading } = useFeedbackList();
+  const submitFeedback = useSubmitFeedback();
 
   if (isLoading) {
     return (
@@ -51,15 +31,16 @@ export default function FeedbackPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>{t("feedback.yourMessage")}</Label>
+            <Label htmlFor="feedback-message">{t("feedback.yourMessage")}</Label>
             <textarea
+              id="feedback-message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={t("feedback.placeholder")}
-              className="flex min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-2 text-sm shadow-neumorphic-inset placeholder:text-muted-foreground resize-y"
+              className="flex min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-2 text-sm shadow-neumorphic-inset placeholder:text-muted-foreground resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
-          <Button disabled={!message || submitFeedback.isPending} onClick={() => submitFeedback.mutate()}>
+          <Button disabled={!message || submitFeedback.isPending} onClick={() => submitFeedback.mutate(message)}>
             {submitFeedback.isPending ? t("common.sending") : t("feedback.send")}
           </Button>
         </CardContent>

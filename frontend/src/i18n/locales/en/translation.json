@@ -7,7 +7,8 @@
     "sending": "Sending...",
     "generating": "Generating...",
     "languageEn": "EN",
-    "languageRu": "RU"
+    "languageRu": "RU",
+    "skipToContent": "Skip to content"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -54,6 +55,8 @@
     "save": "Save",
     "saveAnother": "Save another",
     "selectParamFirst": "Select a parameter first",
+    "tooFast": "Please slow down",
+    "saveError": "Failed to save entry",
     "history": "History",
     "noEntries": "No entries yet. Start tracking above.",
     "moodToday": "Latest Entry",

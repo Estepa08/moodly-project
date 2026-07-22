@@ -36,26 +36,26 @@ export default function RadarChart({ data, maxValue, className }: Props) {
         dotColor={{ from: "color" }}
         dotBorderWidth={2}
         dotBorderColor={{ from: "color", modifiers: [["darker", 0.3]] }}
-        colors={["#8B5CF6"]}
+        colors={["hsl(var(--primary))"]}
         fillOpacity={0.2}
         blendMode="multiply"
         motionConfig="gentle"
         theme={{
           background: "transparent",
           text: {
-            fill: "#64748b",
+            fill: "hsl(var(--muted-foreground))",
             fontSize: 11,
             fontFamily: "Raleway, system-ui, sans-serif",
           },
           grid: {
             line: {
-              stroke: "#e0d4f5",
+              stroke: "hsl(var(--border))",
               strokeWidth: 1,
             },
           },
           dots: {
             text: {
-              fill: "#4C1D95",
+              fill: "hsl(var(--foreground))",
               fontSize: 10,
             },
           },

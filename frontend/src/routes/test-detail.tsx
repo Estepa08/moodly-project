@@ -1,25 +1,13 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../lib/api";
+import { useState } from "react";
+import { useTest, useSubmitTestResult } from "../hooks/useTests";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
-import { useState } from "react";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 import RadarChart from "../components/RadarChart";
 import type { DistortionEntry } from "../components/RadarChart";
-
-interface TestData {
-  id: string;
-  title: string;
-  description?: string;
-  questions: {
-    id: string;
-    text: string;
-    options: { id: string; text: string; score: number }[];
-  }[];
-}
 
 interface ResultData {
   score: number;
@@ -43,18 +31,8 @@ export default function TestDetailPage() {
   const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
   const [result, setResult] = useState<ResultData | null>(null);
 
-  const { data: test, isLoading } = useQuery<TestData>({
-    queryKey: ["test", testId],
-    queryFn: () => api.tests.get(testId!) as Promise<TestData>,
-    enabled: !!testId,
-  });
-
-  const submitMutation = useMutation({
-    mutationFn: () => api.tests.submitResult(testId!, { answers }),
-    onSuccess: (data) => {
-      setResult(data as ResultData);
-    },
-  });
+  const { data: test, isLoading } = useTest(testId);
+  const submitMutation = useSubmitTestResult(testId);
 
   const cdDistortions = result?.flags?.distortions;
   const cdKeys = cdDistortions ? Object.keys(cdDistortions) : [];
@@ -87,7 +65,7 @@ export default function TestDetailPage() {
               <div>
                 <p className="font-medium mb-2">{t("cognitiveDistortions.yourProfile")}</p>
                 <RadarChart
-                  data={cdKeys.map((key) => ({ key, score: cdDistortions[key].score }))}
+                  data={cdKeys.map((key) => ({ key, score: cdDistortions[key].score })) as DistortionEntry[]}
                 />
               </div>
             )}
@@ -118,7 +96,9 @@ export default function TestDetailPage() {
     setAnswers(newAnswers);
 
     if (isLast) {
-      submitMutation.mutate();
+      submitMutation.mutate(newAnswers, {
+        onSuccess: (data) => setResult(data as ResultData),
+      });
     } else {
       setQuestionIndex(questionIndex + 1);
     }

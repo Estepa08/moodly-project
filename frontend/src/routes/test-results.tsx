@@ -1,32 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react";
-import { api } from "../lib/api";
+import { useTests, useTestResults } from "../hooks/useTests";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import { useTestTranslation } from "../hooks/useTestTranslation";
-
-interface TestResult {
-  id: string;
-  testId: string;
-  score: number;
-  interpretation: string;
-  recommendation: string;
-  completedAt: string;
-  flags?: {
-    distortions?: Record<string, { score: number; level: string }>;
-    templateKey?: string;
-    recommendationKey?: string;
-    highKeys?: string[];
-    moderateKeys?: string[];
-  };
-}
-
-interface Test {
-  id: string;
-  title: string;
-}
 
 export default function TestResultsPage() {
   const { t, i18n } = useTranslation();
@@ -40,15 +18,8 @@ export default function TestResultsPage() {
   const [showFull, setShowFull] = useState<Record<string, boolean>>({});
   const [showRec, setShowRec] = useState<Record<string, boolean>>({});
 
-  const { data: tests } = useQuery<Test[]>({
-    queryKey: ["tests"],
-    queryFn: () => api.tests.list() as Promise<Test[]>,
-  });
-
-  const { data: results, isLoading } = useQuery<TestResult[]>({
-    queryKey: ["test-results"],
-    queryFn: () => api.testResults.list() as Promise<TestResult[]>,
-  });
+  const { data: tests } = useTests();
+  const { data: results, isLoading } = useTestResults();
 
   if (isLoading) {
     return (
@@ -69,8 +40,13 @@ export default function TestResultsPage() {
       )}
 
       {results?.map((r) => {
-        const isCD = !!r.flags?.templateKey;
-        const cdFlags = r.flags;
+        const isCD = !!(r.flags as Record<string, unknown>)?.templateKey;
+        const cdFlags = r.flags as {
+          templateKey?: string;
+          recommendationKey?: string;
+          highKeys?: string[];
+          moderateKeys?: string[];
+        } | undefined;
         const interpretationText =
           isCD && cdFlags
             ? tCDInterpretation(
@@ -86,8 +62,8 @@ export default function TestResultsPage() {
             : tRecommendation(r.recommendation);
 
         const isLongText = isCD || interpretationText.length > 100;
-        const highKeys = r.flags?.highKeys || [];
-        const moderateKeys = r.flags?.moderateKeys || [];
+        const highKeys = (r.flags as Record<string, string[]> | undefined)?.highKeys || [];
+        const moderateKeys = (r.flags as Record<string, string[]> | undefined)?.moderateKeys || [];
 
         return (
           <Card key={r.id}>
@@ -145,6 +121,7 @@ export default function TestResultsPage() {
 
               {isLongText && (
                 <button
+                  aria-expanded={!!showFull[r.id]}
                   className="text-xs text-primary hover:underline mt-1 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() =>
                     setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))
@@ -155,6 +132,7 @@ export default function TestResultsPage() {
               )}
 
               <button
+                aria-expanded={!!showRec[r.id]}
                 className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setShowRec((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
               >

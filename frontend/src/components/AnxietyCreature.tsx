@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 interface AnxietyCreatureProps {
   calmness: number;
@@ -6,11 +7,11 @@ interface AnxietyCreatureProps {
 }
 
 const STOPS = [
-  { t: 0, color: "#ef4444" },
-  { t: 0.25, color: "#f97316" },
-  { t: 0.5, color: "#8B5CF6" },
-  { t: 0.75, color: "#6366f1" },
-  { t: 1, color: "#059669" },
+  { t: 0, color: "hsl(var(--destructive))" },
+  { t: 0.25, color: "hsl(var(--severity-moderate))" },
+  { t: 0.5, color: "hsl(var(--primary))" },
+  { t: 0.75, color: "hsl(var(--primary))" },
+  { t: 1, color: "hsl(var(--accent))" },
 ];
 
 function lerpColor(colors: { t: number; color: string }[], t: number): string {
@@ -37,6 +38,7 @@ function hexToRgb(hex: string) {
 }
 
 export default function AnxietyCreature({ calmness, size = 200 }: AnxietyCreatureProps) {
+  const reducedMotion = useReducedMotion();
   const t = calmness / 100;
   const color = lerpColor(STOPS, t);
   const pulseDuration = 0.3 + t * 2.7;
@@ -47,20 +49,23 @@ export default function AnxietyCreature({ calmness, size = 200 }: AnxietyCreatur
 
   const filterStyle = useMemo(() => ({
     filter: "url(#creatureBlur)",
-    transition: "fill 0.8s ease",
-  }), []);
+    transition: reducedMotion ? "none" : "fill 0.8s ease",
+  }), [reducedMotion]);
 
   return (
     <svg
       viewBox="0 0 120 120"
       width={size}
       height={size}
+      role="img"
+      aria-label={`Calmness: ${calmness}%`}
       className="drop-shadow-xl"
       style={{
-        animation: `creaturePulse ${pulseDuration}s ease-in-out infinite`,
+        animation: reducedMotion ? "none" : `creaturePulse ${pulseDuration}s ease-in-out infinite`,
         transformOrigin: "center",
       }}
     >
+      <title>{`Anxiety creature — calmness: ${calmness}%`}</title>
       <defs>
         <filter id="creatureBlur">
           <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
@@ -74,28 +79,28 @@ export default function AnxietyCreature({ calmness, size = 200 }: AnxietyCreatur
       <circle cx="60" cy="60" r="42" fill={color} style={filterStyle} />
       <g
         style={{
-          transition: "transform 0.6s ease",
+          transition: reducedMotion ? "none" : "transform 0.6s ease",
           transform: `scale(${scale})`,
           transformOrigin: "60px 60px",
         }}
       >
         <ellipse cx="45" cy="52" rx={6 + eyeOpenness * 3} ry={8 * eyeOpenness + 1} fill="white" opacity="0.9">
-          <animate attributeName="ry" values={`${8 * eyeOpenness + 1}`} dur="3s" repeatCount="indefinite" />
+          {!reducedMotion && <animate attributeName="ry" values={`${8 * eyeOpenness + 1}`} dur="3s" repeatCount="indefinite" />}
         </ellipse>
         <ellipse cx="75" cy="52" rx={6 + eyeOpenness * 3} ry={8 * eyeOpenness + 1} fill="white" opacity="0.9">
-          <animate attributeName="ry" values={`${8 * eyeOpenness + 1}`} dur="3s" repeatCount="indefinite" keyTimes="0;0.48;0.5;0.98;1" />
+          {!reducedMotion && <animate attributeName="ry" values={`${8 * eyeOpenness + 1}`} dur="3s" repeatCount="indefinite" keyTimes="0;0.48;0.5;0.98;1" />}
         </ellipse>
-        <circle cx="45" cy="52" r={4 - t * 2} fill="#1e1b4b" opacity={0.8 - t * 0.3} />
-        <circle cx="75" cy="52" r={4 - t * 2} fill="#1e1b4b" opacity={0.8 - t * 0.3} />
+        <circle cx="45" cy="52" r={4 - t * 2} fill="hsl(var(--foreground))" opacity={0.8 - t * 0.3} />
+        <circle cx="75" cy="52" r={4 - t * 2} fill="hsl(var(--foreground))" opacity={0.8 - t * 0.3} />
       </g>
       <path
         d={`M 45 ${mouthY} Q 60 ${mouthY + mouthCurve} 75 ${mouthY}`}
         fill="none"
-        stroke="#1e1b4b"
+        stroke="hsl(var(--foreground))"
         strokeWidth={2 - t * 0.5}
         strokeLinecap="round"
         opacity={0.6 + t * 0.2}
-        style={{ transition: "all 0.6s ease" }}
+        style={{ transition: reducedMotion ? "none" : "all 0.6s ease" }}
       />
       <style>{`
         @keyframes creaturePulse {

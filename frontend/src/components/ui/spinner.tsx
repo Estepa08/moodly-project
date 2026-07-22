@@ -6,5 +6,5 @@ interface Props {
 }
 
 export default function Spinner({ size = 20, className = "" }: Props) {
-  return <Loader2 className={`animate-spin text-primary ${className}`} style={{ width: size, height: size }} />;
+  return <Loader2 role="status" aria-live="polite" className={`animate-spin text-primary ${className}`} style={{ width: size, height: size }} />;
 }

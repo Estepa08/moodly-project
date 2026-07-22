@@ -1,43 +1,21 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import { useState } from "react";
+import { useReports, useCreateReport } from "../hooks/useReports";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import Spinner from "../components/ui/spinner";
-import { useState } from "react";
-
-interface Report {
-  id: string;
-  format: string;
-  status: string;
-  periodFrom: string;
-  periodTo: string;
-  createdAt: string;
-  downloadUrl?: string;
-}
 
 export default function ReportsPage() {
   const { t, i18n } = useTranslation();
-  const queryClient = useQueryClient();
   const [format, setFormat] = useState<"pdf" | "csv">("pdf");
   const [periodFrom, setPeriodFrom] = useState("");
   const [periodTo, setPeriodTo] = useState("");
 
-  const { data: reports, isLoading } = useQuery<Report[]>({
-    queryKey: ["reports"],
-    queryFn: () => api.reports.list() as Promise<Report[]>,
-  });
-
-  const createReport = useMutation({
-    mutationFn: () => api.reports.create({ format, periodFrom, periodTo }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reports"] });
-      toast.success(t("reports.created"));
-    },
-  });
+  const { data: reports, isLoading } = useReports();
+  const createReport = useCreateReport();
 
   if (isLoading) {
     return (
@@ -57,8 +35,9 @@ export default function ReportsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>{t("reports.format")}</Label>
+            <Label htmlFor="report-format">{t("reports.format")}</Label>
             <select
+              id="report-format"
               className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
               value={format}
               onChange={(e) => setFormat(e.target.value as "pdf" | "csv")}
@@ -77,7 +56,7 @@ export default function ReportsPage() {
               <Input id="period-to" type="date" value={periodTo} onChange={(e) => setPeriodTo(e.target.value)} />
             </div>
           </div>
-          <Button disabled={!periodFrom || !periodTo || createReport.isPending} onClick={() => createReport.mutate()}>
+          <Button disabled={!periodFrom || !periodTo || createReport.isPending} onClick={() => createReport.mutate({ format, periodFrom, periodTo })}>
             {createReport.isPending ? t("common.generating") : t("reports.submit")}
           </Button>
         </CardContent>

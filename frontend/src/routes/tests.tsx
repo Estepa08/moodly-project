@@ -1,26 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api";
+import { useTranslation } from "react-i18next";
+import { useTests } from "../hooks/useTests";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 
-interface Test {
-  id: string;
-  title: string;
-  description?: string;
-}
-
 export default function TestsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { tTestTitle, tTestDescription } = useTestTranslation();
-  const { data: tests, isLoading } = useQuery<Test[]>({
-    queryKey: ["tests"],
-    queryFn: () => api.tests.list() as Promise<Test[]>,
-  });
+  const { data: tests, isLoading } = useTests();
 
   if (isLoading) {
     return (

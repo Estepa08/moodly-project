@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { api } from "../lib/api";
+import { useCreatureState, useCompleteExercise } from "../hooks/useCreature";
 import AnxietyCreature from "../components/AnxietyCreature";
 import BreathingGuide from "../components/BreathingGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -10,21 +9,11 @@ type Phase = "idle" | "exercising" | "done";
 
 export default function BreathingPage() {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const [phase, setPhase] = useState<Phase>("idle");
   const [lastDuration, setLastDuration] = useState(0);
 
-  const { data: creature } = useQuery({
-    queryKey: ["creature"],
-    queryFn: () => api.creature.getState(),
-  });
-
-  const completeExercise = useMutation({
-    mutationFn: (duration: number) => api.creature.completeExercise(duration),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["creature"] });
-    },
-  });
+  const { data: creature } = useCreatureState();
+  const completeExercise = useCompleteExercise();
 
   const calmness = creature?.calmness ?? 50;
 
@@ -52,7 +41,7 @@ export default function BreathingPage() {
             </p>
             <div className="flex justify-center">
               <button
-                className="px-8 py-3 bg-primary text-primary-foreground rounded-xl shadow-neumorphic font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97]"
+                className="px-8 py-3 bg-primary text-primary-foreground rounded-xl shadow-neumorphic font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setPhase("exercising")}
               >
                 {t("breathing.begin")}
@@ -91,13 +80,13 @@ export default function BreathingPage() {
             </p>
             <div className="flex justify-center gap-3">
               <button
-                className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97]"
+                className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setPhase("exercising")}
               >
                 {t("breathing.doAnother")}
               </button>
               <button
-                className="px-6 py-2 bg-card text-primary rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97]"
+                className="px-6 py-2 bg-card text-primary rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setPhase("idle")}
               >
                 {t("common.back")}
