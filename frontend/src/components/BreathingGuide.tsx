@@ -6,6 +6,7 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 interface BreathingGuideProps {
   onComplete: (duration: number) => void;
   onCancel: () => void;
+  autoStart?: boolean;
 }
 
 const PHASES = [
@@ -16,13 +17,13 @@ const PHASES = [
 
 const TOTAL_CYCLES = 4;
 
-export default function BreathingGuide({ onComplete, onCancel }: BreathingGuideProps) {
+export default function BreathingGuide({ onComplete, onCancel, autoStart }: BreathingGuideProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [cycle, setCycle] = useState(1);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
-  const [running, setRunning] = useState(false);
+  const [running, setRunning] = useState(autoStart ?? false);
   const startTimeRef = useRef(0);
   const rafRef = useRef(0);
   const completedRef = useRef(false);
@@ -118,6 +119,21 @@ export default function BreathingGuide({ onComplete, onCancel }: BreathingGuideP
             <Wind className="w-14 h-14 text-primary" />
           )}
         </div>
+      </div>
+
+      <div className="flex gap-2">
+        {Array.from({ length: TOTAL_CYCLES }, (_, i) => (
+          <div
+            key={i}
+            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              i + 1 < cycle
+                ? "bg-accent"
+                : i + 1 === cycle
+                  ? "bg-primary shadow-neumorphic-sm"
+                  : "bg-secondary"
+            }`}
+          />
+        ))}
       </div>
 
       <div className="text-center">

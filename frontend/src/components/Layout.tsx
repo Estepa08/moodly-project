@@ -1,10 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import SkipLink from "./SkipLink";
-import { api } from "../lib/api";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -16,7 +15,7 @@ import {
   Wind,
 } from "lucide-react";
 
-const navItems = [
+const NAV_ITEMS = [
   { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard },
   { labelKey: "nav.breathing", path: "/breathing", icon: Wind },
   { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
@@ -30,17 +29,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
-  const reducedMotion = useReducedMotion();
+  const isReducedMotion = useReducedMotion();
+  const { data: userData } = useCurrentUser();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
-
-  const { data: userData } = useQuery<{ id: string; email: string; name?: string }>({
-    queryKey: ["userMe"],
-    queryFn: () => api.users.me() as Promise<{ id: string; email: string; name?: string }>,
-  });
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -56,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <p className="text-xs text-muted-foreground truncate">{userData?.email ?? ""}</p>
           </div>
         </div>
-        {navItems.map((item) => (
+        {NAV_ITEMS.map((item) => (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
@@ -81,11 +76,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </nav>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className={`sticky top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${reducedMotion ? "" : "backdrop-blur-md"}`}>
+        <header className={`sticky top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${isReducedMotion ? "" : "backdrop-blur-md"}`}>
           <h1 className="text-lg font-semibold text-primary font-serif">{t("common.moodly")}</h1>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 text-xs md:hidden">
-              {navItems.map((item) => (
+              {NAV_ITEMS.map((item) => (
                 <button
                   key={item.path}
                   aria-label={t(item.labelKey)}

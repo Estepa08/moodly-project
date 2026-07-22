@@ -173,7 +173,7 @@ export default function Dashboard() {
     : [];
 
   const entriesForHistory = selectedParam ? (allEntries?.filter((e) => e.parameterId === selectedParam) ?? []) : [];
-  const loading = entriesLoading || resultsLoading;
+  const isDataLoading = entriesLoading || resultsLoading;
 
   const toggleParam = (name: string) => {
     setVisibleParams((prev) => {
@@ -220,12 +220,12 @@ export default function Dashboard() {
         paramNames={paramNames}
         visibleParams={visibleParams}
         onToggleParam={toggleParam}
-        loading={loading}
+        isLoading={isDataLoading}
       />
 
       <WeeklyAveragesGrid
         weeklyAverages={weeklyAverages}
-        loading={loading}
+        isLoading={isDataLoading}
       />
 
       {radarData.length > 0 && (
@@ -241,13 +241,13 @@ export default function Dashboard() {
 
       <TestTimeline
         testTimeline={testTimeline}
-        loading={resultsLoading}
+        isLoading={resultsLoading}
       />
 
       <EntryHistory
         selectedParam={selectedParam}
         entries={entriesForHistory}
-        loading={entriesLoading}
+        isLoading={entriesLoading}
       />
     </div>
   );

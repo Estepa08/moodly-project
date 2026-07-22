@@ -48,12 +48,12 @@ describe("Users", () => {
       url: "/auth/register",
       payload: { email: "delete-me@example.com", password: "secret123" },
     });
-    const t = reg.json().accessToken;
+    const token2 = reg.json().accessToken;
 
     const res = await app.inject({
       method: "DELETE",
       url: "/users/me",
-      headers: { authorization: `Bearer ${token}` },
+      headers: { authorization: `Bearer ${token2}` },
     });
     expect(res.statusCode).toBe(204);
   });

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { SEVERITY_COLORS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Spinner from "./ui/spinner";
 import type { components } from "../lib/api-types";
@@ -13,13 +14,6 @@ interface TestGroup {
   lastScore: number;
 }
 
-const SEVERITY_COLORS: Record<string, string> = {
-  minimal: "hsl(var(--accent))",
-  mild: "hsl(var(--severity-mild))",
-  moderate: "hsl(var(--severity-moderate))",
-  severe: "hsl(var(--destructive))",
-};
-
 function getSeverity(score: number, interpretation: string): string {
   const lower = interpretation.toLowerCase();
   if (lower.includes("severe") || lower.includes("high")) return "severe";
@@ -30,10 +24,10 @@ function getSeverity(score: number, interpretation: string): string {
 
 interface TestTimelineProps {
   testTimeline: TestGroup[];
-  loading: boolean;
+  isLoading: boolean;
 }
 
-export default function TestTimeline({ testTimeline, loading }: TestTimelineProps) {
+export default function TestTimeline({ testTimeline, isLoading }: TestTimelineProps) {
   const { t } = useTranslation();
 
   return (
@@ -42,7 +36,7 @@ export default function TestTimeline({ testTimeline, loading }: TestTimelineProp
         <CardTitle className="text-base">{t("dashboard.testProgress")}</CardTitle>
       </CardHeader>
       <CardContent>
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center py-8"><Spinner size={32} /></div>
         ) : testTimeline.length > 0 ? (
           <div className="space-y-4">

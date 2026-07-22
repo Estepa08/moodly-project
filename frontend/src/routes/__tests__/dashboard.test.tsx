@@ -25,13 +25,13 @@ describe("Dashboard", () => {
   });
 
   it("renders date picker, mood check-in, trends, averages, test progress, and history", async () => {
-    (api.parameters.list as Mock).mockResolvedValueOnce([
+    (api.parameters.list as Mock).mockResolvedValue([
       { id: "1", name: "Mood", unit: "/10" },
       { id: "2", name: "Anxiety", unit: "/10" },
     ]);
-    (api.entries.list as Mock).mockResolvedValueOnce([]);
-    (api.testResults.list as Mock).mockResolvedValueOnce([]);
-    (api.tests.list as Mock).mockResolvedValueOnce([]);
+    (api.entries.list as Mock).mockResolvedValue([]);
+    (api.testResults.list as Mock).mockResolvedValue([]);
+    (api.tests.list as Mock).mockResolvedValue([]);
     renderWithProviders(<Dashboard />);
 
     expect(screen.getByText("Quick Entry")).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe("Dashboard", () => {
     expect(screen.getByText("Test Progress")).toBeInTheDocument();
     expect(screen.getByText("History")).toBeInTheDocument();
 
-    await screen.findByText("No entries for this period");
-    await screen.findByText("No test results yet");
+    expect(screen.getAllByText("Select...")).toHaveLength(2);
+    expect(await screen.findByText("No test results yet")).toBeInTheDocument();
   });
 });

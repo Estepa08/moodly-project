@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { api } from "../lib/api";
+import { useOnboardingStories } from "../hooks/useOnboardingStories";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 
@@ -12,11 +11,7 @@ export default function OnboardingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-
-  const { data: stories } = useQuery({
-    queryKey: ["onboarding"],
-    queryFn: () => api.onboarding.list(),
-  });
+  const { data: stories } = useOnboardingStories();
 
   const goToDashboard = () => {
     localStorage.setItem(ONBOARDING_DONE_KEY, "true");

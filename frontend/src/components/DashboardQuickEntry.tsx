@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Sun } from "lucide-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { components } from "../lib/api-types";
+import { PARAM_NAME_KEYS, SLIDER_MIN, SLIDER_MAX, SLIDER_STEP, CLICK_THRESHOLD, LOCKOUT_DURATION_MS, CLICK_WINDOW_MS } from "../lib/constants";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Label } from "./ui/label";
@@ -12,14 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 type Parameter = components["schemas"]["Parameter"];
 type Entry = components["schemas"]["Entry"];
-
-const PARAM_NAME_KEYS: Record<string, string> = {
-  Anxiety: "dashboard.anxiety",
-  Sleep: "dashboard.sleep",
-  Mood: "dashboard.mood",
-  Energy: "dashboard.energy",
-  Focus: "dashboard.focus",
-};
 
 interface DashboardQuickEntryProps {
   params: Parameter[] | undefined;
@@ -42,31 +35,31 @@ export default function DashboardQuickEntry({
   const isSavingRef = useRef(false);
   const clickCountRef = useRef(0);
   const clickWindowRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const [showSaved, setShowSaved] = useState(false);
-  const [locked, setLocked] = useState(false);
+  const [isShowSaved, setIsShowSaved] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
 
   useEffect(() => {
-    if (showSaved) setShowSaved(false);
+    if (isShowSaved) setIsShowSaved(false);
   }, [selectedParam, moodValue[0]]);
 
   const handleSave = () => {
-    if (locked) return;
-
-    if (showSaved) {
-      onParamChange("");
-      setShowSaved(false);
-      return;
-    }
+    if (isLocked) return;
 
     clickCountRef.current++;
-    if (clickCountRef.current >= 5) {
-      setLocked(true);
+    if (clickCountRef.current >= CLICK_THRESHOLD) {
+      setIsLocked(true);
       toast.warning(t("dashboard.tooFast"));
-      setTimeout(() => { setLocked(false); clickCountRef.current = 0; }, 5000);
+      setTimeout(() => { setIsLocked(false); clickCountRef.current = 0; }, LOCKOUT_DURATION_MS);
       return;
     }
     clearTimeout(clickWindowRef.current);
-    clickWindowRef.current = setTimeout(() => { clickCountRef.current = 0; }, 2000);
+    clickWindowRef.current = setTimeout(() => { clickCountRef.current = 0; }, CLICK_WINDOW_MS);
+
+    if (isShowSaved) {
+      onParamChange("");
+      setIsShowSaved(false);
+      return;
+    }
 
     if (!selectedParam) {
       toast.error(t("dashboard.selectParamFirst"));
@@ -79,7 +72,7 @@ export default function DashboardQuickEntry({
       { parameterId: selectedParam, value: moodValue[0] },
       {
         onSuccess: () => {
-          setShowSaved(true);
+          setIsShowSaved(true);
           toast.success(t("dashboard.entrySaved"));
         },
         onSettled: () => { isSavingRef.current = false; },
@@ -121,19 +114,19 @@ export default function DashboardQuickEntry({
           <Slider
             value={moodValue}
             onValueChange={onMoodChange}
-            min={0}
-            max={10}
-            step={0.5}
+            min={SLIDER_MIN}
+            max={SLIDER_MAX}
+            step={SLIDER_STEP}
             style={{ "--slider-fill": "linear-gradient(to right, hsl(var(--destructive)), hsl(var(--severity-moderate)), hsl(var(--severity-mild)), hsl(var(--primary)), hsl(var(--accent)))" } as React.CSSProperties}
           />
         </div>
 
         <Button
           className="w-full"
-          disabled={createEntry.isPending || locked}
+          disabled={createEntry.isPending || isLocked}
           onClick={handleSave}
         >
-          {createEntry.isPending ? t("common.saving") : showSaved ? t("dashboard.saveAnother") : t("dashboard.save")}
+          {createEntry.isPending ? t("common.saving") : isShowSaved ? t("dashboard.saveAnother") : t("dashboard.save")}
         </Button>
       </CardContent>
     </Card>

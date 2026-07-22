@@ -55,6 +55,7 @@ export default function BreathingPage() {
         <Card className="shadow-neumorphic">
           <CardContent className="pt-6">
             <BreathingGuide
+              autoStart
               onComplete={(duration) => {
                 setLastDuration(duration);
                 completeExercise.mutate(duration);
@@ -67,8 +68,11 @@ export default function BreathingPage() {
       )}
 
       {phase === "done" && (
-        <Card className="shadow-neumorphic border-t-4 border-accent">
-          <CardHeader>
+        <Card className="shadow-neumorphic">
+          <CardHeader className="flex-row items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+              <div className="w-4 h-4 rounded-full bg-accent" />
+            </div>
             <CardTitle className="text-base text-accent">{t("breathing.done")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">

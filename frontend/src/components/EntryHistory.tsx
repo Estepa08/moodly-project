@@ -17,10 +17,10 @@ type Entry = components["schemas"]["Entry"];
 interface EntryHistoryProps {
   selectedParam: string;
   entries: Entry[];
-  loading: boolean;
+  isLoading: boolean;
 }
 
-export default function EntryHistory({ selectedParam, entries, loading }: EntryHistoryProps) {
+export default function EntryHistory({ selectedParam, entries, isLoading }: EntryHistoryProps) {
   const { t } = useTranslation();
 
   return (
@@ -31,7 +31,7 @@ export default function EntryHistory({ selectedParam, entries, loading }: EntryH
       <CardContent>
         {!selectedParam ? (
           <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.select")}</p>
-        ) : loading ? (
+        ) : isLoading ? (
           <div className="flex justify-center py-8"><Spinner size={32} /></div>
         ) : entries.length > 0 ? (
           <ResponsiveContainer width="100%" height={200}>

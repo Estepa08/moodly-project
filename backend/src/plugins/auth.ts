@@ -28,7 +28,7 @@ export default fp(async function authPlugin(fastify: FastifyInstance) {
       await request.jwtVerify();
       request.userId = request.user.userId;
     } catch {
-      reply.status(401).send({ code: "UNAUTHORIZED", message: "Invalid or expired token" });
+      return reply.status(401).send({ code: "UNAUTHORIZED", message: "Invalid or expired token" });
     }
   });
 });
