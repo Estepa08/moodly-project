@@ -33,7 +33,7 @@ export default function TestsPage() {
   return (
     <div className="space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-primary font-serif">{t("tests.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground font-serif">{t("tests.title")}</h1>
         <Button variant="ghost" onClick={() => navigate("/")}>{t("common.back")}</Button>
       </header>
 

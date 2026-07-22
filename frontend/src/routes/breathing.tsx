@@ -31,7 +31,7 @@ export default function BreathingPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-primary font-serif">{t("breathing.title")}</h2>
+        <h2 className="text-xl font-semibold text-foreground font-serif">{t("breathing.title")}</h2>
         <p className="text-sm text-muted-foreground mt-1">{t("breathing.subtitle")}</p>
       </div>
 

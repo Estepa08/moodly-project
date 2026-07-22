@@ -4,10 +4,11 @@ import { toast } from "sonner";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { Slider } from "../components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import Spinner from "../components/ui/spinner";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -65,7 +66,7 @@ const PERIODS = [
 
 const PARAM_COLORS: Record<string, string> = {
   Anxiety: "#8B5CF6",
-  Sleep: "#6366f1",
+  Sleep: "#0ea5e9",
   Mood: "#059669",
   Energy: "#f59e0b",
   Focus: "#ec4899",
@@ -119,10 +120,15 @@ export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [selectedParam, setSelectedParam] = useState<string>("");
-  const [entryValue, setEntryValue] = useState("");
-  const [entryNote, setEntryNote] = useState("");
+  const [moodValue, setMoodValue] = useState([7.5]);
   const [period, setPeriod] = useState("2w");
   const [visibleParams, setVisibleParams] = useState<Set<string>>(new Set(["Mood", "Sleep", "Anxiety"]));
+  const isSavingRef = useRef(false);
+  const [showSaved, setShowSaved] = useState(false);
+
+  useEffect(() => {
+    if (showSaved) setShowSaved(false);
+  }, [selectedParam, moodValue[0]]);
 
   const { data: params, isLoading: paramsLoading } = useQuery<Parameter[]>({
     queryKey: ["parameters"],
@@ -269,17 +275,12 @@ export default function Dashboard() {
   const entriesForHistory = selectedParam ? (allEntries?.filter((e) => e.parameterId === selectedParam) ?? []) : [];
 
   const createEntry = useMutation({
-    mutationFn: () =>
-      api.entries.create({
-        parameterId: selectedParam,
-        value: parseFloat(entryValue),
-        note: entryNote || undefined,
-      }),
+    mutationFn: (data: { parameterId: string; value: number }) =>
+      api.entries.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
-      setEntryValue("");
-      setEntryNote("");
       toast.success(t("dashboard.entrySaved"));
+      setShowSaved(true);
     },
   });
 
@@ -297,7 +298,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-primary font-serif">{t("dashboard.dateRange")}</h2>
+        <h2 className="text-lg font-semibold text-foreground font-serif">{t("dashboard.dateRange")}</h2>
         <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
           {PERIODS.map((p) => (
             <button
@@ -314,6 +315,75 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      <Card className="shadow-neumorphic">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Sun className="w-4 h-4 text-accent" />
+            {t("dashboard.quickEntry")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label>{t("dashboard.parameter")}</Label>
+            <Select
+              value={selectedParam}
+              onValueChange={setSelectedParam}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={t("dashboard.select")} />
+              </SelectTrigger>
+              <SelectContent>
+                {params?.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {t(PARAM_NAME_KEYS[p.name] ?? p.name)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-destructive font-medium">{t("dashboard.moodAwful")}</span>
+              <span className="text-lg font-bold font-serif text-primary">{moodValue[0].toFixed(1)}</span>
+              <span className="text-accent font-medium">{t("dashboard.moodGreat")}</span>
+            </div>
+            <Slider
+              value={moodValue}
+              onValueChange={setMoodValue}
+              min={0}
+              max={10}
+              step={0.5}
+              style={{ "--slider-fill": "linear-gradient(to right, #ea1515, #f97316, #eab308, #8B5CF6, #059669)" } as React.CSSProperties}
+            />
+          </div>
+
+          <Button
+            className="w-full"
+            disabled={createEntry.isPending}
+            onClick={() => {
+              if (showSaved) {
+                setSelectedParam("");
+                setShowSaved(false);
+                return;
+              }
+              if (!selectedParam) {
+                toast.error(t("dashboard.selectParamFirst"));
+                return;
+              }
+              if (isSavingRef.current) return;
+              isSavingRef.current = true;
+              createEntry.mutate(
+                { parameterId: selectedParam, value: moodValue[0] },
+                { onSettled: () => { isSavingRef.current = false; } },
+              );
+            }}
+          >
+            {createEntry.isPending ? t("common.saving") : showSaved ? t("dashboard.saveAnother") : t("dashboard.save")}
+          </Button>
+        </CardContent>
+      </Card>
 
       <Card className="shadow-neumorphic">
         <CardHeader>
@@ -353,7 +423,7 @@ export default function Dashboard() {
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       visibleParams.has(name)
                         ? "bg-primary/10 text-primary shadow-neumorphic-sm"
-                        : "bg-muted text-muted-foreground"
+                        : "bg-muted text-muted-foreground shadow-neumorphic-inset"
                     }`}
                   >
                     <span
@@ -371,91 +441,42 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="shadow-neumorphic">
-          <CardHeader>
-            <CardTitle className="text-base">{t("dashboard.quickEntry")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>{t("dashboard.parameter")}</Label>
-              <select
-                className="flex h-10 w-full rounded-lg border border-border bg-card px-3 text-sm shadow-neumorphic-inset"
-                value={selectedParam}
-                onChange={(e) => setSelectedParam(e.target.value)}
-              >
-                <option value="">{t("dashboard.select")}</option>
-                {params?.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {t(PARAM_NAME_KEYS[p.name] ?? p.name)}{p.unit ? ` (${p.unit})` : ""}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label>{t("dashboard.value")}</Label>
-              <Input
-                type="number"
-                value={entryValue}
-                onChange={(e) => setEntryValue(e.target.value)}
-                placeholder={t("dashboard.valuePlaceholder")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t("dashboard.note")}</Label>
-              <Input
-                value={entryNote}
-                onChange={(e) => setEntryNote(e.target.value)}
-                placeholder={t("dashboard.notePlaceholder")}
-              />
-            </div>
-            <Button
-              className="w-full"
-              disabled={!selectedParam || !entryValue || createEntry.isPending}
-              onClick={() => createEntry.mutate()}
-            >
-              {createEntry.isPending ? t("common.saving") : t("dashboard.saveEntry")}
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-neumorphic">
-          <CardHeader>
-            <CardTitle className="text-base">{t("dashboard.weeklyAverages")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="flex justify-center py-8"><Spinner size={32} /></div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3">
-                {weeklyAverages.map((avg) => {
-                  const Icon = PARAM_ICONS[avg.name];
-                  const avgValue = avg.average;
-                  const colorClass = avgValue !== null
-                    ? avgValue >= 7 ? "text-accent" : avgValue >= 4 ? "text-primary" : "text-destructive"
-                    : "text-muted-foreground";
-                  const TrendIcon = avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
-                  const trendColor = avg.trend === "up" ? "text-accent" : avg.trend === "down" ? "text-destructive" : "text-muted-foreground";
-                  return (
-                    <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
-                      <div className="flex items-center gap-2 mb-2">
-                        {Icon && <Icon className="w-4 h-4 text-primary" />}
-                        <span className="text-xs text-muted-foreground">{t(PARAM_NAME_KEYS[avg.name] ?? avg.name)}</span>
-                      </div>
-                      <div className="flex items-end gap-2">
-                        <span className={`text-2xl font-bold font-serif ${colorClass}`}>
-                          {avgValue !== null ? avgValue.toFixed(1) : "—"}
-                        </span>
-                        <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />
-                      </div>
+      <Card className="shadow-neumorphic">
+        <CardHeader>
+          <CardTitle className="text-base">{t("dashboard.weeklyAverages")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {weeklyAverages.map((avg) => {
+                const Icon = PARAM_ICONS[avg.name];
+                const avgValue = avg.average;
+                const colorClass = avgValue !== null
+                  ? avgValue >= 7 ? "text-accent" : avgValue >= 4 ? "text-primary" : "text-destructive"
+                  : "text-muted-foreground";
+                const TrendIcon = avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
+                const trendColor = avg.trend === "up" ? "text-accent" : avg.trend === "down" ? "text-destructive" : "text-muted-foreground";
+                return (
+                  <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      {Icon && <Icon className="w-4 h-4 text-primary" />}
+                      <span className="text-xs text-muted-foreground">{t(PARAM_NAME_KEYS[avg.name] ?? avg.name)}</span>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                    <div className="flex items-end gap-2">
+                      <span className={`text-2xl font-bold font-serif ${colorClass}`}>
+                        {avgValue !== null ? avgValue.toFixed(1) : "—"}
+                      </span>
+                      <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {radarData.length > 0 && (
         <Card className="shadow-neumorphic">

@@ -58,7 +58,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             onClick={() => navigate(item.path)}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               location.pathname === item.path
-                ? "text-primary font-semibold bg-secondary/50"
+                ? "text-foreground font-semibold bg-secondary/50"
                 : "text-muted-foreground hover:text-primary hover:bg-secondary/50"
             }`}
           >

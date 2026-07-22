@@ -43,7 +43,7 @@ export default function FeedbackPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-primary font-serif">{t("feedback.title")}</h1>
+      <h1 className="text-xl font-bold text-foreground font-serif">{t("feedback.title")}</h1>
 
       <Card>
         <CardHeader>

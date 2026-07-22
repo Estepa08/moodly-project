@@ -20,6 +20,17 @@ const fastify = Fastify({ logger: true });
 await fastify.register(helmet, { contentSecurityPolicy: false });
 await fastify.register(cors, { origin: true });
 await fastify.register(rateLimit, { max: 100, timeWindow: "1 minute" });
+
+fastify.addHook("onRoute", (routeOptions) => {
+  const method = routeOptions.method;
+  if (typeof method === "string" && ["POST", "PATCH", "PUT", "DELETE"].includes(method)) {
+    routeOptions.config = {
+      ...(routeOptions.config as object),
+      rateLimit: { max: 10, timeWindow: "1 minute" },
+    };
+  }
+});
+
 await fastify.register(authPlugin);
 
 await fastify.register(authRoutes);

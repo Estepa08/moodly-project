@@ -62,7 +62,7 @@ export default function TestResultsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-primary font-serif">{t("testResults.title")}</h1>
+      <h1 className="text-xl font-bold text-foreground font-serif">{t("testResults.title")}</h1>
 
       {results?.length === 0 && (
         <p className="text-muted-foreground text-center py-8">{t("testResults.noResults")}</p>

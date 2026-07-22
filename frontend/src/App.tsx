@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import Layout from "./components/Layout";
 import LoginPage from "./routes/login";
-import RegisterPage from "./routes/register";
+
 import OnboardingPage from "./routes/onboarding";
 import Dashboard from "./routes/dashboard";
 import TestsPage from "./routes/tests";
@@ -33,7 +33,7 @@ export default function App() {
     <Routes>
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/register" element={<Navigate to="/login" replace />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />

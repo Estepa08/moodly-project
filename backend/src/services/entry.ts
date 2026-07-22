@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.js";
-import { NotFoundError } from "../lib/errors.js";
+import { NotFoundError, AppError } from "../lib/errors.js";
 
 export interface EntryCreateInput {
   userId: string;
@@ -33,6 +33,17 @@ export const entryService = {
   },
 
   async create(input: EntryCreateInput) {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const todayCount = await prisma.entry.count({
+      where: { userId: input.userId, createdAt: { gte: startOfToday } },
+    });
+
+    if (todayCount >= 100) {
+      throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+    }
+
     return prisma.entry.create({
       data: { userId: input.userId, parameterId: input.parameterId, value: input.value, note: input.note },
     });

@@ -24,15 +24,19 @@ describe("Dashboard", () => {
     vi.clearAllMocks();
   });
 
-  it("renders date picker, trends, quick entry, averages, test progress, and history", async () => {
-    (api.parameters.list as Mock).mockResolvedValueOnce([{ id: "1", name: "Anxiety", unit: "/10" }]);
+  it("renders date picker, mood check-in, trends, averages, test progress, and history", async () => {
+    (api.parameters.list as Mock).mockResolvedValueOnce([
+      { id: "1", name: "Mood", unit: "/10" },
+      { id: "2", name: "Anxiety", unit: "/10" },
+    ]);
     (api.entries.list as Mock).mockResolvedValueOnce([]);
     (api.testResults.list as Mock).mockResolvedValueOnce([]);
     (api.tests.list as Mock).mockResolvedValueOnce([]);
     renderWithProviders(<Dashboard />);
 
-    expect(screen.getByText("Parameter Trends")).toBeInTheDocument();
     expect(screen.getByText("Quick Entry")).toBeInTheDocument();
+    expect(screen.getByText("Save")).toBeInTheDocument();
+    expect(screen.getByText("Parameter Trends")).toBeInTheDocument();
     expect(screen.getByText("Weekly Averages")).toBeInTheDocument();
     expect(screen.getByText("Test Progress")).toBeInTheDocument();
     expect(screen.getByText("History")).toBeInTheDocument();

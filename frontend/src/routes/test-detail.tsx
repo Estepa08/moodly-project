@@ -127,7 +127,7 @@ export default function TestDetailPage() {
   return (
     <div className="max-w-lg mx-auto space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-primary font-serif">{tTestTitle(test.title)}</h1>
+        <h1 className="text-lg font-semibold text-foreground font-serif">{tTestTitle(test.title)}</h1>
         <Button variant="ghost" size="sm" onClick={() => navigate("/tests")}>{t("testDetail.exit")}</Button>
       </header>
 
