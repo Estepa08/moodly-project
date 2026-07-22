@@ -53,6 +53,7 @@ export default function TestResultsPage() {
   }
 
   const testMap = new Map(tests?.map((t) => [t.id, t.title]));
+  const hasCDResult = results?.some((r) => !!(r.flags as Record<string, unknown> | undefined)?.templateKey);
 
   useEffect(() => {
     if (!results) return;
@@ -243,6 +244,11 @@ export default function TestResultsPage() {
           <Button variant="secondary" size="sm" onClick={() => navigate("/dashboard")}>
             {t("testResults.nextTrack")}
           </Button>
+          {hasCDResult && (
+            <Button variant="secondary" size="sm" onClick={() => navigate("/distortions")}>
+              {t("testResults.nextDistortions")}
+            </Button>
+          )}
           <Button variant="secondary" size="sm" onClick={() => navigate("/tests")}>
             {t("testResults.nextTests")}
           </Button>

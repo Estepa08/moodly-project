@@ -1,4 +1,4 @@
-import { Moon, Sun, Zap, Eye, type LucideIcon } from "lucide-react";
+import { Moon, Sun, Zap, Eye, Heart, type LucideIcon } from "lucide-react";
 
 export const PARAM_NAME_KEYS: Record<string, string> = {
   Anxiety: "dashboard.anxiety",
@@ -6,7 +6,14 @@ export const PARAM_NAME_KEYS: Record<string, string> = {
   Mood: "dashboard.mood",
   Energy: "dashboard.energy",
   Focus: "dashboard.focus",
+  Gratitude: "dashboard.gratitude",
+  "Sleep Hygiene": "dashboard.sleepHygiene",
+  "Distortion Quiz": "dashboard.distortionQuiz",
+  Wellbeing: "dashboard.wellbeing",
 };
+
+// Non-standard-scale parameters that don't belong in the 0-10 numeric trend chart / averages / quick-entry slider.
+export const TEXT_PARAMS = new Set(["Gratitude", "Sleep Hygiene", "Distortion Quiz"]);
 
 export const PARAM_COLORS: Record<string, string> = {
   Anxiety: "hsl(var(--primary))",
@@ -21,6 +28,7 @@ export const PARAM_ICONS: Record<string, LucideIcon> = {
   Mood: Sun,
   Energy: Zap,
   Focus: Eye,
+  Wellbeing: Heart,
 };
 
 export const SEVERITY_COLORS: Record<string, string> = {

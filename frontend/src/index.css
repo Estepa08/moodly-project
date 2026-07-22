@@ -68,20 +68,84 @@
     opacity: 0;
     transform: translateY(0) scale(0.3);
   }
-  15% {
+  10% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-  70% {
+  75% {
     opacity: 1;
-    transform: translateY(-65px);
+    transform: translateY(-140px);
   }
   100% {
     opacity: 0;
-    transform: translateY(-90px) scale(0.7);
+    transform: translateY(-180px) scale(0.6);
   }
 }
 
 .animate-bubble-up {
-  animation: bubble-up 2.5s ease-out forwards;
+  animation: bubble-up 3.2s ease-out forwards;
+}
+
+@keyframes header-creature-drift {
+  0% { left: 0; transform: scaleX(1); }
+  45% { left: calc(100% - 36px); transform: scaleX(1); }
+  50% { left: calc(100% - 36px); transform: scaleX(-1); }
+  95% { left: 0; transform: scaleX(-1); }
+  100% { left: 0; transform: scaleX(1); }
+}
+
+.animate-header-drift {
+  animation: header-creature-drift 14s ease-in-out infinite;
+}
+
+@keyframes creature-melt {
+  0% { filter: blur(0px); transform: scale(1) scaleY(1); opacity: 1; }
+  100% { filter: blur(6px); transform: scale(1.6) scaleY(0.15); opacity: 0; }
+}
+
+.animate-creature-melt {
+  animation: creature-melt 700ms ease-in forwards;
+}
+
+@keyframes creature-rise {
+  0% { transform: translateY(10px) scale(0.4); opacity: 0; filter: blur(5px); }
+  50% { transform: translateY(2px) scale(0.85); opacity: 0.7; filter: blur(2px); }
+  100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0px); }
+}
+
+.animate-creature-rise {
+  animation: creature-rise 700ms ease-out forwards;
+}
+
+@keyframes text-melt {
+  0% { transform: translateY(0); opacity: 1; filter: blur(0px); }
+  100% { transform: translateY(10px); opacity: 0; filter: blur(5px); }
+}
+
+.animate-text-melt {
+  animation: text-melt 700ms ease-in forwards;
+}
+
+@keyframes text-rise {
+  0% { transform: translateY(10px); opacity: 0; filter: blur(4px); }
+  70% { transform: translateY(0); opacity: 1; filter: blur(0px); }
+  100% { transform: translateY(0); opacity: 1; filter: blur(0px); }
+}
+
+.animate-text-rise {
+  animation: text-rise 700ms ease-out forwards;
+}
+
+@keyframes puddle-drop {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { transform: translate(0, 0); opacity: 0.5; }
+  25% { transform: translate(var(--tx), var(--ty)); opacity: 0.9; }
+  55% { transform: translate(var(--tx), var(--ty)); opacity: 0.8; }
+  80% { transform: translate(calc(var(--tx) * 0.25), calc(var(--ty) * 0.25)); opacity: 0.2; }
+  100% { transform: translate(0, 0); opacity: 0; }
+}
+
+.animate-puddle-drop {
+  animation: puddle-drop 1.4s ease-out forwards;
+  animation-delay: var(--delay);
 }

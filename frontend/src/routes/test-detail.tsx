@@ -37,7 +37,7 @@ interface ResultData {
   flags?: ResultFlags;
 }
 
-const SUICIDE_QUESTION_IDS = ["bdc-23", "bdc-24", "bdc-25"];
+const SUICIDE_QUESTION_IDS = ["phq9-9", "bdc-23", "bdc-24", "bdc-25"];
 
 function useCrisisSeverity(recommendation: string): "urgent" | "critical" | null {
   if (recommendation.startsWith("CRITICAL")) return "critical";

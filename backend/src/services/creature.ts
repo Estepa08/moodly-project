@@ -8,7 +8,8 @@ export const creatureService = {
         data: { userId, calmness: 50 },
       });
     }
-    return state;
+    const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+    return { ...state, sessionCount };
   },
 
   async completeExercise(userId: string, duration: number) {

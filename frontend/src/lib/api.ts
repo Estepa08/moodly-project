@@ -19,6 +19,7 @@ interface CreatureState {
   userId: string;
   calmness: number;
   lastExerciseAt?: string;
+  sessionCount: number;
 }
 
 const BASE_URL = "/api";

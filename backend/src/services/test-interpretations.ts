@@ -12,6 +12,52 @@ interface Interpretation {
 type InterpretFn = (score: number, maxScore: number, answers: TestAnswer[]) => Interpretation;
 
 const interpretations: Record<string, InterpretFn> = {
+  "PHQ-9": (score, _maxScore, answers) => {
+    const flags: Record<string, unknown> = {};
+
+    const suicideQuestionId = "phq9-9";
+    for (const answer of answers) {
+      if (answer.questionId === suicideQuestionId) {
+        const optionIdNum = parseInt(answer.optionId.split("-").pop() || "0", 10);
+        if (optionIdNum > 0) {
+          flags.suicidalIdeation = true;
+          if (optionIdNum >= 2) {
+            flags.suicidalPlan = true;
+          }
+        }
+      }
+    }
+
+    let interpretation: string;
+    let recommendation: string;
+
+    if (score <= 4) {
+      interpretation = "Minimal depression";
+      recommendation = "No action needed. Continue monitoring.";
+    } else if (score <= 9) {
+      interpretation = "Mild depression";
+      recommendation = "Monitor symptoms. Consider self-help techniques, exercise, and sleep hygiene.";
+    } else if (score <= 14) {
+      interpretation = "Moderate depression";
+      recommendation = "Consider consulting a therapist. Therapy and/or pharmacotherapy may be beneficial.";
+    } else if (score <= 19) {
+      interpretation = "Moderately severe depression";
+      recommendation = "We recommend consulting a mental health professional. Combined therapy and medication may be most effective.";
+    } else {
+      interpretation = "Severe depression";
+      recommendation = "We strongly recommend consulting a mental health professional immediately. Active treatment is needed.";
+    }
+
+    if (flags.suicidalIdeation) {
+      recommendation = "URGENT: This assessment indicates thoughts of self-harm. Please contact a crisis helpline immediately or go to the nearest emergency room.";
+      if (flags.suicidalPlan) {
+        recommendation = "CRITICAL: This assessment indicates active suicidal thoughts. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.";
+      }
+    }
+
+    return { interpretation, recommendation, flags: Object.keys(flags).length > 0 ? flags : undefined };
+  },
+
   "GAD-7": (score) => {
     if (score <= 4) return { interpretation: "Minimal anxiety", recommendation: "No action needed. Continue monitoring." };
     if (score <= 9) return { interpretation: "Mild anxiety", recommendation: "Monitor symptoms. Consider self-help techniques." };
@@ -20,11 +66,11 @@ const interpretations: Record<string, InterpretFn> = {
   },
 
   "Burns Anxiety Inventory": (score) => {
-    if (score <= 4) return { interpretation: "Minimal or no anxiety", recommendation: "No action needed. Continue monitoring." };
-    if (score <= 10) return { interpretation: "Borderline anxiety", recommendation: "Consider self-help resources and lifestyle management." };
-    if (score <= 20) return { interpretation: "Mild anxiety", recommendation: "May benefit from therapy or self-help techniques (e.g., CBT)." };
-    if (score <= 30) return { interpretation: "Moderate anxiety", recommendation: "Anxiety treatment plan recommended. Professional consultation advised." };
-    if (score <= 50) return { interpretation: "Severe anxiety", recommendation: "Strongly recommend consultation with a mental health professional." };
+    if (score <= 4) return { interpretation: "Minimal or no anxiety", recommendation: "No action needed. Keep a simple mood log to reinforce what's working." };
+    if (score <= 10) return { interpretation: "Borderline anxiety", recommendation: "Try decatastrophizing: write down your worst-case scenario and rate how likely and how bad it really is." };
+    if (score <= 20) return { interpretation: "Mild anxiety", recommendation: "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment." };
+    if (score <= 30) return { interpretation: "Moderate anxiety", recommendation: "Build a gradual exposure list from least to most feared situations and work through it step by step. Professional consultation is advised." };
+    if (score <= 50) return { interpretation: "Severe anxiety", recommendation: "Combine self-help techniques with professional support — a therapist can guide exposure and cognitive work safely." };
     return { interpretation: "Extreme anxiety or panic", recommendation: "Immediate professional intervention strongly advised." };
   },
 
@@ -49,19 +95,19 @@ const interpretations: Record<string, InterpretFn> = {
 
     if (score <= 5) {
       interpretation = "No depression";
-      recommendation = "No depression indicated. Continue monitoring.";
+      recommendation = "No depression indicated. A daily mood log can help you notice patterns early.";
     } else if (score <= 10) {
       interpretation = "Normal but unhappy";
-      recommendation = "Self-help resources may be beneficial.";
+      recommendation = "Try a cost-benefit analysis of a recurring negative belief: what does it give you, and what does it cost you?";
     } else if (score <= 25) {
       interpretation = "Mild depression";
-      recommendation = "Monitor symptoms. Consider therapy if persistent.";
+      recommendation = "Use the Triple Column Technique and the Double Standard method: would you say this to a friend? Consider therapy if it persists.";
     } else if (score <= 50) {
       interpretation = "Moderate depression";
-      recommendation = "Professional treatment recommended. Consider consulting a therapist.";
+      recommendation = "Add behavioral activation: schedule small enjoyable or productive activities each day, even if motivation is low. Professional treatment is recommended.";
     } else if (score <= 75) {
       interpretation = "Severe depression";
-      recommendation = "Strongly recommend professional intervention.";
+      recommendation = "Strongly recommend professional intervention — self-help techniques can support but not replace treatment at this level.";
     } else {
       interpretation = "Extreme depression";
       recommendation = "Urgent professional care is strongly advised.";

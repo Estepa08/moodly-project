@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry } from "../hooks/useEntries";
 import { useTests, useTestResults } from "../hooks/useTests";
+import { useCreatureState } from "../hooks/useCreature";
 import type { components } from "../lib/api-types";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import RadarChart from "../components/RadarChart";
@@ -11,6 +12,9 @@ import DashboardQuickEntry from "../components/DashboardQuickEntry";
 import ParameterTrendsChart from "../components/ParameterTrendsChart";
 import WeeklyAveragesGrid from "../components/WeeklyAveragesGrid";
 import TestTimeline from "../components/TestTimeline";
+import PracticesSummary from "../components/PracticesSummary";
+import WellbeingCard from "../components/WellbeingCard";
+import { TEXT_PARAMS } from "../lib/constants";
 
 type Entry = components["schemas"]["Entry"];
 type TestResult = components["schemas"]["TestResult"];
@@ -24,6 +28,7 @@ const PERIODS = [
 ] as const;
 
 const TEST_ABBR_KEYS: Record<string, string> = {
+  "PHQ-9": "tests.abbreviation.phq9",
   "GAD-7": "tests.abbreviation.gad7",
   "Burns Anxiety Inventory": "tests.abbreviation.bai",
   "Burns Depression Checklist": "tests.abbreviation.bdc",
@@ -43,19 +48,24 @@ export default function Dashboard() {
   const { t, i18n } = useTranslation();
   const [moodValue, setMoodValue] = useState([7.5]);
   const [period, setPeriod] = useState("2w");
-  const [visibleParams, setVisibleParams] = useState<Set<string>>(new Set(["Mood", "Sleep", "Anxiety"]));
 
   const { data: params } = useParameters();
   const dateRange = useMemo(() => getDateRange(period), [period]);
   const { data: allEntries, isLoading: entriesLoading } = useEntries(dateRange);
   const { data: testResults, isLoading: resultsLoading } = useTestResults();
   const { data: tests } = useTests();
+  const { data: creatureState } = useCreatureState();
   const createEntry = useCreateEntry();
 
+  const numericParams = useMemo(
+    () => params?.filter((p) => !TEXT_PARAMS.has(p.name)),
+    [params],
+  );
+
   const paramNames = useMemo(() => {
-    if (!params) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
-    return params.map((p) => p.name);
-  }, [params]);
+    if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
+    return numericParams.map((p) => p.name);
+  }, [numericParams]);
 
   const paramMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -95,8 +105,8 @@ export default function Dashboard() {
     return Array.from(grouped.values());
   }, [allEntries, paramMap, i18n.language]);
 
-  const weeklyAverages = useMemo(() => {
-    if (!allEntries) return [];
+  const { weeklyAverages, wellbeing } = useMemo(() => {
+    if (!allEntries) return { weeklyAverages: [], wellbeing: { average: null, trend: "flat" as const } };
     const range = getDateRange(period);
     const currentStart = range.from ? new Date(range.from).getTime() : 0;
     const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
@@ -113,20 +123,40 @@ export default function Dashboard() {
       return filtered.reduce((s, e) => s + e.value, 0) / filtered.length;
     };
 
-    return paramNames.map((name) => {
-      let id = "";
-      for (const [pid, pname] of paramMap) {
-        if (pname === name) { id = pid; break; }
-      }
-      const paramEntries = id ? (entriesByParam.get(name) ?? []) : [];
+    const perParam = paramNames.map((name) => {
+      const paramEntries = entriesByParam.get(name) ?? [];
       const current = calcAvg(paramEntries, currentStart, currentEnd);
       const previous = calcAvg(paramEntries, prevStart, prevEnd);
       let trend: "up" | "down" | "flat" = "flat";
       if (current !== null && previous !== null) {
         trend = current > previous ? "up" : current < previous ? "down" : "flat";
       }
-      return { name, average: current, trend, visible: true };
+      return { name, average: current, previous, trend, visible: true };
     });
+
+    const wellbeingScore = (getValue: (name: string) => number | null) => {
+      const values: number[] = [];
+      for (const name of ["Mood", "Energy", "Focus", "Sleep"]) {
+        const v = getValue(name);
+        if (v !== null) values.push(v);
+      }
+      const anxiety = getValue("Anxiety");
+      if (anxiety !== null) values.push(10 - anxiety);
+      return values.length > 0 ? values.reduce((s, v) => s + v, 0) / values.length : null;
+    };
+    const currentByName = new Map(perParam.map((p) => [p.name, p.average]));
+    const previousByName = new Map(perParam.map((p) => [p.name, p.previous]));
+    const wellbeingCurrent = wellbeingScore((name) => currentByName.get(name) ?? null);
+    const wellbeingPrevious = wellbeingScore((name) => previousByName.get(name) ?? null);
+    let wellbeingTrend: "up" | "down" | "flat" = "flat";
+    if (wellbeingCurrent !== null && wellbeingPrevious !== null) {
+      wellbeingTrend = wellbeingCurrent > wellbeingPrevious ? "up" : wellbeingCurrent < wellbeingPrevious ? "down" : "flat";
+    }
+
+    return {
+      weeklyAverages: perParam.map(({ name, average, trend, visible }) => ({ name, average, trend, visible })),
+      wellbeing: { average: wellbeingCurrent, trend: wellbeingTrend },
+    };
   }, [allEntries, period, paramNames, paramMap, entriesByParam]);
 
   const testAbbrMap = useMemo(() => {
@@ -170,15 +200,6 @@ export default function Dashboard() {
 
   const isDataLoading = entriesLoading || resultsLoading;
 
-  const toggleParam = (name: string) => {
-    setVisibleParams((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
-      return next;
-    });
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -202,7 +223,7 @@ export default function Dashboard() {
       </div>
 
       <DashboardQuickEntry
-        params={params}
+        params={numericParams}
         moodValue={moodValue}
         onMoodChange={setMoodValue}
         createEntry={createEntry}
@@ -211,13 +232,25 @@ export default function Dashboard() {
       <ParameterTrendsChart
         trendData={trendData}
         paramNames={paramNames}
-        visibleParams={visibleParams}
-        onToggleParam={toggleParam}
+        isLoading={isDataLoading}
+      />
+
+      <WellbeingCard
+        average={wellbeing.average}
+        trend={wellbeing.trend}
         isLoading={isDataLoading}
       />
 
       <WeeklyAveragesGrid
         weeklyAverages={weeklyAverages}
+        isLoading={isDataLoading}
+      />
+
+      <PracticesSummary
+        gratitudeEntries={entriesByParam.get("Gratitude") ?? []}
+        hygieneEntries={entriesByParam.get("Sleep Hygiene") ?? []}
+        distortionEntries={entriesByParam.get("Distortion Quiz") ?? []}
+        breathingSessionCount={creatureState?.sessionCount}
         isLoading={isDataLoading}
       />
 

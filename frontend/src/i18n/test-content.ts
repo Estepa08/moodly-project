@@ -1,4 +1,5 @@
 export const testTitleRu: Record<string, string> = {
+  "PHQ-9": "PHQ-9",
   "GAD-7": "GAD-7",
   "Burns Anxiety Inventory": "Шкала тревоги Бернса",
   "Burns Depression Checklist": "Опросник депрессии Бернса",
@@ -6,6 +7,7 @@ export const testTitleRu: Record<string, string> = {
 };
 
 export const testDescriptionRu: Record<string, string> = {
+  "Patient Health Questionnaire — depression screening": "PHQ-9 — опросник для скрининга депрессии",
   "Generalized Anxiety Disorder Assessment": "Оценка генерализованного тревожного расстройства",
   "BAI — anxiety assessment by Dr. David Burns. 33 items across anxious feelings, thoughts, and physical symptoms.":
     "BAI — оценка тревоги по д-ру Дэвиду Бернсу. 33 пункта: тревожные чувства, мысли и физические симптомы.",
@@ -16,6 +18,16 @@ export const testDescriptionRu: Record<string, string> = {
 };
 
 export const questionRu: Record<string, string> = {
+  "phq9-1": "Отсутствие интереса или удовольствия от дел",
+  "phq9-2": "Подавленность, уныние или безнадёжность",
+  "phq9-3": "Проблемы с засыпанием или сном, или слишком много сна",
+  "phq9-4": "Усталость или недостаток энергии",
+  "phq9-5": "Плохой аппетит или переедание",
+  "phq9-6": "Негативное отношение к себе — ощущение, что вы неудачник или подвели семью",
+  "phq9-7": "Трудности с концентрацией на делах (чтение, просмотр ТВ)",
+  "phq9-8": "Вы двигались или говорили так медленно, что это заметили другие? Или наоборот — были настолько беспокойны, что двигались больше обычного",
+  "phq9-9": "Мысли о том, что лучше бы вы умерли или о причинении себе вреда",
+
   "gad7-1": "Нервность, тревожность или напряжённость",
   "gad7-2": "Неспособность прекратить или контролировать беспокойство",
   "gad7-3": "Чрезмерное беспокойство о разных вещах",
@@ -117,6 +129,43 @@ export const questionRu: Record<string, string> = {
 };
 
 export const optionRu: Record<string, string> = {
+  "phq9-1-0": "Совсем нет",
+  "phq9-1-1": "Несколько дней",
+  "phq9-1-2": "Более половины дней",
+  "phq9-1-3": "Почти каждый день",
+  "phq9-2-0": "Совсем нет",
+  "phq9-2-1": "Несколько дней",
+  "phq9-2-2": "Более половины дней",
+  "phq9-2-3": "Почти каждый день",
+  "phq9-3-0": "Совсем нет",
+  "phq9-3-1": "Несколько дней",
+  "phq9-3-2": "Более половины дней",
+  "phq9-3-3": "Почти каждый день",
+  "phq9-4-0": "Совсем нет",
+  "phq9-4-1": "Несколько дней",
+  "phq9-4-2": "Более половины дней",
+  "phq9-4-3": "Почти каждый день",
+  "phq9-5-0": "Совсем нет",
+  "phq9-5-1": "Несколько дней",
+  "phq9-5-2": "Более половины дней",
+  "phq9-5-3": "Почти каждый день",
+  "phq9-6-0": "Совсем нет",
+  "phq9-6-1": "Несколько дней",
+  "phq9-6-2": "Более половины дней",
+  "phq9-6-3": "Почти каждый день",
+  "phq9-7-0": "Совсем нет",
+  "phq9-7-1": "Несколько дней",
+  "phq9-7-2": "Более половины дней",
+  "phq9-7-3": "Почти каждый день",
+  "phq9-8-0": "Совсем нет",
+  "phq9-8-1": "Несколько дней",
+  "phq9-8-2": "Более половины дней",
+  "phq9-8-3": "Почти каждый день",
+  "phq9-9-0": "Совсем нет",
+  "phq9-9-1": "Несколько дней",
+  "phq9-9-2": "Более половины дней",
+  "phq9-9-3": "Почти каждый день",
+
   "gad7-1-0": "Совсем нет",
   "gad7-1-1": "Несколько дней",
   "gad7-1-2": "Более половины дней",
@@ -159,6 +208,8 @@ export const optionRu: Record<string, string> = {
 };
 
 export const interpretationRu: Record<string, string> = {
+  "Minimal depression": "Минимальная депрессия",
+  "Moderately severe depression": "Депрессия от умеренной до тяжёлой",
   "Minimal anxiety": "Минимальная тревога",
   "Mild anxiety": "Лёгкая тревога",
   "Moderate anxiety": "Умеренная тревога",
@@ -179,31 +230,43 @@ export const interpretationRu: Record<string, string> = {
 
 export const recommendationRu: Record<string, string> = {
   "No action needed. Continue monitoring.": "Действия не требуются. Продолжайте наблюдение.",
+  "Monitor symptoms. Consider self-help techniques, exercise, and sleep hygiene.":
+    "Следите за симптомами. Рассмотрите техники самопомощи, физическую активность и гигиену сна.",
+  "Consider consulting a therapist. Therapy and/or pharmacotherapy may be beneficial.":
+    "Рекомендуется консультация терапевта. Терапия и/или медикаментозное лечение могут быть полезны.",
+  "We recommend consulting a mental health professional. Combined therapy and medication may be most effective.":
+    "Рекомендуем обратиться к специалисту по психическому здоровью. Комбинация терапии и медикаментов может быть наиболее эффективной.",
+  "We strongly recommend consulting a mental health professional immediately. Active treatment is needed.":
+    "Настоятельно рекомендуем немедленно обратиться к специалисту по психическому здоровью. Требуется активное лечение.",
   "Monitor symptoms. Consider self-help techniques.": "Следите за симптомами. Рассмотрите техники самопомощи.",
   "Consider consulting a therapist. Therapy or counseling may be beneficial.":
     "Рекомендуется консультация терапевта. Терапия или консультирование могут быть полезны.",
   "We recommend consulting a mental health professional for evaluation and treatment.":
     "Рекомендуем обратиться к специалисту по психическому здоровью для оценки и лечения.",
-  "Consider self-help resources and lifestyle management.":
-    "Рассмотрите ресурсы самопомощи и управление образом жизни.",
-  "May benefit from therapy or self-help techniques (e.g., CBT).":
-    "Может быть полезна терапия или техники самопомощи (например, КПТ).",
-  "Anxiety treatment plan recommended. Professional consultation advised.":
-    "Рекомендуется план лечения тревоги. Консультация специалиста желательна.",
-  "Strongly recommend consultation with a mental health professional.":
-    "Настоятельно рекомендуем консультацию специалиста по психическому здоровью.",
   "Immediate professional intervention strongly advised.":
     "Настоятельно рекомендуется немедленное вмешательство специалиста.",
-  "No depression indicated. Continue monitoring.": "Депрессии не выявлено. Продолжайте наблюдение.",
-  "Self-help resources may be beneficial.": "Ресурсы самопомощи могут быть полезны.",
-  "Monitor symptoms. Consider therapy if persistent.":
-    "Следите за симптомами. При сохранении рассмотрите терапию.",
-  "Professional treatment recommended. Consider consulting a therapist.":
-    "Рекомендуется профессиональное лечение. Рассмотрите консультацию терапевта.",
-  "Strongly recommend professional intervention.":
-    "Настоятельно рекомендуется вмешательство специалиста.",
   "Urgent professional care is strongly advised.":
     "Настоятельно рекомендуется срочная помощь специалиста.",
+  "No action needed. Keep a simple mood log to reinforce what's working.":
+    "Действия не требуются. Ведите простой дневник настроения, чтобы закрепить то, что уже работает.",
+  "Try decatastrophizing: write down your worst-case scenario and rate how likely and how bad it really is.":
+    "Попробуйте технику «декатастрофизации»: опишите худший сценарий и оцените, насколько он реально вероятен и насколько плох.",
+  "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment.":
+    "Практикуйте технику «тройной колонки»: запишите тревожную мысль, назовите искажение, затем сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте.",
+  "Build a gradual exposure list from least to most feared situations and work through it step by step. Professional consultation is advised.":
+    "Составьте список пугающих ситуаций от лёгкой к сложной и прорабатывайте его постепенно. Желательна консультация специалиста.",
+  "Combine self-help techniques with professional support — a therapist can guide exposure and cognitive work safely.":
+    "Сочетайте техники самопомощи с профессиональной поддержкой — терапевт поможет безопасно провести экспозицию и когнитивную работу.",
+  "No depression indicated. A daily mood log can help you notice patterns early.":
+    "Депрессии не выявлено. Ежедневный дневник настроения поможет замечать закономерности на раннем этапе.",
+  "Try a cost-benefit analysis of a recurring negative belief: what does it give you, and what does it cost you?":
+    "Попробуйте анализ затрат и выгод повторяющегося негативного убеждения: что оно вам даёт и чего стоит?",
+  "Use the Triple Column Technique and the Double Standard method: would you say this to a friend? Consider therapy if it persists.":
+    "Используйте технику «тройной колонки» и метод «двойного стандарта»: сказали бы вы это другу? При сохранении симптомов рассмотрите терапию.",
+  "Add behavioral activation: schedule small enjoyable or productive activities each day, even if motivation is low. Professional treatment is recommended.":
+    "Добавьте поведенческую активацию: планируйте небольшие приятные или продуктивные дела каждый день, даже при низкой мотивации. Рекомендуется профессиональное лечение.",
+  "Strongly recommend professional intervention — self-help techniques can support but not replace treatment at this level.":
+    "Настоятельно рекомендуем вмешательство специалиста — на этом уровне техники самопомощи могут дополнять, но не заменяют лечение.",
   "No immediate concerns, continue monitoring.": "Немедленных опасений нет, продолжайте наблюдение.",
   "Consider discussing with a specialist if symptoms persist.":
     "При сохранении симптомов рассмотрите обсуждение со специалистом.",
@@ -211,6 +274,8 @@ export const recommendationRu: Record<string, string> = {
     "Рекомендуем консультацию специалиста по психическому здоровью.",
   "URGENT: This assessment indicates thoughts of self-harm. Please contact a crisis helpline immediately or go to the nearest emergency room.":
     "СРОЧНО: Этот опросник указывает на мысли о самоповреждении. Пожалуйста, немедленно свяжитесь с кризисной горячей линией или обратитесь в ближайшее отделение неотложной помощи.",
+  "CRITICAL: This assessment indicates active suicidal thoughts. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.":
+    "КРИТИЧЕСКИ: Этот опросник указывает на активные суицидальные мысли. Требуется немедленное экстренное вмешательство. Позвоните в экстренные службы (911/112) или немедленно обратитесь в ближайшее отделение неотложной помощи.",
   "CRITICAL: This assessment indicates a plan for self-harm. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.":
     "КРИТИЧЕСКИ: Этот опросник указывает на план самоповреждения. Требуется немедленное экстренное вмешательство. Позвоните в экстренные службы (911/112) или немедленно обратитесь в ближайшее отделение неотложной помощи.",
 };

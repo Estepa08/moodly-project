@@ -16,8 +16,6 @@ import Spinner from "./ui/spinner";
 interface ParameterTrendsChartProps {
   trendData: Record<string, number | string>[];
   paramNames: string[];
-  visibleParams: Set<string>;
-  onToggleParam: (name: string) => void;
   isLoading: boolean;
 }
 
@@ -41,8 +39,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function ParameterTrendsChart({
   trendData,
   paramNames,
-  visibleParams,
-  onToggleParam,
   isLoading,
 }: ParameterTrendsChartProps) {
   const { t } = useTranslation();
@@ -71,7 +67,6 @@ export default function ParameterTrendsChart({
                 <YAxis domain={Y_DOMAIN} fontSize={10} stroke="hsl(var(--chart-tick))" />
                 <Tooltip content={<CustomTooltip />} />
                 {paramNames.map((name) => {
-                  if (!visibleParams.has(name)) return null;
                   const isFocused = name === focusedParam;
                   return (
                     <Line
@@ -95,11 +90,11 @@ export default function ParameterTrendsChart({
               {paramNames.map((name) => (
                 <button
                   key={name}
-                  aria-pressed={visibleParams.has(name)}
-                  onClick={() => onToggleParam(name)}
+                  aria-pressed={name === focusedParam}
+                  onClick={() => toggleFocus(name)}
                   className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    visibleParams.has(name)
-                      ? "bg-primary/10 text-primary shadow-neumorphic-sm"
+                    name === focusedParam
+                      ? "bg-primary/10 text-primary shadow-neumorphic-sm ring-2 ring-primary/60"
                       : "bg-muted text-muted-foreground shadow-neumorphic-inset"
                   }`}
                 >
@@ -110,29 +105,6 @@ export default function ParameterTrendsChart({
                   {t(PARAM_NAME_KEYS[name] ?? name)}
                 </button>
               ))}
-            </div>
-            <div className="mt-3 pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground mb-2">{t("dashboard.highlight")}</p>
-              <div className="flex flex-wrap gap-2">
-                {paramNames.map((name) => (
-                  <button
-                    key={name}
-                    aria-pressed={name === focusedParam}
-                    onClick={() => toggleFocus(name)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                      name === focusedParam
-                        ? "bg-primary/10 text-primary shadow-neumorphic-sm ring-2 ring-primary/60"
-                        : "bg-muted text-muted-foreground shadow-neumorphic-inset"
-                    }`}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: PARAM_COLORS[name] ?? "hsl(var(--primary))" }}
-                    />
-                    {t(PARAM_NAME_KEYS[name] ?? name)}
-                  </button>
-                ))}
-              </div>
             </div>
           </>
         ) : (

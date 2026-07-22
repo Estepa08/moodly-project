@@ -7,7 +7,7 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 
 interface Reaction {
   id: number;
-  type: 'heart' | 'question';
+  type: 'heart' | 'question' | 'dizzy';
   x: number;
 }
 
@@ -27,8 +27,10 @@ interface BreathingCreatureProps {
 // animation's own 500x500 coordinate space
 const PUPIL_RANGE = 15;
 
-const REACTION_DURATION = 2500;
+const REACTION_DURATION = 3200;
 const INACTIVITY_DELAY = 10_000;
+const CLICK_THRESHOLD = 15;
+const CLICK_WINDOW = 5000;
 
 let nextReactionId = 0;
 
@@ -43,23 +45,41 @@ export default function BreathingCreature({
   const followCursorRef = useRef(followCursor);
   const lastActivityRef = useRef(Date.now());
   const questionSpawnedRef = useRef(false);
+  const clickTimestampsRef = useRef<number[]>([]);
+  const dizzyActiveRef = useRef(false);
   followCursorRef.current = followCursor;
 
   const [reactions, setReactions] = useState<Reaction[]>([]);
 
-  const spawnReaction = useCallback((type: 'heart' | 'question') => {
+  const spawnReaction = useCallback((type: 'heart' | 'question' | 'dizzy') => {
+    if (type === 'dizzy') dizzyActiveRef.current = true;
     const id = nextReactionId++;
     const x = (Math.random() - 0.5) * 30;
     setReactions(prev => [...prev, { id, type, x }]);
     setTimeout(() => {
       setReactions(prev => prev.filter(r => r.id !== id));
+      if (type === 'dizzy') dizzyActiveRef.current = false;
     }, REACTION_DURATION);
   }, []);
 
   const handleClick = useCallback(() => {
-    lastActivityRef.current = Date.now();
+    const now = Date.now();
+    lastActivityRef.current = now;
     questionSpawnedRef.current = false;
-    spawnReaction('heart');
+
+    const timestamps = clickTimestampsRef.current;
+    timestamps.push(now);
+    const cutoff = now - CLICK_WINDOW;
+    clickTimestampsRef.current = timestamps.filter(t => t > cutoff);
+
+    if (dizzyActiveRef.current) return;
+
+    if (clickTimestampsRef.current.length >= CLICK_THRESHOLD) {
+      clickTimestampsRef.current = [];
+      spawnReaction('dizzy');
+    } else {
+      spawnReaction('heart');
+    }
   }, [spawnReaction]);
 
   // inactivity timer — spawns a question mark after 10s without mouse activity
@@ -119,8 +139,8 @@ export default function BreathingCreature({
         const squashX = 1 - effort * 0.07;
         const squashY = 1 + effort * 0.05;
         containerRef.current.style.transform = `translate(${
-          x * 60
-        }px, ${-y * 60}px) rotate(${x * 6}deg) scale(${squashX}, ${squashY})`;
+          x * 30
+        }px, ${-y * 8}px) rotate(${x * 6}deg) scale(${squashX}, ${squashY})`;
       }
       lottieRef.current?.setSpeed(1 + effort * 0.7);
 
@@ -190,7 +210,7 @@ export default function BreathingCreature({
   }, [reducedMotion]);
 
   return (
-    <div style={{ width: size, height: size }} className="mx-auto select-none">
+    <div style={{ width: size, height: size }} className="mx-auto select-none relative pt-2">
       <div
         ref={containerRef}
         onClick={handleClick}
@@ -198,7 +218,6 @@ export default function BreathingCreature({
           width: '100%',
           height: '100%',
           willChange: 'transform',
-          position: 'relative',
         }}
       >
         <Lottie
@@ -208,25 +227,27 @@ export default function BreathingCreature({
           autoplay={!reducedMotion}
           style={{ width: '100%', height: '100%', cursor: 'pointer' }}
         />
-
-        {!reducedMotion && (
-          <div className="absolute inset-0 pointer-events-none overflow-visible">
-            {reactions.map((r) => (
-              <div
-                key={r.id}
-                className="animate-bubble-up absolute left-1/2 top-[15%] -translate-x-1/2 w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center"
-                style={{ marginLeft: r.x }}
-              >
-                {r.type === 'heart' ? (
-                  <Heart className="w-4 h-4 text-accent" strokeWidth={2.5} />
-                ) : (
-                  <HelpCircle className="w-4 h-4 text-primary" strokeWidth={2.5} />
-                )}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
+
+      {!reducedMotion && (
+        <div className="absolute -top-20 -left-4 -right-4 -bottom-4 pointer-events-none overflow-visible z-20">
+          {reactions.map((r) => (
+            <div
+              key={r.id}
+              className="absolute left-1/2 -translate-x-1/2 top-[35%] w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center animate-bubble-up"
+              style={{ marginLeft: r.x }}
+            >
+              {r.type === 'dizzy' ? (
+                <span className="text-lg">🌀</span>
+              ) : r.type === 'heart' ? (
+                <Heart className="w-4 h-4 text-accent" strokeWidth={2.5} />
+              ) : (
+                <HelpCircle className="w-4 h-4 text-primary" strokeWidth={2.5} />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

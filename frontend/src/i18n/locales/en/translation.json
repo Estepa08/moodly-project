@@ -12,7 +12,11 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "practices": "Practices",
     "breathing": "Breathing",
+    "gratitude": "Gratitude",
+    "distortions": "Distortions",
+    "sleepHygiene": "Sleep",
     "tests": "Tests",
     "results": "Results",
     "reports": "Reports",
@@ -72,7 +76,6 @@
     "cdProfile": "Thinking Patterns",
     "entrySaved": "Entry saved!",
     "parameterTrends": "Parameter Trends",
-    "highlight": "Highlight",
     "weeklyAverages": "Weekly Averages",
     "testProgress": "Test Progress",
     "dateRange": "Period",
@@ -97,7 +100,28 @@
     "energy": "Energy",
     "focus": "Focus",
     "recentEntry": "You already logged this parameter {{minutes}} min ago",
-    "recentEntry_1": "You already logged this parameter 1 min ago"
+    "recentEntry_1": "You already logged this parameter 1 min ago",
+    "gratitude": "Gratitude",
+    "gratitudeJournal": "Gratitude Journal",
+    "gratitudePlaceholder": "What are you grateful for today?",
+    "gratitudeSave": "Add",
+    "gratitudeSaved": "Added to your gratitude journal",
+    "gratitudeEmpty": "No entries yet — write down something small you're grateful for.",
+    "gratitudeEmptyNote": "Please write something before saving",
+    "gratitudePageSubtitle": "A small, regular habit of noticing what's good.",
+    "sleepHygiene": "Sleep Hygiene",
+    "distortionQuiz": "Distortion Quiz",
+    "practicesSummary": "Practices",
+    "practicesLoading": "Loading...",
+    "practicesBreathing": "Breathing",
+    "practicesGratitude": "Gratitude",
+    "practicesSleepHygiene": "Sleep Hygiene",
+    "practicesDistortionQuiz": "Distortion Quiz",
+    "practicesSessionsCount": "{{count}} session",
+    "practicesSessionsCount_other": "{{count}} sessions",
+    "practicesEntriesCount": "{{count}} entry",
+    "practicesEntriesCount_other": "{{count}} entries",
+    "wellbeing": "Wellbeing"
   },
   "onboarding": {
     "welcomeTitle": "Welcome to Moodly",
@@ -115,6 +139,7 @@
   "tests": {
     "title": "Tests",
     "abbreviation": {
+      "phq9": "PHQ-9",
       "gad7": "GAD-7",
       "bai": "BAI",
       "bdc": "BDC",
@@ -154,7 +179,8 @@
     "scoreOf": "{{score}}/{{max}}",
     "nextBreathing": "Try breathing exercise",
     "nextTrack": "Track your mood",
-    "nextTests": "Take another test"
+    "nextTests": "Take another test",
+    "nextDistortions": "Learn about thinking patterns"
   },
   "feedback": {
     "title": "Feedback",
@@ -184,7 +210,9 @@
   "breathing": {
     "title": "Breathing Exercise",
     "subtitle": "Calm your anxiety creature with deep breathing",
-    "description": "The 4-7-8 breathing technique helps activate your parasympathetic nervous system, reducing stress and anxiety. Complete 4 cycles to see your creature calm down.",
+    "description478": "The 4-7-8 breathing technique helps activate your parasympathetic nervous system, reducing stress and anxiety. Complete 4 cycles to see your creature calm down.",
+    "descriptionBox": "Box breathing (4-4-4) balances your nervous system by equalising inhale, hold, exhale, and hold. A gentle technique for general relaxation.",
+    "descriptionQuick": "The Quick Calm technique uses a short inhale and long exhale to rapidly activate the parasympathetic response. Best for moments of acute anxiety or panic.",
     "begin": "Begin Exercise",
     "start": "Start",
     "cancel": "Cancel",
@@ -210,7 +238,11 @@
     "stepBox3": "Exhale (4 seconds)",
     "stepBox4": "Hold (4 seconds)",
     "stepQuick1": "Short inhale (2 seconds)",
-    "stepQuick2": "Long exhale (6 seconds)"
+    "stepQuick2": "Long exhale (6 seconds)",
+    "prepare": "Prepare",
+    "pattern478": "Inhale 4s → Hold 7s → Exhale 8s",
+    "patternBox": "Inhale 4s → Hold 4s → Exhale 4s → Hold 4s",
+    "patternQuick": "Inhale 2s → Exhale 6s"
   },
   "crisis": {
     "titleUrgent": "We're here to help",
@@ -261,5 +293,113 @@
     "shouldStatements": "Should Statements",
     "labeling": "Labeling",
     "personalization": "Personalization"
+  },
+  "distortions": {
+    "title": "Cognitive Distortions",
+    "subtitle": "Learn to recognize distorted thinking patterns in your own thoughts.",
+    "tabLibrary": "Library",
+    "tabQuiz": "Quiz",
+    "showExample": "Show example",
+    "hideExample": "Hide example",
+    "exampleThought": "Example thought",
+    "reframe": "Reframe"
+  },
+  "distortionsLibrary": {
+    "allOrNothing": {
+      "definition": "Seeing things in only two extremes — perfect or a total failure — with no middle ground.",
+      "example": "\"I made one mistake in the presentation, so the whole thing was a disaster.\"",
+      "reframe": "\"One part didn't go perfectly, but most of it went well — that doesn't erase the rest.\""
+    },
+    "overgeneralization": {
+      "definition": "Taking one negative event and treating it as a permanent, never-ending pattern.",
+      "example": "\"My friend didn't text back — nobody ever wants to talk to me.\"",
+      "reframe": "\"One person being busy right now doesn't mean this always happens.\""
+    },
+    "mentalFilter": {
+      "definition": "Picking out a single negative detail and dwelling on it so much that your whole view of the situation darkens — like a drop of ink coloring an entire glass of water.",
+      "example": "\"The meeting had one awkward moment, so the whole thing felt like a failure.\"",
+      "reframe": "\"Most of the meeting actually went smoothly — I'm zooming in on the one rough moment.\""
+    },
+    "discountingPositive": {
+      "definition": "Insisting that your good qualities or achievements don't count.",
+      "example": "\"I only did well because the test was easy, not because I'm capable.\"",
+      "reframe": "\"I prepared for this and it paid off — that's a real accomplishment.\""
+    },
+    "jumpingToConclusions": {
+      "definition": "Assuming you know what others think (mind reading) or predicting the worst outcome (fortune telling) without evidence.",
+      "example": "\"She looked at her phone during our chat — she must think I'm boring.\"",
+      "reframe": "\"I don't actually know what she was thinking — there could be many reasons.\""
+    },
+    "magnification": {
+      "definition": "Blowing problems out of proportion, or shrinking your own strengths down to nothing.",
+      "example": "\"I forgot one detail in the report — this could ruin my whole career.\"",
+      "reframe": "\"It's a small error I can correct — it's not going to define my career.\""
+    },
+    "emotionalReasoning": {
+      "definition": "Assuming your feelings reflect the facts: 'I feel it, so it must be true.'",
+      "example": "\"I feel like a failure, so I must actually be one.\"",
+      "reframe": "\"Feeling like a failure right now doesn't mean I am one — feelings aren't proof.\""
+    },
+    "shouldStatements": {
+      "definition": "Criticizing yourself or others with rigid 'should,' 'must,' or 'ought to' rules.",
+      "example": "\"I should never make mistakes at work.\"",
+      "reframe": "\"I'm allowed to make mistakes — that's how people learn and improve.\""
+    },
+    "labeling": {
+      "definition": "Attaching a harsh, global label to yourself or someone else based on one incident.",
+      "example": "\"I missed the deadline — I'm such a failure.\"",
+      "reframe": "\"I missed one deadline — that's a single event, not who I am.\""
+    },
+    "personalization": {
+      "definition": "Blaming yourself for events that were largely outside your control.",
+      "example": "\"My team missed the target — it must be entirely my fault.\"",
+      "reframe": "\"Many factors contributed to this — I'm not the only cause.\""
+    }
+  },
+  "distortionsQuiz": {
+    "intro": "Read the thought below and guess which cognitive distortion it shows.",
+    "question": "Which distortion is this?",
+    "correct": "Correct!",
+    "incorrect": "Not quite.",
+    "next": "Next",
+    "finish": "See results",
+    "tryAgain": "Try again",
+    "scoreSummary": "{{score}} of {{total}} — this takes practice, keep at it.",
+    "q1": "Alex got one question wrong on the exam and thought, \"I totally failed.\"",
+    "q2": "After being turned down for one job, Maria decided she'd never get hired anywhere.",
+    "q3": "The trip had eight great days and one rainy afternoon — but all Sam remembers is the rain.",
+    "q4": "Jamie got a compliment on the report and thought, \"They're just being polite, it wasn't actually good.\"",
+    "q5": "A coworker didn't say hello in the hallway, and Priya immediately assumed he was angry with her.",
+    "q6": "Leo spilled coffee on his shirt before a meeting and thought his whole career was ruined.",
+    "q7": "Nina felt anxious about the flight, so she concluded the plane must be unsafe.",
+    "q8": "Tom kept telling himself, \"I should always know the right answer immediately.\"",
+    "q9": "After forgetting a friend's birthday, Dana thought, \"I'm a terrible friend.\"",
+    "q10": "When the team project got a low grade, Ben assumed it was entirely his fault, even though three people worked on it.",
+    "q11": "If Chloe doesn't get a perfect score, she considers the whole effort worthless.",
+    "q12": "Before even asking, Marcus was sure his boss would say no to his vacation request.",
+    "q13": "One awkward date convinced Yuki that she's simply bad at relationships.",
+    "q14": "Oliver believes everyone around him should always be on time, no exceptions.",
+    "q15": "Despite five positive reviews, all Ravi can think about is the one critical comment."
+  },
+  "sleepHygiene": {
+    "title": "Sleep Hygiene",
+    "subtitle": "A nightly checklist to build habits that support better sleep.",
+    "checklistTitle": "Tonight's checklist",
+    "save": "Save tonight",
+    "saved": "Saved — sleep well.",
+    "comparisonTitle": "Sleep quality the next day",
+    "moreHabits": "Nights with more habits",
+    "fewerHabits": "Nights with fewer habits",
+    "historyTitle": "Recent nights",
+    "empty": "No nights logged yet — start whenever you're ready.",
+    "items": {
+      "noCaffeine": "No caffeine in the last 6 hours",
+      "noScreens": "No screens in the last 30–60 minutes",
+      "consistentBedtime": "Went to bed around my usual time",
+      "darkQuietCool": "Room was dark, cool, and quiet",
+      "noAlcohol": "No alcohol close to bedtime",
+      "dayActivity": "Some physical activity today",
+      "noLateMeal": "No heavy or late meal close to bedtime"
+    }
   }
 }

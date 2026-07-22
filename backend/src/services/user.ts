@@ -54,7 +54,17 @@ export const userService = {
   },
 
   async delete(id: string) {
-    await prisma.user.delete({ where: { id } });
+    await prisma.$transaction([
+      prisma.breathingSession.deleteMany({ where: { userId: id } }),
+      prisma.creatureState.deleteMany({ where: { userId: id } }),
+      prisma.refreshToken.deleteMany({ where: { userId: id } }),
+      prisma.resetToken.deleteMany({ where: { userId: id } }),
+      prisma.testResult.deleteMany({ where: { userId: id } }),
+      prisma.report.deleteMany({ where: { userId: id } }),
+      prisma.feedback.deleteMany({ where: { userId: id } }),
+      prisma.entry.deleteMany({ where: { userId: id } }),
+      prisma.user.delete({ where: { id } }),
+    ]);
   },
 
   // DEMO-ONLY: remove before production

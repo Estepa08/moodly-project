@@ -27,7 +27,7 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
         {isLoading ? (
           <div className="flex justify-center py-8"><Spinner size={32} /></div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {weeklyAverages.map((avg) => {
               const Icon = PARAM_ICONS[avg.name];
               const averageValue = avg.average;

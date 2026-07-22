@@ -7,6 +7,9 @@ const parameters = [
   { name: "Mood", description: "General mood", unit: "/10" },
   { name: "Energy", description: "Energy level", unit: "/10" },
   { name: "Focus", description: "Ability to concentrate", unit: "/10" },
+  { name: "Gratitude", description: "Daily gratitude note", unit: null },
+  { name: "Sleep Hygiene", description: "Nightly sleep hygiene checklist", unit: null },
+  { name: "Distortion Quiz", description: "Cognitive distortion quiz score", unit: null },
 ];
 
 const baiOptions = [
@@ -25,6 +28,102 @@ const bdcOptions = [
 ];
 
 const tests = [
+  {
+    title: "PHQ-9",
+    description: "Patient Health Questionnaire — depression screening",
+    questions: [
+      {
+        id: "phq9-1",
+        text: "Little interest or pleasure in doing things",
+        options: [
+          { id: "phq9-1-0", text: "Not at all", score: 0 },
+          { id: "phq9-1-1", text: "Several days", score: 1 },
+          { id: "phq9-1-2", text: "More than half the days", score: 2 },
+          { id: "phq9-1-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-2",
+        text: "Feeling down, depressed, or hopeless",
+        options: [
+          { id: "phq9-2-0", text: "Not at all", score: 0 },
+          { id: "phq9-2-1", text: "Several days", score: 1 },
+          { id: "phq9-2-2", text: "More than half the days", score: 2 },
+          { id: "phq9-2-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-3",
+        text: "Trouble falling or staying asleep, or sleeping too much",
+        options: [
+          { id: "phq9-3-0", text: "Not at all", score: 0 },
+          { id: "phq9-3-1", text: "Several days", score: 1 },
+          { id: "phq9-3-2", text: "More than half the days", score: 2 },
+          { id: "phq9-3-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-4",
+        text: "Feeling tired or having little energy",
+        options: [
+          { id: "phq9-4-0", text: "Not at all", score: 0 },
+          { id: "phq9-4-1", text: "Several days", score: 1 },
+          { id: "phq9-4-2", text: "More than half the days", score: 2 },
+          { id: "phq9-4-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-5",
+        text: "Poor appetite or overeating",
+        options: [
+          { id: "phq9-5-0", text: "Not at all", score: 0 },
+          { id: "phq9-5-1", text: "Several days", score: 1 },
+          { id: "phq9-5-2", text: "More than half the days", score: 2 },
+          { id: "phq9-5-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-6",
+        text: "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
+        options: [
+          { id: "phq9-6-0", text: "Not at all", score: 0 },
+          { id: "phq9-6-1", text: "Several days", score: 1 },
+          { id: "phq9-6-2", text: "More than half the days", score: 2 },
+          { id: "phq9-6-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-7",
+        text: "Trouble concentrating on things, such as reading the newspaper or watching television",
+        options: [
+          { id: "phq9-7-0", text: "Not at all", score: 0 },
+          { id: "phq9-7-1", text: "Several days", score: 1 },
+          { id: "phq9-7-2", text: "More than half the days", score: 2 },
+          { id: "phq9-7-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-8",
+        text: "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
+        options: [
+          { id: "phq9-8-0", text: "Not at all", score: 0 },
+          { id: "phq9-8-1", text: "Several days", score: 1 },
+          { id: "phq9-8-2", text: "More than half the days", score: 2 },
+          { id: "phq9-8-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+      {
+        id: "phq9-9",
+        text: "Thoughts that you would be better off dead or of hurting yourself in some way",
+        options: [
+          { id: "phq9-9-0", text: "Not at all", score: 0 },
+          { id: "phq9-9-1", text: "Several days", score: 1 },
+          { id: "phq9-9-2", text: "More than half the days", score: 2 },
+          { id: "phq9-9-3", text: "Nearly every day", score: 3 },
+        ],
+      },
+    ],
+  },
   {
     title: "GAD-7",
     description: "Generalized Anxiety Disorder Assessment",
@@ -242,6 +341,10 @@ async function seed() {
   await prisma.report.deleteMany();
   await prisma.feedback.deleteMany();
   await prisma.entry.deleteMany();
+  await prisma.breathingSession.deleteMany();
+  await prisma.creatureState.deleteMany();
+  await prisma.refreshToken.deleteMany();
+  await prisma.resetToken.deleteMany();
   await prisma.user.deleteMany();
   await prisma.test.deleteMany();
   await prisma.parameter.deleteMany();
@@ -271,6 +374,7 @@ async function seed() {
   const allTests = await prisma.test.findMany();
   const allParams = await prisma.parameter.findMany();
 
+  const phq9 = allTests.find((t) => t.title === "PHQ-9")!;
   const gad7 = allTests.find((t) => t.title === "GAD-7")!;
   const bai = allTests.find((t) => t.title === "Burns Anxiety Inventory")!;
   const bdc = allTests.find((t) => t.title === "Burns Depression Checklist")!;
@@ -324,15 +428,21 @@ async function seed() {
       { testId: gad7.id, userId: demoUser.id, score: 10, interpretation: "Mild anxiety", recommendation: "Monitor symptoms. Self-help techniques may help.", completedAt: new Date(now.getTime() - 5 * DAY) },
       { testId: gad7.id, userId: demoUser.id, score: 8, interpretation: "Mild anxiety", recommendation: "Continue self-care practices.", completedAt: new Date(now.getTime() - 1 * DAY) },
 
+      // PHQ-9: moderate → mild depression
+      { testId: phq9.id, userId: demoUser.id, score: 17, interpretation: "Moderately severe depression", recommendation: "Consider consulting a therapist. Pharmacotherapy may be beneficial.", completedAt: new Date(now.getTime() - 14 * DAY) },
+      { testId: phq9.id, userId: demoUser.id, score: 14, interpretation: "Moderate depression", recommendation: "Consider therapy. Monitor symptoms closely.", completedAt: new Date(now.getTime() - 9 * DAY) },
+      { testId: phq9.id, userId: demoUser.id, score: 11, interpretation: "Moderate depression", recommendation: "Consider therapy. Monitor symptoms closely.", completedAt: new Date(now.getTime() - 4 * DAY) },
+      { testId: phq9.id, userId: demoUser.id, score: 8, interpretation: "Mild depression", recommendation: "Monitor symptoms. Consider self-help techniques.", completedAt: new Date(now.getTime() - 1 * DAY) },
+
       // BAI: mild decreasing
       { testId: bai.id, userId: demoUser.id, score: 26, interpretation: "Mild anxiety", recommendation: "Consider self-help techniques.", completedAt: new Date(now.getTime() - 12 * DAY) },
-      { testId: bai.id, userId: demoUser.id, score: 22, interpretation: "Mild anxiety", recommendation: "May benefit from therapy or self-help techniques.", completedAt: new Date(now.getTime() - 7 * DAY) },
+      { testId: bai.id, userId: demoUser.id, score: 22, interpretation: "Mild anxiety", recommendation: "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment.", completedAt: new Date(now.getTime() - 7 * DAY) },
       { testId: bai.id, userId: demoUser.id, score: 18, interpretation: "Mild anxiety", recommendation: "Continue self-care practices.", completedAt: new Date(now.getTime() - 2 * DAY) },
 
       // BDC: moderate → mild depression
       { testId: bdc.id, userId: demoUser.id, score: 36, interpretation: "Moderate depression", recommendation: "Consider consulting a therapist.", completedAt: new Date(now.getTime() - 13 * DAY) },
       { testId: bdc.id, userId: demoUser.id, score: 32, interpretation: "Moderate depression", recommendation: "Consider consulting a therapist.", completedAt: new Date(now.getTime() - 8 * DAY) },
-      { testId: bdc.id, userId: demoUser.id, score: 28, interpretation: "Mild depression", recommendation: "Monitor symptoms. Consider therapy if persistent.", completedAt: new Date(now.getTime() - 3 * DAY) },
+      { testId: bdc.id, userId: demoUser.id, score: 28, interpretation: "Mild depression", recommendation: "Use the Triple Column Technique and the Double Standard method: would you say this to a friend? Consider therapy if it persists.", completedAt: new Date(now.getTime() - 3 * DAY) },
 
       // CD: first baseline, then current with improvement
       { testId: cd.id, userId: demoUser.id, score: 58, interpretation: "Moderate cognitive distortions. All-or-Nothing Thinking and Should Statements are most prominent.", recommendation: "Your results indicate several cognitive distortions. CBT is highly effective.", flags: {

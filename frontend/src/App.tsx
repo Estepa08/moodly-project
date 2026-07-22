@@ -13,6 +13,9 @@ import TestResultsPage from "./routes/test-results";
 import FeedbackPage from "./routes/feedback";
 import ReportsPage from "./routes/reports";
 import BreathingPage from "./routes/breathing";
+import GratitudeJournalPage from "./routes/gratitude-journal";
+import DistortionsPage from "./routes/distortions";
+import SleepHygienePage from "./routes/sleep-hygiene";
 
 function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
@@ -48,6 +51,9 @@ export default function App() {
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/breathing" element={<BreathingPage />} />
+        <Route path="/gratitude-journal" element={<GratitudeJournalPage />} />
+        <Route path="/distortions" element={<DistortionsPage />} />
+        <Route path="/sleep-hygiene" element={<SleepHygienePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
