@@ -7,6 +7,7 @@ export function useFeedbackList() {
   return useQuery({
     queryKey: ["feedback"],
     queryFn: () => api.feedback.listMine(),
+    staleTime: 30_000,
   });
 }
 

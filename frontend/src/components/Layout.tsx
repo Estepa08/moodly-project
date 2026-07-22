@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import SkipLink from "./SkipLink";
+import CrisisDialog from "./CrisisDialog";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -13,6 +15,8 @@ import {
   LogOut,
   User,
   Wind,
+  MoreHorizontal,
+  PhoneCall,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -31,6 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
   const isReducedMotion = useReducedMotion();
   const { data: userData } = useCurrentUser();
+  const [crisisOpen, setCrisisOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -50,6 +55,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <p className="text-sm font-medium text-primary truncate">{userData?.name ?? userData?.email ?? "—"}</p>
             <p className="text-xs text-muted-foreground truncate">{userData?.email ?? ""}</p>
           </div>
+          <button
+            onClick={handleLogout}
+            className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={t("common.logout")}
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
         {NAV_ITEMS.map((item) => (
           <button
@@ -65,14 +77,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="text-sm font-medium">{t(item.labelKey)}</span>
           </button>
         ))}
-        <div className="flex-1" />
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="text-sm font-medium">{t("common.logout")}</span>
-        </button>
       </nav>
 
       <div className="flex-1 flex flex-col min-w-0">
@@ -80,7 +84,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <h1 className="text-lg font-semibold text-primary font-serif">{t("common.moodly")}</h1>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 text-xs md:hidden">
-              {NAV_ITEMS.map((item) => (
+              {NAV_ITEMS.slice(0, 5).map((item) => (
                 <button
                   key={item.path}
                   aria-label={t(item.labelKey)}
@@ -92,13 +96,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <item.icon className="w-4 h-4" />
                 </button>
               ))}
-              <button
-                onClick={handleLogout}
-                aria-label={t("common.logout")}
-                className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
             </div>
             <div className="flex items-center gap-1 text-xs">
               <button
@@ -121,6 +118,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <main id="main-content" className="flex-1 px-4 pb-8 space-y-4">
           {children}
         </main>
+
+        <CrisisDialog
+          open={crisisOpen}
+          severity="urgent"
+          onDismiss={() => setCrisisOpen(false)}
+        />
+        <button
+          onClick={() => setCrisisOpen(true)}
+          className="fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-accent text-white shadow-neumorphic flex items-center justify-center cursor-pointer hover:opacity-90 transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={t("crisis.floatingButton")}
+        >
+          <PhoneCall className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );

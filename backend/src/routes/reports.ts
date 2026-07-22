@@ -18,8 +18,11 @@ export default async function reportRoutes(fastify: FastifyInstance) {
     return report;
   });
 
-  fastify.get("/reports", { preHandler: [fastify.authenticate] }, async (request) => {
-    return reportService.list(request.userId);
+  fastify.get("/reports", { preHandler: [fastify.authenticate] }, async (request, reply) => {
+    const { skip, take } = request.query as { skip?: string; take?: string };
+    const result = await reportService.list(request.userId, skip ? parseInt(skip, 10) : undefined, take ? parseInt(take, 10) : undefined);
+    reply.header("X-Total-Count", result.total);
+    return result.data;
   });
 
   fastify.get<{ Params: { id: string } }>("/reports/:id", { preHandler: [fastify.authenticate] }, async (request) => {

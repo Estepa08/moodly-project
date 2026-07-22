@@ -5,6 +5,7 @@ export function useCreatureState() {
   return useQuery({
     queryKey: ["creature"],
     queryFn: () => api.creature.getState(),
+    staleTime: 30_000,
   });
 }
 

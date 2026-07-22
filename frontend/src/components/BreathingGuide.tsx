@@ -3,23 +3,40 @@ import { useTranslation } from "react-i18next";
 import { CircleArrowUp, Timer, Wind } from "lucide-react";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
+export type BreathingTechnique = "478" | "box" | "quick";
+
 interface BreathingGuideProps {
   onComplete: (duration: number) => void;
   onCancel: () => void;
   autoStart?: boolean;
+  technique?: BreathingTechnique;
+  onBreathChange?: (phase: "inhale" | "hold" | "exhale", progress: number) => void;
 }
 
-const PHASES = [
+const PHASES_478 = [
   { key: "inhale", duration: 4000 },
   { key: "hold", duration: 7000 },
   { key: "exhale", duration: 8000 },
 ] as const;
 
+const PHASES_BOX = [
+  { key: "inhale", duration: 4000 },
+  { key: "hold", duration: 4000 },
+  { key: "exhale", duration: 4000 },
+  { key: "hold", duration: 4000 },
+] as const;
+
+const PHASES_QUICK = [
+  { key: "inhale", duration: 2000 },
+  { key: "exhale", duration: 6000 },
+] as const;
+
 const TOTAL_CYCLES = 4;
 
-export default function BreathingGuide({ onComplete, onCancel, autoStart }: BreathingGuideProps) {
+export default function BreathingGuide({ onComplete, onCancel, autoStart, technique: initialTechnique, onBreathChange }: BreathingGuideProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
+  const [technique, setTechnique] = useState<BreathingTechnique>(initialTechnique ?? "box");
   const [cycle, setCycle] = useState(1);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
@@ -29,10 +46,13 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart }: Brea
   const completedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   const onCancelRef = useRef(onCancel);
+  const onBreathChangeRef = useRef(onBreathChange);
   onCompleteRef.current = onComplete;
   onCancelRef.current = onCancel;
+  onBreathChangeRef.current = onBreathChange;
 
-  const phase = PHASES[phaseIdx];
+  const phases = technique === "box" ? PHASES_BOX : technique === "quick" ? PHASES_QUICK : PHASES_478;
+  const phase = phases[phaseIdx];
   const isInhale = phase.key === "inhale";
   const isHold = phase.key === "hold";
   const isExhale = phase.key === "exhale";
@@ -43,10 +63,11 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart }: Brea
     const totalPhase = phase.duration;
     const progress = Math.min(elapsed / totalPhase, 1);
     setPhaseProgress(progress);
+    onBreathChangeRef.current?.(phase.key, progress);
 
     if (elapsed >= totalPhase) {
       const nextPhase = phaseIdx + 1;
-      if (nextPhase >= PHASES.length) {
+      if (nextPhase >= phases.length) {
         if (cycle >= TOTAL_CYCLES) {
           completedRef.current = true;
           setRunning(false);
@@ -63,7 +84,7 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart }: Brea
     }
 
     rafRef.current = requestAnimationFrame(tick);
-  }, [phase.duration, phaseIdx, cycle, phase]);
+  }, [phase.duration, phaseIdx, cycle, phase, phases.length]);
 
   useEffect(() => {
     if (running) {
@@ -94,13 +115,13 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart }: Brea
   const circleScale = isInhale ? 0.5 + phaseProgress * 0.5 : isHold ? 1 : 1 - phaseProgress * 0.5;
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="relative flex items-center justify-center w-48 h-48">
+    <div className="flex flex-col items-center gap-4">
+      <div className="relative flex items-center justify-center w-40 h-40">
         <div
           className={`rounded-full ${reducedMotion ? "" : "transition-all duration-100"}`}
           style={{
-            width: `${48 + circleScale * 96}px`,
-            height: `${48 + circleScale * 96}px`,
+            width: `${40 + circleScale * 80}px`,
+            height: `${40 + circleScale * 80}px`,
             backgroundColor: isInhale
               ? "hsl(var(--primary) / 0.3)"
               : isHold
@@ -147,12 +168,46 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart }: Brea
 
       <div className="flex gap-3">
         {!running ? (
-          <button
-            className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            onClick={() => setRunning(true)}
-          >
-            {t("breathing.start")}
-          </button>
+          <>
+            <div className="flex rounded-xl bg-muted p-1 shadow-neumorphic-inset">
+              <button
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  technique === "box"
+                    ? "bg-card text-foreground shadow-neumorphic-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                onClick={() => setTechnique("box")}
+              >
+                {t("breathing.techniqueBox")}
+              </button>
+              <button
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  technique === "478"
+                    ? "bg-card text-foreground shadow-neumorphic-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                onClick={() => setTechnique("478")}
+              >
+                {t("breathing.technique478")}
+              </button>
+              <button
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  technique === "quick"
+                    ? "bg-card text-foreground shadow-neumorphic-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+                onClick={() => setTechnique("quick")}
+              >
+                {t("breathing.techniqueQuick")}
+              </button>
+            </div>
+            <button
+              className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={() => setRunning(true)}
+            >
+              {t("breathing.start")}
+            </button>
+          </>
         ) : (
           <button
             className="px-6 py-2 bg-destructive text-white rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

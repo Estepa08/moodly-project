@@ -7,6 +7,7 @@ export function useReports() {
   return useQuery({
     queryKey: ["reports"],
     queryFn: () => api.reports.list(),
+    staleTime: 30_000,
   });
 }
 

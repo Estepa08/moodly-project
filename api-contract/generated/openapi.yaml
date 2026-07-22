@@ -14,6 +14,21 @@ tags:
   - name: Reports
   - name: Breathing
 paths:
+  /auth/forgot-password:
+    post:
+      operationId: Auth_forgotPassword
+      parameters: []
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
   /auth/login:
     post:
       operationId: Auth_login
@@ -42,6 +57,25 @@ paths:
           description: 'There is no content to send for this request, but the headers may be useful. '
       tags:
         - Auth
+  /auth/refresh:
+    post:
+      operationId: Auth_refresh
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
   /auth/register:
     post:
       operationId: Auth_register
@@ -61,6 +95,21 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserCreate'
+  /auth/reset-password:
+    post:
+      operationId: Auth_resetPassword
+      parameters: []
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
   /creature:
     get:
       operationId: Creature_getState
@@ -492,9 +541,12 @@ components:
       type: object
       required:
         - accessToken
+        - refreshToken
         - user
       properties:
         accessToken:
+          type: string
+        refreshToken:
           type: string
         user:
           $ref: '#/components/schemas/User'
@@ -638,6 +690,13 @@ components:
       properties:
         message:
           type: string
+    ForgotPasswordRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
     LoginRequest:
       type: object
       required:
@@ -681,6 +740,13 @@ components:
         unit:
           type: string
       description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
+    RefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
     Report:
       type: object
       required:
@@ -739,6 +805,16 @@ components:
         - ready
         - failed
       description: Статус генерации отчёта
+    ResetPasswordRequest:
+      type: object
+      required:
+        - token
+        - password
+      properties:
+        token:
+          type: string
+        password:
+          type: string
     Test:
       type: object
       required:

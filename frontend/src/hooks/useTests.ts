@@ -5,6 +5,7 @@ export function useTests() {
   return useQuery({
     queryKey: ["tests"],
     queryFn: () => api.tests.list(),
+    staleTime: 60_000,
   });
 }
 
@@ -13,6 +14,7 @@ export function useTest(id?: string) {
     queryKey: ["test", id],
     queryFn: () => api.tests.get(id!),
     enabled: !!id,
+    staleTime: 60_000,
   });
 }
 
@@ -20,6 +22,7 @@ export function useTestResults(testId?: string) {
   return useQuery({
     queryKey: ["testResults", testId],
     queryFn: () => api.testResults.list(testId),
+    staleTime: 30_000,
   });
 }
 

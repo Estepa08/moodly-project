@@ -5,5 +5,6 @@ export function useOnboardingStories() {
   return useQuery({
     queryKey: ["onboarding"],
     queryFn: () => api.onboarding.list(),
+    staleTime: 60_000,
   });
 }

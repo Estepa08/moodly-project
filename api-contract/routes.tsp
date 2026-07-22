@@ -19,6 +19,18 @@ interface Auth {
   @post
   @route("/logout")
   logout(): void;
+
+  @post
+  @route("/refresh")
+  refresh(@body body: RefreshRequest): AuthResponse;
+
+  @post
+  @route("/forgot-password")
+  forgotPassword(@body body: ForgotPasswordRequest): void;
+
+  @post
+  @route("/reset-password")
+  resetPassword(@body body: ResetPasswordRequest): void;
 }
 
 @tag("Users")

@@ -45,10 +45,14 @@ export const testService = {
     });
   },
 
-  async listResults(userId: string, testId?: string) {
+  async listResults(userId: string, testId?: string, skip?: number, take?: number) {
     const where: Record<string, unknown> = { userId };
     if (testId) where.testId = testId;
-    return prisma.testResult.findMany({ where, orderBy: { completedAt: "desc" } });
+    const [data, total] = await Promise.all([
+      prisma.testResult.findMany({ where, orderBy: { completedAt: "desc" }, skip, take: take ?? 200 }),
+      prisma.testResult.count({ where }),
+    ]);
+    return { data, total };
   },
 
   async getResultById(id: string, userId: string) {

@@ -1,21 +1,31 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreatureState, useCompleteExercise } from "../hooks/useCreature";
-import AnxietyCreature from "../components/AnxietyCreature";
 import BreathingGuide from "../components/BreathingGuide";
+import type { BreathingTechnique } from "../components/BreathingGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import Spinner from "../components/ui/spinner";
+
+const BreathingCreature = lazy(() => import("../components/BreathingCreature"));
 
 type Phase = "idle" | "exercising" | "done";
+
+const STEPS_478 = ["step1", "step2", "step3", "step4"] as const;
+const STEPS_BOX = ["step1", "stepBox1", "stepBox2", "stepBox3", "stepBox4"] as const;
+const STEPS_QUICK = ["step1", "stepQuick1", "stepQuick2"] as const;
 
 export default function BreathingPage() {
   const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>("idle");
+  const [technique, setTechnique] = useState<BreathingTechnique>("box");
   const [lastDuration, setLastDuration] = useState(0);
+  const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const [breathProgress, setBreathProgress] = useState(0);
 
   const { data: creature } = useCreatureState();
   const completeExercise = useCompleteExercise();
 
-  const calmness = creature?.calmness ?? 50;
+  const steps = technique === "478" ? STEPS_478 : technique === "quick" ? STEPS_QUICK : STEPS_BOX;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -25,20 +35,59 @@ export default function BreathingPage() {
       </div>
 
       <div className="flex justify-center">
-        <div className="relative">
-          <AnxietyCreature calmness={calmness} size={200} />
-          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-card rounded-full px-3 py-1 shadow-neumorphic-sm text-xs font-medium text-primary">
-            {t("breathing.calmness")}: {calmness}%
-          </div>
+        <div className="relative w-72 h-72 flex items-center justify-center">
+          <Suspense fallback={<Spinner size={40} className="mx-auto" />}>
+            <BreathingCreature
+              calmness={50}
+              size={200}
+              breathingPhase={breathPhase}
+              breathingProgress={breathProgress}
+              followCursor={phase !== "exercising"}
+            />
+          </Suspense>
         </div>
       </div>
 
       {phase === "idle" && (
         <Card className="shadow-neumorphic">
-          <CardContent className="pt-6">
-            <p className="text-sm text-center text-muted-foreground mb-4">
+          <CardContent className="pt-6 space-y-4">
+            <p className="text-sm text-center text-muted-foreground">
               {t("breathing.description")}
             </p>
+            <div className="flex justify-center">
+              <div className="flex rounded-xl bg-muted p-1 shadow-neumorphic-inset">
+                <button
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    technique === "box"
+                      ? "bg-card text-foreground shadow-neumorphic-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setTechnique("box")}
+                >
+                  {t("breathing.techniqueBox")}
+                </button>
+                <button
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    technique === "478"
+                      ? "bg-card text-foreground shadow-neumorphic-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setTechnique("478")}
+                >
+                  {t("breathing.technique478")}
+                </button>
+                <button
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    technique === "quick"
+                      ? "bg-card text-foreground shadow-neumorphic-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setTechnique("quick")}
+                >
+                  {t("breathing.techniqueQuick")}
+                </button>
+              </div>
+            </div>
             <div className="flex justify-center">
               <button
                 className="px-8 py-3 bg-primary text-primary-foreground rounded-xl shadow-neumorphic font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -53,15 +102,26 @@ export default function BreathingPage() {
 
       {phase === "exercising" && (
         <Card className="shadow-neumorphic">
-          <CardContent className="pt-6">
+          <CardContent className="p-4">
             <BreathingGuide
               autoStart
+              technique={technique}
+              onBreathChange={(phase, progress) => {
+                setBreathPhase(phase);
+                setBreathProgress(progress);
+              }}
               onComplete={(duration) => {
                 setLastDuration(duration);
+                setBreathPhase("inhale");
+                setBreathProgress(0);
                 completeExercise.mutate(duration);
                 setPhase("done");
               }}
-              onCancel={() => setPhase("idle")}
+              onCancel={() => {
+                setBreathPhase("inhale");
+                setBreathProgress(0);
+                setPhase("idle");
+              }}
             />
           </CardContent>
         </Card>
@@ -79,8 +139,8 @@ export default function BreathingPage() {
             <p className="text-sm text-muted-foreground">
               {t("breathing.sessionComplete", { duration: lastDuration })}
             </p>
-            <p className="text-sm text-muted-foreground">
-              {t("breathing.calmnessNow")}: <span className="font-semibold text-accent">{creature?.calmness ?? calmness}%</span>
+            <p className="text-sm text-foreground/80">
+              {t("breathing.calmnessNow")}
             </p>
             <div className="flex justify-center gap-3">
               <button
@@ -106,10 +166,9 @@ export default function BreathingPage() {
         </CardHeader>
         <CardContent>
           <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
-            <li>{t("breathing.step1")}</li>
-            <li>{t("breathing.step2")}</li>
-            <li>{t("breathing.step3")}</li>
-            <li>{t("breathing.step4")}</li>
+            {steps.map((step) => (
+              <li key={step}>{t(`breathing.${step}`)}</li>
+            ))}
           </ol>
         </CardContent>
       </Card>

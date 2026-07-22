@@ -27,7 +27,21 @@ model LoginRequest {
 
 model AuthResponse {
   accessToken: string;
+  refreshToken: string;
   user: User;
+}
+
+model RefreshRequest {
+  refreshToken: string;
+}
+
+model ForgotPasswordRequest {
+  email: string;
+}
+
+model ResetPasswordRequest {
+  token: string;
+  password: string;
 }
 
 // ---------- Parameter ----------

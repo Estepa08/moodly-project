@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(SP=/private/tmp/claude-501/-Users-evgeniystepanov-moodly-project/4140f0dd-a4ac-429c-bbfd-7a47a65d9af6/scratchpad node /private/tmp/claude-501/-Users-evgeniystepanov-moodly-project/4140f0dd-a4ac-429c-bbfd-7a47a65d9af6/scratchpad/check_scroll4.js)",
+      "Bash(npx eslint *)",
+      "Bash(python3 \"/Users/evgeniystepanov/.agents/skills/ui-ux-pro-max/scripts/search.py\" \"multi-line chart legend highlight isolate series focus\" --domain chart)"
+    ]
+  }
+}

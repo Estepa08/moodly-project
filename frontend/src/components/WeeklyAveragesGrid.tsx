@@ -32,10 +32,10 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
               const Icon = PARAM_ICONS[avg.name];
               const averageValue = avg.average;
               const colorClass = averageValue !== null
-                ? averageValue >= 7 ? "text-accent" : averageValue >= 4 ? "text-primary" : "text-destructive"
+                ? averageValue >= 7 ? "text-primary" : averageValue >= 4 ? "text-primary/70" : "text-primary/40"
                 : "text-muted-foreground";
               const TrendIcon = avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
-              const trendColor = avg.trend === "up" ? "text-accent" : avg.trend === "down" ? "text-destructive" : "text-muted-foreground";
+              const trendColor = avg.trend === "up" ? "text-primary" : avg.trend === "down" ? "text-primary/50" : "text-muted-foreground";
               return (
                 <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
                   <div className="flex items-center gap-2 mb-2">

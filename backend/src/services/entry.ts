@@ -18,6 +18,8 @@ export interface EntryListParams {
   parameterId?: string;
   from?: string;
   to?: string;
+  skip?: number;
+  take?: number;
 }
 
 export const entryService = {
@@ -29,7 +31,11 @@ export const entryService = {
       if (params.from) (where.createdAt as Record<string, unknown>).gte = new Date(params.from);
       if (params.to) (where.createdAt as Record<string, unknown>).lte = new Date(params.to);
     }
-    return prisma.entry.findMany({ where, orderBy: { createdAt: "desc" } });
+    const [data, total] = await Promise.all([
+      prisma.entry.findMany({ where, orderBy: { createdAt: "desc" }, skip: params.skip, take: params.take ?? 200 }),
+      prisma.entry.count({ where }),
+    ]);
+    return { data, total };
   },
 
   async create(input: EntryCreateInput) {

@@ -24,6 +24,7 @@ interface CreatureState {
 const BASE_URL = "/api";
 
 let accessToken: string | null = null;
+let refreshPromise: Promise<boolean> | null = null;
 
 export function setToken(token: string | null) {
   accessToken = token;
@@ -41,17 +42,57 @@ export function getToken(): string | null {
   return accessToken;
 }
 
+function getRefreshToken(): string | null {
+  return localStorage.getItem("refreshToken");
+}
+
+function setRefreshToken(token: string | null) {
+  if (token) {
+    localStorage.setItem("refreshToken", token);
+  } else {
+    localStorage.removeItem("refreshToken");
+  }
+}
+
+async function attemptRefresh(): Promise<boolean> {
+  const storedRefreshToken = getRefreshToken();
+  if (!storedRefreshToken) return false;
+  try {
+    const data = await api.auth.refresh(storedRefreshToken);
+    setToken(data.accessToken);
+    setRefreshToken(data.refreshToken);
+    return true;
+  } catch {
+    setToken(null);
+    setRefreshToken(null);
+    return false;
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getToken();
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
   };
-  if (options.body) {
+  if (options.body && typeof options.body === "string") {
     headers["Content-Type"] = "application/json";
   }
+  const token = getToken();
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+  let res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+
+  // 401 → attempt token refresh once
+  if (res.status === 401 && getRefreshToken()) {
+    if (!refreshPromise) {
+      refreshPromise = attemptRefresh().finally(() => { refreshPromise = null; });
+    }
+    const refreshed = await refreshPromise;
+    if (refreshed) {
+      headers["Authorization"] = `Bearer ${getToken()}`;
+      res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+    }
+  }
+
   if (res.status === 204) return undefined as T;
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: res.statusText }));
@@ -68,6 +109,12 @@ export const api = {
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
     demo: () => request<AuthResponse>("/auth/demo", { method: "POST" }),
+    refresh: (refreshToken: string) =>
+      request<AuthResponse>("/auth/refresh", { method: "POST", body: JSON.stringify({ refreshToken }) }),
+    forgotPassword: (body: { email: string }) =>
+      request<{ message: string }>("/auth/forgot-password", { method: "POST", body: JSON.stringify(body) }),
+    resetPassword: (body: { token: string; password: string }) =>
+      request<AuthResponse & { message: string }>("/auth/reset-password", { method: "POST", body: JSON.stringify(body) }),
   },
   users: {
     me: () => request<User>("/users/me"),

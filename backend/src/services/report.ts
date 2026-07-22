@@ -21,8 +21,13 @@ export const reportService = {
     });
   },
 
-  async list(userId: string) {
-    return prisma.report.findMany({ where: { userId }, orderBy: { createdAt: "desc" } });
+  async list(userId: string, skip?: number, take?: number) {
+    const where = { userId };
+    const [data, total] = await Promise.all([
+      prisma.report.findMany({ where, orderBy: { createdAt: "desc" }, skip, take: take ?? 200 }),
+      prisma.report.count({ where }),
+    ]);
+    return { data, total };
   },
 
   async getById(id: string, userId: string) {

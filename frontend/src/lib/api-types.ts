@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/auth/forgot-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth_forgotPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -36,6 +52,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth_refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/register": {
         parameters: {
             query?: never;
@@ -46,6 +78,56 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["Auth_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth_resetPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Получить текущее состояние существа и уровень спокойствия */
+        get: operations["Creature_getState"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creature/exercise/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Завершить дыхательное упражнение, обновить уровень спокойствия */
+        post: operations["Creature_completeExercise"];
         delete?: never;
         options?: never;
         head?: never;
@@ -298,7 +380,53 @@ export interface components {
     schemas: {
         AuthResponse: {
             accessToken: string;
+            refreshToken: string;
             user: components["schemas"]["User"];
+        };
+        /** @description Результат завершённого дыхательного упражнения */
+        BreathingCompleteRequest: {
+            /**
+             * Format: int32
+             * @description Длительность упражнения в секундах
+             */
+            duration: number;
+        };
+        /** @description Сессия дыхательного упражнения */
+        BreathingSession: {
+            id: string;
+            userId: string;
+            /**
+             * Format: int32
+             * @description Длительность упражнения в секундах
+             */
+            duration: number;
+            /**
+             * Format: int32
+             * @description Уровень спокойствия до упражнения
+             */
+            initialCalmness: number;
+            /**
+             * Format: int32
+             * @description Уровень спокойствия после упражнения
+             */
+            finalCalmness: number;
+            /** Format: date-time */
+            completedAt: string;
+        };
+        /** @description Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно). */
+        CreatureState: {
+            id: string;
+            userId: string;
+            /**
+             * Format: int32
+             * @description Уровень спокойствия: 0 — крайне тревожно, 100 — полное спокойствие
+             */
+            calmness: number;
+            /**
+             * Format: date-time
+             * @description Дата последнего дыхательного упражнения
+             */
+            lastExerciseAt?: string;
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -337,6 +465,9 @@ export interface components {
         FeedbackCreate: {
             message: string;
         };
+        ForgotPasswordRequest: {
+            email: string;
+        };
         LoginRequest: {
             email: string;
             password: string;
@@ -355,6 +486,9 @@ export interface components {
             name: string;
             description?: string;
             unit?: string;
+        };
+        RefreshRequest: {
+            refreshToken: string;
         };
         /** @description Отчёт для выгрузки статистики врачу (PDF/CSV), без участия врача в самом приложении */
         Report: {
@@ -384,6 +518,10 @@ export interface components {
          * @enum {string}
          */
         ReportStatus: "pending" | "ready" | "failed";
+        ResetPasswordRequest: {
+            token: string;
+            password: string;
+        };
         /** @description Психологический тест, построенный на справочниках/книгах по психологии. Шаблон: вопросы + правила подсчёта баллов. */
         Test: {
             id: string;
@@ -448,6 +586,28 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    Auth_forgotPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ForgotPasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     Auth_login: {
         parameters: {
             query?: never;
@@ -490,6 +650,30 @@ export interface operations {
             };
         };
     };
+    Auth_refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+        };
+    };
     Auth_register: {
         parameters: {
             query?: never;
@@ -510,6 +694,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+        };
+    };
+    Auth_resetPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetPasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Creature_getState: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatureState"];
+                };
+            };
+        };
+    };
+    Creature_completeExercise: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BreathingCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatureState"];
                 };
             };
         };

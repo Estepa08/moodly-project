@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { SEVERITY_COLORS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Spinner from "./ui/spinner";
 import type { components } from "../lib/api-types";
@@ -10,16 +9,7 @@ interface TestGroup {
   testId: string;
   label: string;
   results: TestResult[];
-  lastSeverity: string;
   lastScore: number;
-}
-
-function getSeverity(score: number, interpretation: string): string {
-  const lower = interpretation.toLowerCase();
-  if (lower.includes("severe") || lower.includes("high")) return "severe";
-  if (lower.includes("moderate") || lower.includes("mod")) return "moderate";
-  if (lower.includes("mild")) return "mild";
-  return "minimal";
 }
 
 interface TestTimelineProps {
@@ -40,44 +30,33 @@ export default function TestTimeline({ testTimeline, isLoading }: TestTimelinePr
           <div className="flex justify-center py-8"><Spinner size={32} /></div>
         ) : testTimeline.length > 0 ? (
           <div className="space-y-4">
-            {testTimeline.map((group) => {
-              const severityColor = SEVERITY_COLORS[group.lastSeverity] ?? "hsl(var(--primary))";
-              return (
-                <div key={group.testId} className="flex items-center gap-3">
-                  <div className="w-10 text-xs font-semibold text-muted-foreground shrink-0">
-                    {group.label}
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-1 overflow-x-auto">
-                    {group.results.map((r, idx) => {
-                      const sev = getSeverity(r.score, r.interpretation);
-                      const color = SEVERITY_COLORS[sev] ?? "hsl(var(--primary))";
-                      return (
-                        <div key={r.id} className="flex items-center gap-0">
-                          <div
-                            className={`w-5 h-5 rounded-full border-2 transition-all duration-150 ${
-                              idx === group.results.length - 1
-                                ? "shadow-neumorphic-sm scale-110"
-                                : ""
-                            }`}
-                            style={{
-                              backgroundColor: `${color}50`,
-                              borderColor: color,
-                            }}
-                            title={`${r.score} — ${r.interpretation}`}
-                          />
-                          {idx < group.results.length - 1 && (
-                            <div className="w-3 h-0.5 bg-border" />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="text-xs font-medium shrink-0" style={{ color: severityColor }}>
-                    {group.lastScore}
-                  </div>
+            {testTimeline.map((group) => (
+              <div key={group.testId} className="flex items-center gap-3">
+                <div className="w-10 text-xs font-semibold text-muted-foreground shrink-0">
+                  {group.label}
                 </div>
-              );
-            })}
+                <div className="flex items-center gap-1.5 flex-1 overflow-x-auto">
+                  {group.results.map((r, idx) => (
+                    <div key={r.id} className="flex items-center gap-0">
+                      <div
+                        className={`w-5 h-5 rounded-full border-2 border-primary/40 transition-all duration-150 ${
+                          idx === group.results.length - 1
+                            ? "bg-primary shadow-neumorphic-sm scale-110 border-primary"
+                            : "bg-primary/20"
+                        }`}
+                        title={r.interpretation}
+                      />
+                      {idx < group.results.length - 1 && (
+                        <div className="w-3 h-0.5 bg-border" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs font-medium text-muted-foreground shrink-0">
+                  {group.lastScore}
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTestData")}</p>

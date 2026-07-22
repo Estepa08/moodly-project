@@ -11,7 +11,6 @@ import DashboardQuickEntry from "../components/DashboardQuickEntry";
 import ParameterTrendsChart from "../components/ParameterTrendsChart";
 import WeeklyAveragesGrid from "../components/WeeklyAveragesGrid";
 import TestTimeline from "../components/TestTimeline";
-import EntryHistory from "../components/EntryHistory";
 
 type Entry = components["schemas"]["Entry"];
 type TestResult = components["schemas"]["TestResult"];
@@ -34,19 +33,21 @@ const TEST_ABBR_KEYS: Record<string, string> = {
 function getDateRange(period: string): { from?: string; to?: string } {
   const p = PERIODS.find((x) => x.key === period);
   if (!p || p.days === Infinity) return {};
-  const from = new Date(Date.now() - p.days * 24 * 60 * 60 * 1000).toISOString();
-  return { from, to: new Date().toISOString() };
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const from = new Date(today.getTime() - p.days * 24 * 60 * 60 * 1000);
+  return { from: from.toISOString(), to: today.toISOString() };
 }
 
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
-  const [selectedParam, setSelectedParam] = useState<string>("");
   const [moodValue, setMoodValue] = useState([7.5]);
   const [period, setPeriod] = useState("2w");
   const [visibleParams, setVisibleParams] = useState<Set<string>>(new Set(["Mood", "Sleep", "Anxiety"]));
 
   const { data: params } = useParameters();
-  const { data: allEntries, isLoading: entriesLoading } = useEntries(getDateRange(period));
+  const dateRange = useMemo(() => getDateRange(period), [period]);
+  const { data: allEntries, isLoading: entriesLoading } = useEntries(dateRange);
   const { data: testResults, isLoading: resultsLoading } = useTestResults();
   const { data: tests } = useTests();
   const createEntry = useCreateEntry();
@@ -152,15 +153,10 @@ export default function Dashboard() {
           (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime(),
         );
         const last = sorted[sorted.length - 1];
-        const lower = last.interpretation.toLowerCase();
-        const lastSeverity = lower.includes("severe") || lower.includes("high") ? "severe"
-          : lower.includes("moderate") || lower.includes("mod") ? "moderate"
-          : lower.includes("mild") ? "mild" : "minimal";
         return {
           testId,
           label: testAbbrMap.get(testId) ?? testId.slice(0, 8),
           results: sorted,
-          lastSeverity,
           lastScore: last.score,
         };
       });
@@ -172,7 +168,6 @@ export default function Dashboard() {
     ? Object.entries(cdDistortions).map(([key, val]) => ({ key, score: val.score }))
     : [];
 
-  const entriesForHistory = selectedParam ? (allEntries?.filter((e) => e.parameterId === selectedParam) ?? []) : [];
   const isDataLoading = entriesLoading || resultsLoading;
 
   const toggleParam = (name: string) => {
@@ -208,8 +203,6 @@ export default function Dashboard() {
 
       <DashboardQuickEntry
         params={params}
-        selectedParam={selectedParam}
-        onParamChange={setSelectedParam}
         moodValue={moodValue}
         onMoodChange={setMoodValue}
         createEntry={createEntry}
@@ -242,12 +235,6 @@ export default function Dashboard() {
       <TestTimeline
         testTimeline={testTimeline}
         isLoading={resultsLoading}
-      />
-
-      <EntryHistory
-        selectedParam={selectedParam}
-        entries={entriesForHistory}
-        isLoading={entriesLoading}
       />
     </div>
   );

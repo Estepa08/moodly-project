@@ -7,6 +7,7 @@ export function useEntries(params?: { parameterId?: string; from?: string; to?: 
   return useQuery({
     queryKey: ["entries", params],
     queryFn: () => api.entries.list(params),
+    staleTime: 30_000,
   });
 }
 

@@ -13,9 +13,15 @@ interface EntryUpdateBody {
 }
 
 export default async function entryRoutes(fastify: FastifyInstance) {
-  fastify.get("/entries", { preHandler: [fastify.authenticate] }, async (request) => {
-    const { parameterId, from, to } = request.query as { parameterId?: string; from?: string; to?: string };
-    return entryService.list({ userId: request.userId, parameterId, from, to });
+  fastify.get("/entries", { preHandler: [fastify.authenticate] }, async (request, reply) => {
+    const { parameterId, from, to, skip, take } = request.query as { parameterId?: string; from?: string; to?: string; skip?: string; take?: string };
+    const result = await entryService.list({
+      userId: request.userId, parameterId, from, to,
+      skip: skip ? parseInt(skip, 10) : undefined,
+      take: take ? parseInt(take, 10) : undefined,
+    });
+    reply.header("X-Total-Count", result.total);
+    return result.data;
   });
 
   fastify.post<{ Body: EntryCreateBody }>("/entries", { preHandler: [fastify.authenticate] }, async (request) => {

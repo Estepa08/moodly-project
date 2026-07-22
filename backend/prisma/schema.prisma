@@ -18,6 +18,8 @@ model User {
   testResults TestResult[]
   feedback    Feedback[]
   reports     Report[]
+  refreshTokens RefreshToken[]
+  resetTokens   ResetToken[]
   breathingSessions BreathingSession[]
 }
 
@@ -110,6 +112,30 @@ model CreatureState {
   userId         String   @unique
   calmness       Int      @default(50)
   lastExerciseAt DateTime?
+}
+
+model ResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model BreathingSession {

@@ -2,6 +2,8 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import Layout from "./components/Layout";
 import LoginPage from "./routes/login";
+import ForgotPasswordPage from "./routes/forgot-password";
+import ResetPasswordPage from "./routes/reset-password";
 
 import OnboardingPage from "./routes/onboarding";
 import Dashboard from "./routes/dashboard";
@@ -33,7 +35,9 @@ export default function App() {
     <Routes>
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<Navigate to="/login" replace />} />
+        <Route path="/register" element={<LoginPage defaultRegister />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />

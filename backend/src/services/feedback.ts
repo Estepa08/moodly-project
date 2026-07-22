@@ -5,7 +5,12 @@ export const feedbackService = {
     return prisma.feedback.create({ data: { userId, message } });
   },
 
-  async listByUser(userId: string) {
-    return prisma.feedback.findMany({ where: { userId }, orderBy: { createdAt: "desc" } });
+  async listByUser(userId: string, skip?: number, take?: number) {
+    const where = { userId };
+    const [data, total] = await Promise.all([
+      prisma.feedback.findMany({ where, orderBy: { createdAt: "desc" }, skip, take: take ?? 200 }),
+      prisma.feedback.count({ where }),
+    ]);
+    return { data, total };
   },
 };

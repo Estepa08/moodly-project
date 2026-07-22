@@ -5,5 +5,6 @@ export function useCurrentUser() {
   return useQuery({
     queryKey: ["userMe"],
     queryFn: () => api.users.me(),
+    staleTime: 300_000,
   });
 }

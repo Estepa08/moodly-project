@@ -11,7 +11,7 @@ export const PARAM_NAME_KEYS: Record<string, string> = {
 export const PARAM_COLORS: Record<string, string> = {
   Anxiety: "hsl(var(--primary))",
   Sleep: "hsl(var(--param-sleep))",
-  Mood: "hsl(var(--accent))",
+  Mood: "hsl(270 50% 60%)",
   Energy: "hsl(var(--param-energy))",
   Focus: "hsl(var(--param-focus))",
 };
@@ -32,7 +32,7 @@ export const SEVERITY_COLORS: Record<string, string> = {
 
 export const SLIDER_MIN = 0;
 export const SLIDER_MAX = 10;
-export const SLIDER_STEP = 0.5;
+export const SLIDER_STEP = 0.2;
 
 export const CLICK_THRESHOLD = 5;
 export const LOCKOUT_DURATION_MS = 5000;

@@ -19,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     setToken(null);
+    localStorage.removeItem("refreshToken");
     setIsAuthenticated(false);
   }, []);
 
