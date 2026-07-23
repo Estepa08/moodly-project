@@ -85,7 +85,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   // 401 → attempt token refresh once
   if (res.status === 401 && getRefreshToken()) {
     if (!refreshPromise) {
-      refreshPromise = attemptRefresh().finally(() => { refreshPromise = null; });
+      refreshPromise = attemptRefresh().finally(() => {
+        refreshPromise = null;
+      });
     }
     const refreshed = await refreshPromise;
     if (refreshed) {
@@ -111,11 +113,20 @@ export const api = {
     logout: () => request<void>("/auth/logout", { method: "POST" }),
     demo: () => request<AuthResponse>("/auth/demo", { method: "POST" }),
     refresh: (refreshToken: string) =>
-      request<AuthResponse>("/auth/refresh", { method: "POST", body: JSON.stringify({ refreshToken }) }),
+      request<AuthResponse>("/auth/refresh", {
+        method: "POST",
+        body: JSON.stringify({ refreshToken }),
+      }),
     forgotPassword: (body: { email: string }) =>
-      request<{ message: string }>("/auth/forgot-password", { method: "POST", body: JSON.stringify(body) }),
+      request<{ message: string }>("/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
     resetPassword: (body: { token: string; password: string }) =>
-      request<AuthResponse & { message: string }>("/auth/reset-password", { method: "POST", body: JSON.stringify(body) }),
+      request<AuthResponse & { message: string }>("/auth/reset-password", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
   },
   users: {
     me: () => request<User>("/users/me"),

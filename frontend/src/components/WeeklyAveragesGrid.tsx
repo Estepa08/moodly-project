@@ -25,22 +25,37 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          <div className="flex justify-center py-8">
+            <Spinner size={32} />
+          </div>
         ) : (
           <div className="grid grid-cols-3 gap-3">
             {weeklyAverages.map((avg) => {
               const Icon = PARAM_ICONS[avg.name];
               const averageValue = avg.average;
-              const colorClass = averageValue !== null
-                ? averageValue >= 7 ? "text-primary" : averageValue >= 4 ? "text-primary/70" : "text-primary/40"
-                : "text-muted-foreground";
-              const TrendIcon = avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
-              const trendColor = avg.trend === "up" ? "text-primary" : avg.trend === "down" ? "text-primary/50" : "text-muted-foreground";
+              const colorClass =
+                averageValue !== null
+                  ? averageValue >= 7
+                    ? "text-primary"
+                    : averageValue >= 4
+                      ? "text-primary/70"
+                      : "text-primary/40"
+                  : "text-muted-foreground";
+              const TrendIcon =
+                avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
+              const trendColor =
+                avg.trend === "up"
+                  ? "text-primary"
+                  : avg.trend === "down"
+                    ? "text-primary/50"
+                    : "text-muted-foreground";
               return (
                 <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
                   <div className="flex items-center gap-2 mb-2">
                     {Icon && <Icon className="w-4 h-4 text-primary" />}
-                    <span className="text-xs text-muted-foreground">{t(PARAM_NAME_KEYS[avg.name] ?? avg.name)}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t(PARAM_NAME_KEYS[avg.name] ?? avg.name)}
+                    </span>
                   </div>
                   <div className="flex items-end gap-2">
                     <span className={`text-2xl font-bold font-serif ${colorClass}`}>

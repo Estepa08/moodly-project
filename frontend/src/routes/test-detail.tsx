@@ -71,13 +71,12 @@ export default function TestDetailPage() {
         <div className="max-w-lg mx-auto pb-20">
           <Card>
             <CardHeader>
-              <CardTitle>{tTestTitle(test.title)} — {t("testDetail.result")}</CardTitle>
+              <CardTitle>
+                {tTestTitle(test.title)} — {t("testDetail.result")}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <ScoreBlock
-                score={result.score}
-                maxScore={maxScore}
-              />
+              <ScoreBlock score={result.score} maxScore={maxScore} />
               <div>
                 <p className="font-medium">{t("testDetail.interpretation")}</p>
                 <p className="text-muted-foreground">{interpretationText}</p>
@@ -86,7 +85,12 @@ export default function TestDetailPage() {
                 <div>
                   <p className="font-medium mb-2">{t("cognitiveDistortions.yourProfile")}</p>
                   <RadarChart
-                    data={cdKeys.map((key) => ({ key, score: cdDistortions[key].score })) as DistortionEntry[]}
+                    data={
+                      cdKeys.map((key) => ({
+                        key,
+                        score: cdDistortions[key].score,
+                      })) as DistortionEntry[]
+                    }
                   />
                 </div>
               )}
@@ -165,11 +169,7 @@ export default function TestDetailPage() {
           })}
         </div>
 
-        <Button
-          className="w-full"
-          onClick={handleSubmit}
-          disabled={submitMutation.isPending}
-        >
+        <Button className="w-full" onClick={handleSubmit} disabled={submitMutation.isPending}>
           {submitMutation.isPending ? t("common.sending") : t("testDetail.submitTest")}
         </Button>
       </div>
@@ -200,11 +200,7 @@ export default function TestDetailPage() {
         <h1 className="text-lg font-semibold text-foreground font-serif">
           {tTestTitle(test.title)}
         </h1>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowExitConfirm(true)}
-        >
+        <Button variant="ghost" size="sm" onClick={() => setShowExitConfirm(true)}>
           {t("testDetail.exit")}
         </Button>
       </header>
@@ -233,23 +229,23 @@ export default function TestDetailPage() {
             {tQuestion(question.id, question.text)}
           </CardTitle>
         </CardHeader>
-          <CardContent className="space-y-2">
-            {question.options.map((option) => {
-              const isSelected = currentAnswer?.optionId === option.id;
-              return (
-                <Button
-                  key={option.id}
-                  variant={isSelected ? "default" : "outline"}
-                  className={cn(
-                    "w-full justify-start h-auto py-3 px-4 relative transition-all duration-150",
-                    isSelected && "shadow-neumorphic-inset",
-                  )}
-                  onClick={() => {
-                    if (currentAnswer?.optionId === option.id && hasAnswer) return;
-                    handleAnswer(option.id);
-                  }}
-                  disabled={submitMutation.isPending}
-                >
+        <CardContent className="space-y-2">
+          {question.options.map((option) => {
+            const isSelected = currentAnswer?.optionId === option.id;
+            return (
+              <Button
+                key={option.id}
+                variant={isSelected ? "default" : "outline"}
+                className={cn(
+                  "w-full justify-start h-auto py-3 px-4 relative transition-all duration-150",
+                  isSelected && "shadow-neumorphic-inset",
+                )}
+                onClick={() => {
+                  if (currentAnswer?.optionId === option.id && hasAnswer) return;
+                  handleAnswer(option.id);
+                }}
+                disabled={submitMutation.isPending}
+              >
                 {tOption(option.id, option.text)}
                 {isSelected && (
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 animate-in fade-in zoom-in">
@@ -334,7 +330,12 @@ function ExitConfirmDialog({
 }) {
   const { t } = useTranslation();
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) onCancel(); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) onCancel();
+      }}
+    >
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>{t("testDetail.exitConfirmTitle")}</DialogTitle>

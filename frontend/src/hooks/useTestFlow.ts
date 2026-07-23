@@ -34,17 +34,20 @@ export function useTestFlow(testId?: string) {
 
   const currentAnswer = answers[questionIndex];
 
-  const handleAnswer = useCallback((optionId: string) => {
-    setAnswers((prev) => {
-      const next = [...prev];
-      if (next.length > questionIndex) {
-        next[questionIndex] = { questionId: test!.questions[questionIndex].id, optionId };
-      } else {
-        next.push({ questionId: test!.questions[questionIndex].id, optionId });
-      }
-      return next;
-    });
-  }, [questionIndex, test]);
+  const handleAnswer = useCallback(
+    (optionId: string) => {
+      setAnswers((prev) => {
+        const next = [...prev];
+        if (next.length > questionIndex) {
+          next[questionIndex] = { questionId: test!.questions[questionIndex].id, optionId };
+        } else {
+          next.push({ questionId: test!.questions[questionIndex].id, optionId });
+        }
+        return next;
+      });
+    },
+    [questionIndex, test],
+  );
 
   const handleNext = useCallback(() => {
     if (questionIndex === test!.questions.length - 1) {

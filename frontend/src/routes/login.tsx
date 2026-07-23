@@ -23,12 +23,17 @@ export default function LoginPage({ defaultRegister }: Props) {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const {
-    loginEmail, setLoginEmail,
-    loginPassword, setLoginPassword,
+    loginEmail,
+    setLoginEmail,
+    loginPassword,
+    setLoginPassword,
     loginError,
-    regName, setRegName,
-    regEmail, setRegEmail,
-    regPassword, setRegPassword,
+    regName,
+    setRegName,
+    regEmail,
+    setRegEmail,
+    regPassword,
+    setRegPassword,
     regError,
     demoLoading,
     handleLoginSubmit,
@@ -95,7 +100,9 @@ export default function LoginPage({ defaultRegister }: Props) {
                   <Heart className="w-6 h-6 text-primary" />
                 </div>
               </div>
-              <h2 className="text-xl font-serif font-semibold text-foreground">{t("login.title")}</h2>
+              <h2 className="text-xl font-serif font-semibold text-foreground">
+                {t("login.title")}
+              </h2>
               <p className="text-sm text-muted-foreground">{t("login.welcomeMessage")}</p>
             </div>
 
@@ -107,18 +114,34 @@ export default function LoginPage({ defaultRegister }: Props) {
               </div>
               {isRu ? (
                 <div className="flex gap-2 text-xs font-bold">
-                  <a href="tel:88002000122" className="text-foreground hover:text-accent transition-colors">8-800-200-01-22</a>
-                  <a href="tel:112" className="text-foreground hover:text-accent transition-colors">112</a>
+                  <a
+                    href="tel:88002000122"
+                    className="text-foreground hover:text-accent transition-colors"
+                  >
+                    8-800-200-01-22
+                  </a>
+                  <a href="tel:112" className="text-foreground hover:text-accent transition-colors">
+                    112
+                  </a>
                 </div>
               ) : (
-                <a href="tel:988" className="text-xs font-bold text-foreground hover:text-accent transition-colors">988</a>
+                <a
+                  href="tel:988"
+                  className="text-xs font-bold text-foreground hover:text-accent transition-colors"
+                >
+                  988
+                </a>
               )}
             </div>
 
             {/* ── Auth form ── */}
             <div
-              className={cn(reducedMotion ? "" : "flex transition-transform duration-300 ease-in-out")}
-              style={{ transform: reducedMotion || isLogin ? "translateX(0)" : "translateX(-100%)" }}
+              className={cn(
+                reducedMotion ? "" : "flex transition-transform duration-300 ease-in-out",
+              )}
+              style={{
+                transform: reducedMotion || isLogin ? "translateX(0)" : "translateX(-100%)",
+              }}
             >
               {/* Login panel */}
               <div className="w-full flex-shrink-0 space-y-4">
@@ -128,7 +151,13 @@ export default function LoginPage({ defaultRegister }: Props) {
                 <form onSubmit={handleLoginSubmit} className="space-y-4">
                   <div className="space-y-2" {...a(1, isLogin)}>
                     <Label htmlFor="email">{t("login.email")}</Label>
-                    <Input id="email" type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      required
+                    />
                   </div>
                   <div className="space-y-2" {...a(2, isLogin)}>
                     <div className="flex items-center justify-between">
@@ -141,9 +170,19 @@ export default function LoginPage({ defaultRegister }: Props) {
                         {t("login.forgotPassword")}
                       </button>
                     </div>
-                    <Input id="password" type="password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required />
+                    <Input
+                      id="password"
+                      type="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      required
+                    />
                   </div>
-                  {loginError && <p className="text-sm text-destructive" {...a(3, isLogin)}>{loginError}</p>}
+                  {loginError && (
+                    <p className="text-sm text-destructive" {...a(3, isLogin)}>
+                      {loginError}
+                    </p>
+                  )}
                   <Button type="submit" className="w-full" {...a(3, isLogin)}>
                     {t("login.signIn")}
                   </Button>
@@ -152,12 +191,23 @@ export default function LoginPage({ defaultRegister }: Props) {
                     <span className="text-xs text-muted-foreground">{t("login.or")}</span>
                     <span className="flex-1 h-px bg-border" />
                   </div>
-                  <Button type="button" variant="secondary" className="w-full" onClick={handleDemo} disabled={demoLoading} {...a(5, isLogin)}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full"
+                    onClick={handleDemo}
+                    disabled={demoLoading}
+                    {...a(5, isLogin)}
+                  >
                     {demoLoading ? t("login.starting") : t("login.quickDemo")}
                   </Button>
                   <p className="text-center text-sm text-muted-foreground" {...a(6, isLogin)}>
                     {t("login.noAccount")}{" "}
-                    <button type="button" className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={toggle}>
+                    <button
+                      type="button"
+                      className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      onClick={toggle}
+                    >
                       {t("login.signUp")}
                     </button>
                   </p>
@@ -168,28 +218,54 @@ export default function LoginPage({ defaultRegister }: Props) {
               <div className="w-full flex-shrink-0 space-y-4">
                 <div {...a(0, !isLogin)}>
                   <h3 className="text-center text-foreground font-serif">{t("register.title")}</h3>
-                  <p className="text-sm text-muted-foreground text-center">{t("register.subtitle")}</p>
+                  <p className="text-sm text-muted-foreground text-center">
+                    {t("register.subtitle")}
+                  </p>
                 </div>
                 <form onSubmit={handleRegisterSubmit} className="space-y-4">
                   <div className="space-y-2" {...a(1, !isLogin)}>
                     <Label htmlFor="regName">{t("register.name")}</Label>
-                    <Input id="regName" value={regName} onChange={(e) => setRegName(e.target.value)} />
+                    <Input
+                      id="regName"
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2" {...a(2, !isLogin)}>
                     <Label htmlFor="regEmail">{t("register.email")}</Label>
-                    <Input id="regEmail" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} required />
+                    <Input
+                      id="regEmail"
+                      type="email"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      required
+                    />
                   </div>
                   <div className="space-y-2" {...a(3, !isLogin)}>
                     <Label htmlFor="regPassword">{t("register.password")}</Label>
-                    <Input id="regPassword" type="password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} required />
+                    <Input
+                      id="regPassword"
+                      type="password"
+                      value={regPassword}
+                      onChange={(e) => setRegPassword(e.target.value)}
+                      required
+                    />
                   </div>
-                  {regError && <p className="text-sm text-destructive" {...a(4, !isLogin)}>{regError}</p>}
+                  {regError && (
+                    <p className="text-sm text-destructive" {...a(4, !isLogin)}>
+                      {regError}
+                    </p>
+                  )}
                   <Button type="submit" className="w-full" {...a(4, !isLogin)}>
                     {t("register.signUp")}
                   </Button>
                   <p className="text-center text-sm text-muted-foreground" {...a(5, !isLogin)}>
                     {t("register.hasAccount")}{" "}
-                    <button type="button" className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={toggle}>
+                    <button
+                      type="button"
+                      className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      onClick={toggle}
+                    >
                       {t("register.signIn")}
                     </button>
                   </p>
@@ -205,7 +281,9 @@ export default function LoginPage({ defaultRegister }: Props) {
               >
                 <Info className="w-3.5 h-3.5" />
                 <span>{t("login.disclaimerTitle")}</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showDisclaimer ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${showDisclaimer ? "rotate-180" : ""}`}
+                />
               </button>
               {showDisclaimer && (
                 <div className="mt-2 space-y-2 text-xs text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-top-1">

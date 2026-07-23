@@ -47,9 +47,12 @@ export default {
         "card-gradient": "linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary) / 0.3))",
       },
       boxShadow: {
-        "neumorphic": "6px 6px 12px rgba(180, 160, 200, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.8)",
-        "neumorphic-sm": "3px 3px 6px rgba(180, 160, 200, 0.25), -3px -3px 6px rgba(255, 255, 255, 0.8)",
-        "neumorphic-inset": "inset 3px 3px 6px rgba(180, 160, 200, 0.25), inset -3px -3px 6px rgba(255, 255, 255, 0.8)",
+        neumorphic:
+          "6px 6px 12px rgba(180, 160, 200, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.8)",
+        "neumorphic-sm":
+          "3px 3px 6px rgba(180, 160, 200, 0.25), -3px -3px 6px rgba(255, 255, 255, 0.8)",
+        "neumorphic-inset":
+          "inset 3px 3px 6px rgba(180, 160, 200, 0.25), inset -3px -3px 6px rgba(255, 255, 255, 0.8)",
       },
     },
   },

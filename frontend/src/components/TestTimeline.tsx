@@ -27,7 +27,9 @@ export default function TestTimeline({ testTimeline, isLoading }: TestTimelinePr
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          <div className="flex justify-center py-8">
+            <Spinner size={32} />
+          </div>
         ) : testTimeline.length > 0 ? (
           <div className="space-y-4">
             {testTimeline.map((group) => (
@@ -46,9 +48,7 @@ export default function TestTimeline({ testTimeline, isLoading }: TestTimelinePr
                         }`}
                         title={r.interpretation}
                       />
-                      {idx < group.results.length - 1 && (
-                        <div className="w-3 h-0.5 bg-border" />
-                      )}
+                      {idx < group.results.length - 1 && <div className="w-3 h-0.5 bg-border" />}
                     </div>
                   ))}
                 </div>
@@ -59,7 +59,9 @@ export default function TestTimeline({ testTimeline, isLoading }: TestTimelinePr
             ))}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTestData")}</p>
+          <p className="text-sm text-muted-foreground text-center py-8">
+            {t("dashboard.noTestData")}
+          </p>
         )}
       </CardContent>
     </Card>

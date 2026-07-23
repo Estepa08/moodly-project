@@ -28,7 +28,11 @@ function findBand(bands: ScoreBand[], score: number): ScoreBand {
   return bands.find((b) => score <= b.maxScore) ?? bands[bands.length - 1];
 }
 
-function detectSuicideFlags(answers: TestAnswer[], suicideQuestionIds: string[], planQuestionId?: string): Record<string, unknown> {
+function detectSuicideFlags(
+  answers: TestAnswer[],
+  suicideQuestionIds: string[],
+  planQuestionId?: string,
+): Record<string, unknown> {
   const flags: Record<string, unknown> = {};
   for (const answer of answers) {
     if (!suicideQuestionIds.includes(answer.questionId)) continue;
@@ -54,7 +58,11 @@ const interpretations: Record<string, InterpretFn> = {
     const flags = detectSuicideFlags(answers, ["phq9-9"]);
     const band = findBand(PHQ9_BANDS, score);
     const recommendation = applyCrisisOverride(band.recommendation, flags);
-    return { interpretation: band.interpretation, recommendation, flags: Object.keys(flags).length > 0 ? flags : undefined };
+    return {
+      interpretation: band.interpretation,
+      recommendation,
+      flags: Object.keys(flags).length > 0 ? flags : undefined,
+    };
   },
 
   "GAD-7": (score) => {
@@ -72,7 +80,11 @@ const interpretations: Record<string, InterpretFn> = {
     const band = findBand(BURNS_DEPRESSION_BANDS, score);
     let recommendation = applyCrisisOverride(band.recommendation, flags);
     if (flags.suicidalIdeation && flags.suicidalPlan) recommendation = CRISIS_MESSAGES.criticalPlan;
-    return { interpretation: band.interpretation, recommendation, flags: Object.keys(flags).length > 0 ? flags : undefined };
+    return {
+      interpretation: band.interpretation,
+      recommendation,
+      flags: Object.keys(flags).length > 0 ? flags : undefined,
+    };
   },
 
   "Cognitive Distortions Assessment": (_score, _maxScore, answers) => {
@@ -88,7 +100,8 @@ const interpretations: Record<string, InterpretFn> = {
       questionCount[idx]++;
     }
 
-    const ratioFor = (i: number) => (questionCount[i] > 0 ? distortionScores[i] / (questionCount[i] * 3) : 0);
+    const ratioFor = (i: number) =>
+      questionCount[i] > 0 ? distortionScores[i] / (questionCount[i] * 3) : 0;
 
     const distortions: Record<string, { score: number; level: string }> = {};
     for (let i = 0; i < 10; i++) {
@@ -97,10 +110,15 @@ const interpretations: Record<string, InterpretFn> = {
       distortions[DISTORTIONS[i].key] = { score: distortionScores[i], level };
     }
 
-    const highKeys = DISTORTIONS.filter((_, i) => questionCount[i] > 0 && ratioFor(i) > 0.66).map((d) => d.key);
-    const moderateKeys = DISTORTIONS.filter((_, i) => questionCount[i] > 0 && ratioFor(i) > 0.33 && ratioFor(i) <= 0.66).map((d) => d.key);
+    const highKeys = DISTORTIONS.filter((_, i) => questionCount[i] > 0 && ratioFor(i) > 0.66).map(
+      (d) => d.key,
+    );
+    const moderateKeys = DISTORTIONS.filter(
+      (_, i) => questionCount[i] > 0 && ratioFor(i) > 0.33 && ratioFor(i) <= 0.66,
+    ).map((d) => d.key);
 
-    const templateKey = highKeys.length > 0 ? "severe" : moderateKeys.length > 0 ? "moderate" : "minimal";
+    const templateKey =
+      highKeys.length > 0 ? "severe" : moderateKeys.length > 0 ? "moderate" : "minimal";
     const highNames = highKeys.map((k) => DISTORTIONS.find((d) => d.key === k)!.name);
     const moderateNames = moderateKeys.map((k) => DISTORTIONS.find((d) => d.key === k)!.name);
 
@@ -112,11 +130,18 @@ const interpretations: Record<string, InterpretFn> = {
   },
 };
 
-export function getInterpretation(testTitle: string, score: number, maxScore: number, answers: TestAnswer[]): Interpretation {
+export function getInterpretation(
+  testTitle: string,
+  score: number,
+  maxScore: number,
+  answers: TestAnswer[],
+): Interpretation {
   const fn = interpretations[testTitle];
   if (fn) return fn(score, maxScore, answers);
 
   const ratio = maxScore > 0 ? score / maxScore : 0;
-  const band = GENERIC_RATIO_BANDS.find((b) => ratio < b.maxRatio) ?? GENERIC_RATIO_BANDS[GENERIC_RATIO_BANDS.length - 1];
+  const band =
+    GENERIC_RATIO_BANDS.find((b) => ratio < b.maxRatio) ??
+    GENERIC_RATIO_BANDS[GENERIC_RATIO_BANDS.length - 1];
   return { interpretation: band.interpretation, recommendation: band.recommendation };
 }

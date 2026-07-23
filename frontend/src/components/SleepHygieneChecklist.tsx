@@ -4,7 +4,12 @@ import { toast } from "sonner";
 import { Check, Moon } from "lucide-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { components } from "../lib/api-types";
-import { SLEEP_HYGIENE_ITEMS, SLEEP_HYGIENE_THRESHOLD, dayKey, nextDayKey } from "../lib/sleepHygiene";
+import {
+  SLEEP_HYGIENE_ITEMS,
+  SLEEP_HYGIENE_THRESHOLD,
+  dayKey,
+  nextDayKey,
+} from "../lib/sleepHygiene";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
@@ -15,7 +20,12 @@ interface SleepHygieneChecklistProps {
   parameterId: string | undefined;
   hygieneEntries: Entry[];
   sleepEntries: Entry[];
-  createEntry: UseMutationResult<Entry, Error, { parameterId: string; value: number; note?: string }, unknown>;
+  createEntry: UseMutationResult<
+    Entry,
+    Error,
+    { parameterId: string; value: number; note?: string },
+    unknown
+  >;
 }
 
 export default function SleepHygieneChecklist({
@@ -72,8 +82,14 @@ export default function SleepHygieneChecklist({
       else lowGroup.push(avgNextSleep);
     }
 
-    const avg = (arr: number[]) => (arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null);
-    return { high: avg(highGroup), low: avg(lowGroup), highCount: highGroup.length, lowCount: lowGroup.length };
+    const avg = (arr: number[]) =>
+      arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : null;
+    return {
+      high: avg(highGroup),
+      low: avg(lowGroup),
+      highCount: highGroup.length,
+      lowCount: lowGroup.length,
+    };
   }, [hygieneEntries, sleepEntries]);
 
   return (
@@ -115,7 +131,11 @@ export default function SleepHygieneChecklist({
             })}
           </div>
 
-          <Button className="w-full" disabled={createEntry.isPending || !parameterId} onClick={handleSave}>
+          <Button
+            className="w-full"
+            disabled={createEntry.isPending || !parameterId}
+            onClick={handleSave}
+          >
             {createEntry.isPending ? t("common.saving") : t("sleepHygiene.save")}
           </Button>
         </CardContent>
@@ -149,16 +169,24 @@ export default function SleepHygieneChecklist({
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-2">{t("sleepHygiene.empty")}</p>
+            <p className="text-xs text-muted-foreground text-center py-2">
+              {t("sleepHygiene.empty")}
+            </p>
           ) : (
             <ul className="space-y-2">
               {recent.map((e) => (
-                <li key={e.id} className="flex items-center justify-between text-sm bg-muted/30 rounded-lg px-3 py-2">
+                <li
+                  key={e.id}
+                  className="flex items-center justify-between text-sm bg-muted/30 rounded-lg px-3 py-2"
+                >
                   <span className="text-foreground">
-                    {new Date(e.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
+                    {new Date(e.createdAt).toLocaleDateString(
+                      i18n.language === "ru" ? "ru-RU" : "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                      },
+                    )}
                   </span>
                   <span className="text-muted-foreground">
                     {e.value}/{SLEEP_HYGIENE_ITEMS.length}

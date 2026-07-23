@@ -33,43 +33,48 @@ export default function OnboardingPage() {
         <CardContent className="pt-6 text-center space-y-6">
           <div className="flex justify-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-              <div key={i} className={`h-1.5 w-8 rounded-full ${i === step ? "bg-primary" : "bg-muted"}`} />
+              <div
+                key={i}
+                className={`h-1.5 w-8 rounded-full ${i === step ? "bg-primary" : "bg-muted"}`}
+              />
             ))}
           </div>
 
           {step === 0 && (
             <>
-              <h2 className="text-xl font-semibold text-foreground font-serif">{t("onboarding.welcomeTitle")}</h2>
+              <h2 className="text-xl font-semibold text-foreground font-serif">
+                {t("onboarding.welcomeTitle")}
+              </h2>
               <p className="text-muted-foreground">{t("onboarding.welcomeDesc")}</p>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => goTo("/")}>
                   {t("onboarding.skip")}
                 </Button>
-                <Button onClick={() => setStep(1)}>
-                  {t("onboarding.next")}
-                </Button>
+                <Button onClick={() => setStep(1)}>{t("onboarding.next")}</Button>
               </div>
             </>
           )}
 
           {step === 1 && (
             <>
-              <h2 className="text-xl font-semibold text-foreground font-serif">{t("onboarding.startTitle")}</h2>
+              <h2 className="text-xl font-semibold text-foreground font-serif">
+                {t("onboarding.startTitle")}
+              </h2>
               <p className="text-muted-foreground">{t("onboarding.startDesc")}</p>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => goTo("/")}>
                   {t("onboarding.skip")}
                 </Button>
-                <Button onClick={() => setStep(2)}>
-                  {t("onboarding.next")}
-                </Button>
+                <Button onClick={() => setStep(2)}>{t("onboarding.next")}</Button>
               </div>
             </>
           )}
 
           {step === 2 && (
             <>
-              <h2 className="text-xl font-semibold text-foreground font-serif">{t("onboarding.chooseTitle")}</h2>
+              <h2 className="text-xl font-semibold text-foreground font-serif">
+                {t("onboarding.chooseTitle")}
+              </h2>
               <p className="text-muted-foreground text-sm">{t("onboarding.startDesc")}</p>
               <div className="flex flex-col gap-3">
                 <button
@@ -80,7 +85,9 @@ export default function OnboardingPage() {
                     <Wind className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{t("onboarding.chooseBreathing")}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {t("onboarding.chooseBreathing")}
+                    </p>
                     <p className="text-xs text-muted-foreground">{t("breathing.subtitle")}</p>
                   </div>
                 </button>
@@ -92,7 +99,9 @@ export default function OnboardingPage() {
                     <LayoutDashboard className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{t("onboarding.chooseDashboard")}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {t("onboarding.chooseDashboard")}
+                    </p>
                     <p className="text-xs text-muted-foreground">{t("dashboard.title")}</p>
                   </div>
                 </button>
@@ -104,7 +113,9 @@ export default function OnboardingPage() {
                     <ClipboardList className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{t("onboarding.chooseTest")}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {t("onboarding.chooseTest")}
+                    </p>
                     <p className="text-xs text-muted-foreground">{t("tests.title")}</p>
                   </div>
                 </button>

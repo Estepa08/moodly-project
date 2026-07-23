@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { PhoneCall, Heart } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -124,15 +118,8 @@ export default function CrisisDialog({ open, severity, onDismiss }: Props) {
           )}
         </div>
 
-        <Button
-          variant="default"
-          className="w-full"
-          disabled={!canDismiss}
-          onClick={onDismiss}
-        >
-          {canDismiss
-            ? t("crisis.dismissAfter")
-            : `${t("crisis.pleaseWait")} ${countdown}s`}
+        <Button variant="default" className="w-full" disabled={!canDismiss} onClick={onDismiss}>
+          {canDismiss ? t("crisis.dismissAfter") : `${t("crisis.pleaseWait")} ${countdown}s`}
         </Button>
       </DialogContent>
     </Dialog>

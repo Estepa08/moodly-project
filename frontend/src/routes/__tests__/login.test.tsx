@@ -42,7 +42,10 @@ describe("LoginPage", () => {
     await user.click(screen.getAllByRole("button", { name: /sign in/i })[0]);
 
     await waitFor(() => {
-      expect(api.auth.login).toHaveBeenCalledWith({ email: "test@example.com", password: "secret" });
+      expect(api.auth.login).toHaveBeenCalledWith({
+        email: "test@example.com",
+        password: "secret",
+      });
     });
   });
 
@@ -73,7 +76,10 @@ describe("LoginPage", () => {
   });
 
   it("demo button logs in via demo endpoint", async () => {
-    (api.auth.demo as Mock).mockResolvedValueOnce({ accessToken: "demo-token", user: { id: "demo" } });
+    (api.auth.demo as Mock).mockResolvedValueOnce({
+      accessToken: "demo-token",
+      user: { id: "demo" },
+    });
 
     const user = userEvent.setup();
     renderWithProviders(<LoginPage />);

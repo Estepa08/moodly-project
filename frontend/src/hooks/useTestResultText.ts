@@ -24,7 +24,8 @@ export function isSevereInterpretation(interpretation: string): boolean {
 }
 
 export function useTestResultText() {
-  const { tInterpretation, tRecommendation, tCDInterpretation, tCDRecommendation } = useTestTranslation();
+  const { tInterpretation, tRecommendation, tCDInterpretation, tCDRecommendation } =
+    useTestTranslation();
 
   function resolve(result: ResultLike) {
     const flags = result.flags as ResultFlags | undefined;

@@ -35,27 +35,45 @@ export default function ForgotPasswordPage() {
         <CardContent className="p-6 space-y-4">
           {sent ? (
             <>
-              <h2 className="text-xl font-serif font-semibold text-center text-foreground">{t("forgotPassword.checkEmail")}</h2>
-              <p className="text-sm text-muted-foreground text-center">{t("forgotPassword.sent")}</p>
+              <h2 className="text-xl font-serif font-semibold text-center text-foreground">
+                {t("forgotPassword.checkEmail")}
+              </h2>
+              <p className="text-sm text-muted-foreground text-center">
+                {t("forgotPassword.sent")}
+              </p>
               <Button variant="secondary" className="w-full" onClick={() => navigate("/login")}>
                 {t("forgotPassword.backToLogin")}
               </Button>
             </>
           ) : (
             <>
-              <h2 className="text-xl font-serif font-semibold text-center text-foreground">{t("forgotPassword.title")}</h2>
-              <p className="text-sm text-muted-foreground text-center">{t("forgotPassword.subtitle")}</p>
+              <h2 className="text-xl font-serif font-semibold text-center text-foreground">
+                {t("forgotPassword.title")}
+              </h2>
+              <p className="text-sm text-muted-foreground text-center">
+                {t("forgotPassword.subtitle")}
+              </p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">{t("forgotPassword.email")}</Label>
-                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? t("forgotPassword.sending") : t("forgotPassword.send")}
                 </Button>
                 <p className="text-center text-sm text-muted-foreground">
-                  <button type="button" className="text-primary hover:underline cursor-pointer" onClick={() => navigate("/login")}>
+                  <button
+                    type="button"
+                    className="text-primary hover:underline cursor-pointer"
+                    onClick={() => navigate("/login")}
+                  >
                     {t("forgotPassword.backToLogin")}
                   </button>
                 </p>

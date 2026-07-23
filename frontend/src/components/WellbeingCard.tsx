@@ -11,11 +11,21 @@ interface WellbeingCardProps {
 export default function WellbeingCard({ average, trend, isLoading }: WellbeingCardProps) {
   const { t } = useTranslation();
 
-  const colorClass = average !== null
-    ? average >= 7 ? "text-primary" : average >= 4 ? "text-primary/70" : "text-primary/40"
-    : "text-muted-foreground";
+  const colorClass =
+    average !== null
+      ? average >= 7
+        ? "text-primary"
+        : average >= 4
+          ? "text-primary/70"
+          : "text-primary/40"
+      : "text-muted-foreground";
   const TrendIcon = trend === "up" ? TrendingUp : trend === "down" ? TrendingDown : Minus;
-  const trendColor = trend === "up" ? "text-primary" : trend === "down" ? "text-primary/50" : "text-muted-foreground";
+  const trendColor =
+    trend === "up"
+      ? "text-primary"
+      : trend === "down"
+        ? "text-primary/50"
+        : "text-muted-foreground";
 
   return (
     <Card className="shadow-neumorphic">

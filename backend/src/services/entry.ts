@@ -32,7 +32,12 @@ export const entryService = {
       if (params.to) (where.createdAt as Record<string, unknown>).lte = new Date(params.to);
     }
     const [data, total] = await Promise.all([
-      prisma.entry.findMany({ where, orderBy: { createdAt: "desc" }, skip: params.skip, take: params.take ?? 200 }),
+      prisma.entry.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: params.skip,
+        take: params.take ?? 200,
+      }),
       prisma.entry.count({ where }),
     ]);
     return { data, total };
@@ -51,7 +56,12 @@ export const entryService = {
     }
 
     return prisma.entry.create({
-      data: { userId: input.userId, parameterId: input.parameterId, value: input.value, note: input.note },
+      data: {
+        userId: input.userId,
+        parameterId: input.parameterId,
+        value: input.value,
+        note: input.note,
+      },
     });
   },
 

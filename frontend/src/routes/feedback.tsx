@@ -40,7 +40,10 @@ export default function FeedbackPage() {
               className="flex min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-2 text-sm shadow-neumorphic-inset placeholder:text-muted-foreground resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
-          <Button disabled={!message || submitFeedback.isPending} onClick={() => submitFeedback.mutate(message)}>
+          <Button
+            disabled={!message || submitFeedback.isPending}
+            onClick={() => submitFeedback.mutate(message)}
+          >
             {submitFeedback.isPending ? t("common.sending") : t("feedback.send")}
           </Button>
         </CardContent>
@@ -50,7 +53,9 @@ export default function FeedbackPage() {
         <Card key={f.id}>
           <CardContent className="pt-4">
             <p className="text-sm text-muted-foreground">{f.message}</p>
-            <p className="text-xs text-muted-foreground mt-1">{new Date(f.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US")}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {new Date(f.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US")}
+            </p>
           </CardContent>
         </Card>
       ))}

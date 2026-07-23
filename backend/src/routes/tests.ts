@@ -10,11 +10,19 @@ export default async function testRoutes(fastify: FastifyInstance) {
     return testService.list();
   });
 
-  fastify.get<{ Params: { id: string } }>("/tests/:id", { preHandler: [fastify.authenticate] }, async (request) => {
-    return testService.getById(request.params.id);
-  });
+  fastify.get<{ Params: { id: string } }>(
+    "/tests/:id",
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return testService.getById(request.params.id);
+    },
+  );
 
-  fastify.post<{ Params: { id: string }; Body: SubmitResultBody }>("/tests/:id/results", { preHandler: [fastify.authenticate] }, async (request) => {
-    return testService.submitResult(request.params.id, request.userId, request.body.answers);
-  });
+  fastify.post<{ Params: { id: string }; Body: SubmitResultBody }>(
+    "/tests/:id/results",
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return testService.submitResult(request.params.id, request.userId, request.body.answers);
+    },
+  );
 }

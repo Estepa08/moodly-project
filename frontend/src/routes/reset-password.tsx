@@ -48,7 +48,9 @@ export default function ResetPasswordPage() {
       <div className="flex min-h-screen items-center justify-center p-4 bg-background">
         <Card className="w-full max-w-sm">
           <CardContent className="p-6 space-y-4 text-center">
-            <h2 className="text-xl font-serif font-semibold text-foreground">{t("resetPassword.invalidLink")}</h2>
+            <h2 className="text-xl font-serif font-semibold text-foreground">
+              {t("resetPassword.invalidLink")}
+            </h2>
             <Button variant="secondary" className="w-full" onClick={() => navigate("/login")}>
               {t("forgotPassword.backToLogin")}
             </Button>
@@ -62,15 +64,31 @@ export default function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-sm">
         <CardContent className="p-6 space-y-4">
-          <h2 className="text-xl font-serif font-semibold text-center text-foreground">{t("resetPassword.title")}</h2>
+          <h2 className="text-xl font-serif font-semibold text-center text-foreground">
+            {t("resetPassword.title")}
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password">{t("resetPassword.newPassword")}</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">{t("resetPassword.confirmPassword")}</Label>
-              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={6} />
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+              />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>

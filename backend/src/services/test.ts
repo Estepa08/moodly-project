@@ -38,10 +38,22 @@ export const testService = {
       return sum + Math.max(...q.options.map((o) => o.score));
     }, 0);
 
-    const { interpretation, recommendation, flags } = getInterpretation(test.title, score, maxScore, answers);
+    const { interpretation, recommendation, flags } = getInterpretation(
+      test.title,
+      score,
+      maxScore,
+      answers,
+    );
 
     return prisma.testResult.create({
-      data: { testId, userId, score, interpretation, recommendation, flags: flags as unknown as Prisma.InputJsonValue },
+      data: {
+        testId,
+        userId,
+        score,
+        interpretation,
+        recommendation,
+        flags: flags as unknown as Prisma.InputJsonValue,
+      },
     });
   },
 
@@ -49,7 +61,12 @@ export const testService = {
     const where: Record<string, unknown> = { userId };
     if (testId) where.testId = testId;
     const [data, total] = await Promise.all([
-      prisma.testResult.findMany({ where, orderBy: { completedAt: "desc" }, skip, take: take ?? 200 }),
+      prisma.testResult.findMany({
+        where,
+        orderBy: { completedAt: "desc" },
+        skip,
+        take: take ?? 200,
+      }),
       prisma.testResult.count({ where }),
     ]);
     return { data, total };

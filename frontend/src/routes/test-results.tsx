@@ -30,6 +30,15 @@ export default function TestResultsPage() {
   const crisisResult = crisisOpen ? results?.find((r) => r.id === crisisResultId) : undefined;
   const crisisSeverity = crisisResult ? getCrisisSeverity(crisisResult.recommendation) : null;
 
+  useEffect(() => {
+    if (!results) return;
+    for (const r of results) {
+      if (getCrisisSeverity(r.recommendation) && !showRec[r.id]) {
+        setShowRec((prev) => ({ ...prev, [r.id]: true }));
+      }
+    }
+  }, [results, showRec]);
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-16">
@@ -39,16 +48,9 @@ export default function TestResultsPage() {
   }
 
   const testMap = new Map(tests?.map((t) => [t.id, t.title]));
-  const hasCDResult = results?.some((r) => !!(r.flags as Record<string, unknown> | undefined)?.templateKey);
-
-  useEffect(() => {
-    if (!results) return;
-    for (const r of results) {
-      if (getCrisisSeverity(r.recommendation) && !showRec[r.id]) {
-        setShowRec((prev) => ({ ...prev, [r.id]: true }));
-      }
-    }
-  }, [results, showRec]);
+  const hasCDResult = results?.some(
+    (r) => !!(r.flags as Record<string, unknown> | undefined)?.templateKey,
+  );
 
   return (
     <>
@@ -68,7 +70,15 @@ export default function TestResultsPage() {
         )}
 
         {results?.map((r) => {
-          const { isCD, interpretationText, recommendationText, crisisSeverity: crisisType, isSevere: severeUnlessCrisis, highKeys, moderateKeys } = resolve(r);
+          const {
+            isCD,
+            interpretationText,
+            recommendationText,
+            crisisSeverity: crisisType,
+            isSevere: severeUnlessCrisis,
+            highKeys,
+            moderateKeys,
+          } = resolve(r);
           const isSevere = !crisisType && severeUnlessCrisis;
           const isLongText = isCD || interpretationText.length > 100;
 
@@ -83,7 +93,9 @@ export default function TestResultsPage() {
               <CardHeader className="pb-2">
                 <p className="text-xs text-muted-foreground">
                   {tTestTitle(testMap.get(r.testId) || "")} &middot;{" "}
-                  {new Date(r.completedAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US")}
+                  {new Date(r.completedAt).toLocaleDateString(
+                    i18n.language === "ru" ? "ru-RU" : "en-US",
+                  )}
                 </p>
               </CardHeader>
               <CardContent>
@@ -172,9 +184,7 @@ export default function TestResultsPage() {
                   <button
                     aria-expanded={!!showFull[r.id]}
                     className="text-xs text-primary hover:underline mt-1 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    onClick={() =>
-                      setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))
-                    }
+                    onClick={() => setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                   >
                     {showFull[r.id] ? t("testResults.showLess") : t("testResults.showFull")}
                   </button>
@@ -190,7 +200,12 @@ export default function TestResultsPage() {
                 </button>
 
                 {showRec[r.id] && (
-                  <p className={cn("text-sm mt-2", crisisType ? "text-destructive font-medium" : "text-muted-foreground")}>
+                  <p
+                    className={cn(
+                      "text-sm mt-2",
+                      crisisType ? "text-destructive font-medium" : "text-muted-foreground",
+                    )}
+                  >
                     {recommendationText}
                   </p>
                 )}

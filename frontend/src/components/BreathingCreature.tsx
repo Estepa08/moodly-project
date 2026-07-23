@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
-import type { AnimationItem } from 'lottie-web';
-import { Heart, HelpCircle } from 'lucide-react';
-import animationData from '../assets/lottie/breathing-creature.json';
-import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useEffect, useRef, useState, useCallback } from "react";
+import Lottie, { type LottieRefCurrentProps } from "lottie-react";
+import type { AnimationItem } from "lottie-web";
+import { Heart, HelpCircle } from "lucide-react";
+import animationData from "../assets/lottie/breathing-creature.json";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 interface Reaction {
   id: number;
-  type: 'heart' | 'question' | 'dizzy';
+  type: "heart" | "question" | "dizzy";
   x: number;
 }
 
 interface BreathingCreatureProps {
   calmness: number;
   size?: number;
-  breathingPhase?: 'inhale' | 'hold' | 'exhale';
+  breathingPhase?: "inhale" | "hold" | "exhale";
   breathingProgress?: number;
   // while an actual breathing session is running we don't want the octopus scooting around
   // after the cursor (it fights for attention with the breathing guide and can drift toward
@@ -51,14 +51,14 @@ export default function BreathingCreature({
 
   const [reactions, setReactions] = useState<Reaction[]>([]);
 
-  const spawnReaction = useCallback((type: 'heart' | 'question' | 'dizzy') => {
-    if (type === 'dizzy') dizzyActiveRef.current = true;
+  const spawnReaction = useCallback((type: "heart" | "question" | "dizzy") => {
+    if (type === "dizzy") dizzyActiveRef.current = true;
     const id = nextReactionId++;
     const x = (Math.random() - 0.5) * 30;
-    setReactions(prev => [...prev, { id, type, x }]);
+    setReactions((prev) => [...prev, { id, type, x }]);
     setTimeout(() => {
-      setReactions(prev => prev.filter(r => r.id !== id));
-      if (type === 'dizzy') dizzyActiveRef.current = false;
+      setReactions((prev) => prev.filter((r) => r.id !== id));
+      if (type === "dizzy") dizzyActiveRef.current = false;
     }, REACTION_DURATION);
   }, []);
 
@@ -70,15 +70,15 @@ export default function BreathingCreature({
     const timestamps = clickTimestampsRef.current;
     timestamps.push(now);
     const cutoff = now - CLICK_WINDOW;
-    clickTimestampsRef.current = timestamps.filter(t => t > cutoff);
+    clickTimestampsRef.current = timestamps.filter((t) => t > cutoff);
 
     if (dizzyActiveRef.current) return;
 
     if (clickTimestampsRef.current.length >= CLICK_THRESHOLD) {
       clickTimestampsRef.current = [];
-      spawnReaction('dizzy');
+      spawnReaction("dizzy");
     } else {
-      spawnReaction('heart');
+      spawnReaction("heart");
     }
   }, [spawnReaction]);
 
@@ -92,7 +92,7 @@ export default function BreathingCreature({
         !questionSpawnedRef.current
       ) {
         questionSpawnedRef.current = true;
-        spawnReaction('question');
+        spawnReaction("question");
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -121,7 +121,7 @@ export default function BreathingCreature({
         targetY = py;
       }
     };
-    window.addEventListener('mousemove', onMove);
+    window.addEventListener("mousemove", onMove);
 
     const tick = () => {
       // settle back to center (rather than freezing in place) once cursor-follow is turned off
@@ -149,7 +149,7 @@ export default function BreathingCreature({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener("mousemove", onMove);
       cancelAnimationFrame(raf);
     };
   }, [reducedMotion]);
@@ -178,7 +178,7 @@ export default function BreathingCreature({
 
       const findPupilElement = () => {
         const renderer = (anim as unknown as InternalAnim).renderer;
-        return renderer?.elements?.find((el) => el.data?.nm === 'pupilas')?.layerElement;
+        return renderer?.elements?.find((el) => el.data?.nm === "pupilas")?.layerElement;
       };
 
       const onDrawnFrame = () => {
@@ -192,13 +192,13 @@ export default function BreathingCreature({
         // unconditionally, so we read this frame's baked position out of the attribute and
         // re-apply it via CSS with our cursor offset added — that preserves the baked motion
         // while guaranteeing our offset always sticks.
-        const baked = new DOMMatrix(pupilEl.getAttribute('transform') ?? undefined);
+        const baked = new DOMMatrix(pupilEl.getAttribute("transform") ?? undefined);
         const combined = baked.translate(dx, dy);
         pupilEl.style.transform = combined.toString();
       };
 
-      anim.addEventListener('drawnFrame', onDrawnFrame);
-      cleanup = () => anim?.removeEventListener('drawnFrame', onDrawnFrame);
+      anim.addEventListener("drawnFrame", onDrawnFrame);
+      cleanup = () => anim?.removeEventListener("drawnFrame", onDrawnFrame);
     };
     raf = requestAnimationFrame(setup);
 
@@ -215,9 +215,9 @@ export default function BreathingCreature({
         ref={containerRef}
         onClick={handleClick}
         style={{
-          width: '100%',
-          height: '100%',
-          willChange: 'transform',
+          width: "100%",
+          height: "100%",
+          willChange: "transform",
         }}
       >
         <Lottie
@@ -225,7 +225,7 @@ export default function BreathingCreature({
           animationData={animationData}
           loop
           autoplay={!reducedMotion}
-          style={{ width: '100%', height: '100%', cursor: 'pointer' }}
+          style={{ width: "100%", height: "100%", cursor: "pointer" }}
         />
       </div>
 
@@ -237,9 +237,9 @@ export default function BreathingCreature({
               className="absolute left-1/2 -translate-x-1/2 top-[35%] w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center animate-bubble-up"
               style={{ marginLeft: r.x }}
             >
-              {r.type === 'dizzy' ? (
+              {r.type === "dizzy" ? (
                 <span className="text-lg">🌀</span>
-              ) : r.type === 'heart' ? (
+              ) : r.type === "heart" ? (
                 <Heart className="w-4 h-4 text-accent" strokeWidth={2.5} />
               ) : (
                 <HelpCircle className="w-4 h-4 text-primary" strokeWidth={2.5} />

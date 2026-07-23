@@ -32,7 +32,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: RegisterBody }>("/auth/register", async (request, reply) => {
     const { email, password, name } = request.body;
     const user = await userService.register({ email, password, name });
-    const accessToken = await reply.jwtSign({ userId: user.id }, { expiresIn: authService.accessTokenExpiry });
+    const accessToken = await reply.jwtSign(
+      { userId: user.id },
+      { expiresIn: authService.accessTokenExpiry },
+    );
     const refreshToken = await authService.createRefreshToken(user.id);
     return { accessToken, refreshToken, user };
   });
@@ -40,7 +43,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: LoginBody }>("/auth/login", async (request, reply) => {
     const { email, password } = request.body;
     const user = await userService.login({ email, password });
-    const accessToken = await reply.jwtSign({ userId: user.id }, { expiresIn: authService.accessTokenExpiry });
+    const accessToken = await reply.jwtSign(
+      { userId: user.id },
+      { expiresIn: authService.accessTokenExpiry },
+    );
     const refreshToken = await authService.createRefreshToken(user.id);
     return { accessToken, refreshToken, user };
   });
@@ -48,7 +54,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: RefreshBody }>("/auth/refresh", async (request, reply) => {
     const { refreshToken } = request.body;
     const userId = await authService.consumeRefreshToken(refreshToken);
-    const newAccessToken = await reply.jwtSign({ userId }, { expiresIn: authService.accessTokenExpiry });
+    const newAccessToken = await reply.jwtSign(
+      { userId },
+      { expiresIn: authService.accessTokenExpiry },
+    );
     const newRefreshToken = await authService.createRefreshToken(userId);
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   });
@@ -63,7 +72,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
     if (user) {
       const token = await authService.createResetToken(user.id);
       // In production, send email. For MVP, log the link.
-      request.log.info({ email, resetToken: token }, `Password reset link: /reset-password?token=${token}`);
+      request.log.info(
+        { email, resetToken: token },
+        `Password reset link: /reset-password?token=${token}`,
+      );
     }
     // Always return success to prevent email enumeration
     return { message: "If this email is registered, a reset link has been sent." };
@@ -75,7 +87,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
     const hashed = await bcrypt.hash(password, 10);
     await prisma.user.update({ where: { id: userId }, data: { password: hashed } });
     await authService.revokeAllUserTokens(userId);
-    const accessToken = await reply.jwtSign({ userId }, { expiresIn: authService.accessTokenExpiry });
+    const accessToken = await reply.jwtSign(
+      { userId },
+      { expiresIn: authService.accessTokenExpiry },
+    );
     const refreshToken = await authService.createRefreshToken(userId);
     return { accessToken, refreshToken, message: "Password reset successfully" };
   });
@@ -83,7 +98,10 @@ export default async function authRoutes(fastify: FastifyInstance) {
   // DEMO-ONLY: remove before production
   fastify.post("/auth/demo", async (request, reply) => {
     const user = await userService.createDemo();
-    const accessToken = await reply.jwtSign({ userId: user.id }, { expiresIn: authService.accessTokenExpiry });
+    const accessToken = await reply.jwtSign(
+      { userId: user.id },
+      { expiresIn: authService.accessTokenExpiry },
+    );
     const refreshToken = await authService.createRefreshToken(user.id);
     return { accessToken, refreshToken, user };
   });

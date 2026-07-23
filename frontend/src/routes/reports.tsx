@@ -101,15 +101,34 @@ export default function ReportsPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="period-from">{t("reports.from")}</Label>
-              <Input id="period-from" type="date" value={periodFrom} onChange={(e) => { handleManualDate(); setPeriodFrom(e.target.value); }} />
+              <Input
+                id="period-from"
+                type="date"
+                value={periodFrom}
+                onChange={(e) => {
+                  handleManualDate();
+                  setPeriodFrom(e.target.value);
+                }}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="period-to">{t("reports.to")}</Label>
-              <Input id="period-to" type="date" value={periodTo} onChange={(e) => { handleManualDate(); setPeriodTo(e.target.value); }} />
+              <Input
+                id="period-to"
+                type="date"
+                value={periodTo}
+                onChange={(e) => {
+                  handleManualDate();
+                  setPeriodTo(e.target.value);
+                }}
+              />
             </div>
           </div>
 
-          <Button disabled={!periodFrom || !periodTo || createReport.isPending} onClick={() => createReport.mutate({ format, periodFrom, periodTo })}>
+          <Button
+            disabled={!periodFrom || !periodTo || createReport.isPending}
+            onClick={() => createReport.mutate({ format, periodFrom, periodTo })}
+          >
             {createReport.isPending ? t("common.generating") : t("reports.submit")}
           </Button>
         </CardContent>
@@ -120,11 +139,18 @@ export default function ReportsPage() {
           <CardContent className="pt-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium capitalize">{r.format}</p>
-              <p className="text-xs text-muted-foreground">{new Date(r.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US")} — {r.status}</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(r.createdAt).toLocaleDateString(
+                  i18n.language === "ru" ? "ru-RU" : "en-US",
+                )}{" "}
+                — {r.status}
+              </p>
             </div>
             {r.status === "ready" && (
               <Button size="sm" variant="outline" asChild>
-                <a href={api.reports.download(r.id)} download>{t("reports.download")}</a>
+                <a href={api.reports.download(r.id)} download>
+                  {t("reports.download")}
+                </a>
               </Button>
             )}
           </CardContent>

@@ -12,7 +12,12 @@ type Entry = components["schemas"]["Entry"];
 
 interface DistortionQuizProps {
   parameterId?: string;
-  createEntry?: UseMutationResult<Entry, Error, { parameterId: string; value: number; note?: string }, unknown>;
+  createEntry?: UseMutationResult<
+    Entry,
+    Error,
+    { parameterId: string; value: number; note?: string },
+    unknown
+  >;
 }
 
 export default function DistortionQuiz({ parameterId, createEntry }: DistortionQuizProps) {
@@ -86,8 +91,13 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
                 variant={isSelectedOption ? "default" : "outline"}
                 className={cn(
                   "w-full justify-start h-auto py-3 px-4 relative transition-all duration-150",
-                  isAnswered && isCorrectOption && "bg-accent/10 border-accent text-accent shadow-neumorphic-inset",
-                  isAnswered && isSelectedOption && !isCorrectOption && "bg-destructive/10 border-destructive text-destructive shadow-neumorphic-inset",
+                  isAnswered &&
+                    isCorrectOption &&
+                    "bg-accent/10 border-accent text-accent shadow-neumorphic-inset",
+                  isAnswered &&
+                    isSelectedOption &&
+                    !isCorrectOption &&
+                    "bg-destructive/10 border-destructive text-destructive shadow-neumorphic-inset",
                 )}
                 onClick={() => handleSelect(key)}
                 disabled={isAnswered}
@@ -106,8 +116,15 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
 
         {isAnswered && (
           <div className="space-y-2">
-            <p className={cn("text-sm font-medium", selected === current.distortion ? "text-accent" : "text-destructive")}>
-              {selected === current.distortion ? t("distortionsQuiz.correct") : t("distortionsQuiz.incorrect")}
+            <p
+              className={cn(
+                "text-sm font-medium",
+                selected === current.distortion ? "text-accent" : "text-destructive",
+              )}
+            >
+              {selected === current.distortion
+                ? t("distortionsQuiz.correct")
+                : t("distortionsQuiz.incorrect")}
             </p>
             <p className="text-xs text-muted-foreground">
               {t(`distortionsLibrary.${current.distortion}.definition`)}

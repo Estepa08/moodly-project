@@ -61,7 +61,9 @@ export default function BreathingPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-center text-muted-foreground">
-              {t(`breathing.description${technique === "box" ? "Box" : technique === "quick" ? "Quick" : "478"}`)}
+              {t(
+                `breathing.description${technique === "box" ? "Box" : technique === "quick" ? "Quick" : "478"}`,
+              )}
             </p>
             <div className="flex justify-center">
               <div className="flex rounded-xl bg-muted p-1 shadow-neumorphic-inset">
@@ -98,7 +100,9 @@ export default function BreathingPage() {
               </div>
             </div>
             <div className="space-y-1 text-sm text-muted-foreground border-t border-border pt-4">
-              <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">{t("breathing.howItWorks")}</p>
+              <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">
+                {t("breathing.howItWorks")}
+              </p>
               <ol className="list-decimal list-inside space-y-0.5">
                 {steps.map((step) => (
                   <li key={step}>{t(`breathing.${step}`)}</li>
@@ -142,11 +146,16 @@ export default function BreathingPage() {
               {countdown}
             </div>
             <p className="text-sm text-muted-foreground">
-              {t(`breathing.pattern${technique === "box" ? "Box" : technique === "quick" ? "Quick" : "478"}`)}
+              {t(
+                `breathing.pattern${technique === "box" ? "Box" : technique === "quick" ? "Quick" : "478"}`,
+              )}
             </p>
             <button
               className="text-xs text-muted-foreground underline cursor-pointer hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={() => { setCountdown(3); setPhase("idle"); }}
+              onClick={() => {
+                setCountdown(3);
+                setPhase("idle");
+              }}
             >
               {t("breathing.cancel")}
             </button>
@@ -217,9 +226,7 @@ export default function BreathingPage() {
             <p className="text-sm text-muted-foreground">
               {t("breathing.sessionComplete", { duration: lastDuration })}
             </p>
-            <p className="text-sm text-foreground/80">
-              {t("breathing.calmnessNow")}
-            </p>
+            <p className="text-sm text-foreground/80">{t("breathing.calmnessNow")}</p>
             <div className="flex justify-center gap-3">
               <button
                 className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

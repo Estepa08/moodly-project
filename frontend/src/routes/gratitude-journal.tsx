@@ -16,7 +16,9 @@ export default function GratitudeJournalPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground font-serif">{t("dashboard.gratitudeJournal")}</h2>
+        <h2 className="text-xl font-semibold text-foreground font-serif">
+          {t("dashboard.gratitudeJournal")}
+        </h2>
         <p className="text-sm text-muted-foreground mt-1">{t("dashboard.gratitudePageSubtitle")}</p>
       </div>
 

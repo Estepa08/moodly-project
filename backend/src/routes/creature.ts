@@ -10,7 +10,11 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     return creatureService.getState(request.userId);
   });
 
-  fastify.post<{ Body: ExerciseCompleteBody }>("/creature/exercise/complete", { preHandler: [fastify.authenticate] }, async (request) => {
-    return creatureService.completeExercise(request.userId, request.body.duration);
-  });
+  fastify.post<{ Body: ExerciseCompleteBody }>(
+    "/creature/exercise/complete",
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return creatureService.completeExercise(request.userId, request.body.duration);
+    },
+  );
 }

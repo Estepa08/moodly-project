@@ -24,14 +24,22 @@ export default function TestsPage() {
     <div className="space-y-4">
       <header className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-foreground font-serif">{t("tests.title")}</h1>
-        <Button variant="ghost" onClick={() => navigate("/")}>{t("common.back")}</Button>
+        <Button variant="ghost" onClick={() => navigate("/")}>
+          {t("common.back")}
+        </Button>
       </header>
 
       {tests?.map((test) => (
-        <Card key={test.id} className="cursor-pointer hover:shadow-neumorphic transition-shadow" onClick={() => navigate(`/tests/${test.id}`)}>
+        <Card
+          key={test.id}
+          className="cursor-pointer hover:shadow-neumorphic transition-shadow"
+          onClick={() => navigate(`/tests/${test.id}`)}
+        >
           <CardHeader>
             <CardTitle>{tTestTitle(test.title)}</CardTitle>
-            {test.description && <p className="text-sm text-muted-foreground">{tTestDescription(test.description)}</p>}
+            {test.description && (
+              <p className="text-sm text-muted-foreground">{tTestDescription(test.description)}</p>
+            )}
           </CardHeader>
         </Card>
       ))}

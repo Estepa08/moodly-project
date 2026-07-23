@@ -25,7 +25,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   const { t } = useTranslation();
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm" role="tooltip">
+    <div
+      className="bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm"
+      role="tooltip"
+    >
       <p className="text-xs text-muted-foreground mb-1">{label}</p>
       {payload.map((entry: any) => (
         <p key={entry.name} className="font-medium" style={{ color: entry.color }}>
@@ -57,7 +60,9 @@ export default function ParameterTrendsChart({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          <div className="flex justify-center py-8">
+            <Spinner size={32} />
+          </div>
         ) : trendData.length > 0 ? (
           <>
             <ResponsiveContainer width="100%" height={220}>
@@ -84,7 +89,9 @@ export default function ParameterTrendsChart({
               </LineChart>
             </ResponsiveContainer>
             {focusedParam && !focusedHasData && (
-              <p className="text-xs text-muted-foreground text-center mt-2">{t("dashboard.noEntries")}</p>
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                {t("dashboard.noEntries")}
+              </p>
             )}
             <div className="flex flex-wrap gap-2 mt-3">
               {paramNames.map((name) => (
@@ -108,7 +115,9 @@ export default function ParameterTrendsChart({
             </div>
           </>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-8">{t("dashboard.noTrendData")}</p>
+          <p className="text-sm text-muted-foreground text-center py-8">
+            {t("dashboard.noTrendData")}
+          </p>
         )}
       </CardContent>
     </Card>

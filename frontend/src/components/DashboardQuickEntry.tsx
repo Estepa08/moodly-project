@@ -4,7 +4,15 @@ import { toast } from "sonner";
 import { Sun, Check, Clock } from "lucide-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { components } from "../lib/api-types";
-import { PARAM_NAME_KEYS, SLIDER_MIN, SLIDER_MAX, SLIDER_STEP, CLICK_THRESHOLD, LOCKOUT_DURATION_MS, CLICK_WINDOW_MS } from "../lib/constants";
+import {
+  PARAM_NAME_KEYS,
+  SLIDER_MIN,
+  SLIDER_MAX,
+  SLIDER_STEP,
+  CLICK_THRESHOLD,
+  LOCKOUT_DURATION_MS,
+  CLICK_WINDOW_MS,
+} from "../lib/constants";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Label } from "./ui/label";
@@ -56,11 +64,16 @@ export default function DashboardQuickEntry({
     if (clickCountRef.current >= CLICK_THRESHOLD) {
       setIsLocked(true);
       toast.warning(t("dashboard.tooFast"));
-      setTimeout(() => { setIsLocked(false); clickCountRef.current = 0; }, LOCKOUT_DURATION_MS);
+      setTimeout(() => {
+        setIsLocked(false);
+        clickCountRef.current = 0;
+      }, LOCKOUT_DURATION_MS);
       return;
     }
     clearTimeout(clickWindowRef.current);
-    clickWindowRef.current = setTimeout(() => { clickCountRef.current = 0; }, CLICK_WINDOW_MS);
+    clickWindowRef.current = setTimeout(() => {
+      clickCountRef.current = 0;
+    }, CLICK_WINDOW_MS);
 
     if (isShowSaved) {
       setIsShowSaved(false);
@@ -100,7 +113,9 @@ export default function DashboardQuickEntry({
             setIsShowSaved(true);
           }, 1500);
         },
-        onSettled: () => { isSavingRef.current = false; },
+        onSettled: () => {
+          isSavingRef.current = false;
+        },
       },
     );
   };
@@ -133,10 +148,7 @@ export default function DashboardQuickEntry({
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground text-xs">{t("dashboard.moodLow")}</span>
-            <span
-              key={pulseKey}
-              className="text-lg font-bold font-serif"
-            >
+            <span key={pulseKey} className="text-lg font-bold font-serif">
               <span className={pulseKey > 0 ? "inline-block animate-value-pulse" : ""}>
                 {moodValue[0].toFixed(1)}
               </span>

@@ -15,7 +15,12 @@ export function useTestTranslation() {
   const { i18n, t } = useTranslation();
   const isRu = i18n.language.startsWith("ru");
 
-  function buildCDText(templateKey: string, keys: string[], templates: Record<string, string>, fallback: string): string {
+  function buildCDText(
+    templateKey: string,
+    keys: string[],
+    templates: Record<string, string>,
+    fallback: string,
+  ): string {
     if (!isRu) return fallback;
     const template = templates[templateKey];
     if (!template) return fallback;
@@ -29,17 +34,20 @@ export function useTestTranslation() {
     tTestTitle: (title: string) => (isRu ? testTitleRu[title] : undefined) ?? title,
     tTestDescription: (description: string) =>
       (isRu ? testDescriptionRu[description] : undefined) ?? description,
-    tQuestion: (id: string, fallback: string) =>
-      (isRu ? questionRu[id] : undefined) ?? fallback,
-    tOption: (id: string, fallback: string) =>
-      (isRu ? optionRu[id] : undefined) ?? fallback,
-    tInterpretation: (text: string) =>
-      (isRu ? interpretationRu[text] : undefined) ?? text,
-    tRecommendation: (text: string) =>
-      (isRu ? recommendationRu[text] : undefined) ?? text,
-    tCDInterpretation: (templateKey: string, highKeys: string[], moderateKeys: string[], fallback: string) =>
+    tQuestion: (id: string, fallback: string) => (isRu ? questionRu[id] : undefined) ?? fallback,
+    tOption: (id: string, fallback: string) => (isRu ? optionRu[id] : undefined) ?? fallback,
+    tInterpretation: (text: string) => (isRu ? interpretationRu[text] : undefined) ?? text,
+    tRecommendation: (text: string) => (isRu ? recommendationRu[text] : undefined) ?? text,
+    tCDInterpretation: (
+      templateKey: string,
+      highKeys: string[],
+      moderateKeys: string[],
+      fallback: string,
+    ) =>
       buildCDText(templateKey, [...highKeys, ...moderateKeys], cdInterpretationTemplates, fallback),
     tCDRecommendation: (recommendationKey: string, fallback: string) =>
-      isRu && cdRecommendationTemplates[recommendationKey] ? cdRecommendationTemplates[recommendationKey] : fallback,
+      isRu && cdRecommendationTemplates[recommendationKey]
+        ? cdRecommendationTemplates[recommendationKey]
+        : fallback,
   };
 }

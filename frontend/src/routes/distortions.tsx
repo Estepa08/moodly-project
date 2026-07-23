@@ -23,7 +23,9 @@ export default function DistortionsPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground font-serif">{t("distortions.title")}</h2>
+        <h2 className="text-xl font-semibold text-foreground font-serif">
+          {t("distortions.title")}
+        </h2>
         <p className="text-sm text-muted-foreground mt-1">{t("distortions.subtitle")}</p>
       </div>
 
@@ -54,7 +56,9 @@ export default function DistortionsPage() {
                 <CardTitle className="text-base">{t(`cognitiveDistortions.${key}`)}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">{t(`distortionsLibrary.${key}.definition`)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t(`distortionsLibrary.${key}.definition`)}
+                </p>
 
                 <button
                   aria-expanded={!!expanded[key]}
@@ -68,7 +72,9 @@ export default function DistortionsPage() {
                 {expanded[key] && (
                   <div className="space-y-2 text-sm">
                     <div>
-                      <p className="text-xs text-muted-foreground">{t("distortions.exampleThought")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("distortions.exampleThought")}
+                      </p>
                       <p className="text-foreground">{t(`distortionsLibrary.${key}.example`)}</p>
                     </div>
                     <div>

@@ -1,6 +1,7 @@
 .PHONY: install setup generate dev dev-backend dev-frontend build build-backend build-frontend
 .PHONY: test test-backend test-frontend test-watch test-coverage
-.PHONY: db-generate db-push db-seed db-setup db-reset clean lint
+.PHONY: db-generate db-push db-seed db-setup db-reset clean
+.PHONY: lint lint-backend lint-frontend lint-fix format format-check
 
 # ─── Install ────────────────────────────────────────────
 
@@ -90,8 +91,25 @@ clean:
 	rm -rf backend/node_modules backend/dist
 	rm -rf frontend/node_modules frontend/dist
 
-lint:
-	@echo "No linter configured yet. Install one and update this target."
+lint-backend:
+	cd backend && npm run lint
+
+lint-frontend:
+	cd frontend && npm run lint
+
+lint: lint-backend lint-frontend
+
+lint-fix:
+	cd backend && npm run lint:fix
+	cd frontend && npm run lint:fix
+
+format:
+	cd backend && npm run format
+	cd frontend && npm run format
+
+format-check:
+	cd backend && npm run format:check
+	cd frontend && npm run format:check
 
 .PHONY: dev-watch test-watch-backend test-watch-frontend
 .PHONY: test-coverage-backend test-coverage-frontend

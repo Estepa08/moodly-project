@@ -42,7 +42,10 @@ export const reportService = {
   },
 
   async markReady(id: string) {
-    await prisma.report.update({ where: { id }, data: { status: "ready", downloadUrl: `/reports/${id}/download` } });
+    await prisma.report.update({
+      where: { id },
+      data: { status: "ready", downloadUrl: `/reports/${id}/download` },
+    });
   },
 
   async getEntriesForPeriod(userId: string, periodFrom: Date, periodTo: Date) {

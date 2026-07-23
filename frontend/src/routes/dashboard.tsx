@@ -33,7 +33,9 @@ export default function Dashboard() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-foreground font-serif">{t("dashboard.dateRange")}</h2>
+        <h2 className="text-lg font-semibold text-foreground font-serif">
+          {t("dashboard.dateRange")}
+        </h2>
         <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
           {PERIODS.map((p) => (
             <button
@@ -71,10 +73,7 @@ export default function Dashboard() {
         isLoading={isDataLoading}
       />
 
-      <WeeklyAveragesGrid
-        weeklyAverages={weeklyAverages}
-        isLoading={isDataLoading}
-      />
+      <WeeklyAveragesGrid weeklyAverages={weeklyAverages} isLoading={isDataLoading} />
 
       <PracticesSummary
         gratitudeEntries={entriesByParam.get("Gratitude") ?? []}
@@ -95,10 +94,7 @@ export default function Dashboard() {
         </Card>
       )}
 
-      <TestTimeline
-        testTimeline={testTimeline}
-        isLoading={resultsLoading}
-      />
+      <TestTimeline testTimeline={testTimeline} isLoading={resultsLoading} />
     </div>
   );
 }

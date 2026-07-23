@@ -127,7 +127,14 @@ describe("TestDetailPage", () => {
       id: "2",
       title: "Cognitive Distortions Assessment",
       questions: [
-        { id: "q1", text: "Test question 1?", options: [{ id: "a1", text: "Not at all", score: 0 }, { id: "a2", text: "Moderately", score: 2 }] },
+        {
+          id: "q1",
+          text: "Test question 1?",
+          options: [
+            { id: "a1", text: "Not at all", score: 0 },
+            { id: "a2", text: "Moderately", score: 2 },
+          ],
+        },
       ],
     });
     (api.tests.submitResult as Mock).mockResolvedValueOnce({

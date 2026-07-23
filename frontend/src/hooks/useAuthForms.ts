@@ -43,7 +43,11 @@ export function useAuthForms() {
     acceptDisclaimer();
     setRegError("");
     try {
-      const res = await api.auth.register({ email: regEmail, password: regPassword, name: regName || undefined });
+      const res = await api.auth.register({
+        email: regEmail,
+        password: regPassword,
+        name: regName || undefined,
+      });
       login(res.accessToken);
       setRefreshToken(res.refreshToken);
       navigate("/onboarding");
@@ -69,12 +73,17 @@ export function useAuthForms() {
   };
 
   return {
-    loginEmail, setLoginEmail,
-    loginPassword, setLoginPassword,
+    loginEmail,
+    setLoginEmail,
+    loginPassword,
+    setLoginPassword,
     loginError,
-    regName, setRegName,
-    regEmail, setRegEmail,
-    regPassword, setRegPassword,
+    regName,
+    setRegName,
+    regEmail,
+    setRegEmail,
+    regPassword,
+    setRegPassword,
     regError,
     demoLoading,
     handleLoginSubmit,

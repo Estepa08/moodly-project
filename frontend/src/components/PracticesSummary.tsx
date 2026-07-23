@@ -67,7 +67,9 @@ export default function PracticesSummary({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p className="text-xs text-muted-foreground text-center py-2">{t("dashboard.practicesLoading")}</p>
+          <p className="text-xs text-muted-foreground text-center py-2">
+            {t("dashboard.practicesLoading")}
+          </p>
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {items.map(({ key, icon: Icon, label, value }) => (

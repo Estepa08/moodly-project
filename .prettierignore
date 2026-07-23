@@ -1,0 +1,7 @@
+node_modules
+dist
+build
+coverage
+frontend/src/lib/api-types.ts
+api-contract/generated
+backend/prisma/migrations

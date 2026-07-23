@@ -12,12 +12,23 @@ type Entry = components["schemas"]["Entry"];
 interface GratitudeJournalProps {
   parameterId: string | undefined;
   entries: Entry[];
-  createEntry: UseMutationResult<Entry, Error, { parameterId: string; value: number; note?: string }, unknown>;
+  createEntry: UseMutationResult<
+    Entry,
+    Error,
+    { parameterId: string; value: number; note?: string },
+    unknown
+  >;
   limit?: number;
   hideTitle?: boolean;
 }
 
-export default function GratitudeJournal({ parameterId, entries, createEntry, limit = 5, hideTitle = false }: GratitudeJournalProps) {
+export default function GratitudeJournal({
+  parameterId,
+  entries,
+  createEntry,
+  limit = 5,
+  hideTitle = false,
+}: GratitudeJournalProps) {
   const { t, i18n } = useTranslation();
   const [note, setNote] = useState("");
 
@@ -72,17 +83,22 @@ export default function GratitudeJournal({ parameterId, entries, createEntry, li
         </div>
 
         {recent.length === 0 ? (
-          <p className="text-xs text-muted-foreground text-center py-2">{t("dashboard.gratitudeEmpty")}</p>
+          <p className="text-xs text-muted-foreground text-center py-2">
+            {t("dashboard.gratitudeEmpty")}
+          </p>
         ) : (
           <ul className="space-y-2">
             {recent.map((e) => (
               <li key={e.id} className="text-sm bg-muted/30 rounded-lg px-3 py-2">
                 <p className="text-foreground">{e.note}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {new Date(e.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {new Date(e.createdAt).toLocaleDateString(
+                    i18n.language === "ru" ? "ru-RU" : "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                    },
+                  )}
                 </p>
               </li>
             ))}

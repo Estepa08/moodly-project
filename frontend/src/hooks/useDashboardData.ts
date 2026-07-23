@@ -47,10 +47,7 @@ export function useDashboardData(period: string) {
   const { data: creatureState } = useCreatureState();
   const createEntry = useCreateEntry();
 
-  const numericParams = useMemo(
-    () => params?.filter((p) => !TEXT_PARAMS.has(p.name)),
-    [params],
-  );
+  const numericParams = useMemo(() => params?.filter((p) => !TEXT_PARAMS.has(p.name)), [params]);
 
   const paramNames = useMemo(() => {
     if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
@@ -83,10 +80,13 @@ export function useDashboardData(period: string) {
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
     for (const e of sorted) {
-      const day = new Date(e.createdAt).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US", {
-        month: "short",
-        day: "numeric",
-      });
+      const day = new Date(e.createdAt).toLocaleDateString(
+        i18n.language === "ru" ? "ru-RU" : "en-US",
+        {
+          month: "short",
+          day: "numeric",
+        },
+      );
       const name = paramMap.get(e.parameterId) ?? e.parameterId;
       if (!grouped.has(day)) grouped.set(day, { date: day });
       const row = grouped.get(day)!;
@@ -96,7 +96,8 @@ export function useDashboardData(period: string) {
   }, [allEntries, paramMap, i18n.language]);
 
   const { weeklyAverages, wellbeing } = useMemo(() => {
-    if (!allEntries) return { weeklyAverages: [], wellbeing: { average: null, trend: "flat" as const } };
+    if (!allEntries)
+      return { weeklyAverages: [], wellbeing: { average: null, trend: "flat" as const } };
     const range = getDateRange(period);
     const currentStart = range.from ? new Date(range.from).getTime() : 0;
     const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
@@ -140,11 +141,21 @@ export function useDashboardData(period: string) {
     const wellbeingPrevious = wellbeingScore((name) => previousByName.get(name) ?? null);
     let wellbeingTrend: "up" | "down" | "flat" = "flat";
     if (wellbeingCurrent !== null && wellbeingPrevious !== null) {
-      wellbeingTrend = wellbeingCurrent > wellbeingPrevious ? "up" : wellbeingCurrent < wellbeingPrevious ? "down" : "flat";
+      wellbeingTrend =
+        wellbeingCurrent > wellbeingPrevious
+          ? "up"
+          : wellbeingCurrent < wellbeingPrevious
+            ? "down"
+            : "flat";
     }
 
     return {
-      weeklyAverages: perParam.map(({ name, average, trend, visible }) => ({ name, average, trend, visible })),
+      weeklyAverages: perParam.map(({ name, average, trend, visible }) => ({
+        name,
+        average,
+        trend,
+        visible,
+      })),
       wellbeing: { average: wellbeingCurrent, trend: wellbeingTrend },
     };
   }, [allEntries, period, paramNames, paramMap, entriesByParam]);
@@ -167,24 +178,27 @@ export function useDashboardData(period: string) {
       if (!grouped.has(r.testId)) grouped.set(r.testId, []);
       grouped.get(r.testId)!.push(r);
     }
-    return Array.from(grouped.entries())
-      .map(([testId, results]) => {
-        const sorted = results.sort(
-          (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime(),
-        );
-        const last = sorted[sorted.length - 1];
-        return {
-          testId,
-          label: testAbbrMap.get(testId) ?? testId.slice(0, 8),
-          results: sorted,
-          lastScore: last.score,
-        };
-      });
+    return Array.from(grouped.entries()).map(([testId, results]) => {
+      const sorted = results.sort(
+        (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime(),
+      );
+      const last = sorted[sorted.length - 1];
+      return {
+        testId,
+        label: testAbbrMap.get(testId) ?? testId.slice(0, 8),
+        results: sorted,
+        lastScore: last.score,
+      };
+    });
   }, [testResults, testAbbrMap]);
 
   const radarData: DistortionEntry[] = useMemo(() => {
-    const cdResult = testResults?.find((r) => (r.flags as Record<string, unknown> | undefined)?.distortions);
-    const cdDistortions = (cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined)?.distortions;
+    const cdResult = testResults?.find(
+      (r) => (r.flags as Record<string, unknown> | undefined)?.distortions,
+    );
+    const cdDistortions = (
+      cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined
+    )?.distortions;
     return cdDistortions
       ? Object.entries(cdDistortions).map(([key, val]) => ({ key, score: val.score }))
       : [];

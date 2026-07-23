@@ -13,7 +13,13 @@ export interface LoginInput {
   password: string;
 }
 
-function stripUser(user: { id: string; email: string; name: string | null; createdAt: Date; password: string }) {
+function stripUser(user: {
+  id: string;
+  email: string;
+  name: string | null;
+  createdAt: Date;
+  password: string;
+}) {
   return { id: user.id, email: user.email, name: user.name, createdAt: user.createdAt };
 }
 

@@ -6,7 +6,13 @@ import { api } from "../../lib/api";
 
 vi.mock("../../lib/api", () => ({
   api: {
-    reports: { create: vi.fn(), list: vi.fn(), get: vi.fn(), download: vi.fn(() => "/reports/1/download"), delete: vi.fn() },
+    reports: {
+      create: vi.fn(),
+      list: vi.fn(),
+      get: vi.fn(),
+      download: vi.fn(() => "/reports/1/download"),
+      delete: vi.fn(),
+    },
   },
   setToken: vi.fn(),
   getToken: vi.fn(() => null),

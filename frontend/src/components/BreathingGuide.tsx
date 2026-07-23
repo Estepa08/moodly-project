@@ -33,7 +33,13 @@ const PHASES_QUICK = [
 
 const TOTAL_CYCLES = 4;
 
-export default function BreathingGuide({ onComplete, onCancel, autoStart, technique: initialTechnique, onBreathChange }: BreathingGuideProps) {
+export default function BreathingGuide({
+  onComplete,
+  onCancel,
+  autoStart,
+  technique: initialTechnique,
+  onBreathChange,
+}: BreathingGuideProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
   const [technique, setTechnique] = useState<BreathingTechnique>(initialTechnique ?? "box");
@@ -51,7 +57,8 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart, techni
   onCancelRef.current = onCancel;
   onBreathChangeRef.current = onBreathChange;
 
-  const phases = technique === "box" ? PHASES_BOX : technique === "quick" ? PHASES_QUICK : PHASES_478;
+  const phases =
+    technique === "box" ? PHASES_BOX : technique === "quick" ? PHASES_QUICK : PHASES_478;
   const phase = phases[phaseIdx];
   const isInhale = phase.key === "inhale";
   const isHold = phase.key === "hold";
@@ -127,7 +134,9 @@ export default function BreathingGuide({ onComplete, onCancel, autoStart, techni
               : isHold
                 ? "hsl(var(--primary) / 0.3)"
                 : "hsl(var(--accent) / 0.3)",
-            boxShadow: isExhale ? "0 0 40px hsl(var(--accent) / 0.2)" : "0 0 40px hsl(var(--primary) / 0.2)",
+            boxShadow: isExhale
+              ? "0 0 40px hsl(var(--accent) / 0.2)"
+              : "0 0 40px hsl(var(--primary) / 0.2)",
             transition: reducedMotion ? "none" : "background-color 0.4s ease, box-shadow 0.4s ease",
           }}
         />

@@ -10,9 +10,13 @@ export default async function userRoutes(fastify: FastifyInstance) {
     return userService.findById(request.userId);
   });
 
-  fastify.patch<{ Body: UpdateMeBody }>("/users/me", { preHandler: [fastify.authenticate] }, async (request) => {
-    return userService.update(request.userId, request.body);
-  });
+  fastify.patch<{ Body: UpdateMeBody }>(
+    "/users/me",
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return userService.update(request.userId, request.body);
+    },
+  );
 
   fastify.delete("/users/me", { preHandler: [fastify.authenticate] }, async (request, reply) => {
     await userService.delete(request.userId);
