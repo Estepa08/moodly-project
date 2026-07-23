@@ -19,8 +19,14 @@ declare module "@fastify/jwt" {
 }
 
 export default fp(async function authPlugin(fastify: FastifyInstance) {
+  // No fallback: a missing secret must crash startup, not silently sign
+  // tokens with a value anyone can read in this source file.
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable must be set");
+  }
+
   await fastify.register(fastifyJwt, {
-    secret: process.env.JWT_SECRET || "dev-secret-change-in-production",
+    secret: process.env.JWT_SECRET,
   });
 
   fastify.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {

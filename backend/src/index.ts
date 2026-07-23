@@ -19,7 +19,17 @@ import { setErrorHandler } from "./lib/handle-error.js";
 
 const fastify = Fastify({ logger: true });
 
-await fastify.register(helmet, { contentSecurityPolicy: false });
+// This backend only ever serves JSON — it never renders scripts, styles, or
+// frames — so the policy can be maximally strict rather than the
+// browser-app-oriented defaults helmet ships with.
+await fastify.register(helmet, {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'none'"],
+      frameAncestors: ["'none'"],
+    },
+  },
+});
 await fastify.register(cors, { origin: getAllowedOrigins(), credentials: true });
 await fastify.register(cookie);
 await fastify.register(rateLimit, { max: 100, timeWindow: "1 minute" });
