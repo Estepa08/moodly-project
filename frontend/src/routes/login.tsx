@@ -1,17 +1,14 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
-import { api } from "../lib/api";
+import { useAuthForms } from "../hooks/useAuthForms";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 import { cn } from "../lib/utils";
 import { Heart, Info, ChevronDown, PhoneCall } from "lucide-react";
-
-const STORAGE_KEY = "moodly_disclaimer_accepted";
 
 interface Props {
   defaultRegister?: boolean;
@@ -20,66 +17,24 @@ interface Props {
 export default function LoginPage({ defaultRegister }: Props) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { login } = useAuth();
   const reducedMotion = useReducedMotion();
 
   const [isLogin, setIsLogin] = useState(() => !defaultRegister);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-
-  const [regName, setRegName] = useState("");
-  const [regEmail, setRegEmail] = useState("");
-  const [regPassword, setRegPassword] = useState("");
-  const [regError, setRegError] = useState("");
-
-  const [demoLoading, setDemoLoading] = useState(false);
-
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem(STORAGE_KEY, "true");
-    setLoginError("");
-    try {
-      const res = await api.auth.login({ email: loginEmail, password: loginPassword });
-      login(res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-      navigate("/");
-    } catch (err) {
-      setLoginError(err instanceof Error ? err.message : t("login.loginFailed"));
-    }
-  };
-
-  const handleRegisterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem(STORAGE_KEY, "true");
-    setRegError("");
-    try {
-      const res = await api.auth.register({ email: regEmail, password: regPassword, name: regName || undefined });
-      login(res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-      navigate("/onboarding");
-    } catch (err) {
-      setRegError(err instanceof Error ? err.message : t("register.registrationFailed"));
-    }
-  };
-
-  const handleDemo = async () => {
-    setDemoLoading(true);
-    setLoginError("");
-    localStorage.setItem(STORAGE_KEY, "true");
-    try {
-      const res = await api.auth.demo();
-      login(res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-      navigate("/");
-    } catch (err) {
-      setLoginError(err instanceof Error ? err.message : t("login.demoFailed"));
-    } finally {
-      setDemoLoading(false);
-    }
-  };
+  const {
+    loginEmail, setLoginEmail,
+    loginPassword, setLoginPassword,
+    loginError,
+    regName, setRegName,
+    regEmail, setRegEmail,
+    regPassword, setRegPassword,
+    regError,
+    demoLoading,
+    handleLoginSubmit,
+    handleRegisterSubmit,
+    handleDemo,
+  } = useAuthForms();
 
   const toggle = useCallback(() => {
     setIsLogin((prev) => !prev);

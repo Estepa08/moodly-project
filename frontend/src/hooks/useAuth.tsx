@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { setToken, getToken } from "../lib/api";
+import { setToken, getToken, setRefreshToken } from "../lib/api";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     setToken(null);
-    localStorage.removeItem("refreshToken");
+    setRefreshToken(null);
     setIsAuthenticated(false);
   }, []);
 

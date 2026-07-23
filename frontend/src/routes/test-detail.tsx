@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState, useCallback } from "react";
-import { useTest, useSubmitTestResult } from "../hooks/useTests";
+import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import { useTestTranslation } from "../hooks/useTestTranslation";
+import { useTestFlow } from "../hooks/useTestFlow";
+import { useTestResultText } from "../hooks/useTestResultText";
 import RadarChart from "../components/RadarChart";
 import type { DistortionEntry } from "../components/RadarChart";
 import MedicalDisclaimer from "../components/MedicalDisclaimer";
@@ -22,142 +23,50 @@ import { cn } from "../lib/utils";
 import { ChevronLeft, Check } from "lucide-react";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
-interface ResultFlags {
-  distortions?: Record<string, { score: number; level: string }>;
-  templateKey?: string;
-  recommendationKey?: string;
-  highKeys?: string[];
-  moderateKeys?: string[];
-}
-
-interface ResultData {
-  score: number;
-  interpretation: string;
-  recommendation: string;
-  flags?: ResultFlags;
-}
-
-const SUICIDE_QUESTION_IDS = ["phq9-9", "bdc-23", "bdc-24", "bdc-25"];
-
-function useCrisisSeverity(recommendation: string): "urgent" | "critical" | null {
-  if (recommendation.startsWith("CRITICAL")) return "critical";
-  if (recommendation.startsWith("URGENT")) return "urgent";
-  return null;
-}
-
 export default function TestDetailPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { testId } = useParams<{ testId: string }>();
+  const { tQuestion, tOption, tTestTitle } = useTestTranslation();
+  const { resolve } = useTestResultText();
+
   const {
-    tQuestion, tOption, tInterpretation, tRecommendation,
-    tTestTitle, tCDInterpretation, tCDRecommendation,
-  } = useTestTranslation();
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
-  const [result, setResult] = useState<ResultData | null>(null);
-  const [showContentWarning, setShowContentWarning] = useState(false);
-  const [crisisDialogOpen, setCrisisDialogOpen] = useState(false);
-  const [showReview, setShowReview] = useState(false);
-  const [showExitConfirm, setShowExitConfirm] = useState(false);
-
-  const { data: test, isLoading } = useTest(testId);
-  const submitMutation = useSubmitTestResult(testId);
-
-  const cdDistortions = result?.flags?.distortions;
-  const cdKeys = cdDistortions ? Object.keys(cdDistortions) : [];
-  const crisisSeverity = result ? useCrisisSeverity(result.recommendation) : null;
-
-  const handleShowResult = (data: ResultData) => {
-    setResult(data);
-    const severity = useCrisisSeverity(data.recommendation);
-    if (severity) {
-      setCrisisDialogOpen(true);
-    }
-  };
-
-  const handleDismissCrisis = () => {
-    setCrisisDialogOpen(false);
-  };
-
-  const currentAnswer = answers[questionIndex];
-
-  const handleAnswer = useCallback((optionId: string) => {
-    setAnswers((prev) => {
-      const next = [...prev];
-      if (next.length > questionIndex) {
-        next[questionIndex] = { questionId: test!.questions[questionIndex].id, optionId };
-      } else {
-        next.push({ questionId: test!.questions[questionIndex].id, optionId });
-      }
-      return next;
-    });
-  }, [questionIndex, test]);
-
-  const handleNext = useCallback(() => {
-    if (questionIndex === test!.questions.length - 1) {
-      setShowReview(true);
-      return;
-    }
-    const nextIdx = questionIndex + 1;
-    const isNextSuicide = SUICIDE_QUESTION_IDS.includes(test!.questions[nextIdx]?.id || "");
-    if (isNextSuicide && !showContentWarning) {
-      setShowContentWarning(true);
-      return;
-    }
-    setQuestionIndex(nextIdx);
-  }, [questionIndex, test, showContentWarning]);
-
-  const handleBack = useCallback(() => {
-    if (questionIndex > 0) {
-      setQuestionIndex((i) => i - 1);
-    }
-  }, [questionIndex]);
-
-  const handleContinueFromWarning = useCallback(() => {
-    setShowContentWarning(false);
-    setQuestionIndex((i) => i + 1);
-  }, []);
-
-  const handleSkipFromWarning = useCallback(() => {
-    setShowContentWarning(false);
-    navigate("/tests");
-  }, [navigate]);
-
-  const handleSubmit = useCallback(() => {
-    submitMutation.mutate(answers, {
-      onSuccess: (data) => handleShowResult(data as ResultData),
-    });
-  }, [answers, submitMutation]);
-
-  const handleGoToQuestion = useCallback((idx: number) => {
-    setQuestionIndex(idx);
-    setShowReview(false);
-  }, []);
+    test,
+    isLoading,
+    submitMutation,
+    questionIndex,
+    currentAnswer,
+    answers,
+    result,
+    showContentWarning,
+    crisisDialogOpen,
+    showReview,
+    showExitConfirm,
+    setShowReview,
+    setShowExitConfirm,
+    setCrisisDialogOpen,
+    handleAnswer,
+    handleNext,
+    handleBack,
+    handleContinueFromWarning,
+    handleSkipFromWarning,
+    handleSubmit,
+    handleGoToQuestion,
+  } = useTestFlow(testId);
 
   // ── Result view ──
   if (result && test) {
-    const cdFlags = result.flags;
-    const isCD = cdFlags?.templateKey !== undefined;
     const maxScore = test.questions.length * 3;
-    const interpretationText = isCD && cdFlags
-      ? tCDInterpretation(
-          cdFlags.templateKey!,
-          cdFlags.highKeys || [],
-          cdFlags.moderateKeys || [],
-          result.interpretation,
-        )
-      : tInterpretation(result.interpretation);
-    const recommendationText = isCD && cdFlags
-      ? tCDRecommendation(cdFlags.recommendationKey || "minimal", result.recommendation)
-      : tRecommendation(result.recommendation);
+    const { interpretationText, recommendationText, crisisSeverity } = resolve(result);
+    const cdDistortions = result.flags?.distortions;
+    const cdKeys = cdDistortions ? Object.keys(cdDistortions) : [];
 
     return (
       <>
         <CrisisDialog
           open={crisisDialogOpen}
           severity={crisisSeverity || "urgent"}
-          onDismiss={handleDismissCrisis}
+          onDismiss={() => setCrisisDialogOpen(false)}
         />
         <div className="max-w-lg mx-auto pb-20">
           <Card>

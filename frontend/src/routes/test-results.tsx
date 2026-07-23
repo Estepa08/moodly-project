@@ -7,31 +7,17 @@ import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
 import { useTestTranslation } from "../hooks/useTestTranslation";
+import { useTestResultText, getCrisisSeverity } from "../hooks/useTestResultText";
 import MedicalDisclaimer from "../components/MedicalDisclaimer";
 import CrisisDialog from "../components/CrisisDialog";
 import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
-function isCrisisRecommendation(text: string): "urgent" | "critical" | null {
-  if (text.startsWith("CRITICAL")) return "critical";
-  if (text.startsWith("URGENT")) return "urgent";
-  return null;
-}
-
-function isSevereInterpretation(text: string): boolean {
-  return text.startsWith("Severe") || text.startsWith("Extreme");
-}
-
 export default function TestResultsPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const {
-    tInterpretation,
-    tRecommendation,
-    tTestTitle,
-    tCDInterpretation,
-    tCDRecommendation,
-  } = useTestTranslation();
+  const { tTestTitle } = useTestTranslation();
+  const { resolve } = useTestResultText();
   const [showFull, setShowFull] = useState<Record<string, boolean>>({});
   const [showScore, setShowScore] = useState<Record<string, boolean>>({});
   const [showRec, setShowRec] = useState<Record<string, boolean>>({});
@@ -42,7 +28,7 @@ export default function TestResultsPage() {
 
   const crisisOpen = crisisResultId !== null;
   const crisisResult = crisisOpen ? results?.find((r) => r.id === crisisResultId) : undefined;
-  const crisisSeverity = crisisResult ? isCrisisRecommendation(crisisResult.recommendation) : null;
+  const crisisSeverity = crisisResult ? getCrisisSeverity(crisisResult.recommendation) : null;
 
   if (isLoading) {
     return (
@@ -58,7 +44,7 @@ export default function TestResultsPage() {
   useEffect(() => {
     if (!results) return;
     for (const r of results) {
-      if (isCrisisRecommendation(r.recommendation) && !showRec[r.id]) {
+      if (getCrisisSeverity(r.recommendation) && !showRec[r.id]) {
         setShowRec((prev) => ({ ...prev, [r.id]: true }));
       }
     }
@@ -82,32 +68,9 @@ export default function TestResultsPage() {
         )}
 
         {results?.map((r) => {
-          const crisisType = isCrisisRecommendation(r.recommendation);
-          const isSevere = !crisisType && isSevereInterpretation(r.interpretation);
-          const isCD = !!(r.flags as Record<string, unknown>)?.templateKey;
-          const cdFlags = r.flags as {
-            templateKey?: string;
-            recommendationKey?: string;
-            highKeys?: string[];
-            moderateKeys?: string[];
-          } | undefined;
-          const interpretationText =
-            isCD && cdFlags
-              ? tCDInterpretation(
-                  cdFlags.templateKey!,
-                  cdFlags.highKeys || [],
-                  cdFlags.moderateKeys || [],
-                  r.interpretation,
-                )
-              : tInterpretation(r.interpretation);
-          const recommendationText =
-            isCD && cdFlags
-              ? tCDRecommendation(cdFlags.recommendationKey || "minimal", r.recommendation)
-              : tRecommendation(r.recommendation);
-
+          const { isCD, interpretationText, recommendationText, crisisSeverity: crisisType, isSevere: severeUnlessCrisis, highKeys, moderateKeys } = resolve(r);
+          const isSevere = !crisisType && severeUnlessCrisis;
           const isLongText = isCD || interpretationText.length > 100;
-          const highKeys = (r.flags as Record<string, string[]> | undefined)?.highKeys || [];
-          const moderateKeys = (r.flags as Record<string, string[]> | undefined)?.moderateKeys || [];
 
           return (
             <Card
@@ -166,7 +129,7 @@ export default function TestResultsPage() {
                   </button>
                 )}
 
-                {isCD && cdFlags && (highKeys.length > 0 || moderateKeys.length > 0) && (
+                {isCD && (highKeys.length > 0 || moderateKeys.length > 0) && (
                   <div className="space-y-2 mb-3">
                     {highKeys.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1.5">

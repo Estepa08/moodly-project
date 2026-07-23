@@ -47,7 +47,7 @@ function getRefreshToken(): string | null {
   return localStorage.getItem("refreshToken");
 }
 
-function setRefreshToken(token: string | null) {
+export function setRefreshToken(token: string | null) {
   if (token) {
     localStorage.setItem("refreshToken", token);
   } else {
