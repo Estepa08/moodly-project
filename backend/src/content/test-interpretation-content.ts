@@ -5,6 +5,13 @@ export interface ScoreBand {
   recommendation: string;
 }
 
+// Tertile split of a 0-1 normalized score into low/moderate/high (or generic
+// low/moderate/elevated) bands: bottom third, middle third, top third.
+// Used both for the Cognitive Distortions per-item ratios and the generic
+// score fallback below — not a clinically defined cutoff, just an even split.
+export const RATIO_LOW_MAX = 1 / 3;
+export const RATIO_MODERATE_MAX = 2 / 3;
+
 export const CRISIS_MESSAGES = {
   urgent:
     "URGENT: This assessment indicates thoughts of self-harm. Please contact a crisis helpline immediately or go to the nearest emergency room.",
@@ -14,6 +21,9 @@ export const CRISIS_MESSAGES = {
     "CRITICAL: This assessment indicates a plan for self-harm. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.",
 };
 
+// PHQ-9 (Patient Health Questionnaire-9) severity cutoffs.
+// Source: Kroenke K, Spitzer RL, Williams JB. "The PHQ-9: validity of a brief
+// depression severity measure." J Gen Intern Med. 2001;16(9):606-13.
 export const PHQ9_BANDS: ScoreBand[] = [
   {
     maxScore: 4,
@@ -50,6 +60,9 @@ export const PHQ9_BANDS: ScoreBand[] = [
   },
 ];
 
+// GAD-7 (Generalized Anxiety Disorder-7) severity cutoffs.
+// Source: Spitzer RL, Kroenke K, Williams JB, Löwe B. "A brief measure for
+// assessing generalized anxiety disorder: the GAD-7." Arch Intern Med. 2006;166(10):1092-7.
 export const GAD7_BANDS: ScoreBand[] = [
   {
     maxScore: 4,
@@ -78,6 +91,8 @@ export const GAD7_BANDS: ScoreBand[] = [
   },
 ];
 
+// Burns Anxiety Inventory (BAI) severity cutoffs, as popularized in
+// David D. Burns, "When Panic Attacks" / "Feeling Good" self-help scales.
 export const BURNS_ANXIETY_BANDS: ScoreBand[] = [
   {
     maxScore: 4,
@@ -121,6 +136,8 @@ export const BURNS_ANXIETY_BANDS: ScoreBand[] = [
   },
 ];
 
+// Burns Depression Checklist (BDC) severity cutoffs, as popularized in
+// David D. Burns, "Feeling Good: The New Mood Therapy" self-help scale.
 export const BURNS_DEPRESSION_BANDS: ScoreBand[] = [
   {
     maxScore: 5,
@@ -164,6 +181,8 @@ export const BURNS_DEPRESSION_BANDS: ScoreBand[] = [
   },
 ];
 
+// Fallback for any test not covered by a named scale above: an even tertile
+// split of score/maxScore, not a clinically validated cutoff.
 export const GENERIC_RATIO_BANDS: {
   maxRatio: number;
   key: string;
@@ -171,13 +190,13 @@ export const GENERIC_RATIO_BANDS: {
   recommendation: string;
 }[] = [
   {
-    maxRatio: 0.33,
+    maxRatio: RATIO_LOW_MAX,
     key: "low",
     interpretation: "Low score",
     recommendation: "No immediate concerns, continue monitoring.",
   },
   {
-    maxRatio: 0.66,
+    maxRatio: RATIO_MODERATE_MAX,
     key: "moderate",
     interpretation: "Moderate score",
     recommendation: "Consider discussing with a specialist if symptoms persist.",

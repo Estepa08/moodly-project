@@ -6,6 +6,8 @@ import {
   BURNS_ANXIETY_BANDS,
   BURNS_DEPRESSION_BANDS,
   GENERIC_RATIO_BANDS,
+  RATIO_LOW_MAX,
+  RATIO_MODERATE_MAX,
   cdInterpretation,
   cdRecommendation,
   type ScoreBand,
@@ -106,15 +108,17 @@ const interpretations: Record<string, InterpretFn> = {
     const distortions: Record<string, { score: number; level: string }> = {};
     for (let i = 0; i < 10; i++) {
       const ratio = ratioFor(i);
-      const level = ratio > 0.66 ? "high" : ratio > 0.33 ? "moderate" : "low";
+      const level =
+        ratio > RATIO_MODERATE_MAX ? "high" : ratio > RATIO_LOW_MAX ? "moderate" : "low";
       distortions[DISTORTIONS[i].key] = { score: distortionScores[i], level };
     }
 
-    const highKeys = DISTORTIONS.filter((_, i) => questionCount[i] > 0 && ratioFor(i) > 0.66).map(
-      (d) => d.key,
-    );
+    const highKeys = DISTORTIONS.filter(
+      (_, i) => questionCount[i] > 0 && ratioFor(i) > RATIO_MODERATE_MAX,
+    ).map((d) => d.key);
     const moderateKeys = DISTORTIONS.filter(
-      (_, i) => questionCount[i] > 0 && ratioFor(i) > 0.33 && ratioFor(i) <= 0.66,
+      (_, i) =>
+        questionCount[i] > 0 && ratioFor(i) > RATIO_LOW_MAX && ratioFor(i) <= RATIO_MODERATE_MAX,
     ).map((d) => d.key);
 
     const templateKey =

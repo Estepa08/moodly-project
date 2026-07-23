@@ -14,23 +14,36 @@ interface BreathingGuideProps {
   onBreathChange?: (phase: "inhale" | "hold" | "exhale", progress: number) => void;
 }
 
-const PHASES_478 = [
-  { key: "inhale", duration: 4000 },
-  { key: "hold", duration: 7000 },
-  { key: "exhale", duration: 8000 },
-] as const;
-
-const PHASES_BOX = [
-  { key: "inhale", duration: 4000 },
-  { key: "hold", duration: 4000 },
-  { key: "exhale", duration: 4000 },
-  { key: "hold", duration: 4000 },
-] as const;
-
-const PHASES_QUICK = [
-  { key: "inhale", duration: 2000 },
-  { key: "exhale", duration: 6000 },
-] as const;
+// Timings for each supported technique, in milliseconds per phase.
+const BREATHING_PATTERNS: Record<
+  BreathingTechnique,
+  { phases: readonly { key: "inhale" | "hold" | "exhale"; duration: number }[] }
+> = {
+  // 4-7-8 technique (Dr. Andrew Weil): inhale 4s, hold 7s, exhale 8s.
+  "478": {
+    phases: [
+      { key: "inhale", duration: 4000 },
+      { key: "hold", duration: 7000 },
+      { key: "exhale", duration: 8000 },
+    ],
+  },
+  // Box breathing (4x4x4x4): equal inhale/hold/exhale/hold.
+  box: {
+    phases: [
+      { key: "inhale", duration: 4000 },
+      { key: "hold", duration: 4000 },
+      { key: "exhale", duration: 4000 },
+      { key: "hold", duration: 4000 },
+    ],
+  },
+  // Quick calming breath: short inhale, long exhale.
+  quick: {
+    phases: [
+      { key: "inhale", duration: 2000 },
+      { key: "exhale", duration: 6000 },
+    ],
+  },
+};
 
 const TOTAL_CYCLES = 4;
 
@@ -58,8 +71,7 @@ export default function BreathingGuide({
   onCancelRef.current = onCancel;
   onBreathChangeRef.current = onBreathChange;
 
-  const phases =
-    technique === "box" ? PHASES_BOX : technique === "quick" ? PHASES_QUICK : PHASES_478;
+  const phases = BREATHING_PATTERNS[technique].phases;
   const phase = phases[phaseIdx];
   const isInhale = phase.key === "inhale";
   const isHold = phase.key === "hold";
