@@ -1,7 +1,9 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
+import { getAllowedOrigins } from "./lib/cors-origins.js";
 import authPlugin from "./plugins/auth.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
@@ -18,7 +20,8 @@ import { setErrorHandler } from "./lib/handle-error.js";
 const fastify = Fastify({ logger: true });
 
 await fastify.register(helmet, { contentSecurityPolicy: false });
-await fastify.register(cors, { origin: true });
+await fastify.register(cors, { origin: getAllowedOrigins(), credentials: true });
+await fastify.register(cookie);
 await fastify.register(rateLimit, { max: 100, timeWindow: "1 minute" });
 
 fastify.addHook("onRoute", (routeOptions) => {

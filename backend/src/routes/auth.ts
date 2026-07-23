@@ -3,6 +3,12 @@ import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
 import { userService } from "../services/user.js";
 import { authService } from "../services/auth.js";
+import {
+  setRefreshCookie,
+  clearRefreshCookie,
+  REFRESH_COOKIE_NAME,
+} from "../lib/refresh-cookie.js";
+import { UnauthorizedError } from "../lib/errors.js";
 
 interface RegisterBody {
   email: string;
@@ -13,10 +19,6 @@ interface RegisterBody {
 interface LoginBody {
   email: string;
   password: string;
-}
-
-interface RefreshBody {
-  refreshToken: string;
 }
 
 interface ForgotPasswordBody {
@@ -37,7 +39,8 @@ export default async function authRoutes(fastify: FastifyInstance) {
       { expiresIn: authService.accessTokenExpiry },
     );
     const refreshToken = await authService.createRefreshToken(user.id);
-    return { accessToken, refreshToken, user };
+    setRefreshCookie(reply, refreshToken);
+    return { accessToken, user };
   });
 
   fastify.post<{ Body: LoginBody }>("/auth/login", async (request, reply) => {
@@ -48,22 +51,26 @@ export default async function authRoutes(fastify: FastifyInstance) {
       { expiresIn: authService.accessTokenExpiry },
     );
     const refreshToken = await authService.createRefreshToken(user.id);
-    return { accessToken, refreshToken, user };
+    setRefreshCookie(reply, refreshToken);
+    return { accessToken, user };
   });
 
-  fastify.post<{ Body: RefreshBody }>("/auth/refresh", async (request, reply) => {
-    const { refreshToken } = request.body;
+  fastify.post("/auth/refresh", async (request, reply) => {
+    const refreshToken = request.cookies[REFRESH_COOKIE_NAME];
+    if (!refreshToken) throw new UnauthorizedError("Missing refresh token");
     const userId = await authService.consumeRefreshToken(refreshToken);
     const newAccessToken = await reply.jwtSign(
       { userId },
       { expiresIn: authService.accessTokenExpiry },
     );
     const newRefreshToken = await authService.createRefreshToken(userId);
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    setRefreshCookie(reply, newRefreshToken);
+    return { accessToken: newAccessToken };
   });
 
-  fastify.post("/auth/logout", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.post("/auth/logout", { preHandler: [fastify.authenticate] }, async (request, reply) => {
     await authService.revokeAllUserTokens(request.userId);
+    clearRefreshCookie(reply);
   });
 
   fastify.post<{ Body: ForgotPasswordBody }>("/auth/forgot-password", async (request) => {
@@ -92,7 +99,8 @@ export default async function authRoutes(fastify: FastifyInstance) {
       { expiresIn: authService.accessTokenExpiry },
     );
     const refreshToken = await authService.createRefreshToken(userId);
-    return { accessToken, refreshToken, message: "Password reset successfully" };
+    setRefreshCookie(reply, refreshToken);
+    return { accessToken, message: "Password reset successfully" };
   });
 
   // DEMO-ONLY: remove before production
@@ -103,6 +111,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
       { expiresIn: authService.accessTokenExpiry },
     );
     const refreshToken = await authService.createRefreshToken(user.id);
-    return { accessToken, refreshToken, user };
+    setRefreshCookie(reply, refreshToken);
+    return { accessToken, user };
   });
 }

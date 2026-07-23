@@ -34,7 +34,6 @@ export default function ResetPasswordPage() {
     try {
       const res = await api.auth.resetPassword({ token, password });
       login(res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
       navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");

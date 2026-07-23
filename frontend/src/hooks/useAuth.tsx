@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { setToken, getToken, setRefreshToken } from "../lib/api";
+import { setToken, getToken, api } from "../lib/api";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
   login: (token: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -17,9 +17,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    // Best-effort: this also clears the httpOnly refresh cookie server-side,
+    // which the client has no way to remove itself.
+    try {
+      await api.auth.logout();
+    } catch {
+      // Ignore — we still clear local state below.
+    }
     setToken(null);
-    setRefreshToken(null);
     setIsAuthenticated(false);
   }, []);
 

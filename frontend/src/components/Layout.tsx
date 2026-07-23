@@ -95,8 +95,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => clearInterval(id);
   }, [isReducedMotion, showCreature]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate("/login");
   };
 

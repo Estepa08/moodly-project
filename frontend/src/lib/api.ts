@@ -1,6 +1,8 @@
 import type { components } from "./api-types";
 
 type AuthResponse = components["schemas"]["AuthResponse"];
+type RefreshResponse = components["schemas"]["RefreshResponse"];
+type ResetPasswordResponse = components["schemas"]["ResetPasswordResponse"];
 type Entry = components["schemas"]["Entry"];
 type EntryCreate = components["schemas"]["EntryCreate"];
 type Parameter = components["schemas"]["Parameter"];
@@ -43,29 +45,18 @@ export function getToken(): string | null {
   return accessToken;
 }
 
-function getRefreshToken(): string | null {
-  return localStorage.getItem("refreshToken");
-}
-
-export function setRefreshToken(token: string | null) {
-  if (token) {
-    localStorage.setItem("refreshToken", token);
-  } else {
-    localStorage.removeItem("refreshToken");
-  }
-}
-
+// The refresh token itself lives in an httpOnly cookie set by the API and is
+// never readable from JS — the browser attaches it automatically on requests
+// made with credentials: "include". We can't check for its presence before
+// trying, so a 401 always gets one refresh attempt; the endpoint just
+// answers 401 itself if there's no valid cookie.
 async function attemptRefresh(): Promise<boolean> {
-  const storedRefreshToken = getRefreshToken();
-  if (!storedRefreshToken) return false;
   try {
-    const data = await api.auth.refresh(storedRefreshToken);
+    const data = await api.auth.refresh();
     setToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
     return true;
   } catch {
     setToken(null);
-    setRefreshToken(null);
     return false;
   }
 }
@@ -80,10 +71,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  let res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+  let res = await fetch(`${BASE_URL}${path}`, { ...options, headers, credentials: "include" });
 
   // 401 → attempt token refresh once
-  if (res.status === 401 && getRefreshToken()) {
+  if (res.status === 401 && path !== "/auth/refresh") {
     if (!refreshPromise) {
       refreshPromise = attemptRefresh().finally(() => {
         refreshPromise = null;
@@ -92,7 +83,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const refreshed = await refreshPromise;
     if (refreshed) {
       headers["Authorization"] = `Bearer ${getToken()}`;
-      res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+      res = await fetch(`${BASE_URL}${path}`, { ...options, headers, credentials: "include" });
     }
   }
 
@@ -112,18 +103,14 @@ export const api = {
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
     demo: () => request<AuthResponse>("/auth/demo", { method: "POST" }),
-    refresh: (refreshToken: string) =>
-      request<AuthResponse>("/auth/refresh", {
-        method: "POST",
-        body: JSON.stringify({ refreshToken }),
-      }),
+    refresh: () => request<RefreshResponse>("/auth/refresh", { method: "POST" }),
     forgotPassword: (body: { email: string }) =>
       request<{ message: string }>("/auth/forgot-password", {
         method: "POST",
         body: JSON.stringify(body),
       }),
     resetPassword: (body: { token: string; password: string }) =>
-      request<AuthResponse & { message: string }>("/auth/reset-password", {
+      request<ResetPasswordResponse>("/auth/reset-password", {
         method: "POST",
         body: JSON.stringify(body),
       }),

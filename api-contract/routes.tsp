@@ -22,7 +22,7 @@ interface Auth {
 
   @post
   @route("/refresh")
-  refresh(@body body: RefreshRequest): AuthResponse;
+  refresh(): RefreshResponse;
 
   @post
   @route("/forgot-password")
@@ -30,7 +30,7 @@ interface Auth {
 
   @post
   @route("/reset-password")
-  resetPassword(@body body: ResetPasswordRequest): void;
+  resetPassword(@body body: ResetPasswordRequest): ResetPasswordResponse;
 }
 
 @tag("Users")

@@ -380,7 +380,6 @@ export interface components {
     schemas: {
         AuthResponse: {
             accessToken: string;
-            refreshToken: string;
             user: components["schemas"]["User"];
         };
         /** @description Результат завершённого дыхательного упражнения */
@@ -487,8 +486,8 @@ export interface components {
             description?: string;
             unit?: string;
         };
-        RefreshRequest: {
-            refreshToken: string;
+        RefreshResponse: {
+            accessToken: string;
         };
         /** @description Отчёт для выгрузки статистики врачу (PDF/CSV), без участия врача в самом приложении */
         Report: {
@@ -521,6 +520,10 @@ export interface components {
         ResetPasswordRequest: {
             token: string;
             password: string;
+        };
+        ResetPasswordResponse: {
+            accessToken: string;
+            message: string;
         };
         /** @description Психологический тест, построенный на справочниках/книгах по психологии. Шаблон: вопросы + правила подсчёта баллов. */
         Test: {
@@ -657,11 +660,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RefreshRequest"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description The request has succeeded. */
             200: {
@@ -669,7 +668,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AuthResponse"];
+                    "application/json": components["schemas"]["RefreshResponse"];
                 };
             };
         };
@@ -711,12 +710,14 @@ export interface operations {
             };
         };
         responses: {
-            /** @description There is no content to send for this request, but the headers may be useful. */
-            204: {
+            /** @description The request has succeeded. */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResetPasswordResponse"];
+                };
             };
         };
     };

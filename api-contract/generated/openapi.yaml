@@ -67,15 +67,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/RefreshResponse'
       tags:
         - Auth
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RefreshRequest'
   /auth/register:
     post:
       operationId: Auth_register
@@ -100,8 +94,12 @@ paths:
       operationId: Auth_resetPassword
       parameters: []
       responses:
-        '204':
-          description: 'There is no content to send for this request, but the headers may be useful. '
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetPasswordResponse'
       tags:
         - Auth
       requestBody:
@@ -541,12 +539,9 @@ components:
       type: object
       required:
         - accessToken
-        - refreshToken
         - user
       properties:
         accessToken:
-          type: string
-        refreshToken:
           type: string
         user:
           $ref: '#/components/schemas/User'
@@ -740,12 +735,12 @@ components:
         unit:
           type: string
       description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
-    RefreshRequest:
+    RefreshResponse:
       type: object
       required:
-        - refreshToken
+        - accessToken
       properties:
-        refreshToken:
+        accessToken:
           type: string
     Report:
       type: object
@@ -814,6 +809,16 @@ components:
         token:
           type: string
         password:
+          type: string
+    ResetPasswordResponse:
+      type: object
+      required:
+        - accessToken
+        - message
+      properties:
+        accessToken:
+          type: string
+        message:
           type: string
     Test:
       type: object

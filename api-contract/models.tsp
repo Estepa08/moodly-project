@@ -27,12 +27,11 @@ model LoginRequest {
 
 model AuthResponse {
   accessToken: string;
-  refreshToken: string;
   user: User;
 }
 
-model RefreshRequest {
-  refreshToken: string;
+model RefreshResponse {
+  accessToken: string;
 }
 
 model ForgotPasswordRequest {
@@ -42,6 +41,11 @@ model ForgotPasswordRequest {
 model ResetPasswordRequest {
   token: string;
   password: string;
+}
+
+model ResetPasswordResponse {
+  accessToken: string;
+  message: string;
 }
 
 // ---------- Parameter ----------
