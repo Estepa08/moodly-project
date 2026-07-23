@@ -282,6 +282,15 @@ export const recommendationRu: Record<string, string> = {
     "КРИТИЧЕСКИ: Этот опросник указывает на активные суицидальные мысли. Требуется немедленное экстренное вмешательство. Позвоните в экстренные службы (911/112) или немедленно обратитесь в ближайшее отделение неотложной помощи.",
   "CRITICAL: This assessment indicates a plan for self-harm. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.":
     "КРИТИЧЕСКИ: Этот опросник указывает на план самоповреждения. Требуется немедленное экстренное вмешательство. Позвоните в экстренные службы (911/112) или немедленно обратитесь в ближайшее отделение неотложной помощи.",
+  "Continue self-care practices.": "Продолжайте практики самопомощи.",
+  "Consider consulting a therapist.": "Рекомендуется консультация терапевта.",
+  "Consider consulting a therapist. Pharmacotherapy may be beneficial.":
+    "Рекомендуется консультация терапевта. Медикаментозное лечение может быть полезным.",
+  "Consider therapy. Monitor symptoms closely.":
+    "Рекомендуется терапия. Внимательно следите за симптомами.",
+  "Monitor symptoms. Self-help techniques may help.":
+    "Следите за симптомами. Техники самопомощи могут помочь.",
+  "Consider self-help techniques.": "Рассмотрите техники самопомощи.",
 };
 
 export const cdInterpretationTemplates: Record<string, string> = {

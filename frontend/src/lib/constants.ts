@@ -8,11 +8,17 @@ export const PARAM_NAME_KEYS: Record<string, string> = {
   Gratitude: "dashboard.gratitude",
   "Sleep Hygiene": "dashboard.sleepHygiene",
   "Distortion Quiz": "dashboard.distortionQuiz",
+  "Thought Release": "distortions.tabLetGo",
   Wellbeing: "dashboard.wellbeing",
 };
 
 // Non-standard-scale parameters that don't belong in the 0-10 numeric trend chart / averages / quick-entry slider.
-export const TEXT_PARAMS = new Set(["Gratitude", "Sleep Hygiene", "Distortion Quiz"]);
+export const TEXT_PARAMS = new Set([
+  "Gratitude",
+  "Sleep Hygiene",
+  "Distortion Quiz",
+  "Thought Release",
+]);
 
 export const PARAM_COLORS: Record<string, string> = {
   Anxiety: "hsl(var(--primary))",

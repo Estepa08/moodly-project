@@ -18,6 +18,16 @@ vi.mock("../../lib/api", () => ({
   getToken: vi.fn(() => null),
 }));
 
+const mockReport = (overrides = {}) => ({
+  id: "1",
+  format: "pdf",
+  status: "ready",
+  periodFrom: "2026-01-01T00:00:00Z",
+  periodTo: "2026-02-01T00:00:00Z",
+  createdAt: "2026-02-02T00:00:00Z",
+  ...overrides,
+});
+
 describe("ReportsPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -32,7 +42,7 @@ describe("ReportsPage", () => {
 
   it("submits report generation", async () => {
     (api.reports.list as Mock).mockResolvedValueOnce([]);
-    (api.reports.create as Mock).mockResolvedValueOnce({ status: "pending" });
+    (api.reports.create as Mock).mockResolvedValueOnce(mockReport());
     renderWithProviders(<ReportsPage />);
 
     const fromInput = await screen.findByLabelText("From");
@@ -46,5 +56,29 @@ describe("ReportsPage", () => {
     await waitFor(() => {
       expect(api.reports.create).toHaveBeenCalled();
     });
+  });
+
+  it("shows download button for ready report", async () => {
+    (api.reports.list as Mock).mockResolvedValueOnce([mockReport()]);
+    renderWithProviders(<ReportsPage />);
+    expect(await screen.findByText("Download")).toBeInTheDocument();
+  });
+
+  it("shows generating state for pending report", async () => {
+    (api.reports.list as Mock).mockResolvedValueOnce([mockReport({ status: "pending" })]);
+    renderWithProviders(<ReportsPage />);
+    expect(await screen.findByText("Generating...")).toBeInTheDocument();
+  });
+
+  it("shows retry for failed report", async () => {
+    (api.reports.list as Mock).mockResolvedValueOnce([mockReport({ status: "failed" })]);
+    renderWithProviders(<ReportsPage />);
+    expect(await screen.findByText("Retry")).toBeInTheDocument();
+  });
+
+  it("shows empty state when no reports", async () => {
+    (api.reports.list as Mock).mockResolvedValueOnce([]);
+    renderWithProviders(<ReportsPage />);
+    expect(await screen.findByText("No exports yet...")).toBeInTheDocument();
   });
 });

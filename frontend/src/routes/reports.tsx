@@ -7,12 +7,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import Spinner from "../components/ui/spinner";
+import { AlertTriangle, RotateCcw } from "lucide-react";
+import { cn } from "../lib/utils";
+import type { components } from "../lib/api-types";
+
+type Report = components["schemas"]["Report"];
 
 const PRESETS = [
   { key: "1m", labelKey: "dashboard.oneMonth", days: 30 },
   { key: "3m", labelKey: "dashboard.threeMonths", days: 90 },
   { key: "6m", labelKey: "reports.sixMonths", days: 180 },
 ] as const;
+
+const STATUS_LABELS: Record<string, string> = {
+  pending: "reports.statusPending",
+  ready: "reports.statusReady",
+  failed: "reports.statusFailed",
+};
 
 export default function ReportsPage() {
   const { t, i18n } = useTranslation();
@@ -45,6 +56,14 @@ export default function ReportsPage() {
 
   const handleManualDate = () => {
     setDatePreset("");
+  };
+
+  const handleRetry = (r: Report) => {
+    createReport.mutate({
+      format: r.format as "pdf" | "csv",
+      periodFrom: new Date(r.periodFrom).toISOString().split("T")[0],
+      periodTo: new Date(r.periodTo).toISOString().split("T")[0],
+    });
   };
 
   return (
@@ -135,7 +154,13 @@ export default function ReportsPage() {
       </Card>
 
       {reports?.map((r) => (
-        <Card key={r.id}>
+        <Card
+          key={r.id}
+          className={cn(
+            r.status === "failed" && "border-destructive/30",
+            r.status === "pending" && "opacity-70",
+          )}
+        >
           <CardContent className="pt-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium capitalize">{r.format}</p>
@@ -143,15 +168,35 @@ export default function ReportsPage() {
                 {new Date(r.createdAt).toLocaleDateString(
                   i18n.language === "ru" ? "ru-RU" : "en-US",
                 )}{" "}
-                — {r.status}
+                — {t(STATUS_LABELS[r.status] || r.status)}
               </p>
             </div>
+            {r.status === "pending" && (
+              <div className="flex items-center gap-2">
+                <Spinner size={14} />
+                <span className="text-xs text-muted-foreground">{t("reports.statusPending")}</span>
+              </div>
+            )}
             {r.status === "ready" && (
               <Button size="sm" variant="outline" asChild>
                 <a href={api.reports.download(r.id)} download>
                   {t("reports.download")}
                 </a>
               </Button>
+            )}
+            {r.status === "failed" && (
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-destructive" />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleRetry(r)}
+                  disabled={createReport.isPending}
+                >
+                  <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                  {t("reports.retry")}
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>

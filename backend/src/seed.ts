@@ -9,6 +9,7 @@ const parameters = [
   { name: "Gratitude", description: "Daily gratitude note", unit: null },
   { name: "Sleep Hygiene", description: "Nightly sleep hygiene checklist", unit: null },
   { name: "Distortion Quiz", description: "Cognitive distortion quiz score", unit: null },
+  { name: "Thought Release", description: "Cognitive-distortion release ritual log", unit: null },
 ];
 
 const baiOptions = [

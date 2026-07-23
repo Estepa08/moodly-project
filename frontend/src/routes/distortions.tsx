@@ -4,12 +4,14 @@ import { ChevronRight } from "lucide-react";
 import { DISTORTION_KEYS } from "../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import DistortionQuiz from "../components/DistortionQuiz";
+import ThoughtRelease from "../components/ThoughtRelease";
 import { useParameters } from "../hooks/useParameters";
 import { useCreateEntry } from "../hooks/useEntries";
 
 const TABS = [
   { key: "library", labelKey: "distortions.tabLibrary" },
   { key: "quiz", labelKey: "distortions.tabQuiz" },
+  { key: "letGo", labelKey: "distortions.tabLetGo" },
 ] as const;
 
 export default function DistortionsPage() {
@@ -18,6 +20,10 @@ export default function DistortionsPage() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const { data: params } = useParameters();
   const quizParam = useMemo(() => params?.find((p) => p.name === "Distortion Quiz"), [params]);
+  const thoughtReleaseParam = useMemo(
+    () => params?.find((p) => p.name === "Thought Release"),
+    [params],
+  );
   const createEntry = useCreateEntry();
 
   return (
@@ -87,8 +93,10 @@ export default function DistortionsPage() {
             </Card>
           ))}
         </div>
-      ) : (
+      ) : tab === "quiz" ? (
         <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
+      ) : (
+        <ThoughtRelease parameterId={thoughtReleaseParam?.id} createEntry={createEntry} />
       )}
     </div>
   );

@@ -49,7 +49,7 @@ describe("Reports", () => {
       },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().status).toBe("pending");
+    expect(res.json().status).toBe("ready");
     reportId = res.json().id;
   });
 
@@ -71,6 +71,17 @@ describe("Reports", () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json().format).toBe("csv");
+  });
+
+  it("GET /reports/:id/download — returns CSV", async () => {
+    const res = await app.inject({
+      method: "GET",
+      url: `/reports/${reportId}/download`,
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toMatch(/text\/csv/);
+    expect(res.body.length).toBeGreaterThan(0);
   });
 
   it("DELETE /reports/:id — deletes report", async () => {

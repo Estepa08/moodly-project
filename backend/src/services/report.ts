@@ -42,9 +42,16 @@ export const reportService = {
   },
 
   async markReady(id: string) {
-    await prisma.report.update({
+    return prisma.report.update({
       where: { id },
       data: { status: "ready", downloadUrl: `/reports/${id}/download` },
+    });
+  },
+
+  async markFailed(id: string) {
+    await prisma.report.update({
+      where: { id },
+      data: { status: "failed" },
     });
   },
 
@@ -52,6 +59,15 @@ export const reportService = {
     return prisma.entry.findMany({
       where: { userId, createdAt: { gte: periodFrom, lte: periodTo } },
       include: { parameter: true },
+      orderBy: { createdAt: "asc" },
+    });
+  },
+
+  async getTestResultsForPeriod(userId: string, periodFrom: Date, periodTo: Date) {
+    return prisma.testResult.findMany({
+      where: { userId, completedAt: { gte: periodFrom, lte: periodTo } },
+      include: { test: true },
+      orderBy: { completedAt: "desc" },
     });
   },
 };
