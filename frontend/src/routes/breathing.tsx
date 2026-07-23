@@ -5,6 +5,7 @@ import BreathingGuide from "../components/BreathingGuide";
 import type { BreathingTechnique } from "../components/BreathingGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
+import { SegmentGroup, SegmentButton } from "../components/ui/segment-button";
 
 const BreathingCreature = lazy(() => import("../components/BreathingCreature"));
 
@@ -66,38 +67,17 @@ export default function BreathingPage() {
               )}
             </p>
             <div className="flex justify-center">
-              <div className="flex rounded-xl bg-muted p-1 shadow-neumorphic-inset">
-                <button
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    technique === "box"
-                      ? "bg-card text-foreground shadow-neumorphic-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={() => setTechnique("box")}
-                >
+              <SegmentGroup>
+                <SegmentButton active={technique === "box"} onClick={() => setTechnique("box")}>
                   {t("breathing.techniqueBox")}
-                </button>
-                <button
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    technique === "478"
-                      ? "bg-card text-foreground shadow-neumorphic-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={() => setTechnique("478")}
-                >
+                </SegmentButton>
+                <SegmentButton active={technique === "478"} onClick={() => setTechnique("478")}>
                   {t("breathing.technique478")}
-                </button>
-                <button
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    technique === "quick"
-                      ? "bg-card text-foreground shadow-neumorphic-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={() => setTechnique("quick")}
-                >
+                </SegmentButton>
+                <SegmentButton active={technique === "quick"} onClick={() => setTechnique("quick")}>
                   {t("breathing.techniqueQuick")}
-                </button>
-              </div>
+                </SegmentButton>
+              </SegmentGroup>
             </div>
             <div className="space-y-1 text-sm text-muted-foreground border-t border-border pt-4">
               <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">
