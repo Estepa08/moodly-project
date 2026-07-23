@@ -12,6 +12,7 @@ tags:
   - name: Feedback
   - name: OnboardingStories
   - name: Reports
+  - name: Practices
   - name: Breathing
 paths:
   /auth/forgot-password:
@@ -313,6 +314,21 @@ paths:
                   $ref: '#/components/schemas/Parameter'
       tags:
         - Parameters
+  /practices:
+    get:
+      operationId: Practices_list
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Practice'
+      tags:
+        - Practices
   /reports:
     post:
       operationId: Reports_create
@@ -735,6 +751,32 @@ components:
         unit:
           type: string
       description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
+    Practice:
+      type: object
+      required:
+        - id
+        - type
+        - title
+        - icon
+        - route
+        - order
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        route:
+          type: string
+        order:
+          type: integer
+          format: int32
+      description: Практика/упражнение для ментального здоровья
     RefreshResponse:
       type: object
       required:

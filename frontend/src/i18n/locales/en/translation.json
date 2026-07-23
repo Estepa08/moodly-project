@@ -401,5 +401,17 @@
       "dayActivity": "Some physical activity today",
       "noLateMeal": "No heavy or late meal close to bedtime"
     }
+  },
+  "recommendation": {
+    "welcomeBreathing": "Welcome! Try a quick breathing exercise to settle in.",
+    "highAnxiety": "I see you're feeling anxious. Would you like a short breathing exercise?",
+    "lowMood": "Things feel tough right now. Want to write down something you're grateful for?",
+    "poorSleep": "Sleep has been rough lately. Want to check your sleep hygiene?",
+    "lowEnergy": "You're running low on energy. A quick breathing exercise might help.",
+    "anxietyFromTest": "Your last test shows elevated anxiety. A breathing exercise could help.",
+    "lowMoodFromTest": "Your last test shows low mood. Try a gratitude journal entry.",
+    "defaultBreathing": "Take a moment for yourself with a breathing exercise.",
+    "take": "Let's do it",
+    "dismiss": "Not now"
   }
 }

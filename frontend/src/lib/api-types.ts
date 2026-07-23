@@ -230,6 +230,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Practices_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/reports": {
         parameters: {
             query?: never;
@@ -485,6 +501,17 @@ export interface components {
             name: string;
             description?: string;
             unit?: string;
+        };
+        /** @description Практика/упражнение для ментального здоровья */
+        Practice: {
+            id: string;
+            type: string;
+            title: string;
+            description?: string;
+            icon: string;
+            route: string;
+            /** Format: int32 */
+            order: number;
         };
         RefreshResponse: {
             accessToken: string;
@@ -961,6 +988,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Parameter"][];
+                };
+            };
+        };
+    };
+    Practices_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Practice"][];
                 };
             };
         };

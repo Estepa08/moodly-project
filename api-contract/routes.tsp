@@ -144,6 +144,13 @@ interface Reports {
   delete(@path id: string): void;
 }
 
+@tag("Practices")
+@route("/practices")
+interface Practices {
+  @get
+  list(): Practice[];
+}
+
 @tag("Breathing")
 @route("/creature")
 interface Creature {

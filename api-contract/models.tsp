@@ -181,6 +181,19 @@ model ReportCreate {
   periodTo: utcDateTime;
 }
 
+// ---------- Practice ----------
+
+@doc("Практика/упражнение для ментального здоровья")
+model Practice {
+  id: string;
+  type: string;
+  title: string;
+  description?: string;
+  icon: string;
+  route: string;
+  order: int32;
+}
+
 // ---------- Creature / Breathing ----------
 
 @doc("Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно).")

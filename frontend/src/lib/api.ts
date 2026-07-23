@@ -15,6 +15,7 @@ type Report = components["schemas"]["Report"];
 type ReportCreate = components["schemas"]["ReportCreate"];
 type User = components["schemas"]["User"];
 type UserUpdate = components["schemas"]["UserUpdate"];
+type Practice = components["schemas"]["Practice"];
 
 interface CreatureState {
   id: string;
@@ -168,6 +169,23 @@ export const api = {
     get: (id: string) => request<Report>(`/reports/${id}`),
     download: (id: string) => `${BASE_URL}/reports/${id}/download`,
     delete: (id: string) => request<void>(`/reports/${id}`, { method: "DELETE" }),
+  },
+  practices: {
+    list: () => request<Practice[]>("/practices"),
+    recommended: () =>
+      request<{
+        practiceId: string;
+        practiceType: string;
+        title: string;
+        icon: string;
+        route: string;
+        message: string;
+      } | null>("/practices/recommended"),
+    recordAction: (practiceId: string, action: "shown" | "taken" | "dismissed") =>
+      request<void>("/practices/recommended/action", {
+        method: "POST",
+        body: JSON.stringify({ practiceId, action }),
+      }),
   },
   creature: {
     getState: () => request<CreatureState>("/creature"),

@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import DistortionQuiz from "../components/DistortionQuiz";
 import { useParameters } from "../hooks/useParameters";
 import { useCreateEntry } from "../hooks/useEntries";
+import { usePractices } from "../hooks/usePractices";
+import PracticePage from "../components/PracticePage";
 
 const TABS = [
   { key: "library", labelKey: "distortions.tabLibrary" },
@@ -14,6 +16,8 @@ const TABS = [
 
 export default function DistortionsPage() {
   const { t } = useTranslation();
+  const { data: practices } = usePractices();
+  const practice = useMemo(() => practices?.find((p) => p.route === "/distortions"), [practices]);
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("library");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const { data: params } = useParameters();
@@ -21,14 +25,11 @@ export default function DistortionsPage() {
   const createEntry = useCreateEntry();
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground font-serif">
-          {t("distortions.title")}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">{t("distortions.subtitle")}</p>
-      </div>
-
+    <PracticePage
+      icon={practice?.icon ?? "Brain"}
+      title={practice?.title ?? t("distortions.title")}
+      description={practice?.description}
+    >
       <div className="flex justify-center">
         <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
           {TABS.map((item) => (
@@ -90,6 +91,6 @@ export default function DistortionsPage() {
       ) : (
         <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
       )}
-    </div>
+    </PracticePage>
   );
 }
