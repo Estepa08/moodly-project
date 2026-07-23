@@ -114,6 +114,8 @@ describe("TestDetailPage", () => {
     });
 
     await user.click(screen.getByText("Several days"));
+    await user.click(screen.getByRole("button", { name: /review/i }));
+    await user.click(screen.getByRole("button", { name: /submit/i }));
 
     await waitFor(() => {
       expect(screen.getByText("Low score")).toBeInTheDocument();
@@ -155,12 +157,122 @@ describe("TestDetailPage", () => {
 
     await waitFor(() => expect(screen.getByText("Test question 1?")).toBeInTheDocument());
     await user.click(screen.getByText("Moderately"));
+    await user.click(screen.getByRole("button", { name: /review/i }));
+    await user.click(screen.getByRole("button", { name: /submit/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Cognitive Distortion Profile")).toBeInTheDocument();
+      expect(screen.getByText("Your Thinking Patterns")).toBeInTheDocument();
     });
     expect(screen.getByText("allOrNothing")).toBeInTheDocument();
     expect(screen.getByText("shouldStatements")).toBeInTheDocument();
     expect(screen.getByText("personalization")).toBeInTheDocument();
+  });
+
+  it("shows the content warning before a suicide-risk question and allows skipping to /tests", async () => {
+    const { api } = await import("../../lib/api");
+    (api.tests.get as Mock).mockResolvedValueOnce({
+      id: "phq9",
+      title: "PHQ-9",
+      questions: [
+        {
+          id: "phq9-8",
+          text: "Question 8?",
+          options: [{ id: "a1", text: "Not at all", score: 0 }],
+        },
+        {
+          id: "phq9-9",
+          text: "Thoughts of self-harm?",
+          options: [{ id: "b1", text: "Not at all", score: 0 }],
+        },
+      ],
+    });
+
+    const user = userEvent.setup();
+    renderAt("/tests/phq9");
+
+    await waitFor(() => expect(screen.getByText("Question 8?")).toBeInTheDocument());
+    await user.click(screen.getByText("Not at all"));
+    await user.click(screen.getByRole("button", { name: /next/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("The following questions may be difficult")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("Thoughts of self-harm?")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /skip these questions/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("The following questions may be difficult"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("shows the CrisisDialog when the recommendation indicates a critical result", async () => {
+    const { api } = await import("../../lib/api");
+    (api.tests.get as Mock).mockResolvedValueOnce({
+      id: "phq9",
+      title: "PHQ-9",
+      questions: [
+        {
+          id: "q1",
+          text: "Feeling down?",
+          options: [{ id: "a1", text: "Nearly every day", score: 3 }],
+        },
+      ],
+    });
+    (api.tests.submitResult as Mock).mockResolvedValueOnce({
+      score: 27,
+      interpretation: "Severe depression",
+      recommendation: "CRITICAL: Immediate emergency intervention is required.",
+    });
+
+    const user = userEvent.setup();
+    renderAt("/tests/phq9");
+
+    await waitFor(() => expect(screen.getByText("Feeling down?")).toBeInTheDocument());
+    await user.click(screen.getByText("Nearly every day"));
+    await user.click(screen.getByRole("button", { name: /review/i }));
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Immediate help is available")).toBeInTheDocument();
+    });
+    expect(screen.getByText(/please wait 10 seconds/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /please wait/i })).toBeDisabled();
+  });
+
+  it("does not show the CrisisDialog for a non-crisis recommendation", async () => {
+    const { api } = await import("../../lib/api");
+    (api.tests.get as Mock).mockResolvedValueOnce({
+      id: "phq9",
+      title: "PHQ-9",
+      questions: [
+        {
+          id: "q1",
+          text: "Feeling down?",
+          options: [{ id: "a1", text: "Not at all", score: 0 }],
+        },
+      ],
+    });
+    (api.tests.submitResult as Mock).mockResolvedValueOnce({
+      score: 0,
+      interpretation: "Minimal",
+      recommendation: "Keep monitoring.",
+    });
+
+    const user = userEvent.setup();
+    renderAt("/tests/phq9");
+
+    await waitFor(() => expect(screen.getByText("Feeling down?")).toBeInTheDocument());
+    await user.click(screen.getByText("Not at all"));
+    await user.click(screen.getByRole("button", { name: /review/i }));
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Keep monitoring.")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("Immediate help is available")).not.toBeInTheDocument();
+    expect(screen.queryByText("We're here to help")).not.toBeInTheDocument();
   });
 });

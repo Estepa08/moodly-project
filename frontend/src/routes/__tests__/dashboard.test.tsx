@@ -39,9 +39,8 @@ describe("Dashboard", () => {
     expect(screen.getByText("Parameter Trends")).toBeInTheDocument();
     expect(screen.getByText("Weekly Averages")).toBeInTheDocument();
     expect(screen.getByText("Test Progress")).toBeInTheDocument();
-    expect(screen.getByText("History")).toBeInTheDocument();
 
-    expect(screen.getAllByText("Select...")).toHaveLength(2);
-    expect(await screen.findByText("No test results yet")).toBeInTheDocument();
+    expect(screen.getAllByText("Select...")).toHaveLength(1);
+    expect(await screen.findByText(/no test results yet/i)).toBeInTheDocument();
   });
 });

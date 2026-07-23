@@ -26,7 +26,7 @@ describe("ReportsPage", () => {
   it("renders report generator form", async () => {
     (api.reports.list as Mock).mockResolvedValueOnce([]);
     renderWithProviders(<ReportsPage />);
-    expect(await screen.findByText("Generate Report")).toBeInTheDocument();
+    expect(await screen.findByText("Export your data")).toBeInTheDocument();
     expect(screen.getByText("Format")).toBeInTheDocument();
   });
 
