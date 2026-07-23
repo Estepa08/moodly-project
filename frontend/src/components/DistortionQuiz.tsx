@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Check, X } from "lucide-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { components } from "../lib/api-types";
-import { QUIZ_ITEMS, pickOptions, shuffle, type DistortionKey } from "../lib/distortionsQuiz";
+import { QUIZ_ITEMS, QUIZ_PER_RUN, pickOptions, shuffle, type DistortionKey } from "../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
@@ -22,7 +22,7 @@ interface DistortionQuizProps {
 
 export default function DistortionQuiz({ parameterId, createEntry }: DistortionQuizProps) {
   const { t } = useTranslation();
-  const [order, setOrder] = useState(() => shuffle(QUIZ_ITEMS));
+  const [order, setOrder] = useState(() => shuffle(QUIZ_ITEMS).slice(0, QUIZ_PER_RUN));
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<DistortionKey | null>(null);
   const [score, setScore] = useState(0);
@@ -53,7 +53,7 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
 
   const handleRestart = () => {
     savedRef.current = false;
-    setOrder(shuffle(QUIZ_ITEMS));
+    setOrder(shuffle(QUIZ_ITEMS).slice(0, QUIZ_PER_RUN));
     setIndex(0);
     setSelected(null);
     setScore(0);

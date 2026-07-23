@@ -8,8 +8,12 @@ export default function GratitudeJournalPage() {
   const { t } = useTranslation();
   const { data: params } = useParameters();
   const gratitudeParam = useMemo(() => params?.find((p) => p.name === "Gratitude"), [params]);
+  const moodParam = useMemo(() => params?.find((p) => p.name === "Mood"), [params]);
   const { data: entries } = useEntries(
     gratitudeParam ? { parameterId: gratitudeParam.id } : undefined,
+  );
+  const { data: moodEntries } = useEntries(
+    moodParam ? { parameterId: moodParam.id } : undefined,
   );
   const createEntry = useCreateEntry();
 
@@ -25,6 +29,7 @@ export default function GratitudeJournalPage() {
       <GratitudeJournal
         parameterId={gratitudeParam?.id}
         entries={gratitudeParam ? (entries ?? []) : []}
+        moodEntries={moodParam ? (moodEntries ?? []) : []}
         createEntry={createEntry}
         limit={100}
         hideTitle

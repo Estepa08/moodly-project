@@ -1,11 +1,10 @@
-import { Moon, Sun, Zap, Eye, Heart, type LucideIcon } from "lucide-react";
+import { Moon, Sun, Zap, Heart, type LucideIcon } from "lucide-react";
 
 export const PARAM_NAME_KEYS: Record<string, string> = {
   Anxiety: "dashboard.anxiety",
   Sleep: "dashboard.sleep",
   Mood: "dashboard.mood",
   Energy: "dashboard.energy",
-  Focus: "dashboard.focus",
   Gratitude: "dashboard.gratitude",
   "Sleep Hygiene": "dashboard.sleepHygiene",
   "Distortion Quiz": "dashboard.distortionQuiz",
@@ -20,14 +19,12 @@ export const PARAM_COLORS: Record<string, string> = {
   Sleep: "hsl(var(--param-sleep))",
   Mood: "hsl(270 50% 60%)",
   Energy: "hsl(var(--param-energy))",
-  Focus: "hsl(var(--param-focus))",
 };
 
 export const PARAM_ICONS: Record<string, LucideIcon> = {
   Sleep: Moon,
   Mood: Sun,
   Energy: Zap,
-  Focus: Eye,
   Wellbeing: Heart,
 };
 

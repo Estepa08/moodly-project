@@ -27,3 +27,19 @@ export function useCreateEntry(onSuccess?: () => void) {
     },
   });
 }
+
+export function useUpdateEntry() {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  return useMutation({
+    mutationFn: ({ id, value, note }: { id: string; value: number; note?: string }) =>
+      api.entries.update(id, { value, note }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["entries"] });
+    },
+    onError: () => {
+      toast.error(t("dashboard.saveError"));
+    },
+  });
+}

@@ -24,3 +24,17 @@ export function nextDayKey(date: Date): string {
   next.setDate(next.getDate() + 1);
   return dayKey(next);
 }
+
+export function parseCheckedNote(note: string | undefined | null): Set<string> {
+  if (!note) return new Set();
+  const keys = note.split(",").filter(Boolean);
+  const valid = new Set(SLEEP_HYGIENE_ITEMS as unknown as string[]);
+  return new Set(keys.filter((k) => valid.has(k)));
+}
+
+export function findTodayEntry<T extends { createdAt: string }>(
+  entries: T[],
+): T | undefined {
+  const today = dayKey(new Date());
+  return entries.find((e) => dayKey(new Date(e.createdAt)) === today);
+}

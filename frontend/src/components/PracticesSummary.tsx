@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 type Entry = components["schemas"]["Entry"];
 
 interface PracticesSummaryProps {
-  gratitudeEntries: Entry[];
+  gratitudeWeekCount: number;
   hygieneEntries: Entry[];
   distortionEntries: Entry[];
   breathingSessionCount: number | undefined;
@@ -15,7 +15,7 @@ interface PracticesSummaryProps {
 }
 
 export default function PracticesSummary({
-  gratitudeEntries,
+  gratitudeWeekCount,
   hygieneEntries,
   distortionEntries,
   breathingSessionCount,
@@ -44,7 +44,7 @@ export default function PracticesSummary({
       key: "gratitude",
       icon: Heart,
       label: t("dashboard.practicesGratitude"),
-      value: t("dashboard.practicesEntriesCount", { count: gratitudeEntries.length }),
+      value: t("dashboard.gratitudeWeeklyCount", { count: gratitudeWeekCount }),
     },
     {
       key: "sleepHygiene",

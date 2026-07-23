@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
-import { useEntries, useCreateEntry } from "../hooks/useEntries";
+import { useEntries, useCreateEntry, useUpdateEntry } from "../hooks/useEntries";
 import SleepHygieneChecklist from "../components/SleepHygieneChecklist";
 
 export default function SleepHygienePage() {
@@ -17,6 +17,7 @@ export default function SleepHygienePage() {
     sleepParam ? { parameterId: sleepParam.id } : undefined,
   );
   const createEntry = useCreateEntry();
+  const updateEntry = useUpdateEntry();
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -32,6 +33,7 @@ export default function SleepHygienePage() {
         hygieneEntries={hygieneParam ? (hygieneEntries ?? []) : []}
         sleepEntries={sleepParam ? (sleepEntries ?? []) : []}
         createEntry={createEntry}
+        updateEntry={updateEntry}
       />
     </div>
   );

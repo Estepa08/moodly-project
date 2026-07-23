@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import RadarChart from "../components/RadarChart";
-import DashboardQuickEntry from "../components/DashboardQuickEntry";
+import QuickEntryIcons from "../components/QuickEntryIcons";
 import ParameterTrendsChart from "../components/ParameterTrendsChart";
 import WeeklyAveragesGrid from "../components/WeeklyAveragesGrid";
 import TestTimeline from "../components/TestTimeline";
@@ -12,7 +12,6 @@ import WellbeingCard from "../components/WellbeingCard";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const [moodValue, setMoodValue] = useState([7.5]);
   const [period, setPeriod] = useState("2w");
 
   const {
@@ -26,6 +25,7 @@ export default function Dashboard() {
     radarData,
     testTimeline,
     createEntry,
+    gratitudeStats,
     isDataLoading,
     resultsLoading,
   } = useDashboardData(period);
@@ -54,11 +54,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <DashboardQuickEntry
-        params={numericParams}
-        moodValue={moodValue}
-        onMoodChange={setMoodValue}
+      <QuickEntryIcons
+        numericParams={numericParams}
         createEntry={createEntry}
+        hasEntries={(numericParams ?? []).some(
+          (p) => (entriesByParam.get(p.name) ?? []).length > 0,
+        )}
       />
 
       <ParameterTrendsChart
@@ -76,7 +77,7 @@ export default function Dashboard() {
       <WeeklyAveragesGrid weeklyAverages={weeklyAverages} isLoading={isDataLoading} />
 
       <PracticesSummary
-        gratitudeEntries={entriesByParam.get("Gratitude") ?? []}
+        gratitudeWeekCount={gratitudeStats.weekCount}
         hygieneEntries={entriesByParam.get("Sleep Hygiene") ?? []}
         distortionEntries={entriesByParam.get("Distortion Quiz") ?? []}
         breathingSessionCount={creatureState?.sessionCount}

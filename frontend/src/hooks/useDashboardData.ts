@@ -7,6 +7,7 @@ import { useCreatureState } from "./useCreature";
 import type { components } from "../lib/api-types";
 import type { DistortionEntry } from "../components/RadarChart";
 import { TEXT_PARAMS } from "../lib/constants";
+import { isWithinLastDays } from "../lib/utils";
 
 type Entry = components["schemas"]["Entry"];
 type TestResult = components["schemas"]["TestResult"];
@@ -42,6 +43,13 @@ export function useDashboardData(period: string) {
   const { data: params } = useParameters();
   const dateRange = useMemo(() => getDateRange(period), [period]);
   const { data: allEntries, isLoading: entriesLoading } = useEntries(dateRange);
+  const gratitudeParam = useMemo(
+    () => params?.find((p) => p.name === "Gratitude"),
+    [params],
+  );
+  const { data: gratitudeAllEntries } = useEntries(
+    gratitudeParam ? { parameterId: gratitudeParam.id } : undefined,
+  );
   const { data: testResults, isLoading: resultsLoading } = useTestResults();
   const { data: tests } = useTests();
   const { data: creatureState } = useCreatureState();
@@ -50,7 +58,7 @@ export function useDashboardData(period: string) {
   const numericParams = useMemo(() => params?.filter((p) => !TEXT_PARAMS.has(p.name)), [params]);
 
   const paramNames = useMemo(() => {
-    if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy", "Focus"];
+    if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy"];
     return numericParams.map((p) => p.name);
   }, [numericParams]);
 
@@ -127,7 +135,7 @@ export function useDashboardData(period: string) {
 
     const wellbeingScore = (getValue: (name: string) => number | null) => {
       const values: number[] = [];
-      for (const name of ["Mood", "Energy", "Focus", "Sleep"]) {
+      for (const name of ["Mood", "Energy", "Sleep"]) {
         const v = getValue(name);
         if (v !== null) values.push(v);
       }
@@ -159,6 +167,13 @@ export function useDashboardData(period: string) {
       wellbeing: { average: wellbeingCurrent, trend: wellbeingTrend },
     };
   }, [allEntries, period, paramNames, paramMap, entriesByParam]);
+
+  const gratitudeStats = useMemo(() => {
+    const weekCount = (gratitudeAllEntries ?? []).filter((e) =>
+      isWithinLastDays(e.createdAt, 7),
+    ).length;
+    return { weekCount };
+  }, [gratitudeAllEntries]);
 
   const testAbbrMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -215,6 +230,7 @@ export function useDashboardData(period: string) {
     radarData,
     testTimeline,
     createEntry,
+    gratitudeStats,
     isDataLoading: entriesLoading || resultsLoading,
     resultsLoading,
   };

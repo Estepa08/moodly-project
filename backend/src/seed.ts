@@ -6,7 +6,6 @@ const parameters = [
   { name: "Sleep", description: "Sleep quality", unit: "/10" },
   { name: "Mood", description: "General mood", unit: "/10" },
   { name: "Energy", description: "Energy level", unit: "/10" },
-  { name: "Focus", description: "Ability to concentrate", unit: "/10" },
   { name: "Gratitude", description: "Daily gratitude note", unit: null },
   { name: "Sleep Hygiene", description: "Nightly sleep hygiene checklist", unit: null },
   { name: "Distortion Quiz", description: "Cognitive distortion quiz score", unit: null },
@@ -544,7 +543,6 @@ async function seed() {
     Sleep: [4, 5, 3, 6, 7, 5, 8, 6, 4, 5, 7, 8, 6, 7],
     Mood: [5, 4, 3, 6, 5, 7, 8, 6, 4, 5, 7, 8, 6, 7],
     Energy: [3, 4, 2, 5, 6, 4, 7, 5, 3, 4, 6, 7, 5, 6],
-    Focus: [4, 3, 2, 5, 4, 6, 7, 5, 3, 4, 6, 5, 7, 6],
   };
 
   const entryData: { userId: string; parameterId: string; value: number; createdAt: Date }[] = [];
