@@ -37,7 +37,9 @@ export default function FeedbackPage() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={t("feedback.placeholder")}
-              className="flex min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-2 text-sm shadow-neumorphic-inset placeholder:text-muted-foreground resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              autoComplete="off"
+              enterKeyHint="done"
+              className="flex min-h-[100px] w-full rounded-lg border border-border bg-card px-3 py-2 text-base shadow-neumorphic-inset placeholder:text-muted-foreground resize-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-sm"
             />
           </div>
           <Button

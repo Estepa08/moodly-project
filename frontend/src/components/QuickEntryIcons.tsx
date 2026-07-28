@@ -75,7 +75,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
       </CardHeader>
       <CardContent className="space-y-3">
         {!hasEntries && (
-          <p className="text-[11px] text-muted-foreground text-center">
+          <p className="text-xs text-muted-foreground text-center">
             {t("dashboard.quickEntry.firstTimeHint")}
           </p>
         )}
@@ -98,7 +98,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                 <div className="w-12 h-12 flex items-center justify-center">
                   {Icon && <Icon className="w-8 h-8 text-primary" />}
                 </div>
-                <span className="text-[11px] font-medium leading-tight text-center">
+                <span className="text-xs font-medium leading-tight text-center">
                   {t(cfg.labelKey)}
                 </span>
               </button>
@@ -130,7 +130,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                     />
                     <div className="flex justify-between px-0.5">
                       {Array.from({ length: 11 }, (_, i) => (
-                        <span key={i} className="text-[10px] text-muted-foreground w-3 text-center">
+                        <span key={i} className="text-[11px] text-muted-foreground w-3 text-center">
                           {i}
                         </span>
                       ))}
@@ -172,7 +172,9 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                           value={noteText}
                           onChange={(e) => setNoteText(e.target.value)}
                           placeholder={t("dashboard.quickEntry.notePlaceholder")}
-                          className="w-40 text-xs bg-muted rounded-lg px-2.5 py-1.5 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          autoComplete="off"
+                          enterKeyHint="done"
+                          className="w-full md:w-40 text-sm bg-muted rounded-lg px-3 py-2 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               handleSave(cfg.parameterName, sliderValue);

@@ -71,9 +71,9 @@ export default function PracticesSummary({
             {t("dashboard.practicesLoading")}
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 max-sm:gap-2">
             {items.map(({ key, icon: Icon, label, value }) => (
-              <div key={key} className="rounded-xl bg-muted/50 p-3 flex items-center gap-3">
+              <div key={key} className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2">
                 <Icon className="w-5 h-5 text-primary shrink-0" />
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{label}</p>

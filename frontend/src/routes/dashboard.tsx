@@ -42,7 +42,7 @@ export default function Dashboard() {
               key={p.key}
               aria-pressed={period === p.key}
               onClick={() => setPeriod(p.key)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`px-3 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 period === p.key
                   ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                   : "text-muted-foreground hover:text-primary"

@@ -24,7 +24,7 @@ describe("Dashboard", () => {
     vi.clearAllMocks();
   });
 
-  it("renders date picker, mood check-in, trends, averages, test progress, and history", async () => {
+  it("renders all dashboard sections", async () => {
     (api.parameters.list as Mock).mockResolvedValue([
       { id: "1", name: "Mood", unit: "/10" },
       { id: "2", name: "Anxiety", unit: "/10" },
@@ -34,13 +34,29 @@ describe("Dashboard", () => {
     (api.tests.list as Mock).mockResolvedValue([]);
     renderWithProviders(<Dashboard />);
 
+    // Period selector
+    expect(screen.getByText("Period")).toBeInTheDocument();
+    expect(screen.getByText("2 Weeks")).toBeInTheDocument();
+
+    // Quick Entry card
     expect(screen.getByText("Quick Entry")).toBeInTheDocument();
-    expect(screen.getByText("Save")).toBeInTheDocument();
-    expect(screen.getByText("Parameter Trends")).toBeInTheDocument();
+
+    // Chart cards (title always renders even during loading)
+    expect(screen.getByText("How You've Been Feeling")).toBeInTheDocument();
+
+    // Wellbeing card
+    expect(screen.getByText("Wellbeing")).toBeInTheDocument();
+
+    // Weekly Averages card
     expect(screen.getByText("Weekly Averages")).toBeInTheDocument();
+
+    // Practices summary
+    expect(screen.getByText("Practices")).toBeInTheDocument();
+
+    // Test progress
     expect(screen.getByText("Test Progress")).toBeInTheDocument();
 
-    expect(screen.getAllByText("Select...")).toHaveLength(1);
+    // Empty state appears after data loads
     expect(await screen.findByText(/no test results yet/i)).toBeInTheDocument();
   });
 });

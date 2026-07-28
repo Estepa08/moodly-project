@@ -1,10 +1,10 @@
-{$DOMAIN} {
+{$SITE_ADDRESS} {
     root * /srv
     encode gzip
 
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy backend:3001
+        reverse_proxy {$BACKEND_UPSTREAM}
     }
 
     handle {

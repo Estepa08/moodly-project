@@ -74,6 +74,8 @@ export default function ResetPasswordPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
+                enterKeyHint="next"
                 required
                 minLength={6}
               />
@@ -85,6 +87,8 @@ export default function ResetPasswordPage() {
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
+                enterKeyHint="go"
                 required
                 minLength={6}
               />

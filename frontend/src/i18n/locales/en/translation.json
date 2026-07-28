@@ -468,6 +468,18 @@
     "historyEmpty": "No saved entries yet.",
     "deleteEntry": "Delete entry"
   },
+  "practices": {
+    "subtitle": "Pick a practice that feels right for you",
+    "descGratitude": "Write down 3 things you're grateful for",
+    "timeGratitude": "2–5 min",
+    "descDistortions": "Learn to spot and reframe thinking patterns",
+    "timeDistortions": "5–15 min",
+    "descSleepHygiene": "Evening routine for better sleep",
+    "timeSleepHygiene": "3–5 min",
+    "descCba": "Weigh the costs and benefits of your thoughts",
+    "timeCba": "5–10 min",
+    "timeBreathing": "3–10 min"
+  },
   "sleepHygiene": {
     "title": "Sleep Hygiene",
     "subtitle": "A nightly checklist to build habits that support better sleep.",
@@ -495,5 +507,12 @@
       "dayActivity": "Some physical activity today",
       "noLateMeal": "No heavy or late meal close to bedtime"
     }
+  },
+  "lowMood": {
+    "title": "We're here for you",
+    "body": "We've noticed the last few days have been tough. Remember to take care of yourself — a breathing exercise or a quick check-in might help.",
+    "dismiss": "I'll take care",
+    "actionBreathing": "Try breathing exercise",
+    "actionTest": "Take a test"
   }
 }

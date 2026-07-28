@@ -7,7 +7,9 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import Lottie from "lottie-react";
 import creatureAnimation from "../assets/lottie/breathing-creature.json";
 import SkipLink from "./SkipLink";
-import CrisisFloatingButton from "./CrisisFloatingButton";
+import LowMoodAlert from "./LowMoodAlert";
+import { useLowMoodDetection } from "../hooks/useLowMoodDetection";
+import BottomNav from "./ui/bottom-nav";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -22,7 +24,6 @@ import {
   Moon,
   Sparkles,
   ChevronDown,
-  MoreHorizontal,
   Scale,
 } from "lucide-react";
 
@@ -43,7 +44,7 @@ const OTHER_ITEMS = [
   { labelKey: "nav.feedback", path: "/feedback", icon: MessageSquare },
 ];
 
-const ALL_NAV_ITEMS = [DASHBOARD_ITEM, ...PRACTICE_ITEMS, ...OTHER_ITEMS];
+const ALL_MORE_ITEMS = [...PRACTICE_ITEMS, ...OTHER_ITEMS];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { t, i18n } = useTranslation();
@@ -57,6 +58,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [transitioning, setTransitioning] = useState(false);
   const [animKey, setAnimKey] = useState(0);
   const [prevWasCreature, setPrevWasCreature] = useState(true);
+
+  const { detected: lowMoodDetected, acknowledge: dismissLowMood } = useLowMoodDetection();
 
   const puddleCircles = useMemo(() => {
     const circles: { id: number; tx: number; ty: number; delay: number; size: number }[] = [];
@@ -111,6 +114,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-background">
       <SkipLink />
+      {/* ── Desktop sidebar ── */}
       <nav
         aria-label={t("nav.dashboard")}
         className="hidden md:flex flex-col w-56 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
@@ -184,9 +188,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         ))}
       </nav>
 
+      {/* ── Main area ── */}
       <div className="flex-1 flex flex-col min-w-0">
         <header
-          className={`sticky top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${isReducedMotion ? "" : "backdrop-blur-md"}`}
+          className={`sticky top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${
+            isReducedMotion ? "" : "backdrop-blur-md"
+          }`}
+          style={{ paddingTop: "calc(0.75rem + var(--sat))" }}
         >
           <div className="flex-1 relative h-9 overflow-hidden">
             <div
@@ -209,6 +217,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   loop
                   autoplay={!isReducedMotion}
                   style={{ width: "100%", height: "100%" }}
+                  role="img"
+                  aria-label={t("common.moodly")}
                 />
               </div>
             </div>
@@ -253,59 +263,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 text-xs md:hidden">
-              {ALL_NAV_ITEMS.slice(0, 5).map((item) => (
-                <button
-                  key={item.path}
-                  aria-label={t(item.labelKey)}
-                  onClick={() => navigate(item.path)}
-                  className={`p-1.5 rounded-lg hover:bg-secondary/50 transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    (
-                      item.path === "/"
-                        ? location.pathname === "/"
-                        : location.pathname.startsWith(item.path)
-                    )
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <item.icon className="w-4 h-4" />
-                </button>
-              ))}
-              {ALL_NAV_ITEMS.length > 5 && (
-                <div className="relative">
-                  <button
-                    onClick={() => setMobileMoreOpen((o) => !o)}
-                    aria-label={t("nav.more")}
-                    aria-expanded={mobileMoreOpen}
-                    className="p-1.5 rounded-lg hover:bg-secondary/50 transition-all duration-150 active:scale-[0.97] cursor-pointer text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
-                  {mobileMoreOpen && (
-                    <div className="absolute right-0 top-full mt-1 z-20 bg-card rounded-xl shadow-neumorphic p-1 flex flex-col gap-1 min-w-[160px]">
-                      {ALL_NAV_ITEMS.slice(5).map((item) => (
-                        <button
-                          key={item.path}
-                          onClick={() => {
-                            navigate(item.path);
-                            setMobileMoreOpen(false);
-                          }}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                            location.pathname.startsWith(item.path)
-                              ? "text-primary font-medium"
-                              : "text-foreground hover:bg-secondary/50"
-                          }`}
-                        >
-                          <item.icon className="w-4 h-4 shrink-0" />
-                          {t(item.labelKey)}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
             <div className="flex items-center gap-1 text-xs">
               <button
                 className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
@@ -324,11 +281,72 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main id="main-content" className="flex-1 px-4 pb-8 space-y-4">
+        <main
+          id="main-content"
+          className="flex-1 px-4 space-y-4 md:pb-8"
+          style={{ paddingBottom: "calc(2rem + var(--sab))" }}
+        >
           {children}
         </main>
 
-        <CrisisFloatingButton />
+        {/* ── Mobile bottom nav with More sheet ── */}
+        <div className="md:hidden relative z-50">
+          {mobileMoreOpen && (
+            <>
+              <div
+                className="fixed inset-0 bg-foreground/20 backdrop-blur-sm"
+                onClick={() => setMobileMoreOpen(false)}
+                aria-hidden="true"
+              />
+              <div className="fixed bottom-[calc(4rem+var(--sab))] left-2 right-2 z-50 bg-card rounded-xl shadow-neumorphic-lg p-2 flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
+                <p className="text-xs font-medium text-muted-foreground px-3 pt-2 pb-1">
+                  {t("nav.practices")}
+                </p>
+                {PRACTICE_ITEMS.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => {
+                      navigate(item.path);
+                      setMobileMoreOpen(false);
+                    }}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      location.pathname.startsWith(item.path)
+                        ? "text-primary font-medium bg-secondary/30"
+                        : "text-foreground hover:bg-secondary/30"
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5 shrink-0" />
+                    {t(item.labelKey)}
+                  </button>
+                ))}
+                <div className="h-px bg-border mx-3 my-1" />
+                <p className="text-xs font-medium text-muted-foreground px-3 pt-1 pb-1">
+                  {t("nav.more")}
+                </p>
+                {OTHER_ITEMS.map((item) => (
+                  <button
+                    key={item.path}
+                    onClick={() => {
+                      navigate(item.path);
+                      setMobileMoreOpen(false);
+                    }}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      location.pathname.startsWith(item.path)
+                        ? "text-primary font-medium bg-secondary/30"
+                        : "text-foreground hover:bg-secondary/30"
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5 shrink-0" />
+                    {t(item.labelKey)}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          <BottomNav onMoreOpen={() => setMobileMoreOpen((o) => !o)} />
+        </div>
+
+        <LowMoodAlert open={lowMoodDetected} onDismiss={dismissLowMood} />
       </div>
 
       <svg className="absolute w-0 h-0" aria-hidden="true">

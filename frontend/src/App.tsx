@@ -2,7 +2,6 @@ import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import Layout from "./components/Layout";
 import Spinner from "./components/ui/spinner";
-import CrisisFloatingButton from "./components/CrisisFloatingButton";
 import LoginPage from "./routes/login";
 import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
@@ -15,6 +14,7 @@ import TestResultsPage from "./routes/test-results";
 import FeedbackPage from "./routes/feedback";
 import ReportsPage from "./routes/reports";
 import BreathingPage from "./routes/breathing";
+import PracticesPage from "./routes/practices";
 import GratitudeJournalPage from "./routes/gratitude-journal";
 import DistortionsPage from "./routes/distortions";
 import SleepHygienePage from "./routes/sleep-hygiene";
@@ -44,10 +44,7 @@ function PublicRoute() {
   if (isBootstrapping) return <BootstrapSpinner />;
   if (isAuthenticated) return <Navigate to="/" replace />;
   return (
-    <>
-      <Outlet />
-      <CrisisFloatingButton />
-    </>
+    <Outlet />
   );
 }
 
@@ -63,6 +60,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/" element={<Dashboard />} />
+        <Route path="/practices" element={<PracticesPage />} />
         <Route path="/tests" element={<TestsPage />} />
         <Route path="/tests/:testId" element={<TestDetailPage />} />
         <Route path="/results" element={<TestResultsPage />} />

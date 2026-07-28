@@ -31,7 +31,7 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
         ) : weeklyAverages.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">{t("dashboard.noAveragesYet")}</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 max-sm:gap-2">
             {weeklyAverages.map((avg) => {
               const Icon = PARAM_ICONS[avg.name];
               const averageValue = avg.average;
@@ -56,7 +56,7 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                     ? "text-primary"
                     : "text-primary/50";
               return (
-                <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
+                <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3 max-sm:p-2">
                   <div className="flex items-center gap-2 mb-2">
                     {Icon && <Icon className="w-4 h-4 text-primary" />}
                     <span className="text-xs text-muted-foreground">

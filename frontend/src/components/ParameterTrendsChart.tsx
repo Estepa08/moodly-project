@@ -81,8 +81,13 @@ export default function ParameterTrendsChart({
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                <XAxis dataKey="date" fontSize={10} stroke="hsl(var(--chart-tick))" />
-                <YAxis domain={Y_DOMAIN} fontSize={10} stroke="hsl(var(--chart-tick))" />
+                <XAxis
+                  dataKey="date"
+                  fontSize={11}
+                  stroke="hsl(var(--chart-tick))"
+                  interval={Math.max(1, Math.floor(trendData.length / 6))}
+                />
+                <YAxis domain={Y_DOMAIN} fontSize={11} stroke="hsl(var(--chart-tick))" />
                 <Tooltip content={<CustomTooltip />} />
                 {paramNames
                   .filter((name) => visibleParams.has(name))

@@ -42,7 +42,7 @@ export default function DistortionsPage() {
               key={item.key}
               aria-pressed={tab === item.key}
               onClick={() => setTab(item.key)}
-              className={`px-4 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 tab === item.key
                   ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                   : "text-muted-foreground hover:text-primary"

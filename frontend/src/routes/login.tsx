@@ -130,6 +130,9 @@ export default function LoginPage({ defaultRegister }: Props) {
                       type="email"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
+                      autoComplete="email"
+                      inputMode="email"
+                      enterKeyHint="next"
                       required
                     />
                   </div>
@@ -149,6 +152,8 @@ export default function LoginPage({ defaultRegister }: Props) {
                       type="password"
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
+                      autoComplete="current-password"
+                      enterKeyHint="go"
                       required
                     />
                   </div>
@@ -203,6 +208,8 @@ export default function LoginPage({ defaultRegister }: Props) {
                       id="regName"
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
+                      autoComplete="name"
+                      enterKeyHint="next"
                     />
                   </div>
                   <div className="space-y-2" {...a(2, !isLogin)}>
@@ -212,6 +219,9 @@ export default function LoginPage({ defaultRegister }: Props) {
                       type="email"
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
+                      autoComplete="email"
+                      inputMode="email"
+                      enterKeyHint="next"
                       required
                     />
                   </div>
@@ -222,6 +232,8 @@ export default function LoginPage({ defaultRegister }: Props) {
                       type="password"
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
+                      autoComplete="new-password"
+                      enterKeyHint="go"
                       required
                     />
                   </div>
