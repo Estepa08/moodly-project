@@ -7,6 +7,7 @@ import DistortionQuiz from "../components/DistortionQuiz";
 import ThoughtRelease from "../components/ThoughtRelease";
 import { useParameters } from "../hooks/useParameters";
 import { useCreateEntry } from "../hooks/useEntries";
+import { useRewardPractice } from "../hooks/useCreature";
 
 const TABS = [
   { key: "library", labelKey: "distortions.tabLibrary" },
@@ -24,7 +25,10 @@ export default function DistortionsPage() {
     () => params?.find((p) => p.name === "Thought Release"),
     [params],
   );
-  const createEntry = useCreateEntry();
+  const rewardPractice = useRewardPractice();
+  const createEntry = useCreateEntry(() => {
+    rewardPractice.mutate("distortions");
+  });
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -36,11 +40,22 @@ export default function DistortionsPage() {
       </div>
 
       <div className="flex justify-center">
-        <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
+        <div
+          className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
+          role="tablist"
+          aria-label={t("distortions.title")}
+          onKeyDown={(e) => {
+            const idx = TABS.findIndex((t) => t.key === tab);
+            if (e.key === "ArrowLeft" && idx > 0) setTab(TABS[idx - 1].key);
+            if (e.key === "ArrowRight" && idx < TABS.length - 1) setTab(TABS[idx + 1].key);
+          }}
+        >
           {TABS.map((item) => (
             <button
               key={item.key}
-              aria-pressed={tab === item.key}
+              role="tab"
+              aria-selected={tab === item.key}
+              aria-controls={`distortion-panel-${item.key}`}
               onClick={() => setTab(item.key)}
               className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 tab === item.key
@@ -54,50 +69,73 @@ export default function DistortionsPage() {
         </div>
       </div>
 
-      {tab === "library" ? (
-        <div className="space-y-3">
-          {DISTORTION_KEYS.map((key) => (
-            <Card key={key} className="shadow-neumorphic">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">{t(`cognitiveDistortions.${key}`)}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  {t(`distortionsLibrary.${key}.definition`)}
-                </p>
+      <div
+        role="tabpanel"
+        id="distortion-panel-library"
+        aria-labelledby="distortion-tab-library"
+        hidden={tab !== "library"}
+      >
+        {tab === "library" ? (
+          <div className="space-y-3">
+            {DISTORTION_KEYS.map((key) => (
+              <Card key={key} className="shadow-neumorphic">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">{t(`cognitiveDistortions.${key}`)}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    {t(`distortionsLibrary.${key}.definition`)}
+                  </p>
 
-                <button
-                  aria-expanded={!!expanded[key]}
-                  className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  onClick={() => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))}
-                >
-                  <ChevronRight className={`w-4 h-4 ${expanded[key] ? "rotate-90" : ""}`} />
-                  {expanded[key] ? t("distortions.hideExample") : t("distortions.showExample")}
-                </button>
+                  <button
+                    aria-expanded={!!expanded[key]}
+                    className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    onClick={() => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))}
+                  >
+                    <ChevronRight className={`w-4 h-4 ${expanded[key] ? "rotate-90" : ""}`} />
+                    {expanded[key] ? t("distortions.hideExample") : t("distortions.showExample")}
+                  </button>
 
-                {expanded[key] && (
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <p className="text-xs text-muted-foreground">
-                        {t("distortions.exampleThought")}
-                      </p>
-                      <p className="text-foreground">{t(`distortionsLibrary.${key}.example`)}</p>
+                  {expanded[key] && (
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          {t("distortions.exampleThought")}
+                        </p>
+                        <p className="text-foreground">{t(`distortionsLibrary.${key}.example`)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">{t("distortions.reframe")}</p>
+                        <p className="text-foreground">{t(`distortionsLibrary.${key}.reframe`)}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">{t("distortions.reframe")}</p>
-                      <p className="text-foreground">{t(`distortionsLibrary.${key}.reframe`)}</p>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : tab === "quiz" ? (
-        <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
-      ) : (
-        <ThoughtRelease parameterId={thoughtReleaseParam?.id} createEntry={createEntry} />
-      )}
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : null}
+      </div>
+      <div
+        role="tabpanel"
+        id="distortion-panel-quiz"
+        aria-labelledby="distortion-tab-quiz"
+        hidden={tab !== "quiz"}
+      >
+        {tab === "quiz" ? (
+          <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
+        ) : null}
+      </div>
+      <div
+        role="tabpanel"
+        id="distortion-panel-letGo"
+        aria-labelledby="distortion-tab-letGo"
+        hidden={tab !== "letGo"}
+      >
+        {tab === "letGo" ? (
+          <ThoughtRelease parameterId={thoughtReleaseParam?.id} createEntry={createEntry} />
+        ) : null}
+      </div>
     </div>
   );
 }

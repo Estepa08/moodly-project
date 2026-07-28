@@ -205,7 +205,17 @@ export default function TestDetailPage() {
         </Button>
       </header>
 
-      <div className="flex gap-1">
+      <div
+        className="flex gap-1"
+        role="progressbar"
+        aria-valuenow={questionIndex + 1}
+        aria-valuemin={1}
+        aria-valuemax={test.questions.length}
+        aria-label={t("testDetail.questionProgress", {
+          current: questionIndex + 1,
+          total: test.questions.length,
+        })}
+      >
         {test.questions.map((_, i) => {
           const isDone = answers.length > i;
           const isCurrent = i === questionIndex;

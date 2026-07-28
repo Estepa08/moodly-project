@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Heart } from "lucide-react";
+import { Heart, Smile } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -17,6 +17,7 @@ import { isWithinLastDays, cn } from "../lib/utils";
 import { GRATITUDE_PROMPT_CATEGORIES, type GratitudePromptCategory } from "../lib/gratitudePrompts";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import EmptyState from "./ui/empty-state";
 
 type Entry = components["schemas"]["Entry"];
 
@@ -193,6 +194,8 @@ export default function GratitudeJournal({
                   : t("dashboard.gratitudePlaceholder")
               }
               rows={2}
+              enterKeyHint="done"
+              inputMode="text"
               className="flex w-full rounded-lg border border-border bg-card px-3 py-2 text-base shadow-neumorphic-inset transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none md:text-sm"
             />
             <Button
@@ -205,9 +208,11 @@ export default function GratitudeJournal({
           </div>
 
           {recent.length === 0 && (
-            <p className="text-xs text-muted-foreground text-center py-2">
-              {t("dashboard.gratitudeEmpty")}
-            </p>
+            <EmptyState
+              icon={Smile}
+              title={t("dashboard.gratitudeEmpty")}
+              className="py-4"
+            />
           )}
         </CardContent>
       </Card>
@@ -280,9 +285,11 @@ export default function GratitudeJournal({
         </CardHeader>
         <CardContent>
           {lastWeek.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-2">
-              {t("dashboard.gratitudeHistoryEmpty")}
-            </p>
+            <EmptyState
+              icon={Smile}
+              title={t("dashboard.gratitudeHistoryEmpty")}
+              className="py-4"
+            />
           ) : (
             <ul className="space-y-2">
               {lastWeek.map((e) => (

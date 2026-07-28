@@ -9,7 +9,9 @@
     "languageEn": "EN",
     "languageRu": "RU",
     "skipToContent": "Skip to content",
-    "close": "Close"
+    "close": "Close",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -75,6 +77,7 @@
     "saveError": "Failed to save entry",
     "noEntries": "No entries yet — start when you feel ready. Every small step helps.",
     "cdProfile": "Thinking Patterns",
+    "cdProfileEmpty": "Take a cognitive distortion test to see your thinking pattern profile.",
     "parameterTrends": "How You've Been Feeling",
     "weeklyAverages": "Weekly Averages",
     "noAveragesYet": "No entries yet — averages will appear here once you start tracking.",
@@ -193,6 +196,7 @@
   "testResults": {
     "title": "Test Results",
     "noResults": "No results yet — take your first test when you feel ready.",
+    "takeTest": "Take a test",
     "showFull": "Show full",
     "showLess": "Show less",
     "showScore": "Show score details",
@@ -470,15 +474,18 @@
   },
   "practices": {
     "subtitle": "Pick a practice that feels right for you",
+    "descBreathing": "Guided breathing with adjustable patterns",
     "descGratitude": "Write down 3 things you're grateful for",
-    "timeGratitude": "2–5 min",
     "descDistortions": "Learn to spot and reframe thinking patterns",
-    "timeDistortions": "5–15 min",
     "descSleepHygiene": "Evening routine for better sleep",
-    "timeSleepHygiene": "3–5 min",
     "descCba": "Weigh the costs and benefits of your thoughts",
+    "timeBreathing": "3–10 min",
+    "timeGratitude": "2–5 min",
+    "timeDistortions": "5–15 min",
+    "timeSleepHygiene": "3–5 min",
     "timeCba": "5–10 min",
-    "timeBreathing": "3–10 min"
+    "categoryBody": "Body",
+    "categoryMind": "Mind"
   },
   "sleepHygiene": {
     "title": "Sleep Hygiene",
@@ -514,5 +521,85 @@
     "dismiss": "I'll take care",
     "actionBreathing": "Try breathing exercise",
     "actionTest": "Take a test"
+  },
+  "dailyCheckIn": {
+    "greetingMorning": "Good morning",
+    "greetingAfternoon": "Good afternoon",
+    "greetingEvening": "Good evening",
+    "body": "Take a moment to check in with yourself today.",
+    "button": "Check in",
+    "checkingIn": "Checking in...",
+    "streak": "{{count}} day streak",
+    "streak_plural": "{{count}} day streak",
+    "expGained": "+20 XP",
+    "energyRestored": "Energy restored",
+    "levelUpTitle": "Level Up!",
+    "levelUpBody": "Your creature grew to level {{level}}!"
+  },
+  "creature": {
+    "level": "Lv. {{level}}"
+  },
+  "onboarding2": {
+    "welcomeTitle": "Welcome to Moodly",
+    "welcomeDesc": "A few quick questions to tailor your experience.",
+    "goalsTitle": "What brings you here?",
+    "goalsDesc": "Pick what matters to you (you can change later).",
+    "goalStress": "Manage stress",
+    "goalAnxiety": "Reduce anxiety",
+    "goalSleep": "Improve sleep",
+    "goalMood": "Track mood",
+    "goalTherapy": "Support therapy",
+    "expTitle": "How experienced are you?",
+    "expDesc": "We'll adjust suggestions to your level.",
+    "expBeginner": "Beginner — new to mental health practices",
+    "expIntermediate": "Intermediate — some experience",
+    "expAdvanced": "Advanced — regular practitioner",
+    "reminderTitle": "Daily reminder?",
+    "reminderDesc": "Get a gentle nudge to check in each day.",
+    "actionTitle": "Ready to begin",
+    "actionDesc": "Pick your first step:"
+  },
+  "insights": {
+    "checkInTitle": "How are you today?",
+    "checkInDesc": "You haven't checked in today — take a moment.",
+    "checkInAction": "Check in",
+    "streakTitle": "You're on a roll!",
+    "streakDesc": "{{count}} day streak — keep it going!",
+    "streakAction": "See dashboard",
+    "breathingTitle": "Time to breathe",
+    "breathingDesc": "3 days without a breathing exercise.",
+    "breathingAction": "Breathe",
+    "practicesTitle": "Try a practice",
+    "practicesDesc": "No practices completed this week.",
+    "practicesAction": "Go to practices",
+    "testTitle": "Retake a test",
+    "testDesc": "It's been 2+ weeks since your last test.",
+    "testAction": "Take a test"
+  },
+  "digest": {
+    "title": "Weekly Digest",
+    "noData": "Not enough data for this week.",
+    "overviewTitle": "Overview",
+    "totalEntries": "Entries",
+    "checkInDays": "Check-in days",
+    "xpGained": "XP gained",
+    "creatureLevel": "Pet level",
+    "averagesTitle": "Average values",
+    "practicesTitle": "Practices completed",
+    "testsTitle": "Tests taken"
+  },
+  "progress": {
+    "xpToNext": "{{current}} / {{next}} XP",
+    "completionsTitle": "Practice XP",
+    "completionsTotal": "Total: {{xp}} XP earned",
+    "totalCompletions": "{{count}} time",
+    "totalCompletions_plural": "{{count}} times",
+    "noData": "No practice completions yet — start a practice to earn XP.",
+    "recentActivity": "Recent activity",
+    "activityBreathing": "Breathing",
+    "activityGratitude": "Gratitude",
+    "activitySleepHygiene": "Sleep Hygiene",
+    "activityDistortions": "Distortions",
+    "activityCba": "CBA"
   }
 }

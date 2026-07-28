@@ -1,10 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { MessageSquare } from "lucide-react";
 import { useFeedbackList, useSubmitFeedback } from "../hooks/useFeedback";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Label } from "../components/ui/label";
 import Spinner from "../components/ui/spinner";
+import EmptyState from "../components/ui/empty-state";
 
 export default function FeedbackPage() {
   const { t, i18n } = useTranslation();
@@ -63,7 +65,7 @@ export default function FeedbackPage() {
       ))}
 
       {feedbacks?.length === 0 && (
-        <p className="text-muted-foreground text-center py-8">{t("feedback.noFeedback")}</p>
+        <EmptyState icon={MessageSquare} title={t("feedback.noFeedback")} />
       )}
     </div>
   );

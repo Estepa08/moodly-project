@@ -16,6 +16,8 @@ import onboardingRoutes from "./routes/onboarding-stories.js";
 import reportRoutes from "./routes/reports.js";
 import creatureRoutes from "./routes/creature.js";
 import cbaRoutes from "./routes/cba.js";
+import digestRoutes from "./routes/digest.js";
+import notificationRoutes from "./routes/notifications.js";
 import { setErrorHandler } from "./lib/handle-error.js";
 
 const fastify = Fastify({ logger: true });
@@ -58,6 +60,8 @@ await fastify.register(onboardingRoutes);
 await fastify.register(reportRoutes);
 await fastify.register(creatureRoutes);
 await fastify.register(cbaRoutes);
+await fastify.register(digestRoutes);
+await fastify.register(notificationRoutes);
 
 setErrorHandler(fastify);
 

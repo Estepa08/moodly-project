@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import Spinner from "../components/ui/spinner";
-import { AlertTriangle, RotateCcw } from "lucide-react";
+import EmptyState from "../components/ui/empty-state";
+import { AlertTriangle, RotateCcw, FileText } from "lucide-react";
 import { cn } from "../lib/utils";
 import type { components } from "../lib/api-types";
 
@@ -203,7 +204,7 @@ export default function ReportsPage() {
       ))}
 
       {reports?.length === 0 && (
-        <p className="text-muted-foreground text-center py-8">{t("reports.noReports")}</p>
+        <EmptyState icon={FileText} title={t("reports.noReports")} />
       )}
     </div>
   );

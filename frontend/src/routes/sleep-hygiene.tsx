@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry, useUpdateEntry } from "../hooks/useEntries";
+import { useRewardPractice } from "../hooks/useCreature";
 import SleepHygieneChecklist from "../components/SleepHygieneChecklist";
 
 export default function SleepHygienePage() {
@@ -16,7 +17,10 @@ export default function SleepHygienePage() {
   const { data: sleepEntries } = useEntries(
     sleepParam ? { parameterId: sleepParam.id } : undefined,
   );
-  const createEntry = useCreateEntry();
+  const rewardPractice = useRewardPractice();
+  const createEntry = useCreateEntry(() => {
+    rewardPractice.mutate("sleepHygiene");
+  });
   const updateEntry = useUpdateEntry();
 
   return (

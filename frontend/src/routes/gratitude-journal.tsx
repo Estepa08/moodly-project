@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry } from "../hooks/useEntries";
+import { useRewardPractice } from "../hooks/useCreature";
 import GratitudeJournal from "../components/GratitudeJournal";
 
 export default function GratitudeJournalPage() {
@@ -15,7 +16,10 @@ export default function GratitudeJournalPage() {
   const { data: moodEntries } = useEntries(
     moodParam ? { parameterId: moodParam.id } : undefined,
   );
-  const createEntry = useCreateEntry();
+  const rewardPractice = useRewardPractice();
+  const createEntry = useCreateEntry(() => {
+    rewardPractice.mutate("gratitude");
+  });
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">

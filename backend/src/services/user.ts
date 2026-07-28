@@ -73,6 +73,29 @@ export const userService = {
     ]);
   },
 
+  async getPreferences(userId: string) {
+    const prefs = await prisma.userPreference.findUnique({ where: { userId } });
+    return prefs;
+  },
+
+  async upsertPreferences(
+    userId: string,
+    data: {
+      goals?: string[];
+      experienceLevel?: string;
+      dailyReminder?: boolean;
+      reminderTime?: string;
+      onboardingDone?: boolean;
+    },
+  ) {
+    const prefs = await prisma.userPreference.upsert({
+      where: { userId },
+      create: { userId, ...data },
+      update: data,
+    });
+    return prefs;
+  },
+
   // DEMO-ONLY: remove before production
   async createDemo() {
     const existing = await prisma.user.findFirst({

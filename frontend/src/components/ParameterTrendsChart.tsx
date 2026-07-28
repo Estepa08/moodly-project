@@ -9,8 +9,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { BarChart3 } from "lucide-react";
 import { PARAM_COLORS, PARAM_NAME_KEYS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import EmptyState from "./ui/empty-state";
 import Spinner from "./ui/spinner";
 
 interface ParameterTrendsChartProps {
@@ -131,9 +133,7 @@ export default function ParameterTrendsChart({
             </div>
           </>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-8">
-            {t("dashboard.noTrendData")}
-          </p>
+          <EmptyState icon={BarChart3} title={t("dashboard.noTrendData")} />
         )}
       </CardContent>
     </Card>

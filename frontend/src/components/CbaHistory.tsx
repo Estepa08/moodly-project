@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { Trash2 } from "lucide-react";
+import { Trash2, Scale } from "lucide-react";
 import type { components } from "../lib/api-types";
 import { Card, CardContent } from "./ui/card";
+import EmptyState from "./ui/empty-state";
 import type { useDeleteCbaEntry } from "../hooks/useCba";
 
 type CbaEntry = components["schemas"]["CbaEntry"];
@@ -15,7 +16,7 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
   const { t } = useTranslation();
 
   if (entries.length === 0) {
-    return <p className="text-muted-foreground text-center py-8">{t("cba.historyEmpty")}</p>;
+    return <EmptyState icon={Scale} title={t("cba.historyEmpty")} />;
   }
 
   return (

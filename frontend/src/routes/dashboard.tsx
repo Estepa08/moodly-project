@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { TrendingUp, Sparkles, Radar } from "lucide-react";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import RadarChart from "../components/RadarChart";
 import QuickEntryIcons from "../components/QuickEntryIcons";
 import ParameterTrendsChart from "../components/ParameterTrendsChart";
 import WeeklyAveragesGrid from "../components/WeeklyAveragesGrid";
-import TestTimeline from "../components/TestTimeline";
-import PracticesSummary from "../components/PracticesSummary";
+import PracticeProgress from "../components/PracticeProgress";
 import WellbeingCard from "../components/WellbeingCard";
+import InsightBanner from "../components/InsightBanner";
+import CollapsibleSection from "../components/ui/collapsible-section";
+import EmptyState from "../components/ui/empty-state";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -23,11 +26,8 @@ export default function Dashboard() {
     entriesByParam,
     creatureState,
     radarData,
-    testTimeline,
     createEntry,
-    gratitudeStats,
     isDataLoading,
-    resultsLoading,
   } = useDashboardData(period);
 
   return (
@@ -36,11 +36,16 @@ export default function Dashboard() {
         <h2 className="text-lg font-semibold text-foreground font-serif">
           {t("dashboard.dateRange")}
         </h2>
-        <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
+        <div
+          className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
+          role="tablist"
+          aria-label={t("dashboard.dateRange")}
+        >
           {PERIODS.map((p) => (
             <button
               key={p.key}
-              aria-pressed={period === p.key}
+              role="tab"
+              aria-selected={period === p.key}
               onClick={() => setPeriod(p.key)}
               className={`px-3 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 period === p.key
@@ -54,6 +59,8 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <InsightBanner />
+
       <QuickEntryIcons
         numericParams={numericParams}
         createEntry={createEntry}
@@ -62,29 +69,45 @@ export default function Dashboard() {
         )}
       />
 
-      <ParameterTrendsChart
-        trendData={trendData}
-        paramNames={paramNames}
-        isLoading={isDataLoading}
-      />
+      <CollapsibleSection
+        title={t("dashboard.parameterTrends")}
+        icon={TrendingUp}
+        defaultOpen
+        storageKey="moodly_collapse_trends"
+      >
+        <ParameterTrendsChart
+          trendData={trendData}
+          paramNames={paramNames}
+          isLoading={isDataLoading}
+        />
 
-      <WellbeingCard
-        average={wellbeing.average}
-        trend={wellbeing.trend}
-        isLoading={isDataLoading}
-      />
+        <div className="mt-3">
+          <WellbeingCard
+            average={wellbeing.average}
+            trend={wellbeing.trend}
+            isLoading={isDataLoading}
+          />
+        </div>
+      </CollapsibleSection>
 
-      <WeeklyAveragesGrid weeklyAverages={weeklyAverages} isLoading={isDataLoading} />
+      <CollapsibleSection
+        title={t("dashboard.weeklyAverages")}
+        defaultOpen={false}
+        storageKey="moodly_collapse_averages"
+      >
+        <WeeklyAveragesGrid weeklyAverages={weeklyAverages} isLoading={isDataLoading} />
+      </CollapsibleSection>
 
-      <PracticesSummary
-        gratitudeWeekCount={gratitudeStats.weekCount}
-        hygieneEntries={entriesByParam.get("Sleep Hygiene") ?? []}
-        distortionEntries={entriesByParam.get("Distortion Quiz") ?? []}
-        breathingSessionCount={creatureState?.sessionCount}
-        isLoading={isDataLoading}
-      />
+      <CollapsibleSection
+        title={t("dashboard.practicesSummary")}
+        icon={Sparkles}
+        defaultOpen={false}
+        storageKey="moodly_collapse_practices"
+      >
+        <PracticeProgress breathingSessionCount={creatureState?.sessionCount} />
+      </CollapsibleSection>
 
-      {radarData.length > 0 && (
+      {radarData.length > 0 ? (
         <Card className="shadow-neumorphic">
           <CardHeader>
             <CardTitle className="text-base">{t("dashboard.cdProfile")}</CardTitle>
@@ -93,9 +116,9 @@ export default function Dashboard() {
             <RadarChart data={radarData} />
           </CardContent>
         </Card>
+      ) : (
+        <EmptyState icon={Radar} title={t("dashboard.cdProfileEmpty")} />
       )}
-
-      <TestTimeline testTimeline={testTimeline} isLoading={resultsLoading} />
     </div>
   );
 }

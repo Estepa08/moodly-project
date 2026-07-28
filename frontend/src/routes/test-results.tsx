@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, AlertTriangle } from "lucide-react";
+import { ChevronRight, AlertTriangle, ClipboardList } from "lucide-react";
 import { useTests, useTestResults } from "../hooks/useTests";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
+import EmptyState from "../components/ui/empty-state";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 import { useTestResultText, getCrisisSeverity } from "../hooks/useTestResultText";
 import MedicalDisclaimer from "../components/MedicalDisclaimer";
@@ -79,7 +80,14 @@ export default function TestResultsPage() {
         <MedicalDisclaimer />
 
         {results?.length === 0 && (
-          <p className="text-muted-foreground text-center py-8">{t("testResults.noResults")}</p>
+          <EmptyState
+            icon={ClipboardList}
+            title={t("testResults.noResults")}
+            action={{
+              label: t("testResults.takeTest"),
+              onClick: () => navigate("/tests"),
+            }}
+          />
         )}
 
         {results?.map((r) => {

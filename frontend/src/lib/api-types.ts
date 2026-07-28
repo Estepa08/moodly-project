@@ -174,10 +174,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Получить текущее состояние существа и уровень спокойствия */
+        /** @description Получить текущее состояние существа */
         get: operations["Creature_getState"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creature/check-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Ежедневная отметка — восстанавливает энергию, начисляет опыт, обновляет streak */
+        post: operations["Creature_checkIn"];
         delete?: never;
         options?: never;
         head?: never;
@@ -545,7 +562,13 @@ export interface components {
          * @enum {string}
          */
         CbaItemType: "advantage" | "disadvantage";
-        /** @description Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно). */
+        /** @description Результат ежедневного чекина */
+        CheckInResponse: {
+            state: components["schemas"]["CreatureState"];
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
+        };
+        /** @description Текущее состояние существа пользователя */
         CreatureState: {
             id: string;
             userId: string;
@@ -554,6 +577,31 @@ export interface components {
              * @description Уровень спокойствия: 0 — крайне тревожно, 100 — полное спокойствие
              */
             calmness: number;
+            /**
+             * Format: int32
+             * @description Энергия существа: 0 (истощён) — 100 (полон сил)
+             */
+            energy: number;
+            /**
+             * Format: int32
+             * @description Уровень существа
+             */
+            level: number;
+            /**
+             * Format: int32
+             * @description Опыт на текущем уровне
+             */
+            experience: number;
+            /**
+             * Format: int32
+             * @description Текущая серия ежедневных отметок
+             */
+            streak: number;
+            /**
+             * Format: date-time
+             * @description Дата последнего ежедневного чекина
+             */
+            lastCheckInAt?: string;
             /**
              * Format: date-time
              * @description Дата последнего дыхательного упражнения
@@ -974,6 +1022,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CreatureState"];
+                };
+            };
+        };
+    };
+    Creature_checkIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckInResponse"];
                 };
             };
         };

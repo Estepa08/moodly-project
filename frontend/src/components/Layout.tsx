@@ -9,7 +9,13 @@ import creatureAnimation from "../assets/lottie/breathing-creature.json";
 import SkipLink from "./SkipLink";
 import LowMoodAlert from "./LowMoodAlert";
 import { useLowMoodDetection } from "../hooks/useLowMoodDetection";
+import { useCreatureState } from "../hooks/useCreature";
+import { useDailyCheckIn } from "../hooks/useDailyCheckIn";
+import { celebrate } from "../lib/celebration";
 import BottomNav from "./ui/bottom-nav";
+import DailyCheckInModal from "./DailyCheckInModal";
+import StreakIndicator from "./StreakIndicator";
+import CreatureStatus from "./CreatureStatus";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -60,6 +66,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [prevWasCreature, setPrevWasCreature] = useState(true);
 
   const { detected: lowMoodDetected, acknowledge: dismissLowMood } = useLowMoodDetection();
+  const { data: creature } = useCreatureState();
+  const {
+    shouldShow: showCheckIn,
+    isPending: checkInPending,
+    doCheckIn,
+    dismiss: dismissCheckIn,
+    lastResult,
+  } = useDailyCheckIn(creature);
+
+  useEffect(() => {
+    if (lastResult?.leveledUp) {
+      celebrate(
+        t("dailyCheckIn.levelUpTitle"),
+        t("dailyCheckIn.levelUpBody", { level: lastResult.state.level }),
+      );
+    }
+  }, [lastResult, t]);
 
   const puddleCircles = useMemo(() => {
     const circles: { id: number; tx: number; ty: number; delay: number; size: number }[] = [];
@@ -79,6 +102,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const isPracticeActive = PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
+  const isMoreActive = ALL_MORE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
 
   useEffect(() => {
@@ -263,6 +287,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
           <div className="flex items-center gap-2">
+            {creature && (
+              <>
+                <StreakIndicator streak={creature.streak} />
+                <CreatureStatus
+                  level={creature.level}
+                  experience={creature.experience}
+                />
+              </>
+            )}
             <div className="flex items-center gap-1 text-xs">
               <button
                 className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
@@ -286,6 +319,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           className="flex-1 px-4 space-y-4 md:pb-8"
           style={{ paddingBottom: "calc(2rem + var(--sab))" }}
         >
+          <div aria-live="polite" aria-atomic="true" className="sr-only" id="sr-announcements" />
           {children}
         </main>
 
@@ -298,7 +332,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 onClick={() => setMobileMoreOpen(false)}
                 aria-hidden="true"
               />
-              <div className="fixed bottom-[calc(4rem+var(--sab))] left-2 right-2 z-50 bg-card rounded-xl shadow-neumorphic-lg p-2 flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
+              <div className="fixed bottom-[calc(4rem+var(--sab))] left-2 right-2 z-50 bg-card rounded-xl shadow-elevation-3 p-2 flex flex-col gap-1 max-h-[60vh] overflow-y-auto">
                 <p className="text-xs font-medium text-muted-foreground px-3 pt-2 pb-1">
                   {t("nav.practices")}
                 </p>
@@ -343,10 +377,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </>
           )}
-          <BottomNav onMoreOpen={() => setMobileMoreOpen((o) => !o)} />
+          <BottomNav onMoreOpen={() => setMobileMoreOpen((o) => !o)} isMoreActive={isMoreActive} />
         </div>
 
         <LowMoodAlert open={lowMoodDetected} onDismiss={dismissLowMood} />
+        <DailyCheckInModal
+          open={showCheckIn}
+          onCheckIn={doCheckIn}
+          onDismiss={dismissCheckIn}
+          streak={creature?.streak ?? 0}
+          isPending={checkInPending}
+        />
       </div>
 
       <svg className="absolute w-0 h-0" aria-hidden="true">

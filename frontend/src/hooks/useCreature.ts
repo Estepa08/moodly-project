@@ -19,3 +19,22 @@ export function useCompleteExercise() {
     },
   });
 }
+
+export function useRewardPractice() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (source: string) => api.creature.reward(source),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+    },
+  });
+}
+
+export function useCompletions(days = 30) {
+  return useQuery({
+    queryKey: ["creature", "completions", days],
+    queryFn: () => api.creature.getCompletions(days),
+    staleTime: 30_000,
+  });
+}

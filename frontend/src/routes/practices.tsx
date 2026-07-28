@@ -1,15 +1,16 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../components/ui/card";
-import { Wind, Heart, BrainCircuit, Moon, Scale } from "lucide-react";
+import { Wind, Heart, BrainCircuit, Moon, Scale, Clock } from "lucide-react";
 
 const PRACTICES = [
   {
     path: "/breathing",
     icon: Wind,
     labelKey: "nav.breathing",
-    descKey: "breathing.descriptionBox",
+    descKey: "practices.descBreathing",
     timeKey: "practices.timeBreathing",
+    categoryKey: "practices.categoryBody",
   },
   {
     path: "/gratitude-journal",
@@ -17,6 +18,7 @@ const PRACTICES = [
     labelKey: "nav.gratitude",
     descKey: "practices.descGratitude",
     timeKey: "practices.timeGratitude",
+    categoryKey: "practices.categoryMind",
   },
   {
     path: "/distortions",
@@ -24,6 +26,7 @@ const PRACTICES = [
     labelKey: "nav.distortions",
     descKey: "practices.descDistortions",
     timeKey: "practices.timeDistortions",
+    categoryKey: "practices.categoryMind",
   },
   {
     path: "/sleep-hygiene",
@@ -31,6 +34,7 @@ const PRACTICES = [
     labelKey: "nav.sleepHygiene",
     descKey: "practices.descSleepHygiene",
     timeKey: "practices.timeSleepHygiene",
+    categoryKey: "practices.categoryBody",
   },
   {
     path: "/cost-benefit-analysis",
@@ -38,6 +42,7 @@ const PRACTICES = [
     labelKey: "nav.cba",
     descKey: "practices.descCba",
     timeKey: "practices.timeCba",
+    categoryKey: "practices.categoryMind",
   },
 ];
 
@@ -60,17 +65,23 @@ export default function PracticesPage() {
           return (
             <Card
               key={p.path}
-              className="shadow-neumorphic cursor-pointer hover:shadow-neumorphic-sm transition-all duration-150 active:scale-[0.97]"
+              className="shadow-elevation-2 cursor-pointer hover:shadow-elevation-3 transition-all duration-150 active:scale-[0.97]"
               onClick={() => navigate(p.path)}
             >
               <CardContent className="flex items-start gap-4 p-5">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0 shadow-elevation-inset">
                   <Icon className="w-6 h-6 text-primary" />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
+                  <span className="inline-block px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">
+                    {t(p.categoryKey)}
+                  </span>
                   <p className="text-sm font-semibold text-foreground">{t(p.labelKey)}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">{t(p.descKey)}</p>
-                  <p className="text-[11px] text-muted-foreground/70 mt-1">{t(p.timeKey)}</p>
+                  <p className="flex items-center gap-1 text-xs text-muted-foreground/70 mt-1.5">
+                    <Clock className="w-3 h-3" />
+                    {t(p.timeKey)}
+                  </p>
                 </div>
               </CardContent>
             </Card>

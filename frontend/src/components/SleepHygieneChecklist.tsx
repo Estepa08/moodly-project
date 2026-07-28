@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Check, Moon, Pencil, ChevronDown, X } from "lucide-react";
+import { Check, Moon, Pencil, ChevronDown, X, Bed } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -20,6 +20,7 @@ import {
   findTodayEntry,
 } from "../lib/sleepHygiene";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import EmptyState from "./ui/empty-state";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 
@@ -446,9 +447,11 @@ export default function SleepHygieneChecklist({
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-2">
-              {t("sleepHygiene.empty")}
-            </p>
+            <EmptyState
+              icon={Bed}
+              title={t("sleepHygiene.empty")}
+              className="py-4"
+            />
           ) : (
             <ul className="space-y-2">
               {recent.map((e) => {

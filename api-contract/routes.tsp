@@ -47,6 +47,14 @@ interface Users {
   @delete
   @route("/me")
   deleteMe(): void;
+
+  @get
+  @route("/me/preferences")
+  getPreferences(): UserPreference;
+
+  @put
+  @route("/me/preferences")
+  savePreferences(@body body: UserPreferenceUpdate): UserPreference;
 }
 
 @tag("Parameters")
@@ -148,13 +156,37 @@ interface Reports {
 @route("/creature")
 interface Creature {
   @get
-  @doc("Получить текущее состояние существа и уровень спокойствия")
+  @doc("Получить текущее состояние существа")
   getState(): CreatureState;
 
   @post
+  @route("/check-in")
+  @doc("Ежедневная отметка — восстанавливает энергию, начисляет опыт, обновляет streak")
+  checkIn(): CheckInResponse;
+
+  @post
   @route("/exercise/complete")
-  @doc("Завершить дыхательное упражнение, обновить уровень спокойствия")
-  completeExercise(@body body: BreathingCompleteRequest): CreatureState;
+  @doc("Завершить дыхательное упражнение, обновить уровень спокойствия, начислить опыт")
+  completeExercise(@body body: BreathingCompleteRequest): CheckInResponse;
+
+  @post
+  @route("/reward")
+  @doc("Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba)")
+  reward(@body body: RewardRequest): RewardResponse;
+
+  @get
+  @route("/completions")
+  @doc("История выполненных практик за последние N дней (по умолчанию 30)")
+  getCompletions(@query days?: int32): PracticeCompletion[];
+}
+
+@tag("Digest")
+@route("/digest")
+interface Digest {
+  @get
+  @route("/weekly")
+  @doc("Недельный дайджест активности пользователя")
+  getWeekly(): WeeklyDigest;
 }
 
 @tag("Cba")

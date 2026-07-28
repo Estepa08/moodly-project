@@ -20,12 +20,48 @@ type CbaCommonItem = components["schemas"]["CbaCommonItem"];
 type CbaEntry = components["schemas"]["CbaEntry"];
 type CbaEntryCreate = components["schemas"]["CbaEntryCreate"];
 
-interface CreatureState {
+export interface UserPreference {
+  goals: string[];
+  experienceLevel: string;
+  dailyReminder: boolean;
+  reminderTime?: string;
+  onboardingDone: boolean;
+}
+
+export interface WeeklyDigest {
+  startDate: string;
+  endDate: string;
+  totalEntries: number;
+  averages: Record<string, number>;
+  checkInDays: number;
+  testsTaken: { testId: string; title: string; score: number; interpretation: string }[];
+  practicesCompleted: Record<string, number>;
+  creatureXpGained: number;
+  creatureLevel: number;
+}
+
+export interface CreatureState {
   id: string;
   userId: string;
   calmness: number;
+  energy: number;
+  level: number;
+  experience: number;
+  streak: number;
+  lastCheckInAt?: string;
   lastExerciseAt?: string;
   sessionCount: number;
+}
+
+interface CheckInResponse {
+  state: CreatureState;
+  leveledUp: boolean;
+}
+
+interface PracticeCompletion {
+  source: string;
+  xpAwarded: number;
+  createdAt: string;
 }
 
 const BASE_URL = "/api";
@@ -116,6 +152,12 @@ export const api = {
     update: (body: UserUpdate) =>
       request<User>("/users/me", { method: "PATCH", body: JSON.stringify(body) }),
     delete: () => request<void>("/users/me", { method: "DELETE" }),
+    getPreferences: () => request<UserPreference | null>("/users/me/preferences"),
+    savePreferences: (body: Partial<UserPreference>) =>
+      request<UserPreference>("/users/me/preferences", {
+        method: "PUT",
+        body: JSON.stringify(body),
+      }),
   },
   parameters: {
     list: () => request<Parameter[]>("/parameters"),
@@ -154,6 +196,9 @@ export const api = {
       request<Feedback>("/feedback", { method: "POST", body: JSON.stringify(body) }),
     listMine: () => request<Feedback[]>("/feedback/me"),
   },
+  digest: {
+    weekly: () => request<WeeklyDigest>("/digest/weekly"),
+  },
   onboarding: {
     list: () => request<OnboardingStory[]>("/onboarding-stories"),
   },
@@ -167,10 +212,30 @@ export const api = {
   },
   creature: {
     getState: () => request<CreatureState>("/creature"),
+    checkIn: () => request<CheckInResponse>("/creature/check-in", { method: "POST" }),
     completeExercise: (duration: number) =>
-      request<CreatureState>("/creature/exercise/complete", {
+      request<CheckInResponse>("/creature/exercise/complete", {
         method: "POST",
         body: JSON.stringify({ duration }),
+      }),
+    reward: (source: string) =>
+      request<CheckInResponse>("/creature/reward", {
+        method: "POST",
+        body: JSON.stringify({ source }),
+      }),
+    getCompletions: (days = 30) =>
+      request<PracticeCompletion[]>(`/creature/completions?days=${days}`),
+  },
+  push: {
+    subscribe: (body: { endpoint: string; keys: { p256dh: string; auth: string } }) =>
+      request<{ ok: boolean }>("/push/subscribe", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    unsubscribe: (body: { endpoint: string }) =>
+      request<{ ok: boolean }>("/push/unsubscribe", {
+        method: "POST",
+        body: JSON.stringify(body),
       }),
   },
   cba: {

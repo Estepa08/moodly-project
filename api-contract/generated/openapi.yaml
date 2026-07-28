@@ -192,7 +192,7 @@ paths:
   /creature:
     get:
       operationId: Creature_getState
-      description: Получить текущее состояние существа и уровень спокойствия
+      description: Получить текущее состояние существа
       parameters: []
       responses:
         '200':
@@ -201,6 +201,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreatureState'
+      tags:
+        - Breathing
+  /creature/check-in:
+    post:
+      operationId: Creature_checkIn
+      description: Ежедневная отметка — восстанавливает энергию, начисляет опыт, обновляет streak
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckInResponse'
       tags:
         - Breathing
   /creature/exercise/complete:
@@ -823,12 +837,28 @@ components:
         - advantage
         - disadvantage
       description: 'Тип пункта: довод "за" веру в мысль (advantage) или "против" (disadvantage)'
+    CheckInResponse:
+      type: object
+      required:
+        - state
+        - leveledUp
+      properties:
+        state:
+          $ref: '#/components/schemas/CreatureState'
+        leveledUp:
+          type: boolean
+          description: Был ли достигнут новый уровень
+      description: Результат ежедневного чекина
     CreatureState:
       type: object
       required:
         - id
         - userId
         - calmness
+        - energy
+        - level
+        - experience
+        - streak
       properties:
         id:
           type: string
@@ -838,11 +868,31 @@ components:
           type: integer
           format: int32
           description: 'Уровень спокойствия: 0 — крайне тревожно, 100 — полное спокойствие'
+        energy:
+          type: integer
+          format: int32
+          description: 'Энергия существа: 0 (истощён) — 100 (полон сил)'
+        level:
+          type: integer
+          format: int32
+          description: Уровень существа
+        experience:
+          type: integer
+          format: int32
+          description: Опыт на текущем уровне
+        streak:
+          type: integer
+          format: int32
+          description: Текущая серия ежедневных отметок
+        lastCheckInAt:
+          type: string
+          format: date-time
+          description: Дата последнего ежедневного чекина
         lastExerciseAt:
           type: string
           format: date-time
           description: Дата последнего дыхательного упражнения
-      description: Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно).
+      description: Текущее состояние существа пользователя
     Entry:
       type: object
       required:

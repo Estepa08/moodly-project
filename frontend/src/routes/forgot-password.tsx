@@ -65,9 +65,10 @@ export default function ForgotPasswordPage() {
                     inputMode="email"
                     enterKeyHint="go"
                     required
+                    autoFocus
                   />
                 </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
+                {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? t("forgotPassword.sending") : t("forgotPassword.send")}
                 </Button>

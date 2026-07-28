@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import type { components } from "../lib/api-types";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import EmptyState from "./ui/empty-state";
 import { cn } from "../lib/utils";
 
 type CbaExample = components["schemas"]["CbaExample"];
@@ -17,9 +18,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
   const [index, setIndex] = useState(0);
 
   if (examples.length === 0) {
-    return (
-      <p className="text-muted-foreground text-center py-8">{t("cba.libraryEmpty")}</p>
-    );
+    return <EmptyState icon={BookOpen} title={t("cba.libraryEmpty")} />;
   }
 
   const example = examples[index];

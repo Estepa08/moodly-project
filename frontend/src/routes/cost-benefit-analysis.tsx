@@ -7,6 +7,7 @@ import {
   useCreateCbaEntry,
   useDeleteCbaEntry,
 } from "../hooks/useCba";
+import { useRewardPractice } from "../hooks/useCreature";
 import CbaLibrary from "../components/CbaLibrary";
 import CbaEntryForm from "../components/CbaEntryForm";
 import CbaHistory from "../components/CbaHistory";
@@ -25,7 +26,11 @@ export default function CostBenefitAnalysisPage() {
   const { data: examples, isLoading: examplesLoading } = useCbaExamples();
   const { data: commonItems, isLoading: commonItemsLoading } = useCbaCommonItems();
   const { data: entries, isLoading: entriesLoading } = useCbaEntries();
-  const createEntry = useCreateCbaEntry(() => setTab("history"));
+  const rewardPractice = useRewardPractice();
+  const createEntry = useCreateCbaEntry(() => {
+    setTab("history");
+    rewardPractice.mutate("cba");
+  });
   const deleteEntry = useDeleteCbaEntry();
 
   return (
@@ -36,11 +41,22 @@ export default function CostBenefitAnalysisPage() {
       </div>
 
       <div className="flex justify-center">
-        <div className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1">
+        <div
+          className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
+          role="tablist"
+          aria-label={t("cba.title")}
+          onKeyDown={(e) => {
+            const idx = TABS.findIndex((t) => t.key === tab);
+            if (e.key === "ArrowLeft" && idx > 0) setTab(TABS[idx - 1].key);
+            if (e.key === "ArrowRight" && idx < TABS.length - 1) setTab(TABS[idx + 1].key);
+          }}
+        >
           {TABS.map((item) => (
             <button
               key={item.key}
-              aria-pressed={tab === item.key}
+              role="tab"
+              aria-selected={tab === item.key}
+              aria-controls={`cba-panel-${item.key}`}
               onClick={() => setTab(item.key)}
               className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 tab === item.key
@@ -54,29 +70,48 @@ export default function CostBenefitAnalysisPage() {
         </div>
       </div>
 
-      {tab === "library" ? (
-        examplesLoading ? (
-          <div className="flex justify-center py-8">
-            <Spinner size={32} />
-          </div>
-        ) : (
-          <CbaLibrary examples={examples ?? []} />
-        )
-      ) : tab === "form" ? (
-        commonItemsLoading ? (
-          <div className="flex justify-center py-8">
-            <Spinner size={32} />
-          </div>
-        ) : (
-          <CbaEntryForm commonItems={commonItems ?? []} createEntry={createEntry} />
-        )
-      ) : entriesLoading ? (
-        <div className="flex justify-center py-8">
-          <Spinner size={32} />
-        </div>
-      ) : (
-        <CbaHistory entries={entries ?? []} deleteEntry={deleteEntry} />
-      )}
+      <div
+        role="tabpanel"
+        id="cba-panel-library"
+        aria-labelledby="cba-tab-library"
+        hidden={tab !== "library"}
+      >
+        {tab === "library" ? (
+          examplesLoading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : (
+            <CbaLibrary examples={examples ?? []} />
+          )
+        ) : null}
+      </div>
+      <div
+        role="tabpanel"
+        id="cba-panel-form"
+        aria-labelledby="cba-tab-form"
+        hidden={tab !== "form"}
+      >
+        {tab === "form" ? (
+          commonItemsLoading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : (
+            <CbaEntryForm commonItems={commonItems ?? []} createEntry={createEntry} />
+          )
+        ) : null}
+      </div>
+      <div
+        role="tabpanel"
+        id="cba-panel-history"
+        aria-labelledby="cba-tab-history"
+        hidden={tab !== "history"}
+      >
+        {tab === "history" ? (
+          entriesLoading ? (
+            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+          ) : (
+            <CbaHistory entries={entries ?? []} deleteEntry={deleteEntry} />
+          )
+        ) : null}
+      </div>
     </div>
   );
 }

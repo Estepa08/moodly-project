@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import Layout from "./components/Layout";
@@ -5,20 +6,33 @@ import Spinner from "./components/ui/spinner";
 import LoginPage from "./routes/login";
 import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
-
-import OnboardingPage from "./routes/onboarding";
 import Dashboard from "./routes/dashboard";
-import TestsPage from "./routes/tests";
-import TestDetailPage from "./routes/test-detail";
-import TestResultsPage from "./routes/test-results";
-import FeedbackPage from "./routes/feedback";
-import ReportsPage from "./routes/reports";
-import BreathingPage from "./routes/breathing";
-import PracticesPage from "./routes/practices";
-import GratitudeJournalPage from "./routes/gratitude-journal";
-import DistortionsPage from "./routes/distortions";
-import SleepHygienePage from "./routes/sleep-hygiene";
-import CostBenefitAnalysisPage from "./routes/cost-benefit-analysis";
+
+const OnboardingPage = lazy(() => import("./routes/onboarding"));
+const TestsPage = lazy(() => import("./routes/tests"));
+const TestDetailPage = lazy(() => import("./routes/test-detail"));
+const TestResultsPage = lazy(() => import("./routes/test-results"));
+const FeedbackPage = lazy(() => import("./routes/feedback"));
+const ReportsPage = lazy(() => import("./routes/reports"));
+const BreathingPage = lazy(() => import("./routes/breathing"));
+const PracticesPage = lazy(() => import("./routes/practices"));
+const GratitudeJournalPage = lazy(() => import("./routes/gratitude-journal"));
+const DistortionsPage = lazy(() => import("./routes/distortions"));
+const SleepHygienePage = lazy(() => import("./routes/sleep-hygiene"));
+const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysis"));
+const DigestPage = lazy(() => import("./routes/digest"));
+
+function SuspenseFallback() {
+  return (
+    <div className="flex justify-center items-center min-h-[50vh]">
+      <Spinner size={28} />
+    </div>
+  );
+}
+
+function ProtectedSuspense({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<SuspenseFallback />}>{children}</Suspense>;
+}
 
 function BootstrapSpinner() {
   return (
@@ -34,7 +48,9 @@ function ProtectedRoute() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return (
     <Layout>
-      <Outlet />
+      <ProtectedSuspense>
+        <Outlet />
+      </ProtectedSuspense>
     </Layout>
   );
 }
@@ -71,6 +87,7 @@ export default function App() {
         <Route path="/distortions" element={<DistortionsPage />} />
         <Route path="/sleep-hygiene" element={<SleepHygienePage />} />
         <Route path="/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
+        <Route path="/digest" element={<DigestPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

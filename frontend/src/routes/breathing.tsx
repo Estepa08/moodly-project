@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreatureState, useCompleteExercise } from "../hooks/useCreature";
+import { celebrate } from "../lib/celebration";
 import BreathingGuide from "../components/BreathingGuide";
 import type { BreathingTechnique } from "../components/BreathingGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -172,7 +173,16 @@ export default function BreathingPage() {
                 setLastDuration(duration);
                 setBreathPhase("inhale");
                 setBreathProgress(0);
-                completeExercise.mutate(duration);
+                completeExercise.mutate(duration, {
+                  onSuccess: (data) => {
+                    if (data.leveledUp) {
+                      celebrate(
+                        t("dailyCheckIn.levelUpTitle"),
+                        t("dailyCheckIn.levelUpBody", { level: data.state.level }),
+                      );
+                    }
+                  },
+                });
                 setPhase("done");
               }}
               onCancel={() => {

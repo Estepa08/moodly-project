@@ -9,7 +9,9 @@
     "languageEn": "EN",
     "languageRu": "RU",
     "skipToContent": "Перейти к содержимому",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "showPassword": "Показать пароль",
+    "hidePassword": "Скрыть пароль"
   },
   "nav": {
     "dashboard": "Дашборд",
@@ -75,6 +77,7 @@
     "saveError": "Не удалось сохранить запись",
     "noEntries": "Записей пока нет — начните, когда будете готовы. Каждый маленький шаг помогает.",
     "cdProfile": "Образы мышления",
+    "cdProfileEmpty": "Пройдите тест когнитивных искажений, чтобы увидеть свой профиль мышления.",
     "parameterTrends": "Как вы себя чувствовали",
     "weeklyAverages": "Средние за период",
     "noAveragesYet": "Записей пока нет — как только вы начнёте отслеживание, здесь появятся средние значения.",
@@ -196,6 +199,7 @@
   "testResults": {
     "title": "Результаты тестов",
     "noResults": "Результатов пока нет — пройдите первый тест, когда будете готовы.",
+    "takeTest": "Пройти тест",
     "showFull": "Показать полностью",
     "showLess": "Свернуть",
     "showScore": "Показать баллы",
@@ -473,15 +477,18 @@
   },
   "practices": {
     "subtitle": "Выберите практику, которая подходит вам сейчас",
+    "descBreathing": "Дыхательная гимнастика с настраиваемыми паттернами",
     "descGratitude": "Записывайте 3 вещи, за которые благодарны",
-    "timeGratitude": "2–5 минут",
     "descDistortions": "Учитесь замечать и переосмысливать искажения",
-    "timeDistortions": "5–15 минут",
     "descSleepHygiene": "Вечерняя рутина для здорового сна",
-    "timeSleepHygiene": "3–5 минут",
     "descCba": "Анализ издержек и выгод ваших мыслей",
+    "timeBreathing": "3–10 минут",
+    "timeGratitude": "2–5 минут",
+    "timeDistortions": "5–15 минут",
+    "timeSleepHygiene": "3–5 минут",
     "timeCba": "5–10 минут",
-    "timeBreathing": "3–10 минут"
+    "categoryBody": "Тело",
+    "categoryMind": "Разум"
   },
   "sleepHygiene": {
     "title": "Гигиена сна",
@@ -517,5 +524,85 @@
     "dismiss": "Позабочусь о себе",
     "actionBreathing": "Дыхательное упражнение",
     "actionTest": "Пройти тест"
+  },
+  "dailyCheckIn": {
+    "greetingMorning": "Доброе утро",
+    "greetingAfternoon": "Добрый день",
+    "greetingEvening": "Добрый вечер",
+    "body": "Уделите минутку, чтобы отметить своё состояние сегодня.",
+    "button": "Отметиться",
+    "checkingIn": "Отмечаюсь...",
+    "streak": "{{count}} день подряд",
+    "streak_plural": "{{count}} дней подряд",
+    "expGained": "+20 XP",
+    "energyRestored": "Энергия восстановлена",
+    "levelUpTitle": "Новый уровень!",
+    "levelUpBody": "Существо выросло до {{level}} уровня!"
+  },
+  "creature": {
+    "level": "Ур. {{level}}"
+  },
+  "onboarding2": {
+    "welcomeTitle": "Добро пожаловать в Moodly",
+    "welcomeDesc": "Несколько вопросов, чтобы настроить приложение под вас.",
+    "goalsTitle": "Зачем вы здесь?",
+    "goalsDesc": "Выберите, что вам важно (можно изменить позже).",
+    "goalStress": "Управлять стрессом",
+    "goalAnxiety": "Снизить тревожность",
+    "goalSleep": "Улучшить сон",
+    "goalMood": "Отслеживать настроение",
+    "goalTherapy": "Поддержка терапии",
+    "expTitle": "Ваш уровень опыта",
+    "expDesc": "Мы подберём рекомендации под ваш уровень.",
+    "expBeginner": "Новичок — только начинаю",
+    "expIntermediate": "Средний — есть опыт",
+    "expAdvanced": "Продвинутый — регулярно практикую",
+    "reminderTitle": "Ежедневное напоминание?",
+    "reminderDesc": "Мы будем мягко напоминать проверять состояние каждый день.",
+    "actionTitle": "Готовы начать",
+    "actionDesc": "Выберите первый шаг:"
+  },
+  "insights": {
+    "checkInTitle": "Как вы сегодня?",
+    "checkInDesc": "Вы ещё не отмечали самочувствие сегодня.",
+    "checkInAction": "Отметить",
+    "streakTitle": "Вы в ударе!",
+    "streakDesc": "Серия {{count}} дней — не останавливайтесь!",
+    "streakAction": "На дашборд",
+    "breathingTitle": "Пора подышать",
+    "breathingDesc": "3 дня без дыхательного упражнения.",
+    "breathingAction": "Подышать",
+    "practicesTitle": "Попробуйте практику",
+    "practicesDesc": "На этой неделе ещё не было практик.",
+    "practicesAction": "К практикам",
+    "testTitle": "Пройдите тест",
+    "testDesc": "Прошло 2+ недели с последнего теста.",
+    "testAction": "Пройти тест"
+  },
+  "digest": {
+    "title": "Недельный дайджест",
+    "noData": "Недостаточно данных за эту неделю.",
+    "overviewTitle": "Обзор",
+    "totalEntries": "Записей",
+    "checkInDays": "Дней отметок",
+    "xpGained": "XP получено",
+    "creatureLevel": "Уровень питомца",
+    "averagesTitle": "Средние значения",
+    "practicesTitle": "Выполнено практик",
+    "testsTitle": "Пройдено тестов"
+  },
+  "progress": {
+    "xpToNext": "{{current}} / {{next}} XP",
+    "completionsTitle": "Опыт за практики",
+    "completionsTotal": "Всего: {{xp}} XP заработано",
+    "totalCompletions": "{{count}} раз",
+    "totalCompletions_plural": "{{count}} раз",
+    "noData": "Пока нет выполненных практик — начните практику, чтобы заработать XP.",
+    "recentActivity": "Последние действия",
+    "activityBreathing": "Дыхание",
+    "activityGratitude": "Благодарность",
+    "activitySleepHygiene": "Гигиена сна",
+    "activityDistortions": "Искажения",
+    "activityCba": "АИВ"
   }
 }

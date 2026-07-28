@@ -20,6 +20,43 @@ model UserUpdate {
   name?: string;
 }
 
+@doc("Настройки и предпочтения пользователя")
+model UserPreference {
+  goals: string[];
+  experienceLevel: string;
+  dailyReminder: boolean;
+  reminderTime?: string;
+  onboardingDone: boolean;
+}
+
+model UserPreferenceUpdate {
+  goals?: string[];
+  experienceLevel?: string;
+  dailyReminder?: boolean;
+  reminderTime?: string;
+  onboardingDone?: boolean;
+}
+
+@doc("Результаты тестирования за неделю")
+model WeeklyDigest {
+  startDate: utcDateTime;
+  endDate: utcDateTime;
+  totalEntries: int32;
+  averages: unknown;
+  checkInDays: int32;
+  testsTaken: TestResultDigest[];
+  practicesCompleted: unknown;
+  creatureXpGained: int32;
+  creatureLevel: int32;
+}
+
+model TestResultDigest {
+  testId: string;
+  title: string;
+  score: int32;
+  interpretation: string;
+}
+
 model LoginRequest {
   email: string;
   password: string;
@@ -181,16 +218,54 @@ model ReportCreate {
   periodTo: utcDateTime;
 }
 
+// ---------- Practice Completion ----------
+
+@doc("Запись о выполненной практике и полученном опыте")
+model PracticeCompletion {
+  source: string;
+  xpAwarded: int32;
+  createdAt: utcDateTime;
+}
+
+@doc("Запрос на награду за практику")
+model RewardRequest {
+  source: string;
+}
+
+@doc("Результат награды за практику")
+model RewardResponse {
+  state: CreatureState;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
+}
+
 // ---------- Creature / Breathing ----------
 
-@doc("Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно).")
+@doc("Текущее состояние существа пользователя")
 model CreatureState {
   id: string;
   userId: string;
   @doc("Уровень спокойствия: 0 — крайне тревожно, 100 — полное спокойствие")
   calmness: int32;
+  @doc("Энергия существа: 0 (истощён) — 100 (полон сил)")
+  energy: int32;
+  @doc("Уровень существа")
+  level: int32;
+  @doc("Опыт на текущем уровне")
+  experience: int32;
+  @doc("Текущая серия ежедневных отметок")
+  streak: int32;
+  @doc("Дата последнего ежедневного чекина")
+  lastCheckInAt?: utcDateTime;
   @doc("Дата последнего дыхательного упражнения")
   lastExerciseAt?: utcDateTime;
+}
+
+@doc("Результат ежедневного чекина")
+model CheckInResponse {
+  state: CreatureState;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
 }
 
 @doc("Сессия дыхательного упражнения")

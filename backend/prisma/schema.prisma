@@ -28,7 +28,10 @@ model User {
   refreshTokens RefreshToken[]
   resetTokens   ResetToken[]
   breathingSessions BreathingSession[]
+  practiceCompletions PracticeCompletion[]
   cbaEntries    CbaEntry[]
+  userPreference UserPreference?
+  pushSubscriptions PushSubscription[]
 }
 
 model Parameter {
@@ -119,7 +122,37 @@ model CreatureState {
   id             String   @id @default(cuid())
   userId         String   @unique
   calmness       Int      @default(50)
+  energy         Int      @default(100)
+  level          Int      @default(1)
+  experience     Int      @default(0)
+  streak         Int      @default(0)
+  lastCheckInAt  DateTime?
   lastExerciseAt DateTime?
+}
+
+model UserPreference {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  goals           Json    @default("[]")
+  experienceLevel String  @default("beginner")
+  dailyReminder   Boolean @default(false)
+  reminderTime    String? @default("09:00")
+  onboardingDone  Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model PracticeCompletion {
+  id        String   @id @default(cuid())
+  userId    String
+  source    String
+  xpAwarded Int
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([userId, createdAt])
 }
 
 model ResetToken {
@@ -208,6 +241,18 @@ model CbaEntry {
 
   user  User           @relation(fields: [userId], references: [id])
   items CbaEntryItem[]
+
+  @@index([userId])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  keys      Json
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }

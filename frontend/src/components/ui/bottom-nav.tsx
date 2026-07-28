@@ -18,9 +18,10 @@ const NAV_ITEMS = [
 
 interface BottomNavProps {
   onMoreOpen: () => void;
+  isMoreActive?: boolean;
 }
 
-export default function BottomNav({ onMoreOpen }: BottomNavProps) {
+export default function BottomNav({ onMoreOpen, isMoreActive }: BottomNavProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,7 +61,10 @@ export default function BottomNav({ onMoreOpen }: BottomNavProps) {
       <button
         onClick={onMoreOpen}
         className={cn(
-          "flex flex-col items-center gap-0.5 py-2 rounded-xl transition-all duration-150 cursor-pointer min-w-0 flex-1 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring text-muted-foreground hover:text-primary hover:bg-secondary/20",
+          "flex flex-col items-center gap-0.5 py-2 rounded-xl transition-all duration-150 cursor-pointer min-w-0 flex-1 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          isMoreActive
+            ? "bg-secondary/40 shadow-elevation-inset text-primary"
+            : "text-muted-foreground hover:text-primary hover:bg-secondary/20",
         )}
       >
         <MoreHorizontal className="w-5 h-5 shrink-0" />

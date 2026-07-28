@@ -20,18 +20,21 @@ export default function EmptyState({
   className,
 }: EmptyStateProps) {
   return (
-    <div className={cn("flex flex-col items-center justify-center py-12 px-6 text-center", className)}>
-      <div className="w-14 h-14 rounded-full bg-muted shadow-elevation-inset flex items-center justify-center mb-4">
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center py-12 px-6 text-center animate-in fade-in duration-300",
+        className,
+      )}
+    >
+      <div className="w-14 h-14 rounded-full bg-muted shadow-neumorphic-inset flex items-center justify-center mb-4">
         <Icon className="w-6 h-6 text-muted-foreground" />
       </div>
       <p className="text-sm font-medium text-foreground mb-1">{title}</p>
-      {description && (
-        <p className="text-xs text-muted-foreground max-w-xs">{description}</p>
-      )}
+      {description && <p className="text-xs text-muted-foreground max-w-xs">{description}</p>}
       {action && (
         <button
           onClick={action.onClick}
-          className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium shadow-elevation-1 hover:opacity-90 transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium shadow-neumorphic-sm hover:shadow-neumorphic transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {action.label}
         </button>

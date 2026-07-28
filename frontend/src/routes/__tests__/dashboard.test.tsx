@@ -14,6 +14,8 @@ vi.mock("../../lib/api", () => ({
     feedback: { create: vi.fn(), listMine: vi.fn() },
     onboarding: { list: vi.fn() },
     reports: { create: vi.fn(), list: vi.fn(), get: vi.fn(), delete: vi.fn() },
+    creature: { getState: vi.fn().mockRejectedValue(new Error("no creature")), getCompletions: vi.fn().mockResolvedValue([]) },
+    cba: { examples: vi.fn().mockResolvedValue([]), commonItems: vi.fn().mockResolvedValue([]), entries: { list: vi.fn().mockResolvedValue([]), create: vi.fn(), delete: vi.fn() } },
   },
   setToken: vi.fn(),
   getToken: vi.fn(() => null),
@@ -41,22 +43,12 @@ describe("Dashboard", () => {
     // Quick Entry card
     expect(screen.getByText("Quick Entry")).toBeInTheDocument();
 
-    // Chart cards (title always renders even during loading)
-    expect(screen.getByText("How You've Been Feeling")).toBeInTheDocument();
+    // Section titles appear in collapsible buttons
+    expect(screen.getAllByText("How You've Been Feeling").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Weekly Averages").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Practices").length).toBeGreaterThanOrEqual(1);
 
     // Wellbeing card
     expect(screen.getByText("Wellbeing")).toBeInTheDocument();
-
-    // Weekly Averages card
-    expect(screen.getByText("Weekly Averages")).toBeInTheDocument();
-
-    // Practices summary
-    expect(screen.getByText("Practices")).toBeInTheDocument();
-
-    // Test progress
-    expect(screen.getByText("Test Progress")).toBeInTheDocument();
-
-    // Empty state appears after data loads
-    expect(await screen.findByText(/no test results yet/i)).toBeInTheDocument();
   });
 });

@@ -5,6 +5,7 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 import { useAuthForms } from "../hooks/useAuthForms";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 import { cn } from "../lib/utils";
@@ -134,6 +135,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                       inputMode="email"
                       enterKeyHint="next"
                       required
+                      autoFocus
                     />
                   </div>
                   <div className="space-y-2" {...a(2, isLogin)}>
@@ -147,18 +149,19 @@ export default function LoginPage({ defaultRegister }: Props) {
                         {t("login.forgotPassword")}
                       </button>
                     </div>
-                    <Input
+                    <PasswordInput
                       id="password"
-                      type="password"
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       autoComplete="current-password"
                       enterKeyHint="go"
                       required
+                      showLabel={t("common.showPassword")}
+                      hideLabel={t("common.hidePassword")}
                     />
                   </div>
                   {loginError && (
-                    <p className="text-sm text-destructive" {...a(3, isLogin)}>
+                    <p className="text-sm text-destructive" role="alert" {...a(3, isLogin)}>
                       {loginError}
                     </p>
                   )}
@@ -210,6 +213,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                       onChange={(e) => setRegName(e.target.value)}
                       autoComplete="name"
                       enterKeyHint="next"
+                      autoFocus
                     />
                   </div>
                   <div className="space-y-2" {...a(2, !isLogin)}>
@@ -227,18 +231,19 @@ export default function LoginPage({ defaultRegister }: Props) {
                   </div>
                   <div className="space-y-2" {...a(3, !isLogin)}>
                     <Label htmlFor="regPassword">{t("register.password")}</Label>
-                    <Input
+                    <PasswordInput
                       id="regPassword"
-                      type="password"
                       value={regPassword}
                       onChange={(e) => setRegPassword(e.target.value)}
                       autoComplete="new-password"
                       enterKeyHint="go"
                       required
+                      showLabel={t("common.showPassword")}
+                      hideLabel={t("common.hidePassword")}
                     />
                   </div>
                   {regError && (
-                    <p className="text-sm text-destructive" {...a(4, !isLogin)}>
+                    <p className="text-sm text-destructive" role="alert" {...a(4, !isLogin)}>
                       {regError}
                     </p>
                   )}

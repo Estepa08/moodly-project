@@ -8,6 +8,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      srcDir: "src",
+      filename: "sw.ts",
+      strategies: "injectManifest",
       includeAssets: ["icons/*.svg"],
       manifest: {
         name: "Moodly — дневник настроения",
@@ -54,6 +57,17 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "vendor-react": ["react", "react-dom", "react-router-dom", "@tanstack/react-query"],
+          "vendor-charts": ["recharts", "@nivo/radar", "@nivo/core"],
+          "vendor-anim": ["lottie-react"],
+        },
+      },
     },
   },
   server: {

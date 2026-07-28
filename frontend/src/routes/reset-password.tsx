@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { api } from "../lib/api";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 
@@ -69,31 +69,34 @@ export default function ResetPasswordPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="password">{t("resetPassword.newPassword")}</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
                 enterKeyHint="next"
                 required
                 minLength={6}
+                autoFocus
+                showLabel={t("common.showPassword")}
+                hideLabel={t("common.hidePassword")}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">{t("resetPassword.confirmPassword")}</Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
                 enterKeyHint="go"
                 required
                 minLength={6}
+                showLabel={t("common.showPassword")}
+                hideLabel={t("common.hidePassword")}
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t("resetPassword.resetting") : t("resetPassword.reset")}
             </Button>
