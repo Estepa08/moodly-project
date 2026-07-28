@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import Layout from "./components/Layout";
+import Spinner from "./components/ui/spinner";
+import CrisisFloatingButton from "./components/CrisisFloatingButton";
 import LoginPage from "./routes/login";
 import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
@@ -16,9 +18,19 @@ import BreathingPage from "./routes/breathing";
 import GratitudeJournalPage from "./routes/gratitude-journal";
 import DistortionsPage from "./routes/distortions";
 import SleepHygienePage from "./routes/sleep-hygiene";
+import CostBenefitAnalysisPage from "./routes/cost-benefit-analysis";
+
+function BootstrapSpinner() {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <Spinner size={32} />
+    </div>
+  );
+}
 
 function ProtectedRoute() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isBootstrapping } = useAuth();
+  if (isBootstrapping) return <BootstrapSpinner />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return (
     <Layout>
@@ -28,9 +40,15 @@ function ProtectedRoute() {
 }
 
 function PublicRoute() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isBootstrapping } = useAuth();
+  if (isBootstrapping) return <BootstrapSpinner />;
   if (isAuthenticated) return <Navigate to="/" replace />;
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <CrisisFloatingButton />
+    </>
+  );
 }
 
 export default function App() {
@@ -54,6 +72,7 @@ export default function App() {
         <Route path="/gratitude-journal" element={<GratitudeJournalPage />} />
         <Route path="/distortions" element={<DistortionsPage />} />
         <Route path="/sleep-hygiene" element={<SleepHygienePage />} />
+        <Route path="/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

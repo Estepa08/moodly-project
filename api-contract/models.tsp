@@ -212,6 +212,75 @@ model BreathingCompleteRequest {
   duration: int32;
 }
 
+// ---------- Cost-Benefit Analysis ----------
+
+@doc("Тип пункта: довод \"за\" веру в мысль (advantage) или \"против\" (disadvantage)")
+enum CbaItemType {
+  advantage,
+  disadvantage,
+}
+
+model CbaExampleItem {
+  id: string;
+  itemType: CbaItemType;
+  itemText: string;
+}
+
+@doc("Когнитивное искажение, отмеченное в мысли обучающего примера (ключ из библиотеки искажений)")
+model CbaExampleDistortion {
+  id: string;
+  exampleId: string;
+  distortionKey: string;
+}
+
+@doc("Разобранный обучающий пример техники \"анализ издержек и выгод\" на вымышленном персонаже")
+model CbaExample {
+  id: string;
+  persona: string;
+  thoughtText: string;
+  prosWeight: int32;
+  consWeight: int32;
+  order: int32;
+  items: CbaExampleItem[];
+  distortions: CbaExampleDistortion[];
+}
+
+@doc("Типовой пункт из общего банка подсказок для заполнения формы CBA")
+model CbaCommonItem {
+  id: string;
+  itemType: CbaItemType;
+  itemText: string;
+}
+
+model CbaEntryItemInput {
+  itemType: CbaItemType;
+  itemText: string;
+}
+
+model CbaEntryItem {
+  id: string;
+  itemType: CbaItemType;
+  itemText: string;
+}
+
+@doc("Запись пользователя в технике \"анализ издержек и выгод\": мысль + плюсы/минусы + соотношение (в сумме 100)")
+model CbaEntry {
+  id: string;
+  userId: string;
+  thoughtText: string;
+  prosWeight: int32;
+  consWeight: int32;
+  createdAt: utcDateTime;
+  items: CbaEntryItem[];
+}
+
+model CbaEntryCreate {
+  thoughtText: string;
+  prosWeight: int32;
+  consWeight: int32;
+  items: CbaEntryItemInput[];
+}
+
 // ---------- Errors ----------
 
 @error

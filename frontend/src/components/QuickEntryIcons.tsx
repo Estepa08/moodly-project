@@ -5,6 +5,7 @@ import { Plus, Sparkles } from "lucide-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { components } from "../lib/api-types";
 import { PARAM_ICON_CONFIGS } from "../lib/quickEntryIcons";
+import { PARAM_ICONS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Slider } from "./ui/slider";
 
@@ -81,6 +82,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
         <div className="flex justify-center gap-3">
           {configs.map((cfg) => {
             const isActive = selectedParam === cfg.parameterName;
+            const Icon = PARAM_ICONS[cfg.parameterName];
             return (
               <button
                 key={cfg.parameterName}
@@ -94,7 +96,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                 aria-pressed={isActive}
               >
                 <div className="w-12 h-12 flex items-center justify-center">
-                  {cfg.icon}
+                  {Icon && <Icon className="w-8 h-8 text-primary" />}
                 </div>
                 <span className="text-[11px] font-medium leading-tight text-center">
                   {t(cfg.labelKey)}

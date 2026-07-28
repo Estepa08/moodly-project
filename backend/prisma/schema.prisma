@@ -14,6 +14,13 @@ model User {
   name      String?
   createdAt DateTime @default(now())
 
+  // 18+ confirmation and personal-data processing consent, recorded at
+  // registration time so consent can be demonstrated per account rather than
+  // relying on a client-side-only flag.
+  ageConfirmed      Boolean   @default(false)
+  consentAcceptedAt DateTime?
+  consentVersion    String?
+
   entries     Entry[]
   testResults TestResult[]
   feedback    Feedback[]
@@ -21,6 +28,7 @@ model User {
   refreshTokens RefreshToken[]
   resetTokens   ResetToken[]
   breathingSessions BreathingSession[]
+  cbaEntries    CbaEntry[]
 }
 
 model Parameter {
@@ -149,4 +157,68 @@ model BreathingSession {
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
+}
+
+model CbaExample {
+  id          String @id @default(cuid())
+  persona     String
+  thoughtText String
+  prosWeight  Int
+  consWeight  Int
+  order       Int    @default(0)
+
+  items       CbaExampleItem[]
+  distortions CbaExampleDistortion[]
+}
+
+model CbaExampleItem {
+  id        String @id @default(cuid())
+  exampleId String
+  itemType  String
+  itemText  String
+
+  example CbaExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+
+  @@index([exampleId])
+}
+
+model CbaExampleDistortion {
+  id            String @id @default(cuid())
+  exampleId     String
+  distortionKey String
+
+  example CbaExample @relation(fields: [exampleId], references: [id], onDelete: Cascade)
+
+  @@index([exampleId])
+}
+
+model CbaCommonItem {
+  id       String @id @default(cuid())
+  itemType String
+  itemText String
+}
+
+model CbaEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  thoughtText String
+  prosWeight  Int
+  consWeight  Int
+  createdAt   DateTime @default(now())
+
+  user  User           @relation(fields: [userId], references: [id])
+  items CbaEntryItem[]
+
+  @@index([userId])
+}
+
+model CbaEntryItem {
+  id       String @id @default(cuid())
+  entryId  String
+  itemType String
+  itemText String
+
+  entry CbaEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@index([entryId])
 }

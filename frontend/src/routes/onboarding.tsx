@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Wind, LayoutDashboard, ClipboardList } from "lucide-react";
+import { ONBOARDING_DONE_KEY } from "../lib/constants";
 
-const ONBOARDING_DONE_KEY = "moodly_onboarding_done";
 const TOTAL_STEPS = 3;
 
 export default function OnboardingPage() {
@@ -78,6 +78,22 @@ export default function OnboardingPage() {
               <p className="text-muted-foreground text-sm">{t("onboarding.startDesc")}</p>
               <div className="flex flex-col gap-3">
                 <button
+                  onClick={() => goTo("/")}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <LayoutDashboard className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {t("onboarding.chooseDashboard")}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("onboarding.chooseDashboardDesc")}
+                    </p>
+                  </div>
+                </button>
+                <button
                   onClick={() => goTo("/breathing")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
@@ -89,20 +105,6 @@ export default function OnboardingPage() {
                       {t("onboarding.chooseBreathing")}
                     </p>
                     <p className="text-xs text-muted-foreground">{t("breathing.subtitle")}</p>
-                  </div>
-                </button>
-                <button
-                  onClick={() => goTo("/")}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <LayoutDashboard className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
-                      {t("onboarding.chooseDashboard")}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{t("dashboard.title")}</p>
                   </div>
                 </button>
                 <button

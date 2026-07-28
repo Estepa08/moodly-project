@@ -7,7 +7,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import Lottie from "lottie-react";
 import creatureAnimation from "../assets/lottie/breathing-creature.json";
 import SkipLink from "./SkipLink";
-import CrisisDialog from "./CrisisDialog";
+import CrisisFloatingButton from "./CrisisFloatingButton";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -23,7 +23,7 @@ import {
   Sparkles,
   ChevronDown,
   MoreHorizontal,
-  PhoneCall,
+  Scale,
 } from "lucide-react";
 
 const DASHBOARD_ITEM = { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard };
@@ -33,6 +33,7 @@ const PRACTICE_ITEMS = [
   { labelKey: "nav.gratitude", path: "/gratitude-journal", icon: Heart },
   { labelKey: "nav.distortions", path: "/distortions", icon: BrainCircuit },
   { labelKey: "nav.sleepHygiene", path: "/sleep-hygiene", icon: Moon },
+  { labelKey: "nav.cba", path: "/cost-benefit-analysis", icon: Scale },
 ];
 
 const OTHER_ITEMS = [
@@ -51,8 +52,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
   const isReducedMotion = useReducedMotion();
   const { data: userData } = useCurrentUser();
-  const [crisisOpen, setCrisisOpen] = useState(false);
   const [showCreature, setShowCreature] = useState(true);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [animKey, setAnimKey] = useState(0);
   const [prevWasCreature, setPrevWasCreature] = useState(true);
@@ -271,6 +272,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   <item.icon className="w-4 h-4" />
                 </button>
               ))}
+              {ALL_NAV_ITEMS.length > 5 && (
+                <div className="relative">
+                  <button
+                    onClick={() => setMobileMoreOpen((o) => !o)}
+                    aria-label={t("nav.more")}
+                    aria-expanded={mobileMoreOpen}
+                    className="p-1.5 rounded-lg hover:bg-secondary/50 transition-all duration-150 active:scale-[0.97] cursor-pointer text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </button>
+                  {mobileMoreOpen && (
+                    <div className="absolute right-0 top-full mt-1 z-20 bg-card rounded-xl shadow-neumorphic p-1 flex flex-col gap-1 min-w-[160px]">
+                      {ALL_NAV_ITEMS.slice(5).map((item) => (
+                        <button
+                          key={item.path}
+                          onClick={() => {
+                            navigate(item.path);
+                            setMobileMoreOpen(false);
+                          }}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                            location.pathname.startsWith(item.path)
+                              ? "text-primary font-medium"
+                              : "text-foreground hover:bg-secondary/50"
+                          }`}
+                        >
+                          <item.icon className="w-4 h-4 shrink-0" />
+                          {t(item.labelKey)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-1 text-xs">
               <button
@@ -294,14 +328,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
 
-        <CrisisDialog open={crisisOpen} severity="urgent" onDismiss={() => setCrisisOpen(false)} />
-        <button
-          onClick={() => setCrisisOpen(true)}
-          className="fixed bottom-4 right-4 z-50 w-12 h-12 rounded-full bg-accent text-white shadow-neumorphic flex items-center justify-center cursor-pointer hover:opacity-90 transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={t("crisis.floatingButton")}
-        >
-          <PhoneCall className="w-5 h-5" />
-        </button>
+        <CrisisFloatingButton />
       </div>
 
       <svg className="absolute w-0 h-0" aria-hidden="true">

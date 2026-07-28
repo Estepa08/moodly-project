@@ -6,6 +6,7 @@ import { api } from "../../lib/api";
 
 vi.mock("../../lib/api", () => ({
   api: {
+    auth: { refresh: vi.fn().mockRejectedValue(new Error("no session")) },
     feedback: { create: vi.fn(), listMine: vi.fn() },
   },
   setToken: vi.fn(),

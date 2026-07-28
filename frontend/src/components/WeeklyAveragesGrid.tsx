@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { PARAM_ICONS, PARAM_NAME_KEYS } from "../lib/constants";
+import { PARAM_ICONS, PARAM_NAME_KEYS, NEGATIVE_VALENCE_PARAMS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Spinner from "./ui/spinner";
 
@@ -28,27 +28,33 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
           <div className="flex justify-center py-8">
             <Spinner size={32} />
           </div>
+        ) : weeklyAverages.length === 0 ? (
+          <p className="text-muted-foreground text-center py-8">{t("dashboard.noAveragesYet")}</p>
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {weeklyAverages.map((avg) => {
               const Icon = PARAM_ICONS[avg.name];
               const averageValue = avg.average;
+              const isNegative = NEGATIVE_VALENCE_PARAMS.has(avg.name);
+              const goodness = averageValue === null ? null : isNegative ? 10 - averageValue : averageValue;
               const colorClass =
-                averageValue !== null
-                  ? averageValue >= 7
+                goodness !== null
+                  ? goodness >= 7
                     ? "text-primary"
-                    : averageValue >= 4
+                    : goodness >= 4
                       ? "text-primary/70"
                       : "text-primary/40"
                   : "text-muted-foreground";
               const TrendIcon =
                 avg.trend === "up" ? TrendingUp : avg.trend === "down" ? TrendingDown : Minus;
+              const trendIsGood =
+                avg.trend === "flat" ? null : isNegative ? avg.trend === "down" : avg.trend === "up";
               const trendColor =
-                avg.trend === "up"
-                  ? "text-primary"
-                  : avg.trend === "down"
-                    ? "text-primary/50"
-                    : "text-muted-foreground";
+                trendIsGood === null
+                  ? "text-muted-foreground"
+                  : trendIsGood
+                    ? "text-primary"
+                    : "text-primary/50";
               return (
                 <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3">
                   <div className="flex items-center gap-2 mb-2">
@@ -61,7 +67,9 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                     <span className={`text-2xl font-bold font-serif ${colorClass}`}>
                       {averageValue !== null ? averageValue.toFixed(1) : "—"}
                     </span>
-                    <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />
+                    {averageValue !== null && (
+                      <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />
+                    )}
                   </div>
                 </div>
               );

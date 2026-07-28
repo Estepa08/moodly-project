@@ -496,12 +496,18 @@ async function seed() {
   await prisma.entry.deleteMany();
   await prisma.breathingSession.deleteMany();
   await prisma.creatureState.deleteMany();
+  await prisma.cbaEntryItem.deleteMany();
+  await prisma.cbaEntry.deleteMany();
   await prisma.refreshToken.deleteMany();
   await prisma.resetToken.deleteMany();
   await prisma.user.deleteMany();
   await prisma.test.deleteMany();
   await prisma.parameter.deleteMany();
   await prisma.onboardingStory.deleteMany();
+  await prisma.cbaExampleDistortion.deleteMany();
+  await prisma.cbaExampleItem.deleteMany();
+  await prisma.cbaExample.deleteMany();
+  await prisma.cbaCommonItem.deleteMany();
 
   for (const p of parameters) {
     await prisma.parameter.create({ data: p });
@@ -756,6 +762,148 @@ async function seed() {
         },
         completedAt: new Date(now.getTime() - 1 * DAY),
       },
+    ],
+  });
+
+  // ─── Cost-Benefit Analysis: worked examples + common item bank ───
+  const cbaExamples: {
+    persona: string;
+    thoughtText: string;
+    prosWeight: number;
+    consWeight: number;
+    advantages: string[];
+    disadvantages: string[];
+    distortions: string[];
+  }[] = [
+    {
+      persona: "Бухгалтер, боится идти на работу из-за тревоги",
+      thoughtText:
+        "Если пойду на работу, у меня случится паническая атака, и коллеги подумают, что я странная.",
+      prosWeight: 25,
+      consWeight: 75,
+      advantages: [
+        "Избегаю возможного смущения перед коллегами",
+        "Чувствую себя безопаснее дома",
+        "Не нужно сталкиваться с неопределённостью",
+        "Могу отложить решение проблемы",
+      ],
+      disadvantages: [
+        "Теряю рабочие дни и доход",
+        "Чувствую изоляцию",
+        "Не проверяю, правда ли это на самом деле",
+        "Тревога только растёт от избегания",
+        "Пропускаю важные рабочие моменты и общение с командой",
+        "Со временем возвращаться на работу становится ещё страшнее",
+      ],
+      distortions: ["jumpingToConclusions"],
+    },
+    {
+      persona: "Студент, откладывает подготовку к экзамену",
+      thoughtText: "Я всё равно провалю экзамен, даже если буду готовиться.",
+      prosWeight: 20,
+      consWeight: 80,
+      advantages: [
+        "Не разочаруюсь, если действительно не сдам",
+        "Меньше давления прямо сейчас",
+        "Есть оправдание, если результат будет плохим",
+      ],
+      disadvantages: [
+        "Не даю себе шанс подготовиться",
+        "Напряжение растёт ближе к дате экзамена",
+        "Своим бездействием реально повышаю риск провала",
+        "Упускаю время, которое могло пойти на подготовку",
+        "Формирую привычку сдаваться при первой тревоге",
+      ],
+      distortions: ["jumpingToConclusions", "allOrNothing"],
+    },
+    {
+      persona: "Мама, винит себя за срывы на детей",
+      thoughtText: "Я ужасная мать, раз иногда срываюсь.",
+      prosWeight: 15,
+      consWeight: 85,
+      advantages: [
+        "Кажется, что самокритика мотивирует стать лучше",
+        "Ощущение контроля через строгость к себе",
+      ],
+      disadvantages: [
+        "Чувство вины истощает, а не мотивирует",
+        "Снижает уверенность в себе как в родителе",
+        "Не даёт увидеть реальные способы улучшить ситуацию",
+        "Портит настроение и влияет на общение с детьми в моменте",
+        "Не учитывает все моменты, где я хорошая мама",
+      ],
+      distortions: ["labeling", "allOrNothing"],
+    },
+    {
+      persona: "Менеджер, избегает сложного разговора с командой",
+      thoughtText: "Если подниму эту тему, все разозлятся на меня.",
+      prosWeight: 30,
+      consWeight: 70,
+      advantages: [
+        "Избегаю конфликта прямо сейчас",
+        "Сохраняю видимость спокойствия в команде",
+        "Не рискую услышать неприятную реакцию",
+      ],
+      disadvantages: [
+        "Проблема не решается и накапливается",
+        "Команда теряет доверие к моей роли лидера",
+        "Напряжение всё равно чувствуется, просто скрыто",
+        "Другие могут решить проблему по-своему, не так, как нужно",
+        "Откладывание делает будущий разговор ещё сложнее",
+      ],
+      distortions: ["jumpingToConclusions"],
+    },
+    {
+      persona: "Пожилой мужчина, не хочет учиться пользоваться смартфоном",
+      thoughtText: "Я слишком стар, чтобы разобраться в этом, только опозорюсь.",
+      prosWeight: 20,
+      consWeight: 80,
+      advantages: ["Не чувствую себя неловко прямо сейчас", "Не нужно просить о помощи"],
+      disadvantages: [
+        "Не могу видеться с внуками по видеосвязи",
+        "Завишу от других в простых вещах",
+        "Чувствую себя более изолированным",
+        "Упускаю возможность научиться чему-то новому",
+        "Убеждение мешает даже попробовать",
+      ],
+      distortions: ["labeling", "jumpingToConclusions"],
+    },
+  ];
+
+  for (const [index, example] of cbaExamples.entries()) {
+    await prisma.cbaExample.create({
+      data: {
+        persona: example.persona,
+        thoughtText: example.thoughtText,
+        prosWeight: example.prosWeight,
+        consWeight: example.consWeight,
+        order: index + 1,
+        items: {
+          create: [
+            ...example.advantages.map((itemText) => ({ itemType: "advantage", itemText })),
+            ...example.disadvantages.map((itemText) => ({ itemType: "disadvantage", itemText })),
+          ],
+        },
+        distortions: {
+          create: example.distortions.map((distortionKey) => ({ distortionKey })),
+        },
+      },
+    });
+  }
+
+  await prisma.cbaCommonItem.createMany({
+    data: [
+      { itemType: "advantage", itemText: "Избегаю неловкости/смущения прямо сейчас" },
+      { itemType: "advantage", itemText: "Чувствую себя безопаснее" },
+      { itemType: "advantage", itemText: "Не нужно ничего менять" },
+      { itemType: "advantage", itemText: "Защищаю себя от возможного разочарования" },
+      { itemType: "advantage", itemText: "Не рискую ошибиться" },
+      { itemType: "disadvantage", itemText: "Теряю время/возможности" },
+      { itemType: "disadvantage", itemText: "Чувствую себя хуже в долгосрочной перспективе" },
+      { itemType: "disadvantage", itemText: "Не проверяю, правда ли это на самом деле" },
+      { itemType: "disadvantage", itemText: "Мешает отношениям с близкими" },
+      { itemType: "disadvantage", itemText: "Усиливает тревогу вместо того, чтобы её снизить" },
+      { itemType: "disadvantage", itemText: "Не даёт двигаться к цели" },
     ],
   });
 

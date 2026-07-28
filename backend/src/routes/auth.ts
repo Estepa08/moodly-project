@@ -78,11 +78,15 @@ export default async function authRoutes(fastify: FastifyInstance) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
       const token = await authService.createResetToken(user.id);
-      // In production, send email. For MVP, log the link.
-      request.log.info(
-        { email, resetToken: token },
-        `Password reset link: /reset-password?token=${token}`,
-      );
+      // In production, send email — never log the token or email together.
+      // For local/dev testing only, log the token (keyed by userId, not
+      // email) so the reset link can be exercised without an email backend.
+      if (process.env.NODE_ENV !== "production") {
+        request.log.debug(
+          { userId: user.id },
+          `Password reset link: /reset-password?token=${token}`,
+        );
+      }
     }
     // Always return success to prevent email enumeration
     return { message: "If this email is registered, a reset link has been sent." };

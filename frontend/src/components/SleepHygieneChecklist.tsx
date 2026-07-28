@@ -352,7 +352,7 @@ export default function SleepHygieneChecklist({
                       variant="ghost"
                       size="icon"
                       onClick={() => setShowDetails(false)}
-                      aria-label="Close"
+                      aria-label={t("common.close")}
                     >
                       <X className="w-4 h-4" />
                     </Button>

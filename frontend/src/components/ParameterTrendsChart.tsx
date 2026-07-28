@@ -45,13 +45,26 @@ export default function ParameterTrendsChart({
   isLoading,
 }: ParameterTrendsChartProps) {
   const { t } = useTranslation();
-  const [focusedParam, setFocusedParam] = useState<string | null>(null);
+  const defaultParam = paramNames.includes("Mood") ? "Mood" : paramNames[0];
+  const [visibleParams, setVisibleParams] = useState<Set<string>>(
+    () => new Set(defaultParam ? [defaultParam] : []),
+  );
 
-  const toggleFocus = (name: string) => {
-    setFocusedParam((prev) => (prev === name ? null : name));
+  const toggleVisible = (name: string) => {
+    setVisibleParams((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) {
+        if (next.size > 1) next.delete(name);
+      } else {
+        next.add(name);
+      }
+      return next;
+    });
   };
 
-  const focusedHasData = !focusedParam || trendData.some((row) => row[focusedParam] != null);
+  const visibleHasData = trendData.some((row) =>
+    [...visibleParams].some((p) => row[p] != null),
+  );
 
   return (
     <Card className="shadow-neumorphic">
@@ -71,24 +84,22 @@ export default function ParameterTrendsChart({
                 <XAxis dataKey="date" fontSize={10} stroke="hsl(var(--chart-tick))" />
                 <YAxis domain={Y_DOMAIN} fontSize={10} stroke="hsl(var(--chart-tick))" />
                 <Tooltip content={<CustomTooltip />} />
-                {paramNames.map((name) => {
-                  const isFocused = name === focusedParam;
-                  return (
+                {paramNames
+                  .filter((name) => visibleParams.has(name))
+                  .map((name) => (
                     <Line
                       key={name}
                       type="monotone"
                       dataKey={name}
                       stroke={PARAM_COLORS[name] ?? "hsl(var(--primary))"}
-                      strokeWidth={isFocused ? 3 : 1.5}
-                      strokeOpacity={!focusedParam || isFocused ? 1 : 0.4}
-                      dot={isFocused ? { r: 3 } : false}
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
                       connectNulls
                     />
-                  );
-                })}
+                  ))}
               </LineChart>
             </ResponsiveContainer>
-            {focusedParam && !focusedHasData && (
+            {visibleParams.size > 0 && !visibleHasData && (
               <p className="text-xs text-muted-foreground text-center mt-2">
                 {t("dashboard.noEntries")}
               </p>
@@ -97,10 +108,10 @@ export default function ParameterTrendsChart({
               {paramNames.map((name) => (
                 <button
                   key={name}
-                  aria-pressed={name === focusedParam}
-                  onClick={() => toggleFocus(name)}
+                  aria-pressed={visibleParams.has(name)}
+                  onClick={() => toggleVisible(name)}
                   className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    name === focusedParam
+                    visibleParams.has(name)
                       ? "bg-primary/10 text-primary shadow-neumorphic-sm ring-2 ring-primary/60"
                       : "bg-muted text-muted-foreground shadow-neumorphic-inset"
                   }`}

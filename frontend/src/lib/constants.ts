@@ -1,4 +1,4 @@
-import { Moon, Sun, Zap, Heart, type LucideIcon } from "lucide-react";
+import { Moon, Sun, Zap, Heart, Activity, type LucideIcon } from "lucide-react";
 
 export const PARAM_NAME_KEYS: Record<string, string> = {
   Anxiety: "dashboard.anxiety",
@@ -27,10 +27,15 @@ export const PARAM_COLORS: Record<string, string> = {
   Energy: "hsl(var(--param-energy))",
 };
 
+// Parameters where a *lower* value is better (rising = worse), so their
+// color/trend treatment must be inverted relative to Mood/Energy/Sleep.
+export const NEGATIVE_VALENCE_PARAMS = new Set(["Anxiety"]);
+
 export const PARAM_ICONS: Record<string, LucideIcon> = {
   Sleep: Moon,
   Mood: Sun,
   Energy: Zap,
+  Anxiety: Activity,
   Wellbeing: Heart,
 };
 
@@ -48,3 +53,6 @@ export const SLIDER_STEP = 0.2;
 export const CLICK_THRESHOLD = 5;
 export const LOCKOUT_DURATION_MS = 5000;
 export const CLICK_WINDOW_MS = 2000;
+
+export const DISCLAIMER_ACCEPTED_KEY = "moodly_disclaimer_accepted";
+export const ONBOARDING_DONE_KEY = "moodly_onboarding_done";

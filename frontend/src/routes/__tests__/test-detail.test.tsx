@@ -8,6 +8,7 @@ import userEvent from "@testing-library/user-event";
 
 vi.mock("../../lib/api", () => ({
   api: {
+    auth: { refresh: vi.fn().mockRejectedValue(new Error("no session")) },
     tests: {
       list: vi.fn(),
       get: vi.fn(),

@@ -26,3 +26,9 @@ export class ConflictError extends AppError {
     super("CONFLICT", 409, message);
   }
 }
+
+export class ValidationError extends AppError {
+  constructor(message: string) {
+    super("VALIDATION_ERROR", 400, message);
+  }
+}

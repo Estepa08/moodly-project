@@ -100,6 +100,73 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/cba/common-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Общий банк типовых пунктов плюсов/минусов */
+        get: operations["Cba_listCommonItems"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cba/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description История записей текущего пользователя, новые сверху */
+        get: operations["Cba_listEntries"];
+        put?: never;
+        post: operations["Cba_createEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cba/entries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Cba_deleteEntry"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cba/examples": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Библиотека разобранных обучающих примеров */
+        get: operations["Cba_listExamples"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/creature": {
         parameters: {
             query?: never;
@@ -412,6 +479,72 @@ export interface components {
             /** Format: date-time */
             completedAt: string;
         };
+        /** @description Типовой пункт из общего банка подсказок для заполнения формы CBA */
+        CbaCommonItem: {
+            id: string;
+            itemType: components["schemas"]["CbaItemType"];
+            itemText: string;
+        };
+        /** @description Запись пользователя в технике "анализ издержек и выгод": мысль + плюсы/минусы + соотношение (в сумме 100) */
+        CbaEntry: {
+            id: string;
+            userId: string;
+            thoughtText: string;
+            /** Format: int32 */
+            prosWeight: number;
+            /** Format: int32 */
+            consWeight: number;
+            /** Format: date-time */
+            createdAt: string;
+            items: components["schemas"]["CbaEntryItem"][];
+        };
+        CbaEntryCreate: {
+            thoughtText: string;
+            /** Format: int32 */
+            prosWeight: number;
+            /** Format: int32 */
+            consWeight: number;
+            items: components["schemas"]["CbaEntryItemInput"][];
+        };
+        CbaEntryItem: {
+            id: string;
+            itemType: components["schemas"]["CbaItemType"];
+            itemText: string;
+        };
+        CbaEntryItemInput: {
+            itemType: components["schemas"]["CbaItemType"];
+            itemText: string;
+        };
+        /** @description Разобранный обучающий пример техники "анализ издержек и выгод" на вымышленном персонаже */
+        CbaExample: {
+            id: string;
+            persona: string;
+            thoughtText: string;
+            /** Format: int32 */
+            prosWeight: number;
+            /** Format: int32 */
+            consWeight: number;
+            /** Format: int32 */
+            order: number;
+            items: components["schemas"]["CbaExampleItem"][];
+            distortions: components["schemas"]["CbaExampleDistortion"][];
+        };
+        /** @description Когнитивное искажение, отмеченное в мысли обучающего примера (ключ из библиотеки искажений) */
+        CbaExampleDistortion: {
+            id: string;
+            exampleId: string;
+            distortionKey: string;
+        };
+        CbaExampleItem: {
+            id: string;
+            itemType: components["schemas"]["CbaItemType"];
+            itemText: string;
+        };
+        /**
+         * @description Тип пункта: довод "за" веру в мысль (advantage) или "против" (disadvantage)
+         * @enum {string}
+         */
+        CbaItemType: "advantage" | "disadvantage";
         /** @description Текущее состояние существа тревоги пользователя. calmness от 0 (тревожно) до 100 (спокойно). */
         CreatureState: {
             id: string;
@@ -717,6 +850,110 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResetPasswordResponse"];
+                };
+            };
+        };
+    };
+    Cba_listCommonItems: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CbaCommonItem"][];
+                };
+            };
+        };
+    };
+    Cba_listEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CbaEntry"][];
+                };
+            };
+        };
+    };
+    Cba_createEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CbaEntryCreate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CbaEntry"];
+                };
+            };
+        };
+    };
+    Cba_deleteEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Cba_listExamples: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CbaExample"][];
                 };
             };
         };

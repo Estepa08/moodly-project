@@ -103,35 +103,9 @@ export default function LoginPage({ defaultRegister }: Props) {
               <h2 className="text-xl font-serif font-semibold text-foreground">
                 {t("login.title")}
               </h2>
+              <p className="text-sm font-medium text-foreground">{t("login.tagline")}</p>
               <p className="text-sm text-muted-foreground">{t("login.welcomeMessage")}</p>
-            </div>
-
-            {/* ── Crisis helpline ── */}
-            <div className="rounded-xl bg-accent/5 border border-accent/20 p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-accent" />
-                <span className="text-xs font-medium text-accent">{t("crisis.helpline")}</span>
-              </div>
-              {isRu ? (
-                <div className="flex gap-2 text-xs font-bold">
-                  <a
-                    href="tel:88002000122"
-                    className="text-foreground hover:text-accent transition-colors"
-                  >
-                    8-800-200-01-22
-                  </a>
-                  <a href="tel:112" className="text-foreground hover:text-accent transition-colors">
-                    112
-                  </a>
-                </div>
-              ) : (
-                <a
-                  href="tel:988"
-                  className="text-xs font-bold text-foreground hover:text-accent transition-colors"
-                >
-                  988
-                </a>
-              )}
+              <p className="text-xs text-muted-foreground">{t("login.privacyNotice")}</p>
             </div>
 
             {/* ── Auth form ── */}
@@ -273,6 +247,34 @@ export default function LoginPage({ defaultRegister }: Props) {
               </div>
             </div>
 
+            {/* ── Crisis helpline ── */}
+            <div className="rounded-xl bg-accent/5 border border-accent/20 p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <PhoneCall className="w-4 h-4 text-accent" />
+                <span className="text-xs font-medium text-accent">{t("crisis.helpline")}</span>
+              </div>
+              {isRu ? (
+                <div className="flex gap-2 text-xs font-bold">
+                  <a
+                    href="tel:88002000122"
+                    className="text-foreground hover:text-accent transition-colors"
+                  >
+                    8-800-200-01-22
+                  </a>
+                  <a href="tel:112" className="text-foreground hover:text-accent transition-colors">
+                    112
+                  </a>
+                </div>
+              ) : (
+                <a
+                  href="tel:988"
+                  className="text-xs font-bold text-foreground hover:text-accent transition-colors"
+                >
+                  988
+                </a>
+              )}
+            </div>
+
             {/* ── Collapsible disclaimer ── */}
             <div className="border-t border-border pt-3">
               <button
@@ -288,7 +290,6 @@ export default function LoginPage({ defaultRegister }: Props) {
               {showDisclaimer && (
                 <div className="mt-2 space-y-2 text-xs text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-top-1">
                   <p>{t("login.disclaimer")}</p>
-                  <p>{t("login.privacyNotice")}</p>
                 </div>
               )}
             </div>

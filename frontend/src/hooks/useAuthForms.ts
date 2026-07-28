@@ -3,8 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { api } from "../lib/api";
-
-const DISCLAIMER_ACCEPTED_KEY = "moodly_disclaimer_accepted";
+import { DISCLAIMER_ACCEPTED_KEY } from "../lib/constants";
 
 export function useAuthForms() {
   const { t } = useTranslation();

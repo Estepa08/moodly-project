@@ -156,3 +156,30 @@ interface Creature {
   @doc("Завершить дыхательное упражнение, обновить уровень спокойствия")
   completeExercise(@body body: BreathingCompleteRequest): CreatureState;
 }
+
+@tag("Cba")
+@route("/cba")
+interface Cba {
+  @get
+  @route("/examples")
+  @doc("Библиотека разобранных обучающих примеров")
+  listExamples(): CbaExample[];
+
+  @get
+  @route("/common-items")
+  @doc("Общий банк типовых пунктов плюсов/минусов")
+  listCommonItems(): CbaCommonItem[];
+
+  @post
+  @route("/entries")
+  createEntry(@body body: CbaEntryCreate): CbaEntry;
+
+  @get
+  @route("/entries")
+  @doc("История записей текущего пользователя, новые сверху")
+  listEntries(): CbaEntry[];
+
+  @delete
+  @route("/entries/{id}")
+  deleteEntry(@path id: string): void;
+}

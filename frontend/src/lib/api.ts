@@ -15,6 +15,10 @@ type Report = components["schemas"]["Report"];
 type ReportCreate = components["schemas"]["ReportCreate"];
 type User = components["schemas"]["User"];
 type UserUpdate = components["schemas"]["UserUpdate"];
+type CbaExample = components["schemas"]["CbaExample"];
+type CbaCommonItem = components["schemas"]["CbaCommonItem"];
+type CbaEntry = components["schemas"]["CbaEntry"];
+type CbaEntryCreate = components["schemas"]["CbaEntryCreate"];
 
 interface CreatureState {
   id: string;
@@ -31,17 +35,9 @@ let refreshPromise: Promise<boolean> | null = null;
 
 export function setToken(token: string | null) {
   accessToken = token;
-  if (token) {
-    localStorage.setItem("token", token);
-  } else {
-    localStorage.removeItem("token");
-  }
 }
 
 export function getToken(): string | null {
-  if (!accessToken) {
-    accessToken = localStorage.getItem("token");
-  }
   return accessToken;
 }
 
@@ -176,5 +172,15 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ duration }),
       }),
+  },
+  cba: {
+    examples: () => request<CbaExample[]>("/cba/examples"),
+    commonItems: () => request<CbaCommonItem[]>("/cba/common-items"),
+    entries: {
+      list: () => request<CbaEntry[]>("/cba/entries"),
+      create: (body: CbaEntryCreate) =>
+        request<CbaEntry>("/cba/entries", { method: "POST", body: JSON.stringify(body) }),
+      delete: (id: string) => request<void>(`/cba/entries/${id}`, { method: "DELETE" }),
+    },
   },
 };

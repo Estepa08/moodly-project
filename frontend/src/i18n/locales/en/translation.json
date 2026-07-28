@@ -8,7 +8,8 @@
     "generating": "Generating...",
     "languageEn": "EN",
     "languageRu": "RU",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "close": "Close"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -17,13 +18,16 @@
     "gratitude": "Gratitude",
     "distortions": "Distortions",
     "sleepHygiene": "Sleep",
+    "cba": "Cost-Benefit",
     "tests": "Tests",
     "results": "Results",
     "reports": "Reports",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "more": "More"
   },
   "login": {
     "title": "Moodly",
+    "tagline": "A simple mood journal — notice how you're doing, day by day.",
     "subtitle": "Sign in to your account",
     "email": "Email",
     "password": "Password",
@@ -37,7 +41,7 @@
     "demoFailed": "Demo login failed",
     "welcomeMessage": "We're here to help you notice patterns and track how you feel — at your own pace, without judgement.",
     "disclaimer": "Moodly is a self-assessment and wellness tracking tool, not a medical device. It does not diagnose, treat, or prevent any condition. Always consult a qualified healthcare provider for mental health concerns.",
-    "privacyNotice": "Your data stays on your device. We do not store your test results, entries, or personal information on our servers.",
+    "privacyNotice": "We store your entries, test results, and account data on our server so they're available to you from any device. See the Privacy Policy for details.",
     "disclaimerTitle": "Medical disclaimer & privacy",
     "disclaimerAccept": "I understand",
     "forgotPassword": "Forgot password?"
@@ -71,8 +75,9 @@
     "saveError": "Failed to save entry",
     "noEntries": "No entries yet — start when you feel ready. Every small step helps.",
     "cdProfile": "Thinking Patterns",
-    "parameterTrends": "Parameter Trends",
+    "parameterTrends": "How You've Been Feeling",
     "weeklyAverages": "Weekly Averages",
+    "noAveragesYet": "No entries yet — averages will appear here once you start tracking.",
     "testProgress": "Test Progress",
     "dateRange": "Period",
     "thisWeek": "This Week",
@@ -149,6 +154,7 @@
     "chooseTitle": "What would you like to do?",
     "chooseBreathing": "Try a breathing exercise",
     "chooseDashboard": "Explore the dashboard",
+    "chooseDashboardDesc": "See how your mood has been trending",
     "chooseTest": "Take a test",
     "getStarted": "Get Started",
     "next": "Next",
@@ -278,7 +284,7 @@
     "helpline": "Crisis helpline",
     "dismissAfter": "I understand — show results",
     "pleaseWait": "Please wait 10 seconds...",
-    "floatingButton": "Get help",
+    "floatingButton": "Crisis support",
     "callNow": "Call"
   },
   "contentWarning": {
@@ -440,6 +446,27 @@
     "q38": "\"I should always be a patient parent. If I get angry, I'm failing at my role.\"",
     "q39": "Dan couldn't figure out his phone update and called himself \"a dinosaur who can't keep up.\"",
     "q40": "The waiter was busy and rushed, but the diner decided the waiter was angry at them personally."
+  },
+  "cba": {
+    "title": "Cost-Benefit Analysis",
+    "subtitle": "Weigh whether believing a negative thought actually benefits you — list the pros, cons, and the ratio between them.",
+    "tabLibrary": "Library",
+    "tabForm": "New Entry",
+    "tabHistory": "History",
+    "pros": "Pros",
+    "cons": "Cons",
+    "prevExample": "Previous example",
+    "nextExample": "Next example",
+    "libraryEmpty": "No worked examples yet.",
+    "formTitle": "New Entry",
+    "thoughtLabel": "Negative thought",
+    "thoughtPlaceholder": "e.g. \"If I make a mistake, everyone will think I'm incompetent\"",
+    "addItemPlaceholder": "Add your own item",
+    "removeItem": "Remove item",
+    "save": "Save entry",
+    "saveError": "Failed to save the entry",
+    "historyEmpty": "No saved entries yet.",
+    "deleteEntry": "Delete entry"
   },
   "sleepHygiene": {
     "title": "Sleep Hygiene",

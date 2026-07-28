@@ -132,7 +132,16 @@ export default function BreathingGuide({
     return () => window.removeEventListener("keydown", handleKey);
   }, [running]);
 
-  const circleScale = isInhale ? 0.5 + phaseProgress * 0.5 : isHold ? 1 : 1 - phaseProgress * 0.5;
+  // With reduced motion, freeze the circle at a fixed size instead of
+  // continuously resizing every frame — phase timing/icons/text still
+  // convey progress, so the exercise stays fully usable without the pulse.
+  const circleScale = reducedMotion
+    ? 0.75
+    : isInhale
+      ? 0.5 + phaseProgress * 0.5
+      : isHold
+        ? 1
+        : 1 - phaseProgress * 0.5;
 
   return (
     <div className="flex flex-col items-center gap-4">

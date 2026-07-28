@@ -12,6 +12,7 @@ import feedbackRoutes from "../routes/feedback.js";
 import onboardingRoutes from "../routes/onboarding-stories.js";
 import reportRoutes from "../routes/reports.js";
 import creatureRoutes from "../routes/creature.js";
+import cbaRoutes from "../routes/cba.js";
 import { setErrorHandler } from "../lib/handle-error.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
@@ -30,6 +31,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(onboardingRoutes);
   await fastify.register(reportRoutes);
   await fastify.register(creatureRoutes);
+  await fastify.register(cbaRoutes);
 
   setErrorHandler(fastify);
 

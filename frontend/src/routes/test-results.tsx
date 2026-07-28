@@ -22,6 +22,7 @@ export default function TestResultsPage() {
   const [showScore, setShowScore] = useState<Record<string, boolean>>({});
   const [showRec, setShowRec] = useState<Record<string, boolean>>({});
   const [crisisResultId, setCrisisResultId] = useState<string | null>(null);
+  const [hasAutoShownCrisis, setHasAutoShownCrisis] = useState(false);
 
   const { data: tests } = useTests();
   const { data: results, isLoading } = useTestResults();
@@ -38,6 +39,18 @@ export default function TestResultsPage() {
       }
     }
   }, [results, showRec]);
+
+  // Re-surface the crisis dialog (with its forced 10s pause) once per visit
+  // to this page if there's a flagged result — the same protection given on
+  // the initial test submission, not just a click-to-open banner.
+  useEffect(() => {
+    if (!results || hasAutoShownCrisis) return;
+    const flagged = results.find((r) => getCrisisSeverity(r.recommendation));
+    if (flagged) {
+      setCrisisResultId(flagged.id);
+      setHasAutoShownCrisis(true);
+    }
+  }, [results, hasAutoShownCrisis]);
 
   if (isLoading) {
     return (
