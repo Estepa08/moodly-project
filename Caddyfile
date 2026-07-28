@@ -1,0 +1,14 @@
+{$DOMAIN} {
+    root * /srv
+    encode gzip
+
+    handle /api/* {
+        uri strip_prefix /api
+        reverse_proxy backend:3001
+    }
+
+    handle {
+        try_files {path} /index.html
+        file_server
+    }
+}

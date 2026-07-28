@@ -17,7 +17,7 @@ function formatDate(d: Date, locale: string): string {
 }
 
 function drawTableCell(
-  doc: import("pdfkit").default,
+  doc: PDFKit.PDFDocument,
   text: string,
   x: number,
   y: number,
@@ -35,7 +35,7 @@ function drawTableCell(
 }
 
 function drawTableRow(
-  doc: import("pdfkit").default,
+  doc: PDFKit.PDFDocument,
   cols: { x: number; w: number }[],
   y: number,
   h: number,
