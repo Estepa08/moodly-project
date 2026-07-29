@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 import { TrendingUp, TrendingDown, Minus, BarChart3 } from "lucide-react";
 import { PARAM_ICONS, PARAM_NAME_KEYS, NEGATIVE_VALENCE_PARAMS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { LoadingCard } from "./ui/loading-card";
 import EmptyState from "./ui/empty-state";
-import Spinner from "./ui/spinner";
 
 interface WeeklyAverage {
   name: string;
@@ -26,9 +26,7 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Spinner size={32} />
-          </div>
+          <LoadingCard className="border-0 shadow-none" />
         ) : weeklyAverages.length === 0 ? (
           <EmptyState icon={BarChart3} title={t("dashboard.noAveragesYet")} />
         ) : (

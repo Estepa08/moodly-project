@@ -11,9 +11,10 @@ import {
 } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { PARAM_COLORS, PARAM_NAME_KEYS } from "../lib/constants";
+import { ChartTooltip } from "../lib/chart-tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import EmptyState from "./ui/empty-state";
-import Spinner from "./ui/spinner";
+import { LoadingCard } from "./ui/loading-card";
 
 interface ParameterTrendsChartProps {
   trendData: Record<string, number | string>[];
@@ -22,24 +23,6 @@ interface ParameterTrendsChartProps {
 }
 
 const Y_DOMAIN: [number, number] = [0, 10];
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  const { t } = useTranslation();
-  if (!active || !payload?.length) return null;
-  return (
-    <div
-      className="bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm"
-      role="tooltip"
-    >
-      <p className="text-xs text-muted-foreground mb-1">{label}</p>
-      {payload.map((entry: any) => (
-        <p key={entry.name} className="font-medium" style={{ color: entry.color }}>
-          {t(PARAM_NAME_KEYS[entry.name] ?? entry.name)}: {entry.value}
-        </p>
-      ))}
-    </div>
-  );
-};
 
 export default function ParameterTrendsChart({
   trendData,
@@ -75,9 +58,7 @@ export default function ParameterTrendsChart({
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Spinner size={32} />
-          </div>
+          <LoadingCard className="border-0 shadow-none" />
         ) : trendData.length > 0 ? (
           <>
             <ResponsiveContainer width="100%" height={220}>
@@ -90,7 +71,7 @@ export default function ParameterTrendsChart({
                   interval={Math.max(1, Math.floor(trendData.length / 6))}
                 />
                 <YAxis domain={Y_DOMAIN} fontSize={11} stroke="hsl(var(--chart-tick))" />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<ChartTooltip formatLabel={(name) => t(PARAM_NAME_KEYS[name] ?? name)} />} />
                 {paramNames
                   .filter((name) => visibleParams.has(name))
                   .map((name) => (

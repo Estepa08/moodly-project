@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { ProgressBar } from "./ui/progress-bar";
 import { Slider } from "./ui/slider";
 
 interface CbaWeightSliderProps {
@@ -31,13 +32,12 @@ export default function CbaWeightSlider({ prosWeight, onChange }: CbaWeightSlide
         />
         <span className="text-lg font-bold font-serif text-destructive w-10">{consWeight}</span>
       </div>
-      <div className="h-2 rounded-full overflow-hidden flex shadow-neumorphic-inset">
-        <div className="h-full bg-accent transition-all duration-150" style={{ width: `${prosWeight}%` }} />
-        <div
-          className="h-full bg-destructive transition-all duration-150"
-          style={{ width: `${consWeight}%` }}
-        />
-      </div>
+      <ProgressBar
+        segments={[
+          { value: prosWeight, className: "bg-accent" },
+          { value: consWeight, className: "bg-destructive" },
+        ]}
+      />
     </div>
   );
 }

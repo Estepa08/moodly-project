@@ -1,17 +1,9 @@
 import { useMemo, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Check, Moon, Pencil, ChevronDown, X, Bed } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import type { UseMutationResult } from "@tanstack/react-query";
+import { Moon, Pencil, ChevronDown, X, Bed, Check } from "lucide-react";
+
+import type { CreateEntryMutation, UpdateEntryMutation } from "../lib/app-types";
 import type { components } from "../lib/api-types";
 import {
   SLEEP_HYGIENE_ITEMS,
@@ -19,29 +11,19 @@ import {
   parseCheckedNote,
   findTodayEntry,
 } from "../lib/sleepHygiene";
+import { CorrelationChart } from "./ui/correlation-chart";
+import { ChecklistItem } from "./ui/checklist-item";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import EmptyState from "./ui/empty-state";
 import { Button } from "./ui/button";
-import { cn } from "../lib/utils";
-
-type Entry = components["schemas"]["Entry"];
+import { cn, formatDateShort } from "../lib/utils";
 
 interface SleepHygieneChecklistProps {
   parameterId: string | undefined;
-  hygieneEntries: Entry[];
-  sleepEntries: Entry[];
-  createEntry: UseMutationResult<
-    Entry,
-    Error,
-    { parameterId: string; value: number; note?: string },
-    unknown
-  >;
-  updateEntry: UseMutationResult<
-    Entry,
-    Error,
-    { id: string; value: number; note?: string },
-    unknown
-  >;
+  hygieneEntries: components["schemas"]["Entry"][];
+  sleepEntries: components["schemas"]["Entry"][];
+  createEntry: CreateEntryMutation;
+  updateEntry: UpdateEntryMutation;
 }
 
 export default function SleepHygieneChecklist({
@@ -62,23 +44,6 @@ export default function SleepHygieneChecklist({
   const [expandedEntryId, setExpandedEntryId] = useState<string | null>(null);
   const [showChart, setShowChart] = useState(false);
   const isPending = createEntry.isPending || updateEntry.isPending;
-
-  const ChartTooltip = ({ active, payload, label }: any) => {
-    if (!active || !payload?.length) return null;
-    return (
-      <div className="bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm">
-        <p className="text-xs text-muted-foreground mb-1">{label}</p>
-        {payload.map((entry: any) => (
-          <p key={entry.name} className="font-medium" style={{ color: entry.color }}>
-            {entry.name === "habits"
-              ? t("sleepHygiene.comparisonHabits")
-              : t("sleepHygiene.comparisonSleep")}
-            : {entry.value}
-          </p>
-        ))}
-      </div>
-    );
-  };
 
   useEffect(() => {
     const today = findTodayEntry(hygieneEntries);
@@ -174,14 +139,8 @@ export default function SleepHygieneChecklist({
     }
     return Array.from(byDay.entries())
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, values]) => {
-        const d = new Date(date);
-        const label = d.toLocaleDateString(
-          i18n.language === "ru" ? "ru-RU" : "en-US",
-          { month: "short", day: "numeric" },
-        );
-        return {
-          date: label,
+      .map(([date, values]) => ({
+          date: formatDateShort(date, i18n.language),
           habits:
             values.habits !== undefined
               ? Number(
@@ -192,8 +151,7 @@ export default function SleepHygieneChecklist({
                 )
               : undefined,
           sleep: values.sleep,
-        };
-      });
+      }));
   }, [hygieneEntries, sleepEntries, i18n.language]);
 
   return (
@@ -208,36 +166,14 @@ export default function SleepHygieneChecklist({
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              {SLEEP_HYGIENE_ITEMS.map((key) => {
-                const isChecked = checked.has(key);
-                return (
-                  <button
-                    key={key}
-                    onClick={() => toggleItem(key)}
-                    aria-pressed={isChecked}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-sm transition-all duration-150 cursor-pointer active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      isChecked
-                        ? "bg-primary/10 text-primary shadow-neumorphic-inset"
-                        : "bg-muted text-muted-foreground shadow-neumorphic-sm",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "w-5 h-5 rounded-md border flex items-center justify-center shrink-0",
-                        isChecked
-                          ? "bg-primary border-primary"
-                          : "border-border",
-                      )}
-                    >
-                      {isChecked && (
-                        <Check className="w-3.5 h-3.5 text-primary-foreground" />
-                      )}
-                    </span>
-                    {t(`sleepHygiene.items.${key}`)}
-                  </button>
-                );
-              })}
+              {SLEEP_HYGIENE_ITEMS.map((key) => (
+                <ChecklistItem
+                  key={key}
+                  checked={checked.has(key)}
+                  onToggle={() => toggleItem(key)}
+                  label={t(`sleepHygiene.items.${key}`)}
+                />
+              ))}
             </div>
 
             <Button
@@ -398,42 +334,14 @@ export default function SleepHygieneChecklist({
                 : t("sleepHygiene.showChart")}
             </button>
             {showChart && (
-              <div className="animate-in fade-in slide-in-from-top-1">
-                <ResponsiveContainer width="100%" height={160}>
-                  <LineChart data={correlationData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                    <XAxis dataKey="date" fontSize={9} stroke="hsl(var(--chart-tick))" />
-                    <YAxis domain={[0, 10]} fontSize={9} stroke="hsl(var(--chart-tick))" />
-                    <Tooltip content={<ChartTooltip />} />
-                    <Line
-                      type="monotone"
-                      dataKey="habits"
-                      stroke="hsl(var(--accent))"
-                      strokeWidth={2}
-                      dot={false}
-                      connectNulls
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="sleep"
-                      stroke="hsl(var(--param-sleep))"
-                      strokeWidth={2}
-                      dot={false}
-                      connectNulls
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-                <div className="flex justify-center gap-4 mt-2">
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--accent))" }} />
-                    {t("sleepHygiene.comparisonHabits")}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--param-sleep))" }} />
-                    {t("sleepHygiene.comparisonSleep")}
-                  </span>
-                </div>
-              </div>
+              <CorrelationChart
+                data={correlationData}
+                lines={[
+                  { dataKey: "habits", stroke: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
+                  { dataKey: "sleep", stroke: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
+                ]}
+                formatLabel={(name) => name === "habits" ? t("sleepHygiene.comparisonHabits") : t("sleepHygiene.comparisonSleep")}
+              />
             )}
           </CardContent>
         </Card>
@@ -465,10 +373,7 @@ export default function SleepHygieneChecklist({
                       className="w-full flex items-center justify-between text-sm bg-muted/30 rounded-lg px-3 py-2 transition-all duration-150 cursor-pointer hover:bg-muted/50 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <span className="text-foreground">
-                        {new Date(e.createdAt).toLocaleDateString(
-                          i18n.language === "ru" ? "ru-RU" : "en-US",
-                          { month: "short", day: "numeric" },
-                        )}
+                        {formatDateShort(e.createdAt, i18n.language)}
                       </span>
                       <span className="text-muted-foreground flex items-center gap-1">
                         {e.value}/{SLEEP_HYGIENE_ITEMS.length}

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { CircleArrowUp, Timer, Wind } from "lucide-react";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { Button } from "./ui/button";
 import { SegmentGroup, SegmentButton } from "./ui/segment-button";
 
 export type BreathingTechnique = "478" | "box" | "quick";
@@ -211,16 +212,13 @@ export default function BreathingGuide({
                 {t("breathing.techniqueQuick")}
               </SegmentButton>
             </SegmentGroup>
-            <button
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              onClick={() => setRunning(true)}
-            >
+            <Button onClick={() => setRunning(true)}>
               {t("breathing.start")}
-            </button>
+            </Button>
           </>
         ) : (
-          <button
-            className="px-6 py-2 bg-destructive text-white rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          <Button
+            variant="destructive"
             onClick={() => {
               completedRef.current = true;
               cancelAnimationFrame(rafRef.current);
@@ -229,7 +227,7 @@ export default function BreathingGuide({
             }}
           >
             {t("breathing.cancel")}
-          </button>
+          </Button>
         )}
       </div>
     </div>

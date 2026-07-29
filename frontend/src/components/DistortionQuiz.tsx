@@ -1,23 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X } from "lucide-react";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { components } from "../lib/api-types";
+import type { CreateEntryMutation } from "../lib/app-types";
 import { QUIZ_ITEMS, QUIZ_PER_RUN, pickOptions, shuffle, type DistortionKey } from "../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 
-type Entry = components["schemas"]["Entry"];
-
 interface DistortionQuizProps {
   parameterId?: string;
-  createEntry?: UseMutationResult<
-    Entry,
-    Error,
-    { parameterId: string; value: number; note?: string },
-    unknown
-  >;
+  createEntry?: CreateEntryMutation;
 }
 
 export default function DistortionQuiz({ parameterId, createEntry }: DistortionQuizProps) {

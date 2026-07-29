@@ -2,17 +2,16 @@ import { useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Plus, Sparkles } from "lucide-react";
-import type { UseMutationResult } from "@tanstack/react-query";
+import type { CreateEntryMutation } from "../lib/app-types";
 import type { components } from "../lib/api-types";
 import { PARAM_ICON_CONFIGS } from "../lib/quickEntryIcons";
 import { PARAM_ICONS } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Slider } from "./ui/slider";
-
-type Entry = components["schemas"]["Entry"];
+import { Button } from "./ui/button";
 
 interface QuickEntryIconsProps {
-  createEntry: UseMutationResult<Entry, Error, { parameterId: string; value: number; note?: string }, unknown>;
+  createEntry: CreateEntryMutation;
   numericParams: components["schemas"]["Parameter"][] | undefined;
   hasEntries: boolean;
 }
@@ -138,17 +137,12 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                   </div>
 
                   <div className="flex justify-center">
-                    <button
+                    <Button
                       onClick={() => handleSave(cfg.parameterName, sliderValue)}
                       disabled={createEntry.isPending}
-                      className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                        createEntry.isPending
-                          ? "opacity-50 pointer-events-none bg-primary/5"
-                          : "bg-primary text-primary-foreground hover:opacity-90 shadow-neumorphic-sm"
-                      }`}
                     >
                       {t("dashboard.quickEntry.save")}
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="flex items-center justify-center gap-2">

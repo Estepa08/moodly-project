@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Trash2, Scale } from "lucide-react";
 import type { components } from "../lib/api-types";
+import { ProgressBar } from "./ui/progress-bar";
 import { Card, CardContent } from "./ui/card";
 import EmptyState from "./ui/empty-state";
 import type { useDeleteCbaEntry } from "../hooks/useCba";
@@ -36,10 +37,13 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm font-semibold text-accent w-8">{entry.prosWeight}</span>
-              <div className="flex-1 h-2 rounded-full overflow-hidden flex shadow-neumorphic-inset">
-                <div className="h-full bg-accent" style={{ width: `${entry.prosWeight}%` }} />
-                <div className="h-full bg-destructive" style={{ width: `${entry.consWeight}%` }} />
-              </div>
+              <ProgressBar
+                segments={[
+                  { value: entry.prosWeight, className: "bg-accent" },
+                  { value: entry.consWeight, className: "bg-destructive" },
+                ]}
+                className="flex-1"
+              />
               <span className="text-sm font-semibold text-destructive w-8 text-right">
                 {entry.consWeight}
               </span>

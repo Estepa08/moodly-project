@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import type { components } from "../lib/api-types";
+import { ProgressBar } from "./ui/progress-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import EmptyState from "./ui/empty-state";
 import { cn } from "../lib/utils";
@@ -73,10 +74,13 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
 
           <div className="flex items-center justify-center gap-3 pt-1">
             <span className="text-sm font-semibold text-accent">{example.prosWeight}</span>
-            <div className="flex-1 h-2 rounded-full overflow-hidden flex shadow-neumorphic-inset">
-              <div className="h-full bg-accent" style={{ width: `${example.prosWeight}%` }} />
-              <div className="h-full bg-destructive" style={{ width: `${example.consWeight}%` }} />
-            </div>
+            <ProgressBar
+              segments={[
+                { value: example.prosWeight, className: "bg-accent" },
+                { value: example.consWeight, className: "bg-destructive" },
+              ]}
+              className="flex-1"
+            />
             <span className="text-sm font-semibold text-destructive">{example.consWeight}</span>
           </div>
         </CardContent>

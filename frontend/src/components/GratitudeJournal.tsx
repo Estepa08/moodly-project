@@ -1,36 +1,23 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import type { components } from "../lib/api-types";
 import { toast } from "sonner";
 import { Heart, Smile } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { components } from "../lib/api-types";
-import { isWithinLastDays, cn } from "../lib/utils";
+
+import type { CreateEntryMutation } from "../lib/app-types";
+import { isWithinLastDays, cn, formatDateShort } from "../lib/utils";
+import { CorrelationChart } from "./ui/correlation-chart";
 import { GRATITUDE_PROMPT_CATEGORIES, type GratitudePromptCategory } from "../lib/gratitudePrompts";
 import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import EmptyState from "./ui/empty-state";
 
-type Entry = components["schemas"]["Entry"];
-
 interface GratitudeJournalProps {
   parameterId: string | undefined;
-  entries: Entry[];
-  moodEntries: Entry[];
-  createEntry: UseMutationResult<
-    Entry,
-    Error,
-    { parameterId: string; value: number; note?: string },
-    unknown
-  >;
+  entries: components["schemas"]["Entry"][];
+  moodEntries: components["schemas"]["Entry"][];
+  createEntry: CreateEntryMutation;
   limit?: number;
   hideTitle?: boolean;
 }
@@ -48,34 +35,10 @@ export default function GratitudeJournal({
   const [activePrompt, setActivePrompt] = useState<GratitudePromptCategory | null>(null);
   const [showChart, setShowChart] = useState(false);
 
-  const dayKey = (date: Date) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  };
-
-  const ChartTooltip = ({ active, payload, label }: any) => {
-    if (!active || !payload?.length) return null;
-    return (
-      <div className="bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm">
-        <p className="text-xs text-muted-foreground mb-1">{label}</p>
-        {payload.map((entry: any) => (
-          <p key={entry.name} className="font-medium" style={{ color: entry.color }}>
-            {entry.name === "gratitude"
-              ? t("dashboard.gratitudeFrequency")
-              : t("dashboard.gratitudeMood")}
-            : {entry.value}
-          </p>
-        ))}
-      </div>
-    );
-  };
-
   const correlationData = useMemo(() => {
     const byDay = new Map<string, { gratitude: number; mood?: number }>();
     for (const e of entries) {
-      const key = dayKey(new Date(e.createdAt));
+      const key = formatDateShort(new Date(e.createdAt), i18n.language, { day: "2-digit", month: "2-digit", year: "numeric" });
       const prev = byDay.get(key);
       byDay.set(key, {
         gratitude: (prev?.gratitude ?? 0) + 1,
@@ -83,7 +46,7 @@ export default function GratitudeJournal({
       });
     }
     for (const e of moodEntries) {
-      const key = dayKey(new Date(e.createdAt));
+      const key = formatDateShort(new Date(e.createdAt), i18n.language, { day: "2-digit", month: "2-digit", year: "numeric" });
       const prev = byDay.get(key);
       byDay.set(key, {
         gratitude: prev?.gratitude ?? 0,
@@ -92,17 +55,11 @@ export default function GratitudeJournal({
     }
     return Array.from(byDay.entries())
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, values]) => {
-        const d = new Date(date);
-        return {
-          date: d.toLocaleDateString(
-            i18n.language === "ru" ? "ru-RU" : "en-US",
-            { month: "short", day: "numeric" },
-          ),
-          gratitude: Number(((Math.min(values.gratitude, 3) / 3) * 10).toFixed(1)),
-          mood: values.mood,
-        };
-      });
+      .map(([date, values]) => ({
+        date: formatDateShort(date, i18n.language),
+        gratitude: Number(((Math.min(values.gratitude, 3) / 3) * 10).toFixed(1)),
+        mood: values.mood,
+      }));
   }, [entries, moodEntries, i18n.language]);
 
   const handleSave = () => {
@@ -185,7 +142,7 @@ export default function GratitudeJournal({
                 </div>
               )}
             </div>
-            <textarea
+            <Textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder={
@@ -196,7 +153,6 @@ export default function GratitudeJournal({
               rows={2}
               enterKeyHint="done"
               inputMode="text"
-              className="flex w-full rounded-lg border border-border bg-card px-3 py-2 text-base shadow-neumorphic-inset transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none md:text-sm"
             />
             <Button
               className="w-full"
@@ -238,42 +194,14 @@ export default function GratitudeJournal({
                 : t("dashboard.gratitudeShowChart")}
             </button>
             {showChart && (
-              <div className="animate-in fade-in slide-in-from-top-1">
-                <ResponsiveContainer width="100%" height={160}>
-                  <LineChart data={correlationData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                    <XAxis dataKey="date" fontSize={9} stroke="hsl(var(--chart-tick))" />
-                    <YAxis domain={[0, 10]} fontSize={9} stroke="hsl(var(--chart-tick))" />
-                    <Tooltip content={<ChartTooltip />} />
-                    <Line
-                      type="monotone"
-                      dataKey="gratitude"
-                      stroke="hsl(var(--accent))"
-                      strokeWidth={2}
-                      dot={false}
-                      connectNulls
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="mood"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      dot={false}
-                      connectNulls
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-                <div className="flex justify-center gap-4 mt-2">
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--accent))" }} />
-                    {t("dashboard.gratitudeFrequency")}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--primary))" }} />
-                    {t("dashboard.gratitudeMood")}
-                  </span>
-                </div>
-              </div>
+              <CorrelationChart
+                data={correlationData}
+                lines={[
+                  { dataKey: "gratitude", stroke: "hsl(var(--accent))", label: t("dashboard.gratitudeFrequency") },
+                  { dataKey: "mood", stroke: "hsl(var(--primary))", label: t("dashboard.gratitudeMood") },
+                ]}
+                formatLabel={(name) => name === "gratitude" ? t("dashboard.gratitudeFrequency") : t("dashboard.gratitudeMood")}
+              />
             )}
           </CardContent>
         </Card>
@@ -296,13 +224,7 @@ export default function GratitudeJournal({
                 <li key={e.id} className="text-sm bg-muted/30 rounded-lg px-3 py-2">
                   <p className="text-foreground">{e.note}</p>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {new Date(e.createdAt).toLocaleDateString(
-                      i18n.language === "ru" ? "ru-RU" : "en-US",
-                      {
-                        month: "short",
-                        day: "numeric",
-                      },
-                    )}
+                    {formatDateShort(e.createdAt, i18n.language)}
                   </p>
                 </li>
               ))}

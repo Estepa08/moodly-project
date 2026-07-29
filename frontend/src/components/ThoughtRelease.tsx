@@ -2,24 +2,17 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Trash2, ChevronRight } from "lucide-react";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { components } from "../lib/api-types";
+import type { CreateEntryMutation } from "../lib/app-types";
 import { suggestDistortion } from "../lib/distortionKeywordHints";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 import { cn } from "../lib/utils";
-
-type Entry = components["schemas"]["Entry"];
 
 interface ThoughtReleaseProps {
   parameterId: string | undefined;
-  createEntry: UseMutationResult<
-    Entry,
-    Error,
-    { parameterId: string; value: number; note?: string },
-    unknown
-  >;
+  createEntry: CreateEntryMutation;
 }
 
 const DRAG_THRESHOLD = 90;
@@ -102,13 +95,12 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
       <Card className="shadow-neumorphic">
         <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
-            <textarea
+            <Textarea
               value={thought}
               onChange={(e) => setThought(e.target.value)}
               placeholder={t("distortions.letGo.placeholder")}
               rows={3}
               disabled={released}
-              className="flex w-full rounded-lg border border-border bg-card px-3 py-2 text-base shadow-neumorphic-inset transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none md:text-sm"
             />
 
             {hintKey && !released && (

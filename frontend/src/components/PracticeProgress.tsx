@@ -2,8 +2,8 @@ import { useTranslation } from "react-i18next";
 import { Wind, Heart, Moon, Brain, Scale, Sparkles } from "lucide-react";
 import { useCompletions } from "../hooks/useCreature";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { LoadingCard } from "./ui/loading-card";
 import EmptyState from "./ui/empty-state";
-import Spinner from "./ui/spinner";
 
 interface PracticeProgressProps {
   breathingSessionCount?: number;
@@ -24,13 +24,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
   const { data: completions, isLoading } = useCompletions(30);
 
   if (isLoading) {
-    return (
-      <Card className="shadow-neumorphic">
-        <CardContent className="flex justify-center py-8">
-          <Spinner size={32} />
-        </CardContent>
-      </Card>
-    );
+    return <LoadingCard />;
   }
 
   const bySource: Record<string, { count: number; xp: number }> = {};

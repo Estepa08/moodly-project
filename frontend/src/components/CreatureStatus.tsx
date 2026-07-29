@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { ProgressBar } from "./ui/progress-bar";
 import { cn } from "../lib/utils";
 
 interface CreatureStatusProps {
@@ -24,12 +25,12 @@ export default function CreatureStatus({
         {t("creature.level", { level })}
       </div>
       <div className="flex items-center gap-1.5 min-w-[120px]">
-        <div className="flex-1 h-2.5 rounded-full bg-muted overflow-hidden shadow-neumorphic-inset">
-          <div
-            className="h-full rounded-full bg-primary transition-all duration-300 shadow-neumorphic-sm"
-            style={{ width: `${expPercent}%` }}
-          />
-        </div>
+        <ProgressBar
+          segments={[{ value: expPercent, className: "rounded-full bg-primary shadow-neumorphic-sm transition-all duration-300" }]}
+          height={2.5}
+          trackClassName="bg-muted"
+          className="flex-1"
+        />
         <span className="text-[11px] text-muted-foreground tabular-nums leading-none font-medium">
           {experience}/{nextLevelExp}
         </span>
