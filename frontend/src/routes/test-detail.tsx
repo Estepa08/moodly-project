@@ -7,11 +7,11 @@ import Spinner from "../components/ui/spinner";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 import { useTestFlow } from "../hooks/useTestFlow";
 import { useTestResultText } from "../hooks/useTestResultText";
-import RadarChart from "../components/RadarChart";
-import type { DistortionEntry } from "../components/RadarChart";
-import MedicalDisclaimer from "../components/MedicalDisclaimer";
-import ContentWarningDialog from "../components/ContentWarningDialog";
-import CrisisDialog from "../components/CrisisDialog";
+import { RadarChart } from "../features/analytics";
+import type { DistortionEntry } from "../features/analytics";
+import { MedicalDisclaimer } from "../widgets";
+import { ContentWarningDialog } from "../features/dialogs";
+import { CrisisDialog } from "../features/dialogs";
 import {
   Dialog,
   DialogContent,

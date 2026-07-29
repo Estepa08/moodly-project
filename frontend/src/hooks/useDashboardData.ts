@@ -3,9 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useParameters } from "./useParameters";
 import { useEntries, useCreateEntry } from "./useEntries";
 import { useTests, useTestResults } from "./useTests";
-import { useCreatureState } from "./useCreature";
+import { useCreatureState } from "../features/gamification";
 import type { components } from "../lib/api-types";
-import type { DistortionEntry } from "../components/RadarChart";
+import type { DistortionEntry } from "../features/analytics";
 import { TEXT_PARAMS } from "../lib/constants";
 import { isWithinLastDays } from "../lib/utils";
 

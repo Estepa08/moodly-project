@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react";
 import { DISTORTION_KEYS } from "../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import DistortionQuiz from "../components/DistortionQuiz";
-import ThoughtRelease from "../components/ThoughtRelease";
+import { DistortionQuiz } from "../features/mood-entry";
+import { ThoughtRelease } from "../features/journal";
 import { useParameters } from "../hooks/useParameters";
 import { useCreateEntry } from "../hooks/useEntries";
-import { useRewardPractice } from "../hooks/useCreature";
+import { useRewardPractice } from "../features/gamification";
 
 const TABS = [
   { key: "library", labelKey: "distortions.tabLibrary" },

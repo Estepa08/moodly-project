@@ -1,88 +1,34 @@
-import { useEffect, useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCreatureState } from "../features/gamification";
 import Lottie from "lottie-react";
 import creatureAnimation from "../assets/lottie/breathing-creature.json";
-import SkipLink from "./SkipLink";
-import LowMoodAlert from "./LowMoodAlert";
-import { useLowMoodDetection } from "../hooks/useLowMoodDetection";
-import { useCreatureState } from "../hooks/useCreature";
-import { useDailyCheckIn } from "../hooks/useDailyCheckIn";
-import { celebrate } from "../lib/celebration";
-import BottomNav from "./ui/bottom-nav";
-import DailyCheckInModal from "./DailyCheckInModal";
-import StreakIndicator from "./StreakIndicator";
-import CreatureStatus from "./CreatureStatus";
-import {
-  LayoutDashboard,
-  ClipboardList,
-  BarChart3,
-  FileText,
-  MessageSquare,
-  LogOut,
-  User,
-  Wind,
-  Heart,
-  BrainCircuit,
-  Moon,
-  Sparkles,
-  ChevronDown,
-  Scale,
-} from "lucide-react";
-
-const DASHBOARD_ITEM = { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard };
-
-const PRACTICE_ITEMS = [
-  { labelKey: "nav.breathing", path: "/breathing", icon: Wind },
-  { labelKey: "nav.gratitude", path: "/gratitude-journal", icon: Heart },
-  { labelKey: "nav.distortions", path: "/distortions", icon: BrainCircuit },
-  { labelKey: "nav.sleepHygiene", path: "/sleep-hygiene", icon: Moon },
-  { labelKey: "nav.cba", path: "/cost-benefit-analysis", icon: Scale },
-];
-
-const OTHER_ITEMS = [
-  { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
-  { labelKey: "nav.results", path: "/results", icon: BarChart3 },
-  { labelKey: "nav.reports", path: "/reports", icon: FileText },
-  { labelKey: "nav.feedback", path: "/feedback", icon: MessageSquare },
-];
-
-const ALL_MORE_ITEMS = [...PRACTICE_ITEMS, ...OTHER_ITEMS];
+import { SkipLink } from "../widgets";
+import { StreakIndicator } from "../features/gamification";
+import { CreatureStatus } from "../features/gamification";
+import Sidebar from "../layout/Sidebar";
+import LayoutModals from "../layout/LayoutModals";
+import BottomNav from "../layout/BottomNav";
+import { PRACTICE_ITEMS, OTHER_ITEMS, ALL_MORE_ITEMS } from "../layout/nav-config";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout } = useAuth();
+  const { isAuthenticated, isBootstrapping } = useAuth();
   const isReducedMotion = useReducedMotion();
-  const { data: userData } = useCurrentUser();
+  const { data: creature } = useCreatureState();
   const [showCreature, setShowCreature] = useState(true);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [animKey, setAnimKey] = useState(0);
   const [prevWasCreature, setPrevWasCreature] = useState(true);
 
-  const { detected: lowMoodDetected, acknowledge: dismissLowMood } = useLowMoodDetection();
-  const { data: creature } = useCreatureState();
-  const {
-    shouldShow: showCheckIn,
-    isPending: checkInPending,
-    doCheckIn,
-    dismiss: dismissCheckIn,
-    lastResult,
-  } = useDailyCheckIn(creature);
-
-  useEffect(() => {
-    if (lastResult?.leveledUp) {
-      celebrate(
-        t("dailyCheckIn.levelUpTitle"),
-        t("dailyCheckIn.levelUpBody", { level: lastResult.state.level }),
-      );
-    }
-  }, [lastResult, t]);
+  if (isBootstrapping) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   const puddleCircles = useMemo(() => {
     const circles: { id: number; tx: number; ty: number; delay: number; size: number }[] = [];
@@ -101,13 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return circles;
   }, []);
 
-  const isPracticeActive = PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const isMoreActive = ALL_MORE_ITEMS.some((item) => location.pathname.startsWith(item.path));
-  const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
-
-  useEffect(() => {
-    if (isPracticeActive) setPracticesOpen(true);
-  }, [isPracticeActive]);
 
   useEffect(() => {
     if (isReducedMotion) return;
@@ -123,96 +63,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => clearInterval(id);
   }, [isReducedMotion, showCreature]);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
-
-  const navButtonClass = (isActive: boolean) =>
-    `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-      isActive
-        ? "text-foreground font-semibold bg-secondary/50"
-        : "text-muted-foreground hover:text-primary hover:bg-secondary/50"
-    }`;
-
   return (
     <div className="flex min-h-screen bg-background">
       <SkipLink />
-      {/* ── Desktop sidebar ── */}
-      <nav
-        aria-label={t("nav.dashboard")}
-        className="hidden md:flex flex-col w-56 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
-      >
-        <div className="text-lg font-serif font-bold text-primary mb-4 px-3">
-          {t("common.moodly")}
-        </div>
-        <div className="flex items-center gap-2 px-3 py-2 mb-4 rounded-xl bg-muted/50 shadow-neumorphic-sm">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="w-4 h-4 text-primary" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-primary truncate">
-              {userData?.name ?? userData?.email ?? "—"}
-            </p>
-            <p className="text-xs text-muted-foreground truncate">{userData?.email ?? ""}</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label={t("common.logout")}
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
-        <button
-          onClick={() => navigate(DASHBOARD_ITEM.path)}
-          className={navButtonClass(location.pathname === "/")}
-        >
-          <DASHBOARD_ITEM.icon className="w-5 h-5 shrink-0" />
-          <span className="text-sm font-medium truncate">{t(DASHBOARD_ITEM.labelKey)}</span>
-        </button>
+      <Sidebar />
 
-        <button
-          onClick={() => setPracticesOpen((o) => !o)}
-          aria-expanded={practicesOpen}
-          className={navButtonClass(isPracticeActive)}
-        >
-          <Sparkles className="w-5 h-5 shrink-0" />
-          <span className="text-sm font-medium truncate flex-1 text-left">
-            {t("nav.practices")}
-          </span>
-          <ChevronDown
-            className={`w-4 h-4 shrink-0 transition-transform duration-150 ${practicesOpen ? "rotate-180" : ""}`}
-          />
-        </button>
-        {practicesOpen && (
-          <div className="ml-4 pl-3 border-l border-border flex flex-col gap-1">
-            {PRACTICE_ITEMS.map((item) => (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className={navButtonClass(location.pathname.startsWith(item.path))}
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {OTHER_ITEMS.map((item) => (
-          <button
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className={navButtonClass(location.pathname.startsWith(item.path))}
-          >
-            <item.icon className="w-5 h-5 shrink-0" />
-            <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
-          </button>
-        ))}
-      </nav>
-
-      {/* ── Main area ── */}
       <div className="flex-1 flex flex-col min-w-0">
         <header
           className={`sticky top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${
@@ -323,7 +178,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
 
-        {/* ── Mobile bottom nav with More sheet ── */}
         <div className="md:hidden relative z-50">
           {mobileMoreOpen && (
             <>
@@ -380,14 +234,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <BottomNav onMoreOpen={() => setMobileMoreOpen((o) => !o)} isMoreActive={isMoreActive} />
         </div>
 
-        <LowMoodAlert open={lowMoodDetected} onDismiss={dismissLowMood} />
-        <DailyCheckInModal
-          open={showCheckIn}
-          onCheckIn={doCheckIn}
-          onDismiss={dismissCheckIn}
-          streak={creature?.streak ?? 0}
-          isPending={checkInPending}
-        />
+        <LayoutModals />
       </div>
 
       <svg className="absolute w-0 h-0" aria-hidden="true">

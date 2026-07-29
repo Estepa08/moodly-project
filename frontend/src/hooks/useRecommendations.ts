@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useCreatureState } from "./useCreature";
-import { useCompletions } from "./useCreature";
+import { useCreatureState } from "../features/gamification";
+import { useCompletions } from "../features/gamification";
 import { useEntries } from "./useEntries";
 import { useTestResults } from "./useTests";
 import type { LucideIcon } from "lucide-react";

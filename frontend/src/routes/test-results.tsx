@@ -9,8 +9,8 @@ import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 import { useTestResultText, getCrisisSeverity } from "../hooks/useTestResultText";
-import MedicalDisclaimer from "../components/MedicalDisclaimer";
-import CrisisDialog from "../components/CrisisDialog";
+import { MedicalDisclaimer } from "../widgets";
+import { CrisisDialog } from "../features/dialogs";
 import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 

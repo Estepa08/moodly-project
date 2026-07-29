@@ -111,12 +111,14 @@ Parameter, Test, OnboardingStory не имеют пользовательско�
 - `services/` — бизнес-логика и Prisma-запросы. Единственное место, где импортируется `prisma`.
 - `lib/` — PrismaClient, утилиты, Middleware (error handler).
 
-**Frontend:**
-- `routes/` — страницы (композиция компонентов + хуки).
-- `components/` — переиспользуемые UI-компоненты.
-- `hooks/` — кастомные React-хуки (бизнес-логика, TanStack Query).
-- `lib/` — API-клиент, утилиты.
-- `api` — единственный модуль для HTTP-запросов. Никакого `fetch()` в компонентах.
+**Frontend — Feature-based grouping (OOD/SOLID):**
+- `routes/` — страницы (композиция виджетов + хуков). Никакой реализации.
+- `components/` — только `Layout.tsx` (композитор) + `ui/` (20 чистых UI-компонентов: button, card, dialog и т.д.).
+- `layout/` — структурные компоненты приложения: Sidebar, LayoutModals, BottomNav, nav-config.
+- `features/` — доменные модули (8 шт): analytics/, breathing/, check-in/, cost-benefit-analysis/, dialogs/, gamification/, journal/, mood-entry/. Каждый модуль может содержать компоненты, hook, типы, barrel index.ts.
+- `widgets/` — самодостаточные встраиваемые блоки: WellbeingCard, InsightBanner, MedicalDisclaimer, SkipLink. Используются только в routes/.
+- `hooks/` — общие React-хуки (TanStack Query, бизнес-логика общая для нескольких фич). Хуки одной фичи — внутри `features/<feature>/`.
+- `lib/` — API-клиент (единственный модуль c HTTP-запросами), утилиты, константы, типы.
 
 ### Интернационализация (i18n)
 

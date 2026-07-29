@@ -1,14 +1,14 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import { useCreatureState, useCompleteExercise } from "../hooks/useCreature";
-import { celebrate } from "../lib/celebration";
-import BreathingGuide from "../components/BreathingGuide";
-import type { BreathingTechnique } from "../components/BreathingGuide";
+import { useCreatureState, useCompleteExercise } from "../features/gamification";
+import { celebrate } from "../features/gamification";
+import { BreathingGuide } from "../features/breathing";
+import type { BreathingTechnique } from "../features/breathing";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import { SegmentGroup, SegmentButton } from "../components/ui/segment-button";
 
-const BreathingCreature = lazy(() => import("../components/BreathingCreature"));
+const BreathingCreature = lazy(() => import("../features/breathing/BreathingCreature"));
 
 type Phase = "idle" | "countdown" | "exercising" | "done";
 

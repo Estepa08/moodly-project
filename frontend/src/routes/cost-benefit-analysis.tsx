@@ -1,16 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  useCbaExamples,
-  useCbaCommonItems,
-  useCbaEntries,
-  useCreateCbaEntry,
-  useDeleteCbaEntry,
-} from "../hooks/useCba";
-import { useRewardPractice } from "../hooks/useCreature";
-import CbaLibrary from "../components/CbaLibrary";
-import CbaEntryForm from "../components/CbaEntryForm";
-import CbaHistory from "../components/CbaHistory";
+import { useCbaExamples, useCbaCommonItems, useCbaEntries, useCreateCbaEntry, useDeleteCbaEntry, CbaLibrary, CbaEntryForm, CbaHistory } from "../features/cost-benefit-analysis";
+import { useRewardPractice } from "../features/gamification";
 import Spinner from "../components/ui/spinner";
 
 const TABS = [

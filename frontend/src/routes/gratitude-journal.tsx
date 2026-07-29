@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry } from "../hooks/useEntries";
-import { useRewardPractice } from "../hooks/useCreature";
-import GratitudeJournal from "../components/GratitudeJournal";
+import { useRewardPractice } from "../features/gamification";
+import { GratitudeJournal } from "../features/journal";
 
 export default function GratitudeJournalPage() {
   const { t } = useTranslation();
