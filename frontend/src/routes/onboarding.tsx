@@ -53,10 +53,10 @@ export default function OnboardingPage() {
     );
   };
 
-  const handleFinish = async () => {
+  const handleFinish = async (destination = "/") => {
     setSaving(true);
     await complete({ goals, experienceLevel: expLevel, dailyReminder, reminderTime });
-    navigate("/", { replace: true });
+    navigate(destination, { replace: true });
   };
 
   const handleSkip = async () => {
@@ -212,10 +212,7 @@ export default function OnboardingPage() {
               <p className="text-muted-foreground text-sm">{t("onboarding2.actionDesc")}</p>
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => {
-                    handleFinish();
-                    navigate("/");
-                  }}
+                  onClick={() => handleFinish("/")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <LayoutDashboard className="w-5 h-5 text-primary shrink-0" />
@@ -229,10 +226,7 @@ export default function OnboardingPage() {
                   </div>
                 </button>
                 <button
-                  onClick={() => {
-                    handleFinish();
-                    navigate("/breathing");
-                  }}
+                  onClick={() => handleFinish("/breathing")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Wind className="w-5 h-5 text-primary shrink-0" />
@@ -244,10 +238,7 @@ export default function OnboardingPage() {
                   </div>
                 </button>
                 <button
-                  onClick={() => {
-                    handleFinish();
-                    navigate("/tests");
-                  }}
+                  onClick={() => handleFinish("/tests")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <ClipboardList className="w-5 h-5 text-primary shrink-0" />
@@ -263,7 +254,7 @@ export default function OnboardingPage() {
                 <Button variant="ghost" onClick={() => setStep(3)}>
                   {t("common.back")}
                 </Button>
-                <Button onClick={handleFinish} disabled={saving}>
+                <Button onClick={() => handleFinish("/")} disabled={saving}>
                   {saving ? t("common.saving") : t("onboarding.getStarted")}
                 </Button>
               </div>

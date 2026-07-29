@@ -44,6 +44,7 @@
 
   body {
     @apply antialiased;
+    touch-action: manipulation;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family:
@@ -53,6 +54,10 @@
       sans-serif;
   }
 
+  .modal-overlay {
+    overscroll-behavior: contain;
+  }
+
   h1,
   h2,
   h3,
@@ -60,6 +65,51 @@
   h5,
   h6 {
     font-family: "Lora", Georgia, serif;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 267 30% 10%;
+    --foreground: 270 20% 90%;
+    --card: 267 25% 14%;
+    --card-foreground: 270 20% 90%;
+    --primary: 261 70% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 261 30% 24%;
+    --secondary-foreground: 270 20% 90%;
+    --accent: 161 60% 40%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 267 20% 18%;
+    --muted-foreground: 267 15% 65%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 267 20% 24%;
+    --input: 267 20% 24%;
+    --ring: 261 70% 60%;
+
+    --elevation-1: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --elevation-2: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --elevation-3: 0 4px 16px rgba(0, 0, 0, 0.6);
+    --elevation-4: 0 8px 24px rgba(0, 0, 0, 0.7);
+    --elevation-inset: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+
+    --chart-grid: 267 15% 22%;
+    --chart-tick: 267 15% 55%;
+  }
+
+  .animate-header-drift {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

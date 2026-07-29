@@ -17,7 +17,7 @@ beforeAll(async () => {
   const reg = await app.inject({
     method: "POST",
     url: "/auth/register",
-    payload: { email: "onboarding-test@example.com", password: "secret123" },
+    payload: { email: "onboarding-test@example.com", password: "secret123", ageConfirmed: true },
   });
   token = reg.json().accessToken;
 });

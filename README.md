@@ -1,10 +1,10 @@
 # Moodly
 
-Трекер ментального здоровья.
+Простой дневник настроения — замечайте, как меняется ваше состояние день за днём.
 
 - `api-contract/` — TypeSpec-контракт API (источник истины)
-- `backend/` — API-сервер (планируется)
-- `frontend/` — React-приложение (планируется)
+- `backend/` — Fastify + TypeScript + Prisma (PostgreSQL) API-сервер
+- `frontend/` — Vite + React + Tailwind PWA-приложение с i18n и тестами
 
 ## Разработка контракта
 

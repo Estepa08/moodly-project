@@ -114,7 +114,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold font-serif text-primary">{sliderValue}</span>
                     </div>
-                    <Slider min={0} max={10} step={1} value={[sliderValue]} onValueChange={([v]) => setSliderValue(v)} disabled={createEntry.isPending} />
+                    <Slider min={0} max={10} step={1} value={[sliderValue]} onValueChange={([v]) => setSliderValue(v)} disabled={createEntry.isPending} aria-label={t(cfg.labelKey)} />
                     <div className="flex justify-between px-0.5">
                       {Array.from({ length: 11 }, (_, i) => (
                         <span key={i} className="text-[11px] text-muted-foreground w-3 text-center">{i}</span>
@@ -132,7 +132,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                     {!showNote ? (
                       <button
                         onClick={() => { setShowNote(true); setTimeout(() => noteInputRef.current?.focus(), 100); }}
-                        className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
+                        className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 min-h-[44px]"
                         aria-label={t("dashboard.quickEntry.addNote")}
                       >
                         <Plus className="w-3 h-3" />
@@ -140,7 +140,9 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                       </button>
                     ) : (
                       <div className="flex items-center gap-2">
+                        <label className="sr-only" htmlFor="quick-entry-note">{t("dashboard.quickEntry.notePlaceholder")}</label>
                         <input
+                          id="quick-entry-note"
                           ref={noteInputRef}
                           type="text"
                           value={noteText}

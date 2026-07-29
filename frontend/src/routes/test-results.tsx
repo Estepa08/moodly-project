@@ -1,30 +1,25 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, AlertTriangle, ClipboardList } from "lucide-react";
-import { useTests, useTestResults } from "../hooks/useTests";
+import { ChevronRight, ClipboardList } from "lucide-react";
+import { useTestResults } from "../hooks/useTests";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
-import { useTestTranslation } from "../hooks/useTestTranslation";
 import { useTestResultText } from "../hooks/useTestResultText";
 import { MedicalDisclaimer } from "../widgets";
-import { SupportResources } from "../features/dialogs";
 import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
 export default function TestResultsPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { tTestTitle } = useTestTranslation();
   const { resolve } = useTestResultText();
   const [showFull, setShowFull] = useState<Record<string, boolean>>({});
   const [showScore, setShowScore] = useState<Record<string, boolean>>({});
   const [showRec, setShowRec] = useState<Record<string, boolean>>({});
-  const [showResources, setShowResources] = useState(false);
 
-  const { data: tests } = useTests();
   const { data: results, isLoading } = useTestResults();
 
   if (isLoading) {
@@ -34,19 +29,12 @@ export default function TestResultsPage() {
       </div>
     );
   }
-
-  const testMap = new Map(tests?.map((t) => [t.id, t.title]));
   const hasCDResult = results?.some(
     (r) => !!(r.flags as Record<string, unknown> | undefined)?.templateKey,
   );
 
   return (
     <>
-      <SupportResources
-        open={showResources}
-        onDismiss={() => setShowResources(false)}
-      />
-
       <div className="space-y-4 pb-20">
         <h1 className="text-xl font-bold text-foreground font-serif">{t("testResults.title")}</h1>
 
@@ -81,7 +69,7 @@ export default function TestResultsPage() {
             >
               <CardHeader className="pb-2">
                 <p className="text-xs text-muted-foreground">
-                  {tTestTitle(testMap.get(r.testId) || "")} &middot;{" "}
+                  {(r as any).testTitle} &middot;{" "}
                   {new Date(r.completedAt).toLocaleDateString(
                     i18n.language === "ru" ? "ru-RU" : "en-US",
                   )}
@@ -111,16 +99,6 @@ export default function TestResultsPage() {
                     </div>
                   )}
                 </div>
-
-                {isSevere && (
-                  <button
-                    className="w-full flex items-center justify-center gap-1.5 mb-3 px-3 py-2 rounded-lg bg-destructive/10 text-destructive text-xs font-medium cursor-pointer transition-all duration-150 active:scale-[0.97] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    onClick={() => setShowResources(true)}
-                  >
-                    <AlertTriangle className="w-3.5 h-3.5" />
-                    {t("testResults.supportResources")}
-                  </button>
-                )}
 
                 {isCD && (highKeys.length > 0 || moderateKeys.length > 0) && (
                   <div className="space-y-2 mb-3">

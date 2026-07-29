@@ -63,9 +63,24 @@ model Test {
   id          String @id @default(cuid())
   title       String
   description String?
+  type        String @default("standard")
   questions   Json
 
-  results TestResult[]
+  results    TestResult[]
+  scoreBands TestScoreBand[]
+}
+
+model TestScoreBand {
+  id             String @id @default(cuid())
+  testId         String
+  maxScore       Int
+  key            String
+  interpretation String
+  recommendation String
+
+  test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@index([testId])
 }
 
 model TestResult {

@@ -19,8 +19,8 @@ vi.mock("../../lib/api", () => ({
   getToken: vi.fn(() => null),
 }));
 
-vi.mock("../../components/RadarChart", () => ({
-  default: ({ data }: { data: { key: string; score: number }[] }) => (
+vi.mock("../../features/analytics", () => ({
+  RadarChart: ({ data }: { data: { key: string; score: number }[] }) => (
     <div>
       {data.map((d) => (
         <span key={d.key}>{d.key}</span>
@@ -169,7 +169,7 @@ describe("TestDetailPage", () => {
     expect(screen.getByText("personalization")).toBeInTheDocument();
   });
 
-  it("shows the support resources button when the result is severe", async () => {
+  it("shows a thinking patterns suggestion when the result is severe", async () => {
     const { api } = await import("../../lib/api");
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "phq9",
@@ -199,6 +199,6 @@ describe("TestDetailPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Severe depression")).toBeInTheDocument();
     });
-    expect(screen.getByText("Support resources")).toBeInTheDocument();
+    expect(screen.getByText("Learn about thinking patterns")).toBeInTheDocument();
   });
 });

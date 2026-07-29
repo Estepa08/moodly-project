@@ -18,15 +18,7 @@ describe("isSevereInterpretation", () => {
     expect(isSevereInterpretation("")).toBe(false);
   });
 
-  it("returns true when suicidalIdeation flag is set regardless of text", () => {
-    expect(isSevereInterpretation("Minimal depression", { suicidalIdeation: true })).toBe(true);
-  });
-
-  it("returns true when suicidalPlan flag is set regardless of text", () => {
-    expect(isSevereInterpretation("Mild anxiety", { suicidalPlan: true })).toBe(true);
-  });
-
-  it("returns false when flags are present but empty", () => {
+  it("returns false for minimal text even with empty flags", () => {
     expect(isSevereInterpretation("Minimal depression", {})).toBe(false);
   });
 

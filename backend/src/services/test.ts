@@ -38,8 +38,10 @@ export const testService = {
       return sum + Math.max(...q.options.map((o) => o.score));
     }, 0);
 
-    const { interpretation, recommendation, flags } = getInterpretation(
+    const { interpretation, recommendation, flags } = await getInterpretation(
+      test.id,
       test.title,
+      test.type,
       score,
       maxScore,
       answers,
@@ -66,7 +68,8 @@ export const testService = {
         orderBy: { completedAt: "desc" },
         skip,
         take: take ?? 200,
-      }),
+        include: { test: { select: { title: true } } },
+      }).then((results) => results.map((r) => ({ ...r, testTitle: r.test.title }))),
       prisma.testResult.count({ where }),
     ]);
     return { data, total };

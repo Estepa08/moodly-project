@@ -1,4 +1,3 @@
-import { useTestTranslation } from "./useTestTranslation";
 import { Trend } from "../lib/constants";
 
 interface ResultFlags {
@@ -6,8 +5,7 @@ interface ResultFlags {
   recommendationKey?: string;
   highKeys?: string[];
   moderateKeys?: string[];
-  suicidalIdeation?: boolean;
-  suicidalPlan?: boolean;
+  bandKey?: string;
 }
 
 interface ResultLike {
@@ -17,36 +15,26 @@ interface ResultLike {
 }
 
 export function isSevereInterpretation(
-  interpretation: string,
+  _interpretation: string,
   flags?: ResultFlags,
 ): boolean {
-  if (flags?.suicidalIdeation || flags?.suicidalPlan) return true;
-  return interpretation.startsWith("Severe") || interpretation.startsWith("Extreme");
+  const key = flags?.bandKey || flags?.templateKey || "";
+  return ["severe", "extreme", "moderatelySevere"].includes(key);
 }
 
 export function useTestResultText() {
-  const { tInterpretation, tRecommendation, tCDInterpretation, tCDRecommendation } =
-    useTestTranslation();
-
   function resolve(result: ResultLike) {
     const flags = result.flags as ResultFlags | undefined;
     const isCD = flags?.templateKey !== undefined;
     const highKeys = flags?.highKeys || [];
     const moderateKeys = flags?.moderateKeys || [];
 
-    const interpretationText = isCD
-      ? tCDInterpretation(flags!.templateKey!, highKeys, moderateKeys, result.interpretation)
-      : tInterpretation(result.interpretation);
-    const recommendationText = isCD
-      ? tCDRecommendation(flags!.recommendationKey || "minimal", result.recommendation)
-      : tRecommendation(result.recommendation);
-
     return {
       isCD,
       highKeys,
       moderateKeys,
-      interpretationText,
-      recommendationText,
+      interpretationText: result.interpretation,
+      recommendationText: result.recommendation,
       isSevere: isSevereInterpretation(result.interpretation, flags),
     };
   }

@@ -1,10 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const neumorphicSm = "3px 3px 6px rgba(160, 140, 180, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.9)";
-const neumorphic = "6px 6px 12px rgba(160, 140, 180, 0.35), -6px -6px 12px rgba(255, 255, 255, 0.9)";
-const neumorphicLg = "8px 8px 20px rgba(160, 140, 180, 0.4), -8px -8px 20px rgba(255, 255, 255, 0.9)";
-const neumorphicXl = "12px 12px 28px rgba(160, 140, 180, 0.45), -12px -12px 28px rgba(255, 255, 255, 0.85)";
-const neumorphicInset = "inset 2px 2px 5px rgba(160, 140, 180, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.8)";
-
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -53,16 +47,16 @@ export default {
         "card-gradient": "linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary) / 0.3))",
       },
       boxShadow: {
-        "neumorphic-sm": neumorphicSm,
-        "neumorphic": neumorphic,
-        "neumorphic-lg": neumorphicLg,
-        "neumorphic-xl": neumorphicXl,
-        "neumorphic-inset": neumorphicInset,
-        "elevation-1": neumorphicSm,
-        "elevation-2": neumorphic,
-        "elevation-3": neumorphicLg,
-        "elevation-4": neumorphicXl,
-        "elevation-inset": neumorphicInset,
+        "neumorphic-sm": "var(--elevation-1)",
+        "neumorphic": "var(--elevation-2)",
+        "neumorphic-lg": "var(--elevation-3)",
+        "neumorphic-xl": "var(--elevation-4)",
+        "neumorphic-inset": "var(--elevation-inset)",
+        "elevation-1": "var(--elevation-1)",
+        "elevation-2": "var(--elevation-2)",
+        "elevation-3": "var(--elevation-3)",
+        "elevation-4": "var(--elevation-4)",
+        "elevation-inset": "var(--elevation-inset)",
       },
     },
   },

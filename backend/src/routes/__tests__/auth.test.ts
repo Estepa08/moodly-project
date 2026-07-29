@@ -17,7 +17,7 @@ describe("Auth", () => {
     const res = await app.inject({
       method: "POST",
       url: "/auth/register",
-      payload: { email: "test@example.com", password: "secret123", name: "Test" },
+      payload: { email: "test@example.com", password: "secret123", name: "Test", ageConfirmed: true },
     });
     expect(res.statusCode).toBe(200);
     const body = res.json();
@@ -29,7 +29,7 @@ describe("Auth", () => {
     const res = await app.inject({
       method: "POST",
       url: "/auth/register",
-      payload: { email: "test@example.com", password: "secret123" },
+      payload: { email: "test@example.com", password: "secret123", ageConfirmed: true },
     });
     expect(res.statusCode).toBe(409);
   });

@@ -2,7 +2,7 @@
 
 ## Project
 
-Moodly — трекер ментального здоровья. Единственная реализованная часть — API-контракт.
+Moodly — дневник настроения. Полный стек: API-контракт (TypeSpec), backend (Fastify + Prisma), frontend (React + Vite + Tailwind), инфраструктура (Docker + CI/CD).
 
 ## Language
 
@@ -156,7 +156,7 @@ Parameter, Test, OnboardingStory не имеют пользовательско�
 
 ## UI Design System — Beyond Neumorphism
 
-Стиль: **Neumorphism** (soft UI) для mental health трекера на лавандово-фиолетовой основе с зелёным акцентом.
+Стиль: **Neumorphism** (soft UI) для дневника настроения на лавандово-фиолетовой основе с зёленым акцентом.
 
 ### Style
 

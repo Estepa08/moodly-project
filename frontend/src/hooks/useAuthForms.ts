@@ -17,7 +17,6 @@ export function useAuthForms() {
   const [regName, setRegName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
-  const [regConsent, setRegConsent] = useState(false);
   const [regError, setRegError] = useState("");
 
   const [demoLoading, setDemoLoading] = useState(false);
@@ -39,10 +38,6 @@ export function useAuthForms() {
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!regConsent) {
-      setRegError(t("register.consentRequired"));
-      return;
-    }
     setRegError("");
     try {
       const res = await api.auth.register({
@@ -86,8 +81,6 @@ export function useAuthForms() {
     setRegEmail,
     regPassword,
     setRegPassword,
-    regConsent,
-    setRegConsent,
     regError,
     demoLoading,
     handleLoginSubmit,

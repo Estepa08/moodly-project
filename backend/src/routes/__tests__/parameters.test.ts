@@ -20,7 +20,7 @@ beforeAll(async () => {
   const res = await app.inject({
     method: "POST",
     url: "/auth/register",
-    payload: { email: "params-test@example.com", password: "secret123" },
+    payload: { email: "params-test@example.com", password: "secret123", ageConfirmed: true },
   });
   token = res.json().accessToken;
 });

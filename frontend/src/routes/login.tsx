@@ -9,7 +9,7 @@ import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 import { cn } from "../lib/utils";
-import { Heart, Info, ChevronDown, PhoneCall } from "lucide-react";
+import { Heart, Info, ChevronDown } from "lucide-react";
 
 interface Props {
   defaultRegister?: boolean;
@@ -35,8 +35,6 @@ export default function LoginPage({ defaultRegister }: Props) {
     setRegEmail,
     regPassword,
     setRegPassword,
-    regConsent,
-    setRegConsent,
     regError,
     demoLoading,
     handleLoginSubmit,
@@ -62,7 +60,7 @@ export default function LoginPage({ defaultRegister }: Props) {
     if (reducedMotion) return {};
     const base = "transition-all duration-300";
     return {
-      className: entering ? `${base} opacity-100 translate-x-0` : `${base} opacity-0 translate-x-4`,
+      className: entering ? `${base} ease-out opacity-100 translate-x-0` : `${base} ease-out opacity-0 translate-x-4`,
       style: entering ? staggerEnter(i) : staggerExit(i),
     };
   };
@@ -71,10 +69,10 @@ export default function LoginPage({ defaultRegister }: Props) {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 relative">
-      <div className="absolute top-4 right-4 flex items-center gap-1 text-xs z-10">
+      <div className="absolute top-4 right-4 flex items-center gap-2 text-xs z-10">
         <button
           className={cn(
-            "px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground",
           )}
           onClick={() => i18n.changeLanguage("en")}
@@ -84,7 +82,7 @@ export default function LoginPage({ defaultRegister }: Props) {
         <span className="text-muted-foreground">|</span>
         <button
           className={cn(
-            "px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground",
           )}
           onClick={() => i18n.changeLanguage("ru")}
@@ -93,29 +91,29 @@ export default function LoginPage({ defaultRegister }: Props) {
         </button>
       </div>
 
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-md">
         <Card>
           <CardContent className="p-6 space-y-5">
             {/* ── Warm welcome ── */}
-            <div className="text-center space-y-2">
+            <div className="text-center space-y-3">
               <div className="flex justify-center">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
                   <Heart className="w-6 h-6 text-primary" />
                 </div>
               </div>
-              <h2 className="text-xl font-serif font-semibold text-foreground">
+              <h2 className="text-2xl font-serif font-semibold text-foreground">
                 {t("login.title")}
               </h2>
-              <p className="text-sm font-medium text-foreground">{t("login.tagline")}</p>
-              <p className="text-sm text-muted-foreground">{t("login.welcomeMessage")}</p>
+              <p className="text-base font-medium text-foreground">{t("login.tagline")}</p>
+              <p className="text-base text-muted-foreground">{t("login.welcomeMessage")}</p>
               <p className="text-xs text-muted-foreground">{t("login.privacyNotice")}</p>
             </div>
 
             {/* ── Auth form ── */}
-            <div
-              className={cn(
-                reducedMotion ? "" : "flex transition-transform duration-300 ease-in-out",
-              )}
+          <div
+            className={cn(
+              reducedMotion ? "" : "flex transition-transform duration-300 ease-out",
+            )}
               style={{
                 transform: reducedMotion || isLogin ? "translateX(0)" : "translateX(-100%)",
               }}
@@ -244,18 +242,6 @@ export default function LoginPage({ defaultRegister }: Props) {
                       hideLabel={t("common.hidePassword")}
                     />
                   </div>
-                  <label
-                    className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer"
-                    {...a(4, !isLogin)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={regConsent}
-                      onChange={(e) => setRegConsent(e.target.checked)}
-                      className="mt-0.5 shrink-0 cursor-pointer"
-                    />
-                    <span>{t("register.consent")}</span>
-                  </label>
                   {regError && (
                     <p className="text-sm text-destructive" role="alert" {...a(5, !isLogin)}>
                       {regError}
@@ -276,37 +262,6 @@ export default function LoginPage({ defaultRegister }: Props) {
                   </p>
                 </form>
               </div>
-            </div>
-
-            {/* ── Support resources ── */}
-            <div className="rounded-xl bg-secondary/50 border border-border p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <PhoneCall className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium text-foreground">{t("supportResources.helpline")}</span>
-              </div>
-              {isRu ? (
-                <div className="flex gap-2 text-xs font-bold">
-                  <a
-                    href="tel:112"
-                    className="text-primary hover:text-primary/80 transition-colors"
-                  >
-                    112
-                  </a>
-                  <a
-                    href="tel:88002000122"
-                    className="text-primary hover:text-primary/80 transition-colors"
-                  >
-                    8-800-200-01-22
-                  </a>
-                </div>
-              ) : (
-                <a
-                  href="tel:988"
-                  className="text-xs font-bold text-primary hover:text-primary/80 transition-colors"
-                >
-                  988
-                </a>
-              )}
             </div>
 
             {/* ── Collapsible disclaimer ── */}

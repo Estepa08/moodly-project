@@ -4,13 +4,11 @@ import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
-import { useTestTranslation } from "../hooks/useTestTranslation";
 import { useTestFlow } from "../hooks/useTestFlow";
 import { useTestResultText } from "../hooks/useTestResultText";
 import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
 import { MedicalDisclaimer } from "../widgets";
-import { SupportResources } from "../features/dialogs";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +24,6 @@ export default function TestDetailPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { testId } = useParams<{ testId: string }>();
-  const { tQuestion, tOption, tTestTitle } = useTestTranslation();
   const { resolve } = useTestResultText();
 
   const {
@@ -48,8 +45,6 @@ export default function TestDetailPage() {
     handleGoToQuestion,
   } = useTestFlow(testId);
 
-  const [showResources, setShowResources] = useState(false);
-
   // ── Result view ──
   if (result && test) {
     const maxScore = test.questions.length * 3;
@@ -59,15 +54,11 @@ export default function TestDetailPage() {
 
     return (
       <>
-        <SupportResources
-          open={showResources}
-          onDismiss={() => setShowResources(false)}
-        />
         <div className="max-w-lg mx-auto pb-20">
           <Card>
             <CardHeader>
               <CardTitle>
-                {tTestTitle(test.title)} — {t("testDetail.result")}
+                {test.title} — {t("testDetail.result")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -94,8 +85,8 @@ export default function TestDetailPage() {
                 <p className="text-muted-foreground">{recommendationText}</p>
               </div>
               {isSevere && (
-                <Button variant="outline" className="w-full" onClick={() => setShowResources(true)}>
-                  {t("testDetail.supportResources")}
+                <Button variant="outline" className="w-full" onClick={() => navigate("/thinking-patterns")}>
+                  {t("testResults.nextDistortions")}
                 </Button>
               )}
               <Button className="w-full" onClick={() => navigate("/results")}>
@@ -156,10 +147,10 @@ export default function TestDetailPage() {
                   <Check className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{tQuestion(q.id, q.text)}</p>
+                  <p className="text-sm truncate">{q.text}</p>
                   {opt && (
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      {tOption(opt.id, opt.text)}
+                      {opt.text}
                     </p>
                   )}
                 </div>
@@ -192,7 +183,7 @@ export default function TestDetailPage() {
       <header className="flex items-center justify-between">
         <div className="w-20" />
         <h1 className="text-lg font-semibold text-foreground font-serif">
-          {tTestTitle(test.title)}
+          {test.title}
         </h1>
         <Button variant="ghost" size="sm" onClick={() => setShowExitConfirm(true)}>
           {t("testDetail.exit")}
@@ -230,7 +221,7 @@ export default function TestDetailPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-base font-medium">
-            {tQuestion(question.id, question.text)}
+            {question.text}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -250,7 +241,7 @@ export default function TestDetailPage() {
                 }}
                 disabled={submitMutation.isPending}
               >
-                {tOption(option.id, option.text)}
+                {option.text}
                 {isSelected && (
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 animate-in fade-in zoom-in">
                     <Check className="w-4 h-4" />

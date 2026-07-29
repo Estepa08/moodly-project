@@ -23,11 +23,11 @@ export const PERIODS = [
 ] as const;
 
 const TEST_ABBR_KEYS: Record<string, string> = {
-  "PHQ-9": "tests.abbreviation.phq9",
-  "GAD-7": "tests.abbreviation.gad7",
-  "Burns Anxiety Inventory": "tests.abbreviation.bai",
-  "Burns Depression Checklist": "tests.abbreviation.bdc",
-  "Cognitive Distortions Assessment": "tests.abbreviation.cd",
+  "Оценка настроения": "tests.abbreviation.phq9",
+  "Оценка уровня тревоги": "tests.abbreviation.gad7",
+  "Оценка тревоги по шкале Бернса": "tests.abbreviation.bai",
+  "Оценка депрессии по шкале Бернса": "tests.abbreviation.bdc",
+  "Определение когнитивных искажений": "tests.abbreviation.cd",
 };
 
 function getDateRange(period: Period): { from?: string; to?: string } {

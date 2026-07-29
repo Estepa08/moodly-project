@@ -11,7 +11,7 @@ beforeAll(async () => {
   const res = await app.inject({
     method: "POST",
     url: "/auth/register",
-    payload: { email: "user-test@example.com", password: "secret123", name: "Original" },
+    payload: { email: "user-test@example.com", password: "secret123", name: "Original", ageConfirmed: true },
   });
   token = res.json().accessToken;
 });
@@ -46,7 +46,7 @@ describe("Users", () => {
     const reg = await app.inject({
       method: "POST",
       url: "/auth/register",
-      payload: { email: "delete-me@example.com", password: "secret123" },
+      payload: { email: "delete-me@example.com", password: "secret123", ageConfirmed: true },
     });
     const token2 = reg.json().accessToken;
 

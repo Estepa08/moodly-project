@@ -5,14 +5,6 @@ import { Wind, Heart, BrainCircuit, Moon, Scale, Clock } from "lucide-react";
 
 const PRACTICES = [
   {
-    path: "/breathing",
-    icon: Wind,
-    labelKey: "nav.breathing",
-    descKey: "practices.descBreathing",
-    timeKey: "practices.timeBreathing",
-    categoryKey: "practices.categoryBody",
-  },
-  {
     path: "/gratitude-journal",
     icon: Heart,
     labelKey: "nav.gratitude",
@@ -43,6 +35,14 @@ const PRACTICES = [
     descKey: "practices.descCba",
     timeKey: "practices.timeCba",
     categoryKey: "practices.categoryMind",
+  },
+  {
+    path: "/breathing",
+    icon: Wind,
+    labelKey: "nav.breathing",
+    descKey: "practices.descBreathing",
+    timeKey: "practices.timeBreathing",
+    categoryKey: "practices.categoryBody",
   },
 ];
 

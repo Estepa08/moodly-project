@@ -17,7 +17,7 @@ export default function Sidebar() {
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
 
   useEffect(() => {
-    if (isPracticeActive) setPracticesOpen(true);
+    setPracticesOpen(isPracticeActive);
   }, [isPracticeActive]);
 
   const handleLogout = async () => {

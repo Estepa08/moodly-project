@@ -2,494 +2,524 @@ import bcrypt from "bcrypt";
 import { prisma } from "./lib/prisma.js";
 
 const parameters = [
-  { name: "Anxiety", description: "Overall anxiety level", unit: "/10" },
-  { name: "Sleep", description: "Sleep quality", unit: "/10" },
-  { name: "Mood", description: "General mood", unit: "/10" },
-  { name: "Energy", description: "Energy level", unit: "/10" },
-  { name: "Gratitude", description: "Daily gratitude note", unit: null },
-  { name: "Sleep Hygiene", description: "Nightly sleep hygiene checklist", unit: null },
-  { name: "Distortion Quiz", description: "Cognitive distortion quiz score", unit: null },
-  { name: "Thought Release", description: "Cognitive-distortion release ritual log", unit: null },
+  { name: "Anxiety", description: "Общий уровень тревоги", unit: "/10" },
+  { name: "Sleep", description: "Качество сна", unit: "/10" },
+  { name: "Mood", description: "Общее настроение", unit: "/10" },
+  { name: "Energy", description: "Уровень энергии", unit: "/10" },
+  { name: "Gratitude", description: "Ежедневная заметка благодарности", unit: null },
+  { name: "Sleep Hygiene", description: "Ночной чек-лист гигиены сна", unit: null },
+  { name: "Distortion Quiz", description: "Баллы теста когнитивных искажений", unit: null },
+  { name: "Thought Release", description: "Журнал ритуала отпускания мыслей", unit: null },
 ];
 
 const baiOptions = [
-  { id: "bai-o-0", text: "Not at all", score: 0 },
-  { id: "bai-o-1", text: "Somewhat", score: 1 },
-  { id: "bai-o-2", text: "Moderately", score: 2 },
-  { id: "bai-o-3", text: "A lot", score: 3 },
+  { id: "bai-o-0", text: "Нет", score: 0 },
+  { id: "bai-o-1", text: "Слегка", score: 1 },
+  { id: "bai-o-2", text: "Умеренно", score: 2 },
+  { id: "bai-o-3", text: "Сильно", score: 3 },
 ];
 
 const bdcOptions = [
-  { id: "bdc-o-0", text: "Not at all", score: 0 },
-  { id: "bdc-o-1", text: "Somewhat", score: 1 },
-  { id: "bdc-o-2", text: "Moderately", score: 2 },
-  { id: "bdc-o-3", text: "A lot", score: 3 },
-  { id: "bdc-o-4", text: "Extremely", score: 4 },
+  { id: "bdc-o-0", text: "Нет", score: 0 },
+  { id: "bdc-o-1", text: "Слегка", score: 1 },
+  { id: "bdc-o-2", text: "Умеренно", score: 2 },
+  { id: "bdc-o-3", text: "Сильно", score: 3 },
+  { id: "bdc-o-4", text: "Крайне сильно", score: 4 },
 ];
 
 const tests = [
   {
-    title: "PHQ-9",
-    description: "Patient Health Questionnaire — depression screening",
+    title: "Оценка настроения",
+    description: "Опросник для оценки настроения — скрининг депрессии",
+    type: "standard",
     questions: [
       {
         id: "phq9-1",
-        text: "Little interest or pleasure in doing things",
+        text: "Потеря интереса или удовольствия от дел",
         options: [
-          { id: "phq9-1-0", text: "Not at all", score: 0 },
-          { id: "phq9-1-1", text: "Several days", score: 1 },
-          { id: "phq9-1-2", text: "More than half the days", score: 2 },
-          { id: "phq9-1-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-1-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-1-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-1-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-1-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-2",
-        text: "Feeling down, depressed, or hopeless",
+        text: "Подавленное настроение, депрессия или чувство безнадёжности",
         options: [
-          { id: "phq9-2-0", text: "Not at all", score: 0 },
-          { id: "phq9-2-1", text: "Several days", score: 1 },
-          { id: "phq9-2-2", text: "More than half the days", score: 2 },
-          { id: "phq9-2-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-2-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-2-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-2-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-2-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-3",
-        text: "Trouble falling or staying asleep, or sleeping too much",
+        text: "Проблемы со сном: трудности засыпания, прерывистый сон или сонливость",
         options: [
-          { id: "phq9-3-0", text: "Not at all", score: 0 },
-          { id: "phq9-3-1", text: "Several days", score: 1 },
-          { id: "phq9-3-2", text: "More than half the days", score: 2 },
-          { id: "phq9-3-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-3-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-3-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-3-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-3-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-4",
-        text: "Feeling tired or having little energy",
+        text: "Утомляемость или упадок сил",
         options: [
-          { id: "phq9-4-0", text: "Not at all", score: 0 },
-          { id: "phq9-4-1", text: "Several days", score: 1 },
-          { id: "phq9-4-2", text: "More than half the days", score: 2 },
-          { id: "phq9-4-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-4-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-4-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-4-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-4-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-5",
-        text: "Poor appetite or overeating",
+        text: "Отсутствие аппетита или переедание",
         options: [
-          { id: "phq9-5-0", text: "Not at all", score: 0 },
-          { id: "phq9-5-1", text: "Several days", score: 1 },
-          { id: "phq9-5-2", text: "More than half the days", score: 2 },
-          { id: "phq9-5-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-5-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-5-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-5-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-5-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-6",
-        text: "Feeling bad about yourself — or that you are a failure or have let yourself or your family down",
+        text: "Негативное отношение к себе — чувство неудачи или что подвели себя или семью",
         options: [
-          { id: "phq9-6-0", text: "Not at all", score: 0 },
-          { id: "phq9-6-1", text: "Several days", score: 1 },
-          { id: "phq9-6-2", text: "More than half the days", score: 2 },
-          { id: "phq9-6-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-6-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-6-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-6-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-6-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-7",
-        text: "Trouble concentrating on things, such as reading the newspaper or watching television",
+        text: "Трудности с концентрацией внимания (например, при чтении газеты или просмотре телевизора)",
         options: [
-          { id: "phq9-7-0", text: "Not at all", score: 0 },
-          { id: "phq9-7-1", text: "Several days", score: 1 },
-          { id: "phq9-7-2", text: "More than half the days", score: 2 },
-          { id: "phq9-7-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-7-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-7-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-7-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-7-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "phq9-8",
-        text: "Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual",
+        text: "Вы говорили или двигались так медленно, что это замечали другие? Или наоборот — были так возбуждены, что двигались гораздо больше обычного",
         options: [
-          { id: "phq9-8-0", text: "Not at all", score: 0 },
-          { id: "phq9-8-1", text: "Several days", score: 1 },
-          { id: "phq9-8-2", text: "More than half the days", score: 2 },
-          { id: "phq9-8-3", text: "Nearly every day", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-9",
-        text: "Thoughts that you would be better off dead or of hurting yourself in some way",
-        options: [
-          { id: "phq9-9-0", text: "Not at all", score: 0 },
-          { id: "phq9-9-1", text: "Several days", score: 1 },
-          { id: "phq9-9-2", text: "More than half the days", score: 2 },
-          { id: "phq9-9-3", text: "Nearly every day", score: 3 },
+          { id: "phq9-8-0", text: "Совсем нет", score: 0 },
+          { id: "phq9-8-1", text: "Несколько дней", score: 1 },
+          { id: "phq9-8-2", text: "Более половины дней", score: 2 },
+          { id: "phq9-8-3", text: "Почти каждый день", score: 3 },
         ],
       },
     ],
   },
   {
-    title: "GAD-7",
-    description: "Generalized Anxiety Disorder Assessment",
+    title: "Оценка уровня тревоги",
+    description: "Оценка генерализованного тревожного расстройства",
+    type: "standard",
     questions: [
       {
         id: "gad7-1",
-        text: "Feeling nervous, anxious, or on edge",
+        text: "Нервозность, тревожность, ощущение напряжённости",
         options: [
-          { id: "gad7-1-0", text: "Not at all", score: 0 },
-          { id: "gad7-1-1", text: "Several days", score: 1 },
-          { id: "gad7-1-2", text: "More than half the days", score: 2 },
-          { id: "gad7-1-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-1-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-1-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-1-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-1-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "gad7-2",
-        text: "Not being able to stop or control worrying",
+        text: "Неконтролируемое беспокойство",
         options: [
-          { id: "gad7-2-0", text: "Not at all", score: 0 },
-          { id: "gad7-2-1", text: "Several days", score: 1 },
-          { id: "gad7-2-2", text: "More than half the days", score: 2 },
-          { id: "gad7-2-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-2-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-2-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-2-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-2-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "gad7-3",
-        text: "Worrying too much about different things",
+        text: "Чрезмерное беспокойство по разным поводам",
         options: [
-          { id: "gad7-3-0", text: "Not at all", score: 0 },
-          { id: "gad7-3-1", text: "Several days", score: 1 },
-          { id: "gad7-3-2", text: "More than half the days", score: 2 },
-          { id: "gad7-3-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-3-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-3-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-3-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-3-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "gad7-4",
-        text: "Trouble relaxing",
+        text: "Трудности с расслаблением",
         options: [
-          { id: "gad7-4-0", text: "Not at all", score: 0 },
-          { id: "gad7-4-1", text: "Several days", score: 1 },
-          { id: "gad7-4-2", text: "More than half the days", score: 2 },
-          { id: "gad7-4-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-4-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-4-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-4-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-4-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "gad7-5",
-        text: "Being so restless that it is hard to sit still",
+        text: "Такая беспокойность, что трудно усидеть на месте",
         options: [
-          { id: "gad7-5-0", text: "Not at all", score: 0 },
-          { id: "gad7-5-1", text: "Several days", score: 1 },
-          { id: "gad7-5-2", text: "More than half the days", score: 2 },
-          { id: "gad7-5-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-5-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-5-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-5-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-5-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "gad7-6",
-        text: "Becoming easily annoyed or irritable",
+        text: "Раздражительность или вспыльчивость",
         options: [
-          { id: "gad7-6-0", text: "Not at all", score: 0 },
-          { id: "gad7-6-1", text: "Several days", score: 1 },
-          { id: "gad7-6-2", text: "More than half the days", score: 2 },
-          { id: "gad7-6-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-6-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-6-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-6-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-6-3", text: "Почти каждый день", score: 3 },
         ],
       },
       {
         id: "gad7-7",
-        text: "Feeling afraid as if something awful might happen",
+        text: "Чувство страха, будто может случиться что-то ужасное",
         options: [
-          { id: "gad7-7-0", text: "Not at all", score: 0 },
-          { id: "gad7-7-1", text: "Several days", score: 1 },
-          { id: "gad7-7-2", text: "More than half the days", score: 2 },
-          { id: "gad7-7-3", text: "Nearly every day", score: 3 },
+          { id: "gad7-7-0", text: "Совсем нет", score: 0 },
+          { id: "gad7-7-1", text: "Несколько дней", score: 1 },
+          { id: "gad7-7-2", text: "Более половины дней", score: 2 },
+          { id: "gad7-7-3", text: "Почти каждый день", score: 3 },
         ],
       },
     ],
   },
   {
-    title: "Burns Anxiety Inventory",
+    title: "Оценка тревоги по шкале Бернса",
     description:
-      "BAI — anxiety assessment by Dr. David Burns. 33 items across anxious feelings, thoughts, and physical symptoms.",
+      "Оценка тревоги по шкале Бернса. 33 пункта: тревожные чувства, мысли и физические симптомы.",
+    type: "standard",
     questions: [
-      { id: "bai-1", text: "Anxiety, nervousness, worry or fear", options: baiOptions },
+      { id: "bai-1", text: "Тревога, нервозность, беспокойство или страх", options: baiOptions },
       {
         id: "bai-2",
-        text: "Feeling that things around you are strange, unreal or foggy",
+        text: "Ощущение, что происходящее вокруг странное, нереальное или туманное",
         options: baiOptions,
       },
-      { id: "bai-3", text: "Feeling detached from all or part of your body", options: baiOptions },
-      { id: "bai-4", text: "Sudden unexpected panic spells", options: baiOptions },
-      { id: "bai-5", text: "Apprehension or a sense of impending doom", options: baiOptions },
-      { id: "bai-6", text: "Feeling tense, stressed, uptight or on edge", options: baiOptions },
-      { id: "bai-7", text: "Difficulty concentrating", options: baiOptions },
+      { id: "bai-3", text: "Ощущение отстранённости от всего или части тела", options: baiOptions },
+      { id: "bai-4", text: "Внезапные неожиданные приступы паники", options: baiOptions },
+      { id: "bai-5", text: "Опасение или чувство неминуемой беды", options: baiOptions },
+      { id: "bai-6", text: "Чувство напряжённости, стресса или взвинченности", options: baiOptions },
+      { id: "bai-7", text: "Трудности с концентрацией внимания", options: baiOptions },
       {
         id: "bai-8",
-        text: "Racing thoughts or mind jumping from one thing to the next",
+        text: "Мысли скачут или разум перескакивает с одного на другое",
         options: baiOptions,
       },
-      { id: "bai-9", text: "Frightening fantasies or daydreams", options: baiOptions },
+      { id: "bai-9", text: "Пугающие фантазии или грёзы", options: baiOptions },
       {
         id: "bai-10",
-        text: "Feeling that you're on the verge of losing control",
+        text: "Ощущение, что вы вот-вот потеряете контроль",
         options: baiOptions,
       },
-      { id: "bai-11", text: "Fears of cracking up or going crazy", options: baiOptions },
-      { id: "bai-12", text: "Fears of fainting or passing out", options: baiOptions },
+      { id: "bai-11", text: "Страх сойти с ума или потерять рассудок", options: baiOptions },
+      { id: "bai-12", text: "Страх обморока или потери сознания", options: baiOptions },
       {
         id: "bai-13",
-        text: "Fears of physical illness or heart attacks or dying",
+        text: "Страх физической болезни, сердечного приступа или смерти",
         options: baiOptions,
       },
       {
         id: "bai-14",
-        text: "Concerns about looking foolish or inadequate in front of others",
+        text: "Беспокойство о том, что вы выглядите глупо или неадекватно",
         options: baiOptions,
       },
-      { id: "bai-15", text: "Fears of being alone, isolated, or abandoned", options: baiOptions },
-      { id: "bai-16", text: "Fears of criticism or disapproval", options: baiOptions },
+      { id: "bai-15", text: "Страх одиночества, изоляции или быть покинутым", options: baiOptions },
+      { id: "bai-16", text: "Страх критики или неодобрения", options: baiOptions },
       {
         id: "bai-17",
-        text: "Fears that something terrible is about to happen",
+        text: "Страх, что должно случиться что-то ужасное",
         options: baiOptions,
       },
       {
         id: "bai-18",
-        text: "Skipping, racing or pounding of the heart (palpitations)",
+        text: "Сердцебиение, учащённый пульс или перебои в сердце",
         options: baiOptions,
       },
-      { id: "bai-19", text: "Pain, pressure or tightness in the chest", options: baiOptions },
-      { id: "bai-20", text: "Tingling or numbness in the toes or fingers", options: baiOptions },
-      { id: "bai-21", text: "Butterflies or discomfort in the stomach", options: baiOptions },
-      { id: "bai-22", text: "Constipation or diarrhea", options: baiOptions },
-      { id: "bai-23", text: "Restlessness or jumpiness", options: baiOptions },
-      { id: "bai-24", text: "Tight, tense muscles", options: baiOptions },
-      { id: "bai-25", text: "Sweating not brought on by heat", options: baiOptions },
-      { id: "bai-26", text: "A lump in the throat", options: baiOptions },
-      { id: "bai-27", text: "Trembling or shaking", options: baiOptions },
-      { id: "bai-28", text: "Rubbery or jelly legs", options: baiOptions },
-      { id: "bai-29", text: "Feeling dizzy, lightheaded or off balance", options: baiOptions },
+      { id: "bai-19", text: "Боль, давление или сжатие в груди", options: baiOptions },
+      { id: "bai-20", text: "Покалывание или онемение в пальцах рук или ног", options: baiOptions },
+      { id: "bai-21", text: "Бабочки в животе или дискомфорт в желудке", options: baiOptions },
+      { id: "bai-22", text: "Запор или диарея", options: baiOptions },
+      { id: "bai-23", text: "Беспокойство или вздрагивание", options: baiOptions },
+      { id: "bai-24", text: "Напряжённые, скованные мышцы", options: baiOptions },
+      { id: "bai-25", text: "Потливость без физической причины", options: baiOptions },
+      { id: "bai-26", text: "Ком в горле", options: baiOptions },
+      { id: "bai-27", text: "Дрожь или тремор", options: baiOptions },
+      { id: "bai-28", text: "Ватные ноги", options: baiOptions },
+      {
+        id: "bai-29",
+        text: "Головокружение, дурнота или нарушение равновесия",
+        options: baiOptions,
+      },
       {
         id: "bai-30",
-        text: "Choking or smothering sensations or difficulty breathing",
+        text: "Ощущение удушья или затруднённое дыхание",
         options: baiOptions,
       },
-      { id: "bai-31", text: "Headaches or pains in the neck or back", options: baiOptions },
-      { id: "bai-32", text: "Hot flashes or cold chills", options: baiOptions },
-      { id: "bai-33", text: "Feeling tired, weak, or easily exhausted", options: baiOptions },
+      { id: "bai-31", text: "Головные боли или боли в шее и спине", options: baiOptions },
+      { id: "bai-32", text: "Приливы жара или озноб", options: baiOptions },
+      { id: "bai-33", text: "Чувство усталости, слабости или быстрой истощаемости", options: baiOptions },
     ],
   },
   {
-    title: "Burns Depression Checklist",
+    title: "Оценка депрессии по шкале Бернса",
     description:
-      "BDC — depression assessment by Dr. David Burns. 25 items across thoughts, activities, physical symptoms, and suicidal urges.",
+      "Оценка депрессии по шкале Бернса. 22 пункта: мысли, активность и физические симптомы.",
+    type: "standard",
     questions: [
-      { id: "bdc-1", text: "Feeling sad or down in the dumps", options: bdcOptions },
-      { id: "bdc-2", text: "Feeling unhappy or blue", options: bdcOptions },
-      { id: "bdc-3", text: "Crying spells or tearfulness", options: bdcOptions },
-      { id: "bdc-4", text: "Feeling discouraged", options: bdcOptions },
-      { id: "bdc-5", text: "Feeling hopeless", options: bdcOptions },
-      { id: "bdc-6", text: "Low self-esteem", options: bdcOptions },
-      { id: "bdc-7", text: "Feeling worthless or inadequate", options: bdcOptions },
-      { id: "bdc-8", text: "Guilt or shame", options: bdcOptions },
-      { id: "bdc-9", text: "Criticizing yourself or blaming yourself", options: bdcOptions },
-      { id: "bdc-10", text: "Difficulty making decisions", options: bdcOptions },
+      { id: "bdc-1", text: "Грусть или уныние", options: bdcOptions },
+      { id: "bdc-2", text: "Чувство несчастья или тоски", options: bdcOptions },
+      { id: "bdc-3", text: "Приступы плача или слезливость", options: bdcOptions },
+      { id: "bdc-4", text: "Чувство разочарования", options: bdcOptions },
+      { id: "bdc-5", text: "Чувство безнадёжности", options: bdcOptions },
+      { id: "bdc-6", text: "Низкая самооценка", options: bdcOptions },
+      { id: "bdc-7", text: "Чувство никчёмности или неполноценности", options: bdcOptions },
+      { id: "bdc-8", text: "Чувство вины или стыда", options: bdcOptions },
+      { id: "bdc-9", text: "Самокритика или самообвинение", options: bdcOptions },
+      { id: "bdc-10", text: "Трудности с принятием решений", options: bdcOptions },
       {
         id: "bdc-11",
-        text: "Loss of interest in family, friends or colleagues",
+        text: "Потеря интереса к семье, друзьям или коллегам",
         options: bdcOptions,
       },
-      { id: "bdc-12", text: "Loneliness", options: bdcOptions },
-      { id: "bdc-13", text: "Spending less time with family or friends", options: bdcOptions },
-      { id: "bdc-14", text: "Loss of motivation", options: bdcOptions },
-      { id: "bdc-15", text: "Loss of interest in work or other activities", options: bdcOptions },
-      { id: "bdc-16", text: "Avoiding work or other activities", options: bdcOptions },
-      { id: "bdc-17", text: "Loss of pleasure or satisfaction in life", options: bdcOptions },
-      { id: "bdc-18", text: "Feeling tired", options: bdcOptions },
-      { id: "bdc-19", text: "Difficulty sleeping or sleeping too much", options: bdcOptions },
-      { id: "bdc-20", text: "Decreased or increased appetite", options: bdcOptions },
-      { id: "bdc-21", text: "Loss of interest in sex", options: bdcOptions },
-      { id: "bdc-22", text: "Worrying about your health", options: bdcOptions },
-      { id: "bdc-23", text: "Do you have any suicidal thoughts?", options: bdcOptions },
-      { id: "bdc-24", text: "Would you like to end your life?", options: bdcOptions },
-      { id: "bdc-25", text: "Do you have a plan for harming yourself?", options: bdcOptions },
+      { id: "bdc-12", text: "Одиночество", options: bdcOptions },
+      { id: "bdc-13", text: "Меньше времени с семьёй или друзьями", options: bdcOptions },
+      { id: "bdc-14", text: "Потеря мотивации", options: bdcOptions },
+      { id: "bdc-15", text: "Потеря интереса к работе или другим занятиям", options: bdcOptions },
+      { id: "bdc-16", text: "Избегание работы или других занятий", options: bdcOptions },
+      { id: "bdc-17", text: "Потеря удовольствия или удовлетворения от жизни", options: bdcOptions },
+      { id: "bdc-18", text: "Чувство усталости", options: bdcOptions },
+      { id: "bdc-19", text: "Проблемы со сном или сонливость", options: bdcOptions },
+      { id: "bdc-20", text: "Снижение или повышение аппетита", options: bdcOptions },
+      { id: "bdc-21", text: "Потеря интереса к сексу", options: bdcOptions },
+      { id: "bdc-22", text: "Беспокойство о своём здоровье", options: bdcOptions },
     ],
   },
   {
-    title: "Cognitive Distortions Assessment",
+    title: "Определение когнитивных искажений",
     description:
-      "Identifies which of the 10 cognitive distortions (by Dr. David Burns) are most prevalent in your thinking patterns. 30 questions across all distortion types.",
+      "Определяет, какие из 10 когнитивных искажений (по Дэвиду Бернсу) наиболее выражены в вашем мышлении. 30 вопросов по всем типам искажений.",
+    type: "computed",
     questions: [
-      // 1. All-or-Nothing Thinking
       {
         id: "cd-1-1",
-        text: "If I'm not perfect at something, I see it as a total failure",
+        text: "Если я не идеален в чём-то, я считаю это полным провалом",
         options: baiOptions,
       },
       {
         id: "cd-1-2",
-        text: "Things in my life are either all good or all bad — there's no middle ground",
+        text: "Всё в моей жизни либо хорошо, либо плохо — без середины",
         options: baiOptions,
       },
       {
         id: "cd-1-3",
-        text: "One small mistake ruins the entire effort for me",
+        text: "Одна маленькая ошибка перечёркивает все мои усилия",
         options: baiOptions,
       },
-      // 2. Overgeneralization
       {
         id: "cd-2-1",
-        text: "After a single setback, I expect the same thing to happen again and again",
+        text: "После одной неудачи я ожидаю, что то же самое будет повторяться снова и снова",
         options: baiOptions,
       },
       {
         id: "cd-2-2",
-        text: "I use words like 'always' and 'never' when thinking about negative events",
+        text: "Я использую слова «всегда» и «никогда», думая о негативных событиях",
         options: baiOptions,
       },
       {
         id: "cd-2-3",
-        text: "One negative experience is enough for me to believe a pattern exists",
+        text: "Одного негативного опыта достаточно, чтобы я поверил в закономерность",
         options: baiOptions,
       },
-      // 3. Mental Filter
       {
         id: "cd-3-1",
-        text: "I focus on one negative detail and let it color my entire view of a situation",
+        text: "Я фокусируюсь на одной негативной детали, и она окрашивает всё моё восприятие ситуации",
         options: baiOptions,
       },
       {
         id: "cd-3-2",
-        text: "Even when many things go well, I dwell on the one thing that went wrong",
+        text: "Даже когда многое идёт хорошо, я зацикливаюсь на том, что пошло не так",
         options: baiOptions,
       },
       {
         id: "cd-3-3",
-        text: "I have trouble seeing positives when there's any negative at all",
+        text: "Мне трудно видеть позитив, если есть хоть что-то негативное",
         options: baiOptions,
       },
-      // 4. Discounting the Positive
       {
         id: "cd-4-1",
-        text: "When I do something well, I tell myself it was no big deal",
+        text: "Когда у меня что-то получается, я говорю себе, что это неважно",
         options: baiOptions,
       },
       {
         id: "cd-4-2",
-        text: "I dismiss compliments or positive feedback from others",
+        text: "Я отвергаю комплименты и положительную обратную связь",
         options: baiOptions,
       },
       {
         id: "cd-4-3",
-        text: "I believe my achievements don't count because anyone could have done them",
+        text: "Я считаю, что мои достижения не в счёт, потому что кто угодно мог бы их сделать",
         options: baiOptions,
       },
-      // 5. Jumping to Conclusions
       {
         id: "cd-5-1",
-        text: "I assume people are reacting negatively to me without checking",
+        text: "Я предполагаю, что люди реагируют на меня негативно, не проверяя этого",
         options: baiOptions,
       },
       {
         id: "cd-5-2",
-        text: "I predict things will turn out badly before I even try",
+        text: "Я предсказываю, что всё будет плохо, ещё до того, как попробую",
         options: baiOptions,
       },
       {
         id: "cd-5-3",
-        text: "I feel like I can read people's minds and know they think poorly of me",
+        text: "Мне кажется, я читаю мысли людей и знаю, что они плохо обо мне думают",
         options: baiOptions,
       },
-      // 6. Magnification / Minimization
-      { id: "cd-6-1", text: "I blow small problems way out of proportion", options: baiOptions },
-      { id: "cd-6-2", text: "I downplay my own strengths and achievements", options: baiOptions },
+      {
+        id: "cd-6-1",
+        text: "Я раздуваю маленькие проблемы до огромных масштабов",
+        options: baiOptions,
+      },
+      {
+        id: "cd-6-2",
+        text: "Я преуменьшаю свои сильные стороны и достижения",
+        options: baiOptions,
+      },
       {
         id: "cd-6-3",
-        text: "When something goes wrong, it feels like a catastrophe",
+        text: "Когда что-то идёт не так, это ощущается как катастрофа",
         options: baiOptions,
       },
-      // 7. Emotional Reasoning
       {
         id: "cd-7-1",
-        text: "I believe my feelings are facts — if I feel it, it must be true",
+        text: "Я считаю свои чувства фактами — если я так чувствую, значит, так и есть",
         options: baiOptions,
       },
       {
         id: "cd-7-2",
-        text: "I trust my negative emotions as accurate guides to reality",
+        text: "Я доверяю своим негативным эмоциям как точному руководству к реальности",
         options: baiOptions,
       },
       {
         id: "cd-7-3",
-        text: "If I feel inadequate, I assume I actually am inadequate",
+        text: "Если я чувствую себя неполноценным, я предполагаю, что так и есть",
         options: baiOptions,
       },
-      // 8. Should Statements
       {
         id: "cd-8-1",
-        text: "I often tell myself I 'should' do more or be better",
+        text: "Я часто говорю себе, что я «должен» делать больше или быть лучше",
         options: baiOptions,
       },
       {
         id: "cd-8-2",
-        text: "I criticize myself with 'shoulds', 'musts', and 'ought-tos'",
+        text: "Я критикую себя с помощью «должен», «обязан» и «нужно»",
         options: baiOptions,
       },
       {
         id: "cd-8-3",
-        text: "I feel guilty when I don't meet my own impossible standards",
+        text: "Я чувствую вину, когда не соответствую своим невозможным стандартам",
         options: baiOptions,
       },
-      // 9. Labeling
       {
         id: "cd-9-1",
-        text: "When I make a mistake, I call myself harsh names",
+        text: "Когда я совершаю ошибку, я называю себя обидными словами",
         options: baiOptions,
       },
       {
         id: "cd-9-2",
-        text: "I define myself by my flaws rather than describing specific behaviors",
+        text: "Я определяю себя своими недостатками, а не конкретным поведением",
         options: baiOptions,
       },
       {
         id: "cd-9-3",
-        text: "I label other people based on a single action of theirs",
+        text: "Я навешиваю ярлыки на других людей на основе одного их действия",
         options: baiOptions,
       },
-      // 10. Personalization
       {
         id: "cd-10-1",
-        text: "I blame myself for things that aren't really my fault",
+        text: "Я виню себя за то, что на самом деле не является моей виной",
         options: baiOptions,
       },
       {
         id: "cd-10-2",
-        text: "I feel responsible for other people's feelings or reactions",
+        text: "Я чувствую ответственность за чувства и реакции других людей",
         options: baiOptions,
       },
       {
         id: "cd-10-3",
-        text: "I take things personally even when they're not about me",
+        text: "Я принимаю всё на свой счёт, даже если это не обо мне",
         options: baiOptions,
       },
     ],
   },
 ];
 
+const scoreBandsByTitle: Record<
+  string,
+  { maxScore: number; key: string; interpretation: string; recommendation: string }[]
+> = {
+  "Оценка настроения": [
+    { maxScore: 4, key: "minimal", interpretation: "Минимальная депрессия", recommendation: "Действия не требуются. Продолжайте наблюдение." },
+    { maxScore: 9, key: "mild", interpretation: "Лёгкая депрессия", recommendation: "Следите за симптомами. Помогут самопомощь, упражнения и гигиена сна." },
+    { maxScore: 14, key: "moderate", interpretation: "Умеренная депрессия", recommendation: "Рекомендуется консультация терапевта. Может быть полезна терапия и/или медикаменты." },
+    { maxScore: 19, key: "moderatelySevere", interpretation: "Умеренно тяжёлая депрессия", recommendation: "Рекомендуем обратиться к специалисту. Наиболее эффективно сочетание терапии и медикаментов." },
+    { maxScore: 999, key: "severe", interpretation: "Тяжёлая депрессия", recommendation: "Настоятельно рекомендуем немедленно обратиться к специалисту. Требуется активное лечение." },
+  ],
+  "Оценка уровня тревоги": [
+    { maxScore: 4, key: "minimal", interpretation: "Минимальная тревога", recommendation: "Действия не требуются. Продолжайте наблюдение." },
+    { maxScore: 9, key: "mild", interpretation: "Лёгкая тревога", recommendation: "Следите за симптомами. Помогут техники самопомощи." },
+    { maxScore: 14, key: "moderate", interpretation: "Умеренная тревога", recommendation: "Рекомендуется консультация терапевта. Терапия или консультирование могут быть полезны." },
+    { maxScore: 999, key: "severe", interpretation: "Тяжёлая тревога", recommendation: "Рекомендуем обратиться к специалисту для оценки и лечения." },
+  ],
+  "Оценка тревоги по шкале Бернса": [
+    { maxScore: 4, key: "minimal", interpretation: "Тревоги нет или минимальна", recommendation: "Действия не требуются. Ведите дневник настроения для закрепления результата." },
+    { maxScore: 10, key: "borderline", interpretation: "Пограничная тревога", recommendation: "Попробуйте декатастрофизацию: запишите худший сценарий и оцените его реальную вероятность." },
+    { maxScore: 20, key: "mild", interpretation: "Лёгкая тревога", recommendation: "Практикуйте технику тройной колонки. Дыхательные упражнения помогут в моменте. При сохранении — обратитесь к специалисту." },
+    { maxScore: 30, key: "moderate", interpretation: "Умеренная тревога", recommendation: "Составьте список пугающих ситуаций и прорабатывайте их постепенно. Рекомендуется консультация специалиста." },
+    { maxScore: 50, key: "severe", interpretation: "Тяжёлая тревога", recommendation: "Рекомендуется сочетать техники самопомощи с профессиональной поддержкой." },
+    { maxScore: 999, key: "extreme", interpretation: "Крайняя тревога или паника", recommendation: "Настоятельно рекомендуется консультация специалиста." },
+  ],
+  "Оценка депрессии по шкале Бернса": [
+    { maxScore: 5, key: "none", interpretation: "Депрессии нет", recommendation: "Депрессии не выявлено. Дневник настроения поможет замечать закономерности." },
+    { maxScore: 10, key: "normalUnhappy", interpretation: "Нормально, но есть недовольство", recommendation: "Попробуйте анализ затрат и выгод повторяющегося негативного убеждения." },
+    { maxScore: 25, key: "mild", interpretation: "Лёгкая депрессия", recommendation: "Используйте технику тройной колонки и метод двойного стандарта. При сохранении — рассмотрите терапию." },
+    { maxScore: 50, key: "moderate", interpretation: "Умеренная депрессия", recommendation: "Добавьте поведенческую активацию. При сохранении симптомов обратитесь за поддержкой." },
+    { maxScore: 75, key: "severe", interpretation: "Тяжёлая депрессия", recommendation: "Настоятельно рекомендуется профессиональная поддержка." },
+    { maxScore: 999, key: "extreme", interpretation: "Крайняя депрессия", recommendation: "Настоятельно рекомендуется консультация специалиста." },
+  ],
+};
+
 const onboardingStories = [
   {
-    title: "Welcome to Moodly",
+    title: "Добро пожаловать в Moodly",
     content:
-      "Track your mental health daily. Log your mood, sleep, anxiety, and more in just a few taps.",
+      "Отслеживайте настроение ежедневно. Отмечайте своё самочувствие, энергию, сон и другое всего за пару касаний.",
     order: 1,
   },
   {
-    title: "Take Tests",
+    title: "Проходите тесты",
     content:
-      "Complete psychological assessments to understand your state better and get personalized recommendations.",
+      "Заполняйте опросники, чтобы лучше понять своё состояние и получить мягкие рекомендации.",
     order: 2,
   },
   {
-    title: "Generate Reports",
-    content: "Export your data as PDF or CSV to share with your healthcare provider.",
+    title: "Создавайте отчёты",
+    content: "Экспортируйте данные в PDF или CSV, чтобы проанализировать динамику или поделиться с теми, кому доверяете.",
     order: 3,
   },
 ];
 
 async function seed() {
+  await prisma.testScoreBand.deleteMany();
   await prisma.testResult.deleteMany();
   await prisma.report.deleteMany();
   await prisma.feedback.deleteMany();
@@ -514,7 +544,13 @@ async function seed() {
   }
 
   for (const t of tests) {
-    await prisma.test.create({ data: t as never });
+    const createdTest = await prisma.test.create({ data: t as never });
+    const bands = scoreBandsByTitle[t.title];
+    if (bands) {
+      await prisma.testScoreBand.createMany({
+        data: bands.map((b) => ({ ...b, testId: createdTest.id })),
+      });
+    }
   }
 
   for (const s of onboardingStories) {
@@ -533,18 +569,17 @@ async function seed() {
   const allTests = await prisma.test.findMany();
   const allParams = await prisma.parameter.findMany();
 
-  const phq9 = allTests.find((t) => t.title === "PHQ-9")!;
-  const gad7 = allTests.find((t) => t.title === "GAD-7")!;
-  const bai = allTests.find((t) => t.title === "Burns Anxiety Inventory")!;
-  const bdc = allTests.find((t) => t.title === "Burns Depression Checklist")!;
-  const cd = allTests.find((t) => t.title === "Cognitive Distortions Assessment")!;
+  const phq9 = allTests.find((t) => t.title === "Оценка настроения")!;
+  const gad7 = allTests.find((t) => t.title === "Оценка уровня тревоги")!;
+  const bai = allTests.find((t) => t.title === "Оценка тревоги по шкале Бернса")!;
+  const bdc = allTests.find((t) => t.title === "Оценка депрессии по шкале Бернса")!;
+  const cd = allTests.find((t) => t.title === "Определение когнитивных искажений")!;
 
   const paramMap = new Map(allParams.map((p) => [p.name, p.id]));
 
   const now = new Date();
   const DAY = 24 * 60 * 60 * 1000;
 
-  // ─── Entries: 14 days, 5 parameters, realistic daily values ───
   const dailyValues: Record<string, number[]> = {
     Anxiety: [7, 6, 8, 5, 4, 6, 3, 5, 7, 6, 4, 3, 5, 4],
     Sleep: [4, 5, 3, 6, 7, 5, 8, 6, 4, 5, 7, 8, 6, 7],
@@ -570,147 +605,140 @@ async function seed() {
   }
   await prisma.entry.createMany({ data: entryData });
 
-  // ─── Creature State: initial value for demo user ───
   await prisma.creatureState.upsert({
     where: { userId: demoUser.id },
     create: { userId: demoUser.id, calmness: 45, lastExerciseAt: null },
     update: {},
   });
 
-  // ─── Test Results: multiple per test to show timeline ───
   await prisma.testResult.createMany({
     data: [
-      // GAD-7: decreasing anxiety over 2 weeks
       {
         testId: gad7.id,
         userId: demoUser.id,
         score: 15,
-        interpretation: "Moderate anxiety",
-        recommendation: "Consider consulting a therapist.",
+        interpretation: "Умеренная тревога",
+        recommendation: "Рекомендуется консультация терапевта.",
         completedAt: new Date(now.getTime() - 14 * DAY),
       },
       {
         testId: gad7.id,
         userId: demoUser.id,
         score: 13,
-        interpretation: "Moderate anxiety",
-        recommendation: "Consider consulting a therapist.",
+        interpretation: "Умеренная тревога",
+        recommendation: "Рекомендуется консультация терапевта.",
         completedAt: new Date(now.getTime() - 10 * DAY),
       },
       {
         testId: gad7.id,
         userId: demoUser.id,
         score: 10,
-        interpretation: "Mild anxiety",
-        recommendation: "Monitor symptoms. Self-help techniques may help.",
+        interpretation: "Лёгкая тревога",
+        recommendation: "Следите за симптомами. Помогут техники самопомощи.",
         completedAt: new Date(now.getTime() - 5 * DAY),
       },
       {
         testId: gad7.id,
         userId: demoUser.id,
         score: 8,
-        interpretation: "Mild anxiety",
-        recommendation: "Continue self-care practices.",
+        interpretation: "Лёгкая тревога",
+        recommendation: "Продолжайте практики самопомощи.",
         completedAt: new Date(now.getTime() - 1 * DAY),
       },
 
-      // PHQ-9: moderate → mild depression
       {
         testId: phq9.id,
         userId: demoUser.id,
         score: 17,
-        interpretation: "Moderately severe depression",
-        recommendation: "Consider consulting a therapist. Pharmacotherapy may be beneficial.",
+        interpretation: "Умеренно тяжёлая депрессия",
+        recommendation: "Рекомендуем обратиться к специалисту. Наиболее эффективно сочетание терапии и медикаментов.",
         completedAt: new Date(now.getTime() - 14 * DAY),
       },
       {
         testId: phq9.id,
         userId: demoUser.id,
         score: 14,
-        interpretation: "Moderate depression",
-        recommendation: "Consider therapy. Monitor symptoms closely.",
+        interpretation: "Умеренная депрессия",
+        recommendation: "Рекомендуется консультация терапевта. Внимательно следите за симптомами.",
         completedAt: new Date(now.getTime() - 9 * DAY),
       },
       {
         testId: phq9.id,
         userId: demoUser.id,
         score: 11,
-        interpretation: "Moderate depression",
-        recommendation: "Consider therapy. Monitor symptoms closely.",
+        interpretation: "Умеренная депрессия",
+        recommendation: "Рекомендуется консультация терапевта. Внимательно следите за симптомами.",
         completedAt: new Date(now.getTime() - 4 * DAY),
       },
       {
         testId: phq9.id,
         userId: demoUser.id,
         score: 8,
-        interpretation: "Mild depression",
-        recommendation: "Monitor symptoms. Consider self-help techniques.",
+        interpretation: "Лёгкая депрессия",
+        recommendation: "Следите за симптомами. Помогут упражнения и самопомощь.",
         completedAt: new Date(now.getTime() - 1 * DAY),
       },
 
-      // BAI: mild decreasing
       {
         testId: bai.id,
         userId: demoUser.id,
         score: 26,
-        interpretation: "Mild anxiety",
-        recommendation: "Consider self-help techniques.",
+        interpretation: "Лёгкая тревога",
+        recommendation: "Попробуйте техники самопомощи.",
         completedAt: new Date(now.getTime() - 12 * DAY),
       },
       {
         testId: bai.id,
         userId: demoUser.id,
         score: 22,
-        interpretation: "Mild anxiety",
+        interpretation: "Лёгкая тревога",
         recommendation:
-          "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment.",
+          "Практикуйте технику тройной колонки: запишите тревожную мысль, назовите искажение, сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте.",
         completedAt: new Date(now.getTime() - 7 * DAY),
       },
       {
         testId: bai.id,
         userId: demoUser.id,
         score: 18,
-        interpretation: "Mild anxiety",
-        recommendation: "Continue self-care practices.",
+        interpretation: "Лёгкая тревога",
+        recommendation: "Продолжайте практики самопомощи.",
         completedAt: new Date(now.getTime() - 2 * DAY),
       },
 
-      // BDC: moderate → mild depression
       {
         testId: bdc.id,
         userId: demoUser.id,
         score: 36,
-        interpretation: "Moderate depression",
-        recommendation: "Consider consulting a therapist.",
+        interpretation: "Умеренная депрессия",
+        recommendation: "Рекомендуется консультация специалиста.",
         completedAt: new Date(now.getTime() - 13 * DAY),
       },
       {
         testId: bdc.id,
         userId: demoUser.id,
         score: 32,
-        interpretation: "Moderate depression",
-        recommendation: "Consider consulting a therapist.",
+        interpretation: "Умеренная депрессия",
+        recommendation: "Рекомендуется консультация специалиста.",
         completedAt: new Date(now.getTime() - 8 * DAY),
       },
       {
         testId: bdc.id,
         userId: demoUser.id,
         score: 28,
-        interpretation: "Mild depression",
+        interpretation: "Лёгкая депрессия",
         recommendation:
-          "Use the Triple Column Technique and the Double Standard method: would you say this to a friend? Consider therapy if it persists.",
+          "Используйте технику тройной колонки и метод двойного стандарта: сказали бы вы это другу? При сохранении — рассмотрите терапию.",
         completedAt: new Date(now.getTime() - 3 * DAY),
       },
 
-      // CD: first baseline, then current with improvement
       {
         testId: cd.id,
         userId: demoUser.id,
         score: 58,
         interpretation:
-          "Moderate cognitive distortions. All-or-Nothing Thinking and Should Statements are most prominent.",
+          "Умеренные когнитивные искажения. Наиболее выражены «Всё или ничего» и «Долженствование».",
         recommendation:
-          "Your results indicate several cognitive distortions. CBT is highly effective.",
+          "Ваши результаты указывают на несколько когнитивных искажений. КПТ может быть эффективна.",
         flags: {
           distortions: {
             allOrNothing: { score: 8, level: "high" },
@@ -734,9 +762,9 @@ async function seed() {
         userId: demoUser.id,
         score: 45,
         interpretation:
-          "Significant All-or-Nothing Thinking, Discounting the Positive, Should Statements. Moderate Overgeneralization, Mental Filter, Jumping to Conclusions, Personalization.",
+          "Значительные искажения: «Всё или ничего», «Обесценивание хорошего», «Долженствование». Умеренные: «Сверхобобщение», «Мысленный фильтр», «Чтение мыслей», «Персонализация».",
         recommendation:
-          "Your results indicate several strongly held cognitive distortions. CBT is highly effective.",
+          "Ваши результаты указывают на несколько сильно выраженных когнитивных искажений. КПТ может быть эффективна.",
         flags: {
           distortions: {
             allOrNothing: { score: 7, level: "high" },
@@ -765,7 +793,6 @@ async function seed() {
     ],
   });
 
-  // ─── Cost-Benefit Analysis: worked examples + common item bank ───
   const cbaExamples: {
     persona: string;
     thoughtText: string;
