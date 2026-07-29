@@ -25,6 +25,7 @@
     "results": "Results",
     "reports": "Reports",
     "feedback": "Feedback",
+    "settings": "Settings",
     "more": "More"
   },
   "login": {
@@ -46,7 +47,9 @@
     "privacyNotice": "We store your entries, test results, and account data on our server so they're available to you from any device. See the Privacy Policy for details.",
     "disclaimerTitle": "Medical disclaimer & privacy",
     "disclaimerAccept": "I understand",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
   },
   "register": {
     "title": "Create Account",
@@ -57,7 +60,9 @@
     "signUp": "Sign Up",
     "hasAccount": "Already have an account?",
     "signIn": "Sign In",
-    "registrationFailed": "Registration failed"
+    "registrationFailed": "Registration failed",
+    "consent": "I confirm I am 18 or older and I agree to the processing of my health-related data in accordance with the Privacy Policy.",
+    "consentRequired": "You must confirm your age and consent to continue"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -286,7 +291,8 @@
     "title": "Support resources",
     "body": "If you're going through a difficult time, these resources may help.",
     "helpline": "Helpline",
-    "call": "Call"
+    "call": "Call",
+    "localEmergency": "If you are outside these regions, please call your local emergency number."
   },
   "forgotPassword": {
     "title": "Forgot Password",
@@ -578,6 +584,49 @@
     "averagesTitle": "Average values",
     "practicesTitle": "Practices completed",
     "testsTitle": "Tests taken"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: July 2026",
+    "dataWeCollect": "What Data We Collect",
+    "dataWeCollectText": "We collect and store data you voluntarily provide: email address, name, mood and symptom entries, test results, journal entries, and breathing session logs. This data constitutes special category data under GDPR Article 9 as it relates to mental health.",
+    "howWeUse": "How We Use Your Data",
+    "howWeUseText": "Your data is used solely to provide Moodly's core functionality: mood tracking, test scoring, practice recommendations, and personalized insights. We do not sell your data or use it for advertising. Aggregated, anonymized statistics may be used for product improvement.",
+    "dataSharing": "Data Sharing",
+    "dataSharingText": "We do not share your personal data with third parties except: (a) with your explicit consent, (b) when required by law, or (c) with service providers who process data on our behalf (hosting infrastructure) under strict data processing agreements.",
+    "dataRetention": "Data Retention",
+    "dataRetentionText": "Your data is retained for as long as your account is active. You may request deletion of your account and associated data at any time via the Settings page.",
+    "yourRights": "Your Rights",
+    "yourRightsText": "You have the right to access, correct, export, and delete your personal data. You may withdraw consent at any time. To exercise these rights, use the Settings page or contact us at the email below.",
+    "contact": "Contact",
+    "contactText": "For privacy-related inquiries: privacy@moodly.app"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "acceptance": "Acceptance of Terms",
+    "acceptanceText": "By creating an account, you agree to these Terms of Service. If you do not agree, do not use the service.",
+    "serviceDescription": "Service Description",
+    "serviceDescriptionText": "Moodly is a self-assessment and wellness tracking tool. It provides mood tracking, psychological test scoring, breathing exercises, and journaling features. Moodly is not a medical device and does not provide diagnosis, treatment, or prevention of any medical condition.",
+    "userObligations": "User Obligations",
+    "userObligationsText": "You agree to provide accurate information, keep your account credentials secure, and use Moodly in accordance with applicable laws. You must be 18 years or older to create an account.",
+    "medicalDisclaimer": "Medical Disclaimer",
+    "medicalDisclaimerText": "Moodly is an educational self-assessment tool. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for mental health concerns. If you are in crisis, contact your local emergency services or crisis helpline.",
+    "limitationOfLiability": "Limitation of Liability",
+    "limitationOfLiabilityText": "Moodly is provided 'as is' without warranties of any kind. To the maximum extent permitted by law, the creators of Moodly shall not be liable for any damages arising from the use or inability to use the service.",
+    "contact": "Contact",
+    "contactText": "For questions about these terms: legal@moodly.app"
+  },
+  "settings": {
+    "title": "Settings",
+    "deleteAccount": "Delete Account",
+    "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "deleteButton": "Delete my account",
+    "deleteFailed": "Failed to delete account",
+    "confirmTitle": "Delete your account?",
+    "confirmDesc": "All your entries, test results, and personal data will be permanently removed. This action cannot be undone.",
+    "confirmCancel": "Cancel",
+    "confirmDelete": "Delete",
+    "deleting": "Deleting..."
   },
   "progress": {
     "xpToNext": "{{current}} / {{next}} XP",

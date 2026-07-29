@@ -246,30 +246,30 @@ export const recommendationRu: Record<string, string> = {
     "Рекомендуется консультация терапевта. Терапия или консультирование могут быть полезны.",
   "We recommend consulting a mental health professional for evaluation and treatment.":
     "Рекомендуем обратиться к специалисту по психическому здоровью для оценки и лечения.",
-  "Immediate professional intervention strongly advised.":
-    "Настоятельно рекомендуется немедленное вмешательство специалиста.",
-  "Urgent professional care is strongly advised.":
-    "Настоятельно рекомендуется срочная помощь специалиста.",
   "No action needed. Keep a simple mood log to reinforce what's working.":
     "Действия не требуются. Ведите простой дневник настроения, чтобы закрепить то, что уже работает.",
   "Try decatastrophizing: write down your worst-case scenario and rate how likely and how bad it really is.":
     "Попробуйте технику «декатастрофизации»: опишите худший сценарий и оцените, насколько он реально вероятен и насколько плох.",
-  "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment.":
-    "Практикуйте технику «тройной колонки»: запишите тревожную мысль, назовите искажение, затем сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте.",
+  "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment. If these feelings persist, consider speaking with a professional.":
+    "Практикуйте технику «тройной колонки»: запишите тревожную мысль, назовите искажение, затем сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте. Если эти ощущения сохраняются, обратитесь к специалисту.",
   "Build a gradual exposure list from least to most feared situations and work through it step by step. Professional consultation is advised.":
     "Составьте список пугающих ситуаций от лёгкой к сложной и прорабатывайте его постепенно. Желательна консультация специалиста.",
-  "Combine self-help techniques with professional support — a therapist can guide exposure and cognitive work safely.":
-    "Сочетайте техники самопомощи с профессиональной поддержкой — терапевт поможет безопасно провести экспозицию и когнитивную работу.",
+  "Consider combining self-help techniques with professional support for the best outcome.":
+    "Рекомендуется сочетать техники самопомощи с профессиональной поддержкой для наилучшего результата.",
+  "Professional consultation is strongly recommended.":
+    "Настоятельно рекомендуется консультация специалиста.",
   "No depression indicated. A daily mood log can help you notice patterns early.":
     "Депрессии не выявлено. Ежедневный дневник настроения поможет замечать закономерности на раннем этапе.",
   "Try a cost-benefit analysis of a recurring negative belief: what does it give you, and what does it cost you?":
     "Попробуйте анализ затрат и выгод повторяющегося негативного убеждения: что оно вам даёт и чего стоит?",
   "Use the Triple Column Technique and the Double Standard method: would you say this to a friend? Consider therapy if it persists.":
     "Используйте технику «тройной колонки» и метод «двойного стандарта»: сказали бы вы это другу? При сохранении симптомов рассмотрите терапию.",
-  "Add behavioral activation: schedule small enjoyable or productive activities each day, even if motivation is low. Professional treatment is recommended.":
-    "Добавьте поведенческую активацию: планируйте небольшие приятные или продуктивные дела каждый день, даже при низкой мотивации. Рекомендуется профессиональное лечение.",
-  "Strongly recommend professional intervention — self-help techniques can support but not replace treatment at this level.":
-    "Настоятельно рекомендуем вмешательство специалиста — на этом уровне техники самопомощи могут дополнять, но не заменяют лечение.",
+  "Add behavioral activation: schedule small enjoyable or productive activities each day, even if motivation is low. Consider seeking professional support if symptoms persist.":
+    "Добавьте поведенческую активацию: планируйте небольшие приятные или продуктивные дела каждый день, даже при низкой мотивации. При сохранении симптомов обратитесь за профессиональной поддержкой.",
+  "Professional support is strongly recommended — self-help techniques can help alongside professional guidance.":
+    "Настоятельно рекомендуется профессиональная поддержка — техники самопомощи могут помочь наряду с профессиональным руководством.",
+  "Professional consultation is strongly advised.":
+    "Настоятельно рекомендуется консультация специалиста.",
   "No immediate concerns, continue monitoring.":
     "Немедленных опасений нет, продолжайте наблюдение.",
   "Consider discussing with a specialist if symptoms persist.":

@@ -14,6 +14,7 @@ interface RegisterBody {
   email: string;
   password: string;
   name?: string;
+  ageConfirmed: boolean;
 }
 
 interface LoginBody {
@@ -32,8 +33,8 @@ interface ResetPasswordBody {
 
 export default async function authRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: RegisterBody }>("/auth/register", async (request, reply) => {
-    const { email, password, name } = request.body;
-    const user = await userService.register({ email, password, name });
+    const { email, password, name, ageConfirmed } = request.body;
+    const user = await userService.register({ email, password, name, ageConfirmed });
     const accessToken = await reply.jwtSign(
       { userId: user.id },
       { expiresIn: authService.accessTokenExpiry },

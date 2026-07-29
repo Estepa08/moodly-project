@@ -6,6 +6,8 @@ interface ResultFlags {
   recommendationKey?: string;
   highKeys?: string[];
   moderateKeys?: string[];
+  suicidalIdeation?: boolean;
+  suicidalPlan?: boolean;
 }
 
 interface ResultLike {
@@ -14,7 +16,11 @@ interface ResultLike {
   flags?: unknown;
 }
 
-export function isSevereInterpretation(interpretation: string): boolean {
+export function isSevereInterpretation(
+  interpretation: string,
+  flags?: ResultFlags,
+): boolean {
+  if (flags?.suicidalIdeation || flags?.suicidalPlan) return true;
   return interpretation.startsWith("Severe") || interpretation.startsWith("Extreme");
 }
 
@@ -41,7 +47,7 @@ export function useTestResultText() {
       moderateKeys,
       interpretationText,
       recommendationText,
-      isSevere: isSevereInterpretation(result.interpretation),
+      isSevere: isSevereInterpretation(result.interpretation, flags),
     };
   }
 

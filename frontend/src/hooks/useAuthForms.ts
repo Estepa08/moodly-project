@@ -17,6 +17,7 @@ export function useAuthForms() {
   const [regName, setRegName] = useState("");
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
+  const [regConsent, setRegConsent] = useState(false);
   const [regError, setRegError] = useState("");
 
   const [demoLoading, setDemoLoading] = useState(false);
@@ -38,14 +39,19 @@ export function useAuthForms() {
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    acceptDisclaimer();
+    if (!regConsent) {
+      setRegError(t("register.consentRequired"));
+      return;
+    }
     setRegError("");
     try {
       const res = await api.auth.register({
         email: regEmail,
         password: regPassword,
         name: regName || undefined,
+        ageConfirmed: true,
       });
+      acceptDisclaimer();
       login(res.accessToken);
       navigate("/onboarding");
     } catch (err) {
@@ -80,6 +86,8 @@ export function useAuthForms() {
     setRegEmail,
     regPassword,
     setRegPassword,
+    regConsent,
+    setRegConsent,
     regError,
     demoLoading,
     handleLoginSubmit,

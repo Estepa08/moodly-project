@@ -12,9 +12,6 @@ export interface ScoreBand {
 export const RATIO_LOW_MAX = 1 / 3;
 export const RATIO_MODERATE_MAX = 2 / 3;
 
-export const DISTRESS_MESSAGE =
-  "Your responses indicate significant distress. We recommend speaking with a mental health professional.";
-
 // PHQ-9 (Patient Health Questionnaire-9) severity cutoffs.
 // Source: Kroenke K, Spitzer RL, Williams JB. "The PHQ-9: validity of a brief
 // depression severity measure." J Gen Intern Med. 2001;16(9):606-13.
@@ -106,7 +103,7 @@ export const BURNS_ANXIETY_BANDS: ScoreBand[] = [
     key: "mild",
     interpretation: "Mild anxiety",
     recommendation:
-      "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment.",
+      "Practice the Triple Column Technique: write the anxious thought, name the distortion, then craft a rational response. Breathing exercises can help in the moment. If these feelings persist, consider speaking with a professional.",
   },
   {
     maxScore: 30,
@@ -120,13 +117,13 @@ export const BURNS_ANXIETY_BANDS: ScoreBand[] = [
     key: "severe",
     interpretation: "Severe anxiety",
     recommendation:
-      "Combine self-help techniques with professional support — a therapist can guide exposure and cognitive work safely.",
+      "Consider combining self-help techniques with professional support for the best outcome.",
   },
   {
     maxScore: Infinity,
     key: "extreme",
     interpretation: "Extreme anxiety or panic",
-    recommendation: "Immediate professional intervention strongly advised.",
+    recommendation: "Professional consultation is strongly recommended.",
   },
 ];
 
@@ -158,20 +155,20 @@ export const BURNS_DEPRESSION_BANDS: ScoreBand[] = [
     key: "moderate",
     interpretation: "Moderate depression",
     recommendation:
-      "Add behavioral activation: schedule small enjoyable or productive activities each day, even if motivation is low. Professional treatment is recommended.",
+      "Add behavioral activation: schedule small enjoyable or productive activities each day, even if motivation is low. Consider seeking professional support if symptoms persist.",
   },
   {
     maxScore: 75,
     key: "severe",
     interpretation: "Severe depression",
     recommendation:
-      "Strongly recommend professional intervention — self-help techniques can support but not replace treatment at this level.",
+      "Professional support is strongly recommended — self-help techniques can help alongside professional guidance.",
   },
   {
     maxScore: Infinity,
     key: "extreme",
     interpretation: "Extreme depression",
-    recommendation: "Urgent professional care is strongly advised.",
+    recommendation: "Professional consultation is strongly advised.",
   },
 ];
 

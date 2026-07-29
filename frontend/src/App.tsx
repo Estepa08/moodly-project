@@ -6,6 +6,8 @@ import Spinner from "./components/ui/spinner";
 import LoginPage from "./routes/login";
 import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
+import PrivacyPage from "./routes/privacy";
+import TermsPage from "./routes/terms";
 import Dashboard from "./routes/dashboard";
 
 const OnboardingPage = lazy(() => import("./routes/onboarding"));
@@ -21,6 +23,7 @@ const DistortionsPage = lazy(() => import("./routes/distortions"));
 const SleepHygienePage = lazy(() => import("./routes/sleep-hygiene"));
 const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysis"));
 const DigestPage = lazy(() => import("./routes/digest"));
+const SettingsPage = lazy(() => import("./routes/settings"));
 
 function SuspenseFallback() {
   return (
@@ -72,6 +75,8 @@ export default function App() {
         <Route path="/register" element={<LoginPage defaultRegister />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
@@ -88,6 +93,7 @@ export default function App() {
         <Route path="/sleep-hygiene" element={<SleepHygienePage />} />
         <Route path="/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
         <Route path="/digest" element={<DigestPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

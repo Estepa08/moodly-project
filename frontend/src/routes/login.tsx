@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { useAuthForms } from "../hooks/useAuthForms";
 import { Button } from "../components/ui/button";
@@ -35,6 +35,8 @@ export default function LoginPage({ defaultRegister }: Props) {
     setRegEmail,
     regPassword,
     setRegPassword,
+    regConsent,
+    setRegConsent,
     regError,
     demoLoading,
     handleLoginSubmit,
@@ -242,12 +244,24 @@ export default function LoginPage({ defaultRegister }: Props) {
                       hideLabel={t("common.hidePassword")}
                     />
                   </div>
+                  <label
+                    className="flex items-start gap-2 text-xs text-muted-foreground cursor-pointer"
+                    {...a(4, !isLogin)}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={regConsent}
+                      onChange={(e) => setRegConsent(e.target.checked)}
+                      className="mt-0.5 shrink-0 cursor-pointer"
+                    />
+                    <span>{t("register.consent")}</span>
+                  </label>
                   {regError && (
-                    <p className="text-sm text-destructive" role="alert" {...a(4, !isLogin)}>
+                    <p className="text-sm text-destructive" role="alert" {...a(5, !isLogin)}>
                       {regError}
                     </p>
                   )}
-                  <Button type="submit" className="w-full" {...a(4, !isLogin)}>
+                  <Button type="submit" className="w-full" {...a(5, !isLogin)}>
                     {t("register.signUp")}
                   </Button>
                   <p className="text-center text-sm text-muted-foreground" {...a(5, !isLogin)}>
@@ -310,6 +324,10 @@ export default function LoginPage({ defaultRegister }: Props) {
               {showDisclaimer && (
                 <div className="mt-2 space-y-2 text-xs text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-top-1">
                   <p>{t("login.disclaimer")}</p>
+                  <div className="flex gap-3 pt-1">
+                    <Link to="/privacy" className="text-primary hover:underline">{t("login.privacyPolicy")}</Link>
+                    <Link to="/terms" className="text-primary hover:underline">{t("login.termsOfService")}</Link>
+                  </div>
                 </div>
               )}
             </div>

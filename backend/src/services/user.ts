@@ -2,10 +2,13 @@ import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
 import { AppError, ConflictError, NotFoundError } from "../lib/errors.js";
 
+export const CONSENT_VERSION = "1.0";
+
 export interface RegisterInput {
   email: string;
   password: string;
   name?: string;
+  ageConfirmed: boolean;
 }
 
 export interface LoginInput {
@@ -25,12 +28,22 @@ function stripUser(user: {
 
 export const userService = {
   async register(input: RegisterInput) {
+    if (!input.ageConfirmed) {
+      throw new AppError("CONSENT_REQUIRED", 400, "You must confirm you are 18+ and agree to data processing");
+    }
     const existing = await prisma.user.findUnique({ where: { email: input.email } });
     if (existing) throw new ConflictError("Email already registered");
 
     const hashed = await bcrypt.hash(input.password, 10);
     const user = await prisma.user.create({
-      data: { email: input.email, password: hashed, name: input.name },
+      data: {
+        email: input.email,
+        password: hashed,
+        name: input.name,
+        ageConfirmed: true,
+        consentAcceptedAt: new Date(),
+        consentVersion: CONSENT_VERSION,
+      },
     });
     return stripUser(user);
   },

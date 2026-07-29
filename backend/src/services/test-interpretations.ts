@@ -48,25 +48,38 @@ function detectSuicideFlags(
   return flags;
 }
 
+const SUICIDE_QUESTION_IDS = ["phq9-9"];
+const SUICIDE_PLAN_QUESTION_IDS: string[] = [];
+
 const interpretations: Record<string, InterpretFn> = {
-  "PHQ-9": (score) => {
+  "PHQ-9": (score, _maxScore, answers) => {
     const band = findBand(PHQ9_BANDS, score);
-    return { interpretation: band.interpretation, recommendation: band.recommendation };
+    const flags = detectSuicideFlags(answers, SUICIDE_QUESTION_IDS);
+    return {
+      interpretation: band.interpretation,
+      recommendation: band.recommendation,
+      flags: Object.keys(flags).length > 0 ? flags : undefined,
+    };
   },
 
-  "GAD-7": (score) => {
+  "GAD-7": (score, _maxScore, _answers) => {
     const band = findBand(GAD7_BANDS, score);
     return { interpretation: band.interpretation, recommendation: band.recommendation };
   },
 
-  "Burns Anxiety Inventory": (score) => {
+  "Burns Anxiety Inventory": (score, _maxScore, _answers) => {
     const band = findBand(BURNS_ANXIETY_BANDS, score);
     return { interpretation: band.interpretation, recommendation: band.recommendation };
   },
 
-  "Burns Depression Checklist": (score) => {
+  "Burns Depression Checklist": (score, _maxScore, answers) => {
     const band = findBand(BURNS_DEPRESSION_BANDS, score);
-    return { interpretation: band.interpretation, recommendation: band.recommendation };
+    const flags = detectSuicideFlags(answers, SUICIDE_QUESTION_IDS);
+    return {
+      interpretation: band.interpretation,
+      recommendation: band.recommendation,
+      flags: Object.keys(flags).length > 0 ? flags : undefined,
+    };
   },
 
   "Cognitive Distortions Assessment": (_score, _maxScore, answers) => {

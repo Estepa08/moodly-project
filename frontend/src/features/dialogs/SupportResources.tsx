@@ -58,6 +58,9 @@ export default function SupportResources({ open, onDismiss }: Props) {
               {t("supportResources.call")} 988
             </a>
           )}
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            {t("supportResources.localEmergency")}
+          </p>
         </div>
 
         <Button variant="outline" className="w-full" onClick={onDismiss}>

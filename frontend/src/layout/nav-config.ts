@@ -1,4 +1,4 @@
-import { LayoutDashboard, Wind, Heart, BrainCircuit, Moon, Scale, ClipboardList, BarChart3, FileText, MessageSquare, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Wind, Heart, BrainCircuit, Moon, Scale, ClipboardList, BarChart3, FileText, MessageSquare, Settings, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   labelKey: string;
@@ -21,6 +21,7 @@ export const OTHER_ITEMS: NavItem[] = [
   { labelKey: "nav.results", path: "/results", icon: BarChart3 },
   { labelKey: "nav.reports", path: "/reports", icon: FileText },
   { labelKey: "nav.feedback", path: "/feedback", icon: MessageSquare },
+  { labelKey: "nav.settings", path: "/settings", icon: Settings },
 ];
 
 export const ALL_MORE_ITEMS = [...PRACTICE_ITEMS, ...OTHER_ITEMS];
