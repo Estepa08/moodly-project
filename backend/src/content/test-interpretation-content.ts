@@ -12,14 +12,8 @@ export interface ScoreBand {
 export const RATIO_LOW_MAX = 1 / 3;
 export const RATIO_MODERATE_MAX = 2 / 3;
 
-export const CRISIS_MESSAGES = {
-  urgent:
-    "URGENT: This assessment indicates thoughts of self-harm. Please contact a crisis helpline immediately or go to the nearest emergency room.",
-  criticalActiveThoughts:
-    "CRITICAL: This assessment indicates active suicidal thoughts. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.",
-  criticalPlan:
-    "CRITICAL: This assessment indicates a plan for self-harm. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.",
-};
+export const DISTRESS_MESSAGE =
+  "Your responses indicate significant distress. We recommend speaking with a mental health professional.";
 
 // PHQ-9 (Patient Health Questionnaire-9) severity cutoffs.
 // Source: Kroenke K, Spitzer RL, Williams JB. "The PHQ-9: validity of a brief

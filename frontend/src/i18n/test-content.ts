@@ -11,8 +11,8 @@ export const testDescriptionRu: Record<string, string> = {
   "Generalized Anxiety Disorder Assessment": "Оценка генерализованного тревожного расстройства",
   "BAI — anxiety assessment by Dr. David Burns. 33 items across anxious feelings, thoughts, and physical symptoms.":
     "BAI — оценка тревоги по д-ру Дэвиду Бернсу. 33 пункта: тревожные чувства, мысли и физические симптомы.",
-  "BDC — depression assessment by Dr. David Burns. 25 items across thoughts, activities, physical symptoms, and suicidal urges.":
-    "BDC — оценка депрессии по д-ру Дэвиду Бернсу. 25 пунктов: мысли, активность, физические симптомы и суицидальные мысли.",
+  "BDC — depression assessment by Dr. David Burns. 25 items across thoughts, activities, and physical symptoms.":
+    "BDC — оценка депрессии по д-ру Дэвиду Бернсу. 25 пунктов: мысли, активность и физические симптомы.",
   "Identifies which of the 10 cognitive distortions (by Dr. David Burns) are most prevalent in your thinking patterns. 30 questions across all distortion types.":
     "Определяет, какие из 10 когнитивных искажений (по д-ру Дэвиду Бернсу) наиболее выражены в вашем мышлении. 30 вопросов по всем типам искажений.",
 };
@@ -276,12 +276,8 @@ export const recommendationRu: Record<string, string> = {
     "При сохранении симптомов рассмотрите обсуждение со специалистом.",
   "We recommend consulting a mental health professional.":
     "Рекомендуем консультацию специалиста по психическому здоровью.",
-  "URGENT: This assessment indicates thoughts of self-harm. Please contact a crisis helpline immediately or go to the nearest emergency room.":
-    "СРОЧНО: Этот опросник указывает на мысли о самоповреждении. Пожалуйста, немедленно свяжитесь с кризисной горячей линией или обратитесь в ближайшее отделение неотложной помощи.",
-  "CRITICAL: This assessment indicates active suicidal thoughts. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.":
-    "КРИТИЧЕСКИ: Этот опросник указывает на активные суицидальные мысли. Требуется немедленное экстренное вмешательство. Позвоните в экстренные службы (911/112) или немедленно обратитесь в ближайшее отделение неотложной помощи.",
-  "CRITICAL: This assessment indicates a plan for self-harm. Immediate emergency intervention is required. Call emergency services (911/112) or go to the nearest emergency room right now.":
-    "КРИТИЧЕСКИ: Этот опросник указывает на план самоповреждения. Требуется немедленное экстренное вмешательство. Позвоните в экстренные службы (911/112) или немедленно обратитесь в ближайшее отделение неотложной помощи.",
+  "Your responses indicate significant distress. We recommend speaking with a mental health professional.":
+    "Ваши ответы указывают на значительный дистресс. Рекомендуем обратиться к специалисту по психическому здоровью.",
   "Continue self-care practices.": "Продолжайте практики самопомощи.",
   "Consider consulting a therapist.": "Рекомендуется консультация терапевта.",
   "Consider consulting a therapist. Pharmacotherapy may be beneficial.":

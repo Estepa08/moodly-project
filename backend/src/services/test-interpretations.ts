@@ -1,5 +1,4 @@
 import {
-  CRISIS_MESSAGES,
   DISTORTIONS,
   PHQ9_BANDS,
   GAD7_BANDS,
@@ -49,22 +48,10 @@ function detectSuicideFlags(
   return flags;
 }
 
-function applyCrisisOverride(recommendation: string, flags: Record<string, unknown>): string {
-  if (!flags.suicidalIdeation) return recommendation;
-  if (flags.suicidalPlan) return CRISIS_MESSAGES.criticalActiveThoughts;
-  return CRISIS_MESSAGES.urgent;
-}
-
 const interpretations: Record<string, InterpretFn> = {
-  "PHQ-9": (score, _maxScore, answers) => {
-    const flags = detectSuicideFlags(answers, ["phq9-9"]);
+  "PHQ-9": (score) => {
     const band = findBand(PHQ9_BANDS, score);
-    const recommendation = applyCrisisOverride(band.recommendation, flags);
-    return {
-      interpretation: band.interpretation,
-      recommendation,
-      flags: Object.keys(flags).length > 0 ? flags : undefined,
-    };
+    return { interpretation: band.interpretation, recommendation: band.recommendation };
   },
 
   "GAD-7": (score) => {
@@ -77,16 +64,9 @@ const interpretations: Record<string, InterpretFn> = {
     return { interpretation: band.interpretation, recommendation: band.recommendation };
   },
 
-  "Burns Depression Checklist": (score, _maxScore, answers) => {
-    const flags = detectSuicideFlags(answers, ["bdc-23", "bdc-24", "bdc-25"], "bdc-25");
+  "Burns Depression Checklist": (score) => {
     const band = findBand(BURNS_DEPRESSION_BANDS, score);
-    let recommendation = applyCrisisOverride(band.recommendation, flags);
-    if (flags.suicidalIdeation && flags.suicidalPlan) recommendation = CRISIS_MESSAGES.criticalPlan;
-    return {
-      interpretation: band.interpretation,
-      recommendation,
-      flags: Object.keys(flags).length > 0 ? flags : undefined,
-    };
+    return { interpretation: band.interpretation, recommendation: band.recommendation };
   },
 
   "Cognitive Distortions Assessment": (_score, _maxScore, answers) => {

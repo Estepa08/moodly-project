@@ -137,7 +137,8 @@ model UserPreference {
   experienceLevel String  @default("beginner")
   dailyReminder   Boolean @default(false)
   reminderTime    String? @default("09:00")
-  onboardingDone  Boolean @default(false)
+  onboardingDone       Boolean @default(false)
+  showSupportResources Boolean @default(true)
 
   user User @relation(fields: [userId], references: [id])
 }

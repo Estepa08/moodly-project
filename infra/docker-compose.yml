@@ -32,7 +32,7 @@ services:
   edge:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
+      dockerfile: infra/Dockerfile.frontend
     restart: unless-stopped
     depends_on:
       - backend

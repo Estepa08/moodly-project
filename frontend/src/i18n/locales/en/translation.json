@@ -191,7 +191,8 @@
     "exitConfirmTitle": "Leaving so soon?",
     "exitConfirmDesc": "You can always come back and continue where you left off.",
     "exitConfirmCancel": "Keep Going",
-    "exitConfirmExit": "Exit for now"
+    "exitConfirmExit": "Exit for now",
+    "supportResources": "Support resources"
   },
   "testResults": {
     "title": "Test Results",
@@ -208,7 +209,8 @@
     "nextBreathing": "Try breathing exercise",
     "nextTrack": "Track your mood",
     "nextTests": "Take another test",
-    "nextDistortions": "Learn about thinking patterns"
+    "nextDistortions": "Learn about thinking patterns",
+    "supportResources": "Support resources"
   },
   "feedback": {
     "title": "Feedback",
@@ -280,22 +282,11 @@
     "patternBox": "Inhale 4s → Hold 4s → Exhale 4s → Hold 4s",
     "patternQuick": "Inhale 2s → Exhale 6s"
   },
-  "crisis": {
-    "titleUrgent": "We're here to help",
-    "titleCritical": "Immediate help is available",
-    "bodyUrgent": "Your responses indicate you may be having thoughts of self-harm. Please reach out to a crisis helpline right now.",
-    "bodyCritical": "Your responses indicate a plan for self-harm. Emergency intervention is needed immediately.",
-    "helpline": "Crisis helpline",
-    "dismissAfter": "I understand — show results",
-    "pleaseWait": "Please wait 10 seconds...",
-    "floatingButton": "Crisis support",
-    "callNow": "Call"
-  },
-  "contentWarning": {
-    "title": "The following questions may be difficult",
-    "body": "These questions help us better understand your situation. If you are in crisis, please contact a helpline before proceeding.",
-    "continue": "Continue",
-    "skip": "Skip these questions"
+  "supportResources": {
+    "title": "Support resources",
+    "body": "If you're going through a difficult time, these resources may help.",
+    "helpline": "Helpline",
+    "call": "Call"
   },
   "forgotPassword": {
     "title": "Forgot Password",

@@ -10,8 +10,7 @@ import { useTestResultText } from "../hooks/useTestResultText";
 import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
 import { MedicalDisclaimer } from "../widgets";
-import { ContentWarningDialog } from "../features/dialogs";
-import { CrisisDialog, CrisisSeverity } from "../features/dialogs";
+import { SupportResources } from "../features/dialogs";
 import {
   Dialog,
   DialogContent,
@@ -38,35 +37,31 @@ export default function TestDetailPage() {
     currentAnswer,
     answers,
     result,
-    showContentWarning,
-    crisisDialogOpen,
     showReview,
     showExitConfirm,
     setShowReview,
     setShowExitConfirm,
-    setCrisisDialogOpen,
     handleAnswer,
     handleNext,
     handleBack,
-    handleContinueFromWarning,
-    handleSkipFromWarning,
     handleSubmit,
     handleGoToQuestion,
   } = useTestFlow(testId);
 
+  const [showResources, setShowResources] = useState(false);
+
   // ── Result view ──
   if (result && test) {
     const maxScore = test.questions.length * 3;
-    const { interpretationText, recommendationText, crisisSeverity } = resolve(result);
+    const { interpretationText, recommendationText, isSevere } = resolve(result);
     const cdDistortions = result.flags?.distortions;
     const cdKeys = cdDistortions ? Object.keys(cdDistortions) : [];
 
     return (
       <>
-        <CrisisDialog
-          open={crisisDialogOpen}
-          severity={crisisSeverity ?? CrisisSeverity.Urgent}
-          onDismiss={() => setCrisisDialogOpen(false)}
+        <SupportResources
+          open={showResources}
+          onDismiss={() => setShowResources(false)}
         />
         <div className="max-w-lg mx-auto pb-20">
           <Card>
@@ -98,6 +93,11 @@ export default function TestDetailPage() {
                 <p className="font-medium">{t("testDetail.recommendation")}</p>
                 <p className="text-muted-foreground">{recommendationText}</p>
               </div>
+              {isSevere && (
+                <Button variant="outline" className="w-full" onClick={() => setShowResources(true)}>
+                  {t("testDetail.supportResources")}
+                </Button>
+              )}
               <Button className="w-full" onClick={() => navigate("/results")}>
                 {t("testDetail.viewAll")}
               </Button>
@@ -183,12 +183,6 @@ export default function TestDetailPage() {
 
   return (
     <div className="max-w-lg mx-auto space-y-4">
-      <ContentWarningDialog
-        open={showContentWarning}
-        onContinue={handleContinueFromWarning}
-        onSkip={handleSkipFromWarning}
-      />
-
       <ExitConfirmDialog
         open={showExitConfirm}
         onCancel={() => setShowExitConfirm(false)}

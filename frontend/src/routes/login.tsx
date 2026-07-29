@@ -264,28 +264,31 @@ export default function LoginPage({ defaultRegister }: Props) {
               </div>
             </div>
 
-            {/* ── Crisis helpline ── */}
-            <div className="rounded-xl bg-accent/5 border border-accent/20 p-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-accent" />
-                <span className="text-xs font-medium text-accent">{t("crisis.helpline")}</span>
+            {/* ── Support resources ── */}
+            <div className="rounded-xl bg-secondary/50 border border-border p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <PhoneCall className="w-4 h-4 text-primary" />
+                <span className="text-xs font-medium text-foreground">{t("supportResources.helpline")}</span>
               </div>
               {isRu ? (
                 <div className="flex gap-2 text-xs font-bold">
                   <a
+                    href="tel:112"
+                    className="text-primary hover:text-primary/80 transition-colors"
+                  >
+                    112
+                  </a>
+                  <a
                     href="tel:88002000122"
-                    className="text-foreground hover:text-accent transition-colors"
+                    className="text-primary hover:text-primary/80 transition-colors"
                   >
                     8-800-200-01-22
-                  </a>
-                  <a href="tel:112" className="text-foreground hover:text-accent transition-colors">
-                    112
                   </a>
                 </div>
               ) : (
                 <a
                   href="tel:988"
-                  className="text-xs font-bold text-foreground hover:text-accent transition-colors"
+                  className="text-xs font-bold text-primary hover:text-primary/80 transition-colors"
                 >
                   988
                 </a>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, AlertTriangle, ClipboardList } from "lucide-react";
@@ -8,9 +8,9 @@ import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
 import { useTestTranslation } from "../hooks/useTestTranslation";
-import { useTestResultText, getCrisisSeverity } from "../hooks/useTestResultText";
+import { useTestResultText } from "../hooks/useTestResultText";
 import { MedicalDisclaimer } from "../widgets";
-import { CrisisDialog, CrisisSeverity } from "../features/dialogs";
+import { SupportResources } from "../features/dialogs";
 import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
@@ -22,36 +22,10 @@ export default function TestResultsPage() {
   const [showFull, setShowFull] = useState<Record<string, boolean>>({});
   const [showScore, setShowScore] = useState<Record<string, boolean>>({});
   const [showRec, setShowRec] = useState<Record<string, boolean>>({});
-  const [crisisResultId, setCrisisResultId] = useState<string | null>(null);
-  const [hasAutoShownCrisis, setHasAutoShownCrisis] = useState(false);
+  const [showResources, setShowResources] = useState(false);
 
   const { data: tests } = useTests();
   const { data: results, isLoading } = useTestResults();
-
-  const crisisOpen = crisisResultId !== null;
-  const crisisResult = crisisOpen ? results?.find((r) => r.id === crisisResultId) : undefined;
-  const crisisSeverity = crisisResult ? getCrisisSeverity(crisisResult.recommendation) : null;
-
-  useEffect(() => {
-    if (!results) return;
-    for (const r of results) {
-      if (getCrisisSeverity(r.recommendation) && !showRec[r.id]) {
-        setShowRec((prev) => ({ ...prev, [r.id]: true }));
-      }
-    }
-  }, [results, showRec]);
-
-  // Re-surface the crisis dialog (with its forced 10s pause) once per visit
-  // to this page if there's a flagged result — the same protection given on
-  // the initial test submission, not just a click-to-open banner.
-  useEffect(() => {
-    if (!results || hasAutoShownCrisis) return;
-    const flagged = results.find((r) => getCrisisSeverity(r.recommendation));
-    if (flagged) {
-      setCrisisResultId(flagged.id);
-      setHasAutoShownCrisis(true);
-    }
-  }, [results, hasAutoShownCrisis]);
 
   if (isLoading) {
     return (
@@ -68,10 +42,9 @@ export default function TestResultsPage() {
 
   return (
     <>
-      <CrisisDialog
-        open={crisisOpen}
-        severity={crisisSeverity ?? CrisisSeverity.Urgent}
-        onDismiss={() => setCrisisResultId(null)}
+      <SupportResources
+        open={showResources}
+        onDismiss={() => setShowResources(false)}
       />
 
       <div className="space-y-4 pb-20">
@@ -95,21 +68,16 @@ export default function TestResultsPage() {
             isCD,
             interpretationText,
             recommendationText,
-            crisisSeverity: crisisType,
-            isSevere: severeUnlessCrisis,
+            isSevere,
             highKeys,
             moderateKeys,
           } = resolve(r);
-          const isSevere = !crisisType && severeUnlessCrisis;
           const isLongText = isCD || interpretationText.length > 100;
 
           return (
             <Card
               key={r.id}
-              className={cn(
-                crisisType && "border-destructive/30",
-                isSevere && !crisisType && "border-orange-300",
-              )}
+              className={cn(isSevere && "border-orange-300")}
             >
               <CardHeader className="pb-2">
                 <p className="text-xs text-muted-foreground">
@@ -134,31 +102,23 @@ export default function TestResultsPage() {
                     <div
                       className={cn(
                         "w-16 h-16 rounded-xl bg-card shadow-neumorphic-sm flex items-center justify-center",
-                        crisisType && "border-2 border-destructive",
-                        isSevere && !crisisType && "border-2 border-orange-300",
+                        isSevere && "border-2 border-orange-300",
                       )}
                     >
-                      <span
-                        className={cn(
-                          "text-2xl font-bold",
-                          crisisType ? "text-destructive" : "text-primary",
-                        )}
-                      >
+                      <span className="text-2xl font-bold text-primary">
                         {r.score}
                       </span>
                     </div>
                   )}
                 </div>
 
-                {crisisType && (
+                {isSevere && (
                   <button
                     className="w-full flex items-center justify-center gap-1.5 mb-3 px-3 py-2 rounded-lg bg-destructive/10 text-destructive text-xs font-medium cursor-pointer transition-all duration-150 active:scale-[0.97] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    onClick={() => setCrisisResultId(r.id)}
+                    onClick={() => setShowResources(true)}
                   >
                     <AlertTriangle className="w-3.5 h-3.5" />
-                    {crisisType === "critical"
-                      ? t("crisis.titleCritical")
-                      : t("crisis.titleUrgent")}
+                    {t("testResults.supportResources")}
                   </button>
                 )}
 
@@ -221,12 +181,7 @@ export default function TestResultsPage() {
                 </button>
 
                 {showRec[r.id] && (
-                  <p
-                    className={cn(
-                      "text-sm mt-2",
-                      crisisType ? "text-destructive font-medium" : "text-muted-foreground",
-                    )}
-                  >
+                  <p className="text-sm mt-2 text-muted-foreground">
                     {recommendationText}
                   </p>
                 )}

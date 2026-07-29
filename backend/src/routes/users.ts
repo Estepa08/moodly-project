@@ -11,6 +11,7 @@ interface PreferencesBody {
   dailyReminder?: boolean;
   reminderTime?: string;
   onboardingDone?: boolean;
+  showSupportResources?: boolean;
 }
 
 export default async function userRoutes(fastify: FastifyInstance) {

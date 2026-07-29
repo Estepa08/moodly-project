@@ -26,6 +26,7 @@ export interface UserPreference {
   dailyReminder: boolean;
   reminderTime?: string;
   onboardingDone: boolean;
+  showSupportResources: boolean;
 }
 
 export interface WeeklyDigest {

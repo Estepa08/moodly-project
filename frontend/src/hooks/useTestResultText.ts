@@ -1,5 +1,4 @@
 import { useTestTranslation } from "./useTestTranslation";
-import { CrisisSeverity } from "../features/dialogs";
 import { Trend } from "../lib/constants";
 
 interface ResultFlags {
@@ -13,12 +12,6 @@ interface ResultLike {
   interpretation: string;
   recommendation: string;
   flags?: unknown;
-}
-
-export function getCrisisSeverity(recommendation: string): CrisisSeverity | null {
-  if (recommendation.startsWith("CRITICAL")) return CrisisSeverity.Critical;
-  if (recommendation.startsWith("URGENT")) return CrisisSeverity.Urgent;
-  return null;
 }
 
 export function isSevereInterpretation(interpretation: string): boolean {
@@ -48,7 +41,6 @@ export function useTestResultText() {
       moderateKeys,
       interpretationText,
       recommendationText,
-      crisisSeverity: getCrisisSeverity(result.recommendation),
       isSevere: isSevereInterpretation(result.interpretation),
     };
   }

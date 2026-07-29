@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTest, useSubmitTestResult } from "./useTests";
 
 interface ResultFlags {
@@ -17,18 +16,13 @@ interface ResultData {
   flags?: ResultFlags;
 }
 
-const SUICIDE_QUESTION_IDS = ["phq9-9", "bdc-23", "bdc-24", "bdc-25"];
-
 export function useTestFlow(testId?: string) {
-  const navigate = useNavigate();
   const { data: test, isLoading } = useTest(testId);
   const submitMutation = useSubmitTestResult(testId);
 
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
   const [result, setResult] = useState<ResultData | null>(null);
-  const [showContentWarning, setShowContentWarning] = useState(false);
-  const [crisisDialogOpen, setCrisisDialogOpen] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
@@ -54,36 +48,17 @@ export function useTestFlow(testId?: string) {
       setShowReview(true);
       return;
     }
-    const nextIdx = questionIndex + 1;
-    const isNextSuicide = SUICIDE_QUESTION_IDS.includes(test!.questions[nextIdx]?.id || "");
-    if (isNextSuicide && !showContentWarning) {
-      setShowContentWarning(true);
-      return;
-    }
-    setQuestionIndex(nextIdx);
-  }, [questionIndex, test, showContentWarning]);
+    setQuestionIndex((i) => i + 1);
+  }, [questionIndex, test]);
 
   const handleBack = useCallback(() => {
     if (questionIndex > 0) setQuestionIndex((i) => i - 1);
   }, [questionIndex]);
 
-  const handleContinueFromWarning = useCallback(() => {
-    setShowContentWarning(false);
-    setQuestionIndex((i) => i + 1);
-  }, []);
-
-  const handleSkipFromWarning = useCallback(() => {
-    setShowContentWarning(false);
-    navigate("/tests");
-  }, [navigate]);
-
   const handleSubmit = useCallback(() => {
     submitMutation.mutate(answers, {
       onSuccess: (data) => {
         setResult(data as ResultData);
-        if (getCrisisSeverityFromRecommendation((data as ResultData).recommendation)) {
-          setCrisisDialogOpen(true);
-        }
       },
     });
   }, [answers, submitMutation]);
@@ -101,23 +76,14 @@ export function useTestFlow(testId?: string) {
     answers,
     currentAnswer,
     result,
-    showContentWarning,
-    crisisDialogOpen,
     showReview,
     showExitConfirm,
     setShowReview,
     setShowExitConfirm,
-    setCrisisDialogOpen,
     handleAnswer,
     handleNext,
     handleBack,
-    handleContinueFromWarning,
-    handleSkipFromWarning,
     handleSubmit,
     handleGoToQuestion,
   };
-}
-
-function getCrisisSeverityFromRecommendation(recommendation: string): boolean {
-  return recommendation.startsWith("CRITICAL") || recommendation.startsWith("URGENT");
 }
