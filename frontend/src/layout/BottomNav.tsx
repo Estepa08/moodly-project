@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "../lib/utils";
+import { useNavHighlights } from "../hooks/useNavHighlights";
 import {
   LayoutDashboard,
   Wind,
@@ -26,9 +27,20 @@ export default function BottomNav({ onMoreOpen, isMoreActive }: BottomNavProps) 
   const navigate = useNavigate();
   const location = useLocation();
 
+  const highlights = useNavHighlights();
+
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
     return location.pathname.startsWith(path);
+  };
+
+  const iconClass = (path: string, base: string) => {
+    const highlight =
+      path === "/" ? highlights.dashboard :
+      path === "/practices" ? highlights.practices :
+      path === "/tests" ? highlights.tests :
+      false;
+    return cn(base, highlight && "text-primary");
   };
 
   return (
@@ -51,7 +63,7 @@ export default function BottomNav({ onMoreOpen, isMoreActive }: BottomNavProps) 
                 : "text-muted-foreground hover:text-primary hover:bg-secondary/20",
             )}
           >
-            <item.icon className="w-5 h-5 shrink-0" />
+            <item.icon className={iconClass(item.path, "w-5 h-5 shrink-0")} />
             <span className="text-[11px] font-medium leading-tight truncate">
               {t(item.labelKey)}
             </span>

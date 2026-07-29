@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TrendingUp, Sparkles, Radar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { TrendingUp, Sparkles, Radar, ArrowRight } from "lucide-react";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Period } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -10,12 +11,12 @@ import { ParameterTrendsChart } from "../features/analytics";
 import { WeeklyAveragesGrid } from "../features/analytics";
 import { PracticeProgress } from "../features/gamification";
 import { WellbeingCard } from "../widgets";
-import { InsightBanner } from "../widgets";
 import CollapsibleSection from "../components/ui/collapsible-section";
 import EmptyState from "../components/ui/empty-state";
 
 export default function Dashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [period, setPeriod] = useState<Period>(Period.TwoWeeks);
 
   const {
@@ -60,8 +61,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <InsightBanner />
-
       <QuickEntryIcons
         numericParams={numericParams}
         createEntry={createEntry}
@@ -69,6 +68,24 @@ export default function Dashboard() {
           (p) => (entriesByParam.get(p.name) ?? []).length > 0,
         )}
       />
+
+      <CollapsibleSection
+        title={t("dashboard.practicesSummary")}
+        icon={Sparkles}
+        defaultOpen
+        storageKey="moodly_collapse_practices"
+      >
+        <PracticeProgress breathingSessionCount={creatureState?.sessionCount} />
+        <div className="mt-2 flex justify-end">
+          <button
+            onClick={() => navigate("/practices")}
+            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
+          >
+            {t("dashboard.allPractices")}
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      </CollapsibleSection>
 
       <CollapsibleSection
         title={t("dashboard.parameterTrends")}
@@ -89,7 +106,44 @@ export default function Dashboard() {
             isLoading={isDataLoading}
           />
         </div>
+        <div className="mt-2 flex justify-end">
+          <button
+            onClick={() => navigate("/reports")}
+            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
+          >
+            {t("dashboard.allReports")}
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
       </CollapsibleSection>
+
+      {radarData.length > 0 ? (
+        <Card className="shadow-neumorphic">
+          <CardHeader>
+            <CardTitle className="text-base">{t("dashboard.cdProfile")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <RadarChart data={radarData} />
+            <button
+              onClick={() => navigate("/distortions")}
+              className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1.5"
+            >
+              {t("dashboard.goToDistortions")}
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="flex flex-col items-center gap-3">
+          <EmptyState icon={Radar} title={t("dashboard.cdProfileEmpty")} />
+          <button
+            onClick={() => navigate("/tests")}
+            className="text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-3 py-1.5"
+          >
+            {t("dashboard.takeTest")}
+          </button>
+        </div>
+      )}
 
       <CollapsibleSection
         title={t("dashboard.weeklyAverages")}
@@ -98,28 +152,6 @@ export default function Dashboard() {
       >
         <WeeklyAveragesGrid weeklyAverages={weeklyAverages} isLoading={isDataLoading} />
       </CollapsibleSection>
-
-      <CollapsibleSection
-        title={t("dashboard.practicesSummary")}
-        icon={Sparkles}
-        defaultOpen={false}
-        storageKey="moodly_collapse_practices"
-      >
-        <PracticeProgress breathingSessionCount={creatureState?.sessionCount} />
-      </CollapsibleSection>
-
-      {radarData.length > 0 ? (
-        <Card className="shadow-neumorphic">
-          <CardHeader>
-            <CardTitle className="text-base">{t("dashboard.cdProfile")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <RadarChart data={radarData} />
-          </CardContent>
-        </Card>
-      ) : (
-        <EmptyState icon={Radar} title={t("dashboard.cdProfileEmpty")} />
-      )}
     </div>
   );
 }

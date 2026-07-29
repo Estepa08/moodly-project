@@ -3,8 +3,20 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useNavHighlights } from "../hooks/useNavHighlights";
+import { useStalePractices } from "../hooks/useStalePractices";
+import { PracticeSource } from "../features/gamification/practice.enums";
 import { User, LogOut, Sparkles, ChevronDown } from "lucide-react";
 import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS } from "./nav-config";
+
+const PATH_TO_SOURCE: Record<string, PracticeSource> = {
+  "/thought-journal": PracticeSource.ThoughtJournal,
+  "/gratitude-journal": PracticeSource.Gratitude,
+  "/distortions": PracticeSource.Distortions,
+  "/sleep-hygiene": PracticeSource.SleepHygiene,
+  "/cost-benefit-analysis": PracticeSource.Cba,
+  "/breathing": PracticeSource.Breathing,
+};
 
 export default function Sidebar() {
   const { t } = useTranslation();
@@ -12,6 +24,9 @@ export default function Sidebar() {
   const location = useLocation();
   const { logout } = useAuth();
   const { data: userData } = useCurrentUser();
+
+  const highlights = useNavHighlights();
+  const { staleCount, isStale } = useStalePractices(3);
 
   const isPracticeActive = PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
@@ -64,7 +79,7 @@ export default function Sidebar() {
         onClick={() => navigate(DASHBOARD_ITEM.path)}
         className={navButtonClass(location.pathname === "/")}
       >
-        <DASHBOARD_ITEM.icon className="w-5 h-5 shrink-0" />
+        <DASHBOARD_ITEM.icon className={`w-5 h-5 shrink-0 ${highlights.dashboard ? 'text-primary' : ''}`} />
         <span className="text-sm font-medium truncate">{t(DASHBOARD_ITEM.labelKey)}</span>
       </button>
 
@@ -73,7 +88,7 @@ export default function Sidebar() {
         aria-expanded={practicesOpen}
         className={navButtonClass(isPracticeActive)}
       >
-        <Sparkles className="w-5 h-5 shrink-0" />
+        <Sparkles className={`w-5 h-5 shrink-0 ${highlights.practices ? 'text-primary' : ''}`} />
         <span className="text-sm font-medium truncate flex-1 text-left">{t("nav.practices")}</span>
         <ChevronDown
           className={`w-4 h-4 shrink-0 transition-transform duration-150 ${practicesOpen ? "rotate-180" : ""}`}
@@ -82,16 +97,19 @@ export default function Sidebar() {
 
       {practicesOpen && (
         <div className="ml-4 pl-3 border-l border-border flex flex-col gap-1">
-          {PRACTICE_ITEMS.map((item) => (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              className={navButtonClass(location.pathname.startsWith(item.path))}
-            >
-              <item.icon className="w-4 h-4 shrink-0" />
-              <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
-            </button>
-          ))}
+          {PRACTICE_ITEMS.map((item) => {
+            const source = PATH_TO_SOURCE[item.path];
+            return (
+              <button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                className={navButtonClass(location.pathname.startsWith(item.path))}
+              >
+                <item.icon className={`w-4 h-4 shrink-0 ${source && isStale(source) ? 'text-primary' : ''}`} />
+                <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -101,7 +119,7 @@ export default function Sidebar() {
           onClick={() => navigate(item.path)}
           className={navButtonClass(location.pathname.startsWith(item.path))}
         >
-          <item.icon className="w-5 h-5 shrink-0" />
+          <item.icon className={`w-5 h-5 shrink-0 ${item.path === '/tests' && highlights.tests ? 'text-primary' : ''}`} />
           <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
         </button>
       ))}
