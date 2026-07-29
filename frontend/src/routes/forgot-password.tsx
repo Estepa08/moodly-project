@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
+import { getErrorMessage } from "../lib/error-messages";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -23,7 +24,7 @@ export default function ForgotPasswordPage() {
       await api.auth.forgotPassword({ email });
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(getErrorMessage(err, t));
     } finally {
       setLoading(false);
     }

@@ -3,7 +3,7 @@ import { useWeeklyDigest } from "../hooks/useWeeklyDigest";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
-import { Wind, Heart, Moon, Brain, Scale, Activity, BarChart3 } from "lucide-react";
+import { Wind, Heart, Moon, Brain, Scale, BookOpen, Activity, BarChart3 } from "lucide-react";
 
 const PRACTICE_ICONS: Record<string, typeof Wind> = {
   breathing: Wind,
@@ -11,6 +11,7 @@ const PRACTICE_ICONS: Record<string, typeof Wind> = {
   sleepHygiene: Moon,
   distortions: Brain,
   cba: Scale,
+  thoughtJournal: BookOpen,
 };
 
 const PRACTICE_LABELS: Record<string, string> = {
@@ -19,6 +20,7 @@ const PRACTICE_LABELS: Record<string, string> = {
   sleepHygiene: "progress.activitySleepHygiene",
   distortions: "progress.activityDistortions",
   cba: "progress.activityCba",
+  thoughtJournal: "progress.activityThoughtJournal",
 };
 
 export default function DigestPage() {

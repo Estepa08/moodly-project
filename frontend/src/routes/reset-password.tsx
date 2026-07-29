@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { api } from "../lib/api";
+import { getErrorMessage } from "../lib/error-messages";
 import { Button } from "../components/ui/button";
 import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
@@ -36,7 +37,7 @@ export default function ResetPasswordPage() {
       login(res.accessToken);
       navigate("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(getErrorMessage(err, t));
     } finally {
       setLoading(false);
     }

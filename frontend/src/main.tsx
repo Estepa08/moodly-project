@@ -6,7 +6,8 @@ import { Toaster, toast } from "sonner";
 import { AuthProvider } from "./hooks/useAuth";
 import App from "./App";
 import "./index.css";
-import "./i18n/i18n";
+import i18n from "./i18n/i18n";
+import { getErrorMessage } from "./lib/error-messages";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,7 +18,7 @@ const queryClient = new QueryClient({
     },
     mutations: {
       onError: (error) => {
-        toast.error(error instanceof Error ? error.message : "Something went wrong");
+        toast.error(getErrorMessage(error, i18n.t));
       },
     },
   },
