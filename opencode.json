@@ -3,7 +3,7 @@
   "skills": {
     "moodly-ui-ux": {
       "description": "Moodly product UX principles — calmness, accessibility, non-judgmental tone for mental health tracker",
-      "location": "skills/moodly-ui-ux/SKILL.md"
+      "location": ".opencode/skills/moodly-ui-ux/SKILL.md"
     },
     "ui-ux-pro-max": {
       "description": "General UI/UX design intelligence — 84 styles, 192 color palettes, 74 font pairings, 192 product types, 98 UX guidelines, 104 icon entries, 16 GSAP motion presets, 25 chart types across 22 stacks",
@@ -11,7 +11,7 @@
     },
     "product-manager": {
       "description": "Product management playbook — PRD, opportunity assessment, RICE prioritization, Now/Next/Later roadmap, GTM launch plans, sprint health snapshots",
-      "location": "skills/product-manager/SKILL.md"
+      "location": ".opencode/skills/product-manager/SKILL.md"
     }
   }
 }

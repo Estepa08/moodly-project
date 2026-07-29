@@ -13,7 +13,9 @@ Moodly — трекер ментального здоровья. Единств�
 - `api-contract/` — TypeSpec-контракт API (источник истины)
 - `backend/` — Fastify + TypeScript + Prisma (PostgreSQL)
 - `frontend/` — Vite + React + Tailwind + shadcn/ui + TanStack Query
-- `skills/` — OpenCode-скиллы проекта (`moodly-ui-ux` — UX-принципы продукта; `product-manager` — playbook продакт-менеджера: PRD, roadmap, RICE, GTM)
+- `infra/` — DevOps: Docker Compose, Dockerfile, Caddy reverse proxy, CI workflow
+- `docs/` — документация: дизайн-система, ADR, архитектурные заметки
+- `.opencode/` — AI-агенты, скиллы, AGENTS.md, конфиги OpenCode/Claude
 
 ## Commands
 

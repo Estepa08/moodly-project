@@ -44,7 +44,7 @@ Relentlessly eliminate confusion, misalignment, wasted effort, and scope creep. 
 
 ## 🛠️ Technical Deliverables
 
-For the full PRD, Opportunity Assessment, Roadmap, Go-to-Market Brief, and Sprint Health Snapshot templates, read [skills/product-manager/SKILL.md](../../skills/product-manager/SKILL.md) in the project root — same canonical playbook used by the `product-manager` skill in both Claude Code and OpenCode.
+For the full PRD, Opportunity Assessment, Roadmap, Go-to-Market Brief, and Sprint Health Snapshot templates, read [.opencode/skills/product-manager/SKILL.md](../../.opencode/skills/product-manager/SKILL.md) in the project root — same canonical playbook used by the `product-manager` skill in both Claude Code and OpenCode.
 
 ## 📋 Workflow Process
 
