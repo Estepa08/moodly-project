@@ -32,6 +32,7 @@ model User {
   cbaEntries    CbaEntry[]
   userPreference UserPreference?
   pushSubscriptions PushSubscription[]
+  userAchievements UserAchievement[]
 }
 
 model Parameter {
@@ -133,16 +134,53 @@ model Report {
   @@index([userId])
 }
 
+model Achievement {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  category    String
+  titleKey    String
+  descKey     String
+  iconName    String
+  skinReward    String?
+  titleReward   String?
+  petTypeReward String?
+  xpReward      Int      @default(0)
+  criteria    Json
+  sortOrder   Int      @default(0)
+
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime @default(now())
+  notified      Boolean  @default(false)
+
+  user        User        @relation(fields: [userId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+}
+
 model CreatureState {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  calmness       Int      @default(50)
-  energy         Int      @default(100)
-  level          Int      @default(1)
-  experience     Int      @default(0)
-  streak         Int      @default(0)
-  lastCheckInAt  DateTime?
-  lastExerciseAt DateTime?
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  calmness         Int      @default(50)
+  energy           Int      @default(100)
+  level            Int      @default(1)
+  experience       Int      @default(0)
+  streak           Int      @default(0)
+  lastCheckInAt    DateTime?
+  lastExerciseAt   DateTime?
+  activeSkin       String   @default("default")
+  unlockedSkins    String[] @default(["default"])
+  activeTitle      String?
+  unlockedTitles   String[] @default([])
+  petType          String   @default("puff")
+  unlockedPetTypes String[] @default(["puff"])
 }
 
 model UserPreference {
@@ -259,6 +297,20 @@ model CbaEntry {
   items CbaEntryItem[]
 
   @@index([userId])
+}
+
+model DailyMission {
+  id         String   @id @default(cuid())
+  userId     String
+  date       DateTime
+  missionKey String
+  labelKey   String
+  xpReward   Int      @default(10)
+  claimed    Boolean  @default(false)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([userId, date])
 }
 
 model PushSubscription {

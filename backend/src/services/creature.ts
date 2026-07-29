@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../lib/errors.js";
+import { achievementsService } from "./achievements.js";
 
 const EXP_PER_LEVEL = 100;
 const CHECKIN_EXP = 20;
@@ -12,7 +13,22 @@ const PRACTICE_XP: Record<string, number> = {
   sleepHygiene: 5,
   distortions: 10,
   cba: 10,
+  thoughtJournal: 5,
 };
+
+const ALL_PET_TYPES = ["puff", "ember", "dewdrop", "sprout", "comet", "aurora"];
+
+const MISSION_DEFINITIONS = [
+  { key: "checkin", labelKey: "missions.checkin", xpReward: 10 },
+  { key: "practice_breathing", labelKey: "missions.practiceBreathing", xpReward: 10 },
+  { key: "practice_gratitude", labelKey: "missions.practiceGratitude", xpReward: 10 },
+  { key: "practice_sleepHygiene", labelKey: "missions.practiceSleepHygiene", xpReward: 10 },
+  { key: "practice_distortions", labelKey: "missions.practiceDistortions", xpReward: 10 },
+  { key: "practice_cba", labelKey: "missions.practiceCba", xpReward: 10 },
+  { key: "practice_thoughtJournal", labelKey: "missions.practiceThoughtJournal", xpReward: 10 },
+  { key: "complete_3_practices", labelKey: "missions.complete3Practices", xpReward: 15 },
+  { key: "log_mood_entry", labelKey: "missions.logMoodEntry", xpReward: 5 },
+];
 
 function applyLevelUp(state: { level: number; experience: number }, xpGain: number) {
   let { level, experience } = state;
@@ -46,6 +62,227 @@ export const creatureService = {
     };
   },
 
+  async getStats(userId: string) {
+    const creature = await this.getState(userId);
+    const completions = await prisma.practiceCompletion.findMany({
+      where: { userId },
+      select: { source: true, xpAwarded: true, createdAt: true },
+    });
+    const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
+    const totalPractices = completions.length;
+    const totalCheckins = await prisma.practiceCompletion.count({
+      where: { userId, source: "checkin" },
+    });
+    const firstActivity = completions.length > 0
+      ? completions[completions.length - 1].createdAt
+      : null;
+    const daysSinceFirst = firstActivity
+      ? Math.max(1, Math.floor((Date.now() - firstActivity.getTime()) / 86400000))
+      : 0;
+
+    const sourceBreakdown: Record<string, number> = {};
+    for (const c of completions) {
+      sourceBreakdown[c.source as string] = (sourceBreakdown[c.source as string] ?? 0) + 1;
+    }
+
+    return {
+      totalXp: totalXp + creature.experience,
+      totalEarnedXp: totalXp,
+      totalPractices,
+      totalCheckins,
+      daysSinceFirst,
+      level: creature.level,
+      streak: creature.streak,
+      calmness: creature.calmness,
+      energy: creature.energy,
+      sourceBreakdown,
+    };
+  },
+
+  async getPets(userId: string) {
+    const creature = await prisma.creatureState.findUnique({ where: { userId } });
+    if (!creature) {
+      return { unlockedPetTypes: ["puff"], activePetType: "puff" };
+    }
+    return {
+      unlockedPetTypes: creature.unlockedPetTypes ?? ["puff"],
+      activePetType: creature.petType ?? "puff",
+    };
+  },
+
+  async setPet(userId: string, petType: string) {
+    const creature = await prisma.creatureState.findUnique({ where: { userId } });
+    if (!creature) throw new AppError("NOT_FOUND", 404, "Creature state not found");
+    if (!creature.unlockedPetTypes.includes(petType)) {
+      throw new AppError("LOCKED", 403, "Pet type not unlocked");
+    }
+    const updated = await prisma.creatureState.update({
+      where: { userId },
+      data: { petType },
+    });
+    return { petType: updated.petType };
+  },
+
+  async getHeatmap(userId: string, days = 90) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+    since.setHours(0, 0, 0, 0);
+
+    const completions = await prisma.practiceCompletion.findMany({
+      where: { userId, createdAt: { gte: since } },
+      select: { createdAt: true },
+    });
+
+    const completionsByDate = new Map<string, number>();
+    for (const c of completions) {
+      const d = c.createdAt.toISOString().slice(0, 10);
+      completionsByDate.set(d, (completionsByDate.get(d) ?? 0) + 1);
+    }
+
+    const result: { date: string; count: number }[] = [];
+    for (let i = 0; i < days; i++) {
+      const d = new Date(since);
+      d.setDate(d.getDate() + i);
+      const key = d.toISOString().slice(0, 10);
+      result.push({ date: key, count: completionsByDate.get(key) ?? 0 });
+    }
+
+    return result;
+  },
+
+  async getMissions(userId: string) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(today);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const existingMissions = await prisma.dailyMission.findMany({
+      where: {
+        userId,
+        date: { gte: today, lt: todayEnd },
+      },
+    });
+
+    if (existingMissions.length > 0) {
+      return this._evaluateMissions(userId, existingMissions);
+    }
+
+    const shuffled = [...MISSION_DEFINITIONS].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 3);
+
+    const created = await Promise.all(
+      selected.map((m, i) =>
+        prisma.dailyMission.create({
+          data: {
+            userId,
+            date: today,
+            missionKey: m.key,
+            labelKey: m.labelKey,
+            xpReward: m.xpReward,
+            sortOrder: i,
+          },
+        })
+      ),
+    );
+
+    return this._evaluateMissions(userId, created);
+  },
+
+  async _evaluateMissions(userId: string, missions: Awaited<ReturnType<typeof prisma.dailyMission.findMany>>) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(today);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const creature = await prisma.creatureState.findUnique({ where: { userId } });
+    const todayCompletions = await prisma.practiceCompletion.findMany({
+      where: { userId, createdAt: { gte: today, lt: todayEnd } },
+      select: { source: true },
+    });
+    const todayEntries = await prisma.entry.count({
+      where: { userId, createdAt: { gte: today, lt: todayEnd } },
+    });
+
+    const completedSources = new Set(todayCompletions.map((c) => c.source));
+
+    return missions.map((m) => {
+      let progress = 0;
+      const maxProgress = m.missionKey.startsWith("complete_") ? 1 : 1;
+
+      switch (m.missionKey) {
+        case "checkin":
+          progress = completedSources.has("checkin") ? 1 : 0;
+          break;
+        case "practice_breathing":
+          progress = completedSources.has("breathing") ? 1 : 0;
+          break;
+        case "practice_gratitude":
+          progress = completedSources.has("gratitude") ? 1 : 0;
+          break;
+        case "practice_sleepHygiene":
+          progress = completedSources.has("sleepHygiene") ? 1 : 0;
+          break;
+        case "practice_distortions":
+          progress = completedSources.has("distortions") ? 1 : 0;
+          break;
+        case "practice_cba":
+          progress = completedSources.has("cba") ? 1 : 0;
+          break;
+        case "practice_thoughtJournal":
+          progress = completedSources.has("thoughtJournal") ? 1 : 0;
+          break;
+        case "complete_3_practices":
+          progress = Math.min(3, todayCompletions.length) / 3;
+          break;
+        case "log_mood_entry":
+          progress = todayEntries > 0 ? 1 : 0;
+          break;
+      }
+
+      return {
+        id: m.id,
+        missionKey: m.missionKey,
+        labelKey: m.labelKey,
+        xpReward: m.xpReward,
+        progress: Math.min(1, progress),
+        claimed: m.claimed,
+        sortOrder: m.sortOrder,
+      };
+    });
+  },
+
+  async claimMission(userId: string, missionId: string) {
+    const mission = await prisma.dailyMission.findUnique({ where: { id: missionId } });
+    if (!mission || mission.userId !== userId) {
+      throw new AppError("NOT_FOUND", 404, "Mission not found");
+    }
+    if (mission.claimed) {
+      throw new AppError("ALREADY_CLAIMED", 409, "Mission already claimed");
+    }
+
+    const evaluated = await this.getMissions(userId);
+    const match = evaluated.find((m) => m.id === missionId);
+    if (!match || match.progress < 1) {
+      throw new AppError("NOT_COMPLETED", 400, "Mission not yet completed");
+    }
+
+    const state = await this.getState(userId);
+    const { experience, level, leveledUp } = applyLevelUp(state, mission.xpReward);
+
+    await Promise.all([
+      prisma.dailyMission.update({
+        where: { id: missionId },
+        data: { claimed: true },
+      }),
+      prisma.creatureState.update({
+        where: { userId },
+        data: { experience, level },
+      }),
+    ]);
+
+    return { claimed: true, xpAwarded: mission.xpReward, leveledUp };
+  },
+
   async completeExercise(userId: string, duration: number) {
     const state = await this.getState(userId);
     const initialCalmness = state.calmness;
@@ -68,6 +305,8 @@ export const creatureService = {
     ]);
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    achievementsService.check(userId).catch(() => {});
 
     return {
       state: { ...updated, sessionCount },
@@ -105,18 +344,25 @@ export const creatureService = {
 
     const { experience, level, leveledUp } = applyLevelUp(state, CHECKIN_EXP);
 
-    const updated = await prisma.creatureState.update({
-      where: { userId },
-      data: {
-        energy: MAX_ENERGY,
-        experience,
-        level,
-        streak: newStreak,
-        lastCheckInAt: new Date(),
-      },
-    });
+    const [updated] = await Promise.all([
+      prisma.creatureState.update({
+        where: { userId },
+        data: {
+          energy: MAX_ENERGY,
+          experience,
+          level,
+          streak: newStreak,
+          lastCheckInAt: new Date(),
+        },
+      }),
+      prisma.practiceCompletion.create({
+        data: { userId, source: "checkin", xpAwarded: CHECKIN_EXP },
+      }),
+    ]);
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    achievementsService.check(userId).catch(() => {});
 
     return {
       state: { ...updated, sessionCount },
@@ -144,6 +390,8 @@ export const creatureService = {
     ]);
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    achievementsService.check(userId).catch(() => {});
 
     return {
       state: { ...updated, sessionCount },

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { Wind, Heart, Moon, Brain, Scale, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Wind, Heart, Moon, Brain, Scale, BookOpen, Sparkles } from "lucide-react";
 import { useCompletions } from "./useCreature";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { LoadingCard } from "../../components/ui/loading-card";
@@ -16,12 +17,23 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
   [PracticeSource.SleepHygiene]: { icon: Moon, labelKey: "progress.activitySleepHygiene" },
   [PracticeSource.Distortions]: { icon: Brain, labelKey: "progress.activityDistortions" },
   [PracticeSource.Cba]: { icon: Scale, labelKey: "progress.activityCba" },
+  [PracticeSource.ThoughtJournal]: { icon: BookOpen, labelKey: "progress.activityThoughtJournal" },
+};
+
+const SOURCE_PATH: Record<PracticeSource, string> = {
+  [PracticeSource.Breathing]: "/breathing",
+  [PracticeSource.Gratitude]: "/gratitude-journal",
+  [PracticeSource.SleepHygiene]: "/sleep-hygiene",
+  [PracticeSource.Distortions]: "/distortions",
+  [PracticeSource.Cba]: "/cost-benefit-analysis",
+  [PracticeSource.ThoughtJournal]: "/thought-journal",
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);
 
 export default function PracticeProgress({ breathingSessionCount }: PracticeProgressProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { data: completions, isLoading } = useCompletions(30);
 
   if (isLoading) {
@@ -56,17 +68,25 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
             const Icon = config.icon;
             if (!data) {
               return (
-                <div key={source} className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 opacity-50">
+                <button
+                  key={source}
+                  onClick={() => navigate(SOURCE_PATH[source])}
+                  className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 opacity-50 w-full text-left cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <Icon className="w-5 h-5 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground truncate">{t(config.labelKey)}</p>
                     <p className="text-sm font-semibold text-muted-foreground truncate">—</p>
                   </div>
-                </div>
+                </button>
               );
             }
             return (
-              <div key={source} className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2">
+              <button
+                key={source}
+                onClick={() => navigate(SOURCE_PATH[source])}
+                className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 w-full text-left cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 <Icon className="w-5 h-5 text-primary shrink-0" />
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{t(config.labelKey)}</p>
@@ -74,7 +94,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                     {t("progress.totalCompletions", { count: data.count })} · +{data.xp} XP
                   </p>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

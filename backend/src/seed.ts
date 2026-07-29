@@ -10,6 +10,7 @@ const parameters = [
   { name: "Sleep Hygiene", description: "Ночной чек-лист гигиены сна", unit: null },
   { name: "Distortion Quiz", description: "Баллы теста когнитивных искажений", unit: null },
   { name: "Thought Release", description: "Журнал ритуала отпускания мыслей", unit: null },
+  { name: "Thought Journal Mood", description: "Mood from daily thought journal", unit: null },
 ];
 
 const baiOptions = [
@@ -518,7 +519,167 @@ const onboardingStories = [
   },
 ];
 
+const achievements = [
+  {
+    key: "first_checkin",
+    category: "general",
+    titleKey: "achievements.firstCheckin",
+    descKey: "achievements.firstCheckinDesc",
+    iconName: "sun",
+    xpReward: 10,
+    criteria: { type: "total_completions", value: 1 },
+    sortOrder: 1,
+  },
+  {
+    key: "streak_7",
+    category: "streak",
+    titleKey: "achievements.streak7",
+    descKey: "achievements.streak7Desc",
+    iconName: "flame",
+    xpReward: 30,
+    titleReward: "serenity_keeper",
+    criteria: { type: "streak", value: 7 },
+    sortOrder: 10,
+  },
+  {
+    key: "streak_30",
+    category: "streak",
+    titleKey: "achievements.streak30",
+    descKey: "achievements.streak30Desc",
+    iconName: "flame",
+    xpReward: 100,
+    titleReward: "guardian",
+    criteria: { type: "streak", value: 30 },
+    sortOrder: 11,
+  },
+  {
+    key: "level_5",
+    category: "level",
+    titleKey: "achievements.level5",
+    descKey: "achievements.level5Desc",
+    iconName: "target",
+    xpReward: 50,
+    petTypeReward: "ember",
+    skinReward: "ember_skin",
+    criteria: { type: "level", value: 5 },
+    sortOrder: 20,
+  },
+  {
+    key: "level_10",
+    category: "level",
+    titleKey: "achievements.level10",
+    descKey: "achievements.level10Desc",
+    iconName: "target",
+    xpReward: 100,
+    petTypeReward: "dewdrop",
+    titleReward: "sage",
+    criteria: { type: "level", value: 10 },
+    sortOrder: 21,
+  },
+  {
+    key: "level_15",
+    category: "level",
+    titleKey: "achievements.level15",
+    descKey: "achievements.level15Desc",
+    iconName: "target",
+    xpReward: 150,
+    petTypeReward: "sprout",
+    criteria: { type: "level", value: 15 },
+    sortOrder: 22,
+  },
+  {
+    key: "level_20",
+    category: "level",
+    titleKey: "achievements.level20",
+    descKey: "achievements.level20Desc",
+    iconName: "target",
+    xpReward: 200,
+    petTypeReward: "comet",
+    titleReward: "warrior",
+    criteria: { type: "level", value: 20 },
+    sortOrder: 23,
+  },
+  {
+    key: "level_30",
+    category: "level",
+    titleKey: "achievements.level30",
+    descKey: "achievements.level30Desc",
+    iconName: "target",
+    xpReward: 300,
+    petTypeReward: "aurora",
+    titleReward: "seeker",
+    criteria: { type: "level", value: 30 },
+    sortOrder: 24,
+  },
+  {
+    key: "breathing_10",
+    category: "breathing",
+    titleKey: "achievements.breathing10",
+    descKey: "achievements.breathing10Desc",
+    iconName: "heart",
+    xpReward: 30,
+    skinReward: "calm_skin",
+    criteria: { type: "breathing_count", value: 10 },
+    sortOrder: 30,
+  },
+  {
+    key: "breathing_50",
+    category: "breathing",
+    titleKey: "achievements.breathing50",
+    descKey: "achievements.breathing50Desc",
+    iconName: "heart",
+    xpReward: 80,
+    skinReward: "zen_skin",
+    criteria: { type: "breathing_count", value: 50 },
+    sortOrder: 31,
+  },
+  {
+    key: "all_practices",
+    category: "practices",
+    titleKey: "achievements.allPractices",
+    descKey: "achievements.allPracticesDesc",
+    iconName: "brain",
+    xpReward: 50,
+    titleReward: "spark",
+    criteria: { type: "all_practices", value: 6 },
+    sortOrder: 40,
+  },
+  {
+    key: "xp_500",
+    category: "general",
+    titleKey: "achievements.xp500",
+    descKey: "achievements.xp500Desc",
+    iconName: "star",
+    xpReward: 50,
+    criteria: { type: "total_xp", value: 500 },
+    sortOrder: 50,
+  },
+  {
+    key: "xp_1000",
+    category: "general",
+    titleKey: "achievements.xp1000",
+    descKey: "achievements.xp1000Desc",
+    iconName: "star",
+    xpReward: 100,
+    criteria: { type: "total_xp", value: 1000 },
+    sortOrder: 51,
+  },
+  {
+    key: "completions_100",
+    category: "practices",
+    titleKey: "achievements.completions100",
+    descKey: "achievements.completions100Desc",
+    iconName: "brain",
+    xpReward: 100,
+    criteria: { type: "total_completions", value: 100 },
+    sortOrder: 60,
+  },
+];
+
 async function seed() {
+  await prisma.userAchievement.deleteMany();
+  await prisma.achievement.deleteMany();
+  await prisma.dailyMission.deleteMany();
   await prisma.testScoreBand.deleteMany();
   await prisma.testResult.deleteMany();
   await prisma.report.deleteMany();
@@ -530,6 +691,9 @@ async function seed() {
   await prisma.cbaEntry.deleteMany();
   await prisma.refreshToken.deleteMany();
   await prisma.resetToken.deleteMany();
+  await prisma.pushSubscription.deleteMany();
+  await prisma.practiceCompletion.deleteMany();
+  await prisma.userPreference.deleteMany();
   await prisma.user.deleteMany();
   await prisma.test.deleteMany();
   await prisma.parameter.deleteMany();
@@ -556,6 +720,8 @@ async function seed() {
   for (const s of onboardingStories) {
     await prisma.onboardingStory.create({ data: s });
   }
+
+  await prisma.achievement.createMany({ data: achievements as never });
 
   const hashed = await bcrypt.hash("demo123", 10);
   const demoUser = await prisma.user.create({

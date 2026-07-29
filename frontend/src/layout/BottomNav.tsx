@@ -7,12 +7,14 @@ import {
   Wind,
   ClipboardList,
   BarChart3,
+  Trophy,
   MoreHorizontal,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard },
   { labelKey: "nav.practices", path: "/practices", icon: Wind },
+  { labelKey: "nav.progress", path: "/progress", icon: Trophy },
   { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
   { labelKey: "nav.results", path: "/results", icon: BarChart3 },
 ];

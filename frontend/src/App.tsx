@@ -21,9 +21,11 @@ const PracticesPage = lazy(() => import("./routes/practices"));
 const GratitudeJournalPage = lazy(() => import("./routes/gratitude-journal"));
 const DistortionsPage = lazy(() => import("./routes/distortions"));
 const SleepHygienePage = lazy(() => import("./routes/sleep-hygiene"));
+const ThoughtJournalPage = lazy(() => import("./routes/thought-journal"));
 const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysis"));
 const DigestPage = lazy(() => import("./routes/digest"));
 const SettingsPage = lazy(() => import("./routes/settings"));
+const ProgressPage = lazy(() => import("./routes/progress"));
 
 function SuspenseFallback() {
   return (
@@ -91,8 +93,10 @@ export default function App() {
         <Route path="/gratitude-journal" element={<GratitudeJournalPage />} />
         <Route path="/distortions" element={<DistortionsPage />} />
         <Route path="/sleep-hygiene" element={<SleepHygienePage />} />
+        <Route path="/thought-journal" element={<ThoughtJournalPage />} />
         <Route path="/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
         <Route path="/digest" element={<DigestPage />} />
+        <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

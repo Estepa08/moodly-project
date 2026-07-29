@@ -8,5 +8,12 @@ export {
   useCompleteExercise,
   useRewardPractice,
   useCompletions,
+  useCreatureStats,
+  usePets,
+  useSetPet,
+  useHeatmap,
+  useMissions,
+  useClaimMission,
+  useAchievements,
 } from "./useCreature";
 export { PracticeSource } from "./practice.enums";

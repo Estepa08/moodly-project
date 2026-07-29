@@ -39,3 +39,67 @@ export function useCompletions(days = 30) {
     staleTime: 30_000,
   });
 }
+
+export function useCreatureStats() {
+  return useQuery({
+    queryKey: ["creature", "stats"],
+    queryFn: () => api.creature.getStats(),
+    staleTime: 60_000,
+  });
+}
+
+export function usePets() {
+  return useQuery({
+    queryKey: ["creature", "pets"],
+    queryFn: () => api.creature.getPets(),
+    staleTime: 60_000,
+  });
+}
+
+export function useSetPet() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (petType: string) => api.creature.setPet(petType),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+    },
+  });
+}
+
+export function useHeatmap(days = 90) {
+  return useQuery({
+    queryKey: ["creature", "heatmap", days],
+    queryFn: () => api.creature.getHeatmap(days),
+    staleTime: 60_000,
+  });
+}
+
+export function useMissions() {
+  return useQuery({
+    queryKey: ["creature", "missions"],
+    queryFn: () => api.creature.getMissions(),
+    staleTime: 30_000,
+  });
+}
+
+export function useClaimMission() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => api.creature.claimMission(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["creature", "missions"] });
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+    },
+  });
+}
+
+export function useAchievements() {
+  return useQuery({
+    queryKey: ["achievements"],
+    queryFn: () => api.achievements.list(),
+    staleTime: 60_000,
+  });
+}

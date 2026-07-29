@@ -1,3 +1,4 @@
+import { ApiError } from "./api-error";
 import type { components } from "./api-types";
 
 type AuthResponse = components["schemas"]["AuthResponse"];
@@ -52,6 +53,12 @@ export interface CreatureState {
   lastCheckInAt?: string;
   lastExerciseAt?: string;
   sessionCount: number;
+  petType?: string;
+  unlockedPetTypes?: string[];
+  activeTitle?: string | null;
+  unlockedTitles?: string[];
+  activeSkin?: string;
+  unlockedSkins?: string[];
 }
 
 interface CheckInResponse {
@@ -63,6 +70,62 @@ interface PracticeCompletion {
   source: string;
   xpAwarded: number;
   createdAt: string;
+}
+
+export interface CreatureStats {
+  totalXp: number;
+  totalEarnedXp: number;
+  totalPractices: number;
+  totalCheckins: number;
+  daysSinceFirst: number;
+  level: number;
+  streak: number;
+  calmness: number;
+  energy: number;
+  sourceBreakdown: Record<string, number>;
+}
+
+export interface PetCollection {
+  unlockedPetTypes: string[];
+  activePetType: string;
+}
+
+export interface HeatmapEntry {
+  date: string;
+  count: number;
+}
+
+export interface Mission {
+  id: string;
+  missionKey: string;
+  labelKey: string;
+  xpReward: number;
+  progress: number;
+  claimed: boolean;
+  sortOrder: number;
+}
+
+export interface ClaimMissionResponse {
+  claimed: boolean;
+  xpAwarded: number;
+  leveledUp: boolean;
+}
+
+export interface Achievement {
+  id: string;
+  key: string;
+  category: string;
+  titleKey: string;
+  descKey: string;
+  iconName: string;
+  skinReward: string | null;
+  titleReward: string | null;
+  petTypeReward: string | null;
+  xpReward: number;
+  sortOrder: number;
+  unlocked: boolean;
+  unlockedAt: string | null;
+  progress: number;
 }
 
 const BASE_URL = "/api";
@@ -123,7 +186,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (res.status === 204) return undefined as T;
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(error.message || "Request failed");
+    throw new ApiError(error.code || "UNKNOWN", error.message || "Request failed");
   }
   return res.json();
 }
@@ -226,6 +289,27 @@ export const api = {
       }),
     getCompletions: (days = 30) =>
       request<PracticeCompletion[]>(`/creature/completions?days=${days}`),
+    getStats: () => request<CreatureStats>("/creature/stats"),
+    getPets: () => request<PetCollection>("/creature/pets"),
+    setPet: (petType: string) =>
+      request<{ petType: string }>("/creature/pet", {
+        method: "PATCH",
+        body: JSON.stringify({ petType }),
+      }),
+    getHeatmap: (days = 90) =>
+      request<HeatmapEntry[]>(`/creature/heatmap?days=${days}`),
+    getMissions: () => request<Mission[]>("/creature/missions"),
+    claimMission: (id: string) =>
+      request<ClaimMissionResponse>(`/creature/missions/${id}/claim`, { method: "POST" }),
+    setTitle: (title: string | null) =>
+      request<{ activeTitle: string | null }>("/creature/title", {
+        method: "PATCH",
+        body: JSON.stringify({ title }),
+      }),
+  },
+  achievements: {
+    list: () => request<Achievement[]>("/achievements"),
+    check: () => request<Achievement[]>("/achievements/check", { method: "POST" }),
   },
   push: {
     subscribe: (body: { endpoint: string; keys: { p256dh: string; auth: string } }) =>
