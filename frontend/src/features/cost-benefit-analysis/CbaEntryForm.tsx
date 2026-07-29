@@ -6,6 +6,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { ChecklistItem } from "../../components/ui/checklist-item";
+import { ComponentSize } from "../../lib/constants";
 import { cn } from "../../lib/utils";
 import CbaWeightSlider from "./CbaWeightSlider";
 import type { useCreateCbaEntry } from "./useCba";
@@ -55,7 +56,7 @@ function ItemChecklist({
             checked={checked.has(item.id)}
             onToggle={() => onToggle(item.id)}
             label={item.itemText}
-            size="sm"
+            size={ComponentSize.Sm}
           />
         ))}
       </div>

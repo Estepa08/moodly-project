@@ -7,6 +7,7 @@ import {
   Wind, LayoutDashboard, ClipboardList, Brain, Moon, Heart, Sparkles, Bell,
 } from "lucide-react";
 import { useOnboarding } from "../hooks/useOnboarding";
+import { ExpLevel } from "../lib/constants";
 import Spinner from "../components/ui/spinner";
 
 const GOALS = [
@@ -17,7 +18,7 @@ const GOALS = [
   { key: "therapy", icon: ClipboardList },
 ] as const;
 
-const EXP_LEVELS = ["beginner", "intermediate", "advanced"] as const;
+const EXP_LEVELS = [ExpLevel.Beginner, ExpLevel.Intermediate, ExpLevel.Advanced];
 
 const TOTAL_STEPS = 5;
 
@@ -28,7 +29,7 @@ export default function OnboardingPage() {
 
   const [step, setStep] = useState(0);
   const [goals, setGoals] = useState<string[]>([]);
-  const [expLevel, setExpLevel] = useState<string>("beginner");
+  const [expLevel, setExpLevel] = useState<ExpLevel>(ExpLevel.Beginner);
   const [dailyReminder, setDailyReminder] = useState(false);
   const [reminderTime, setReminderTime] = useState("09:00");
   const [saving, setSaving] = useState(false);
@@ -60,7 +61,7 @@ export default function OnboardingPage() {
 
   const handleSkip = async () => {
     setSaving(true);
-    await complete({ goals: [], experienceLevel: "beginner", dailyReminder: false });
+    await complete({ goals: [], experienceLevel: ExpLevel.Beginner, dailyReminder: false });
     navigate("/", { replace: true });
   };
 

@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "../../lib/utils";
+import { ComponentSize } from "../../lib/constants";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,7 @@ interface ModalShellProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   icon?: LucideIcon;
-  iconSize?: "sm" | "md";
+  iconSize?: ComponentSize;
   iconBg?: string;
   iconColor?: string;
   title: string;
@@ -24,16 +25,16 @@ interface ModalShellProps {
   preventClose?: boolean;
 }
 
-const iconSizeMap = {
-  sm: { container: "w-10 h-10", icon: "w-5 h-5" },
-  md: { container: "w-12 h-12", icon: "w-6 h-6" },
+const iconSizeMap: Record<ComponentSize, { container: string; icon: string }> = {
+  [ComponentSize.Sm]: { container: "w-10 h-10", icon: "w-5 h-5" },
+  [ComponentSize.Md]: { container: "w-12 h-12", icon: "w-6 h-6" },
 };
 
 export function ModalShell({
   open,
   onOpenChange,
   icon: Icon,
-  iconSize = "sm",
+  iconSize = ComponentSize.Sm,
   iconBg,
   iconColor,
   title,

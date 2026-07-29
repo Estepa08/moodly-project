@@ -9,3 +9,4 @@ export {
   useRewardPractice,
   useCompletions,
 } from "./useCreature";
+export { PracticeSource } from "./practice.enums";

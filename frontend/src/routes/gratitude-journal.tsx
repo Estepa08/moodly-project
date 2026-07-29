@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry } from "../hooks/useEntries";
-import { useRewardPractice } from "../features/gamification";
+import { useRewardPractice, PracticeSource } from "../features/gamification";
 import { GratitudeJournal } from "../features/journal";
 
 export default function GratitudeJournalPage() {
@@ -18,7 +18,7 @@ export default function GratitudeJournalPage() {
   );
   const rewardPractice = useRewardPractice();
   const createEntry = useCreateEntry(() => {
-    rewardPractice.mutate("gratitude");
+    rewardPractice.mutate(PracticeSource.Gratitude);
   });
 
   return (

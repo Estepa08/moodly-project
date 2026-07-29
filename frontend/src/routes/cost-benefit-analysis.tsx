@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCbaExamples, useCbaCommonItems, useCbaEntries, useCreateCbaEntry, useDeleteCbaEntry, CbaLibrary, CbaEntryForm, CbaHistory } from "../features/cost-benefit-analysis";
-import { useRewardPractice } from "../features/gamification";
+import { useRewardPractice, PracticeSource } from "../features/gamification";
 import Spinner from "../components/ui/spinner";
 
 const TABS = [
@@ -20,7 +20,7 @@ export default function CostBenefitAnalysisPage() {
   const rewardPractice = useRewardPractice();
   const createEntry = useCreateCbaEntry(() => {
     setTab("history");
-    rewardPractice.mutate("cba");
+    rewardPractice.mutate(PracticeSource.Cba);
   });
   const deleteEntry = useDeleteCbaEntry();
 

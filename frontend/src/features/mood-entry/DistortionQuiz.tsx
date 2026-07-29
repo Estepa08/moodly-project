@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, X } from "lucide-react";
 import type { CreateEntryMutation } from "../../lib/app-types";
-import { QUIZ_ITEMS, QUIZ_PER_RUN, pickOptions, shuffle, type DistortionKey } from "../../lib/distortionsQuiz";
+import { QUIZ_ITEMS, QUIZ_PER_RUN, pickOptions, shuffle, DistortionKey } from "../../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { cn } from "../../lib/utils";
@@ -52,13 +52,14 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
   };
 
   if (isDone) {
+    const pct = Math.round((score / order.length) * 100);
     return (
       <Card className="shadow-neumorphic">
-        <CardContent className="text-center py-8 space-y-4">
-          <p className="text-lg font-semibold text-foreground font-serif">
-            {t("distortionsQuiz.scoreSummary", { score, total: order.length })}
-          </p>
-          <Button onClick={handleRestart}>{t("distortionsQuiz.tryAgain")}</Button>
+        <CardContent className="pt-6 text-center space-y-3">
+          <Check className="w-10 h-10 text-accent mx-auto" />
+          <p className="text-lg font-bold font-serif text-foreground">{t("distortions.quizDone")}</p>
+          <p className="text-sm text-muted-foreground">{t("distortions.quizScore", { score, total: order.length, pct })}</p>
+          <Button onClick={handleRestart}>{t("distortions.quizRestart")}</Button>
         </CardContent>
       </Card>
     );
@@ -67,46 +68,44 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
   return (
     <Card className="shadow-neumorphic">
       <CardHeader>
-        <CardTitle className="text-base">{t("distortionsQuiz.question")}</CardTitle>
+        <CardTitle className="text-base">{t("distortions.quizTitle")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">{t("distortionsQuiz.intro")}</p>
-        <p className="text-sm font-medium text-foreground">{t(`distortionsQuiz.${current.id}`)}</p>
-
-        <div className="space-y-2">
-          {options.map((key) => {
-            const isCorrectOption = key === current.distortion;
-            const isSelectedOption = key === selected;
-            return (
-              <Button
-                key={key}
-                variant={isSelectedOption ? "default" : "outline"}
-                className={cn(
-                  "w-full justify-start h-auto py-3 px-4 relative transition-all duration-150",
-                  isAnswered && isCorrectOption && "bg-accent/10 border-accent text-accent shadow-neumorphic-inset",
-                  isAnswered && isSelectedOption && !isCorrectOption && "bg-destructive/10 border-destructive text-destructive shadow-neumorphic-inset",
-                )}
-                onClick={() => handleSelect(key)}
-                disabled={isAnswered}
-              >
-                {t(`cognitiveDistortions.${key}`)}
-                {isAnswered && isCorrectOption && <Check className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2" />}
-                {isAnswered && isSelectedOption && !isCorrectOption && <X className="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2" />}
+        <p className="text-xs text-muted-foreground">{t("distortions.quizProgress", { current: index + 1, total: order.length })}</p>
+        {current && (
+          <>
+            <p className="text-sm font-medium text-foreground">{t(`distortionsLibrary.${current.distortion}.definition`)}</p>
+            <p className="text-xs text-muted-foreground">{t("distortions.whichDistortion")}</p>
+            <div className="space-y-2">
+              {options.map((opt) => {
+                const isCorrect = opt === current.distortion;
+                const isWrong = isAnswered && opt === selected && !isCorrect;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => handleSelect(opt)}
+                    disabled={isAnswered}
+                    className={cn(
+                      "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-left font-medium transition-all duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      isAnswered && isCorrect && "bg-accent/10 text-accent shadow-neumorphic-inset ring-2 ring-accent/60",
+                      isWrong && "bg-destructive/10 text-destructive shadow-neumorphic-inset ring-2 ring-destructive/60",
+                      !isAnswered && "bg-muted text-muted-foreground hover:text-foreground shadow-neumorphic-sm",
+                      isAnswered && !isCorrect && !isWrong && "opacity-50",
+                    )}
+                  >
+                    <span>{t(`cognitiveDistortions.${opt}`)}</span>
+                    {isAnswered && isCorrect && <Check className="w-4 h-4 shrink-0 text-accent" />}
+                    {isWrong && <X className="w-4 h-4 shrink-0 text-destructive" />}
+                  </button>
+                );
+              })}
+            </div>
+            {isAnswered && (
+              <Button onClick={handleNext} className="w-full">
+                {t(index < order.length - 1 ? "distortions.next" : "distortions.finish")}
               </Button>
-            );
-          })}
-        </div>
-
-        {isAnswered && (
-          <div className="space-y-2">
-            <p className={cn("text-sm font-medium", selected === current.distortion ? "text-accent" : "text-destructive")}>
-              {selected === current.distortion ? t("distortionsQuiz.correct") : t("distortionsQuiz.incorrect")}
-            </p>
-            <p className="text-xs text-muted-foreground">{t(`distortionsLibrary.${current.distortion}.definition`)}</p>
-            <Button className="w-full" onClick={handleNext}>
-              {index + 1 >= order.length ? t("distortionsQuiz.finish") : t("distortionsQuiz.next")}
-            </Button>
-          </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

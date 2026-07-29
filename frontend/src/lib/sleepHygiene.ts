@@ -1,14 +1,14 @@
-export const SLEEP_HYGIENE_ITEMS = [
-  "noCaffeine",
-  "noScreens",
-  "consistentBedtime",
-  "darkQuietCool",
-  "noAlcohol",
-  "dayActivity",
-  "noLateMeal",
-] as const;
+export enum HygieneItem {
+  NoCaffeine = "noCaffeine",
+  NoScreens = "noScreens",
+  ConsistentBedtime = "consistentBedtime",
+  DarkQuietCool = "darkQuietCool",
+  NoAlcohol = "noAlcohol",
+  DayActivity = "dayActivity",
+  NoLateMeal = "noLateMeal",
+}
 
-export type SleepHygieneItem = (typeof SLEEP_HYGIENE_ITEMS)[number];
+export const SLEEP_HYGIENE_ITEMS = Object.values(HygieneItem);
 
 export const SLEEP_HYGIENE_THRESHOLD = Math.ceil(SLEEP_HYGIENE_ITEMS.length / 2);
 
@@ -25,11 +25,12 @@ export function nextDayKey(date: Date): string {
   return dayKey(next);
 }
 
-export function parseCheckedNote(note: string | undefined | null): Set<string> {
+export function parseCheckedNote(note: string | undefined | null): Set<HygieneItem> {
   if (!note) return new Set();
   const keys = note.split(",").filter(Boolean);
-  const valid = new Set(SLEEP_HYGIENE_ITEMS as unknown as string[]);
-  return new Set(keys.filter((k) => valid.has(k)));
+  return new Set(
+    keys.filter((k): k is HygieneItem => (Object.values(HygieneItem) as string[]).includes(k)) as HygieneItem[],
+  );
 }
 
 export function findTodayEntry<T extends { createdAt: string }>(

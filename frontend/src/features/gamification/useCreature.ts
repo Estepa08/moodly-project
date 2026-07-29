@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
+import { PracticeSource } from "./practice.enums";
 
 export function useCreatureState() {
   return useQuery({
@@ -24,7 +25,7 @@ export function useRewardPractice() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (source: string) => api.creature.reward(source),
+    mutationFn: (source: PracticeSource) => api.creature.reward(source),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creature"] });
     },

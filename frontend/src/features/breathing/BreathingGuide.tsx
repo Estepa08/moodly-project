@@ -4,40 +4,41 @@ import { CircleArrowUp, Timer, Wind } from "lucide-react";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { Button } from "../../components/ui/button";
 import { SegmentGroup, SegmentButton } from "../../components/ui/segment-button";
-
-export type BreathingTechnique = "478" | "box" | "quick";
+import { BreathPhase, BreathingTechnique } from "./breathing.enums";
 
 interface BreathingGuideProps {
   onComplete: (duration: number) => void;
   onCancel: () => void;
   autoStart?: boolean;
   technique?: BreathingTechnique;
-  onBreathChange?: (phase: "inhale" | "hold" | "exhale", progress: number) => void;
+  onBreathChange?: (phase: BreathPhase, progress: number) => void;
 }
 
-const BREATHING_PATTERNS: Record<
-  BreathingTechnique,
-  { phases: readonly { key: "inhale" | "hold" | "exhale"; duration: number }[] }
-> = {
-  "478": {
+interface PhaseConfig {
+  key: BreathPhase;
+  duration: number;
+}
+
+const BREATHING_PATTERNS: Record<BreathingTechnique, { phases: readonly PhaseConfig[] }> = {
+  [BreathingTechnique.Box]: {
     phases: [
-      { key: "inhale", duration: 4000 },
-      { key: "hold", duration: 7000 },
-      { key: "exhale", duration: 8000 },
+      { key: BreathPhase.Inhale, duration: 4000 },
+      { key: BreathPhase.Hold, duration: 4000 },
+      { key: BreathPhase.Exhale, duration: 4000 },
+      { key: BreathPhase.Hold, duration: 4000 },
     ],
   },
-  box: {
+  [BreathingTechnique.FourSevenEight]: {
     phases: [
-      { key: "inhale", duration: 4000 },
-      { key: "hold", duration: 4000 },
-      { key: "exhale", duration: 4000 },
-      { key: "hold", duration: 4000 },
+      { key: BreathPhase.Inhale, duration: 4000 },
+      { key: BreathPhase.Hold, duration: 7000 },
+      { key: BreathPhase.Exhale, duration: 8000 },
     ],
   },
-  quick: {
+  [BreathingTechnique.Quick]: {
     phases: [
-      { key: "inhale", duration: 2000 },
-      { key: "exhale", duration: 6000 },
+      { key: BreathPhase.Inhale, duration: 2000 },
+      { key: BreathPhase.Exhale, duration: 6000 },
     ],
   },
 };
@@ -53,7 +54,7 @@ export default function BreathingGuide({
 }: BreathingGuideProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
-  const [technique, setTechnique] = useState<BreathingTechnique>(initialTechnique ?? "box");
+  const [technique, setTechnique] = useState<BreathingTechnique>(initialTechnique ?? BreathingTechnique.Box);
   const [cycle, setCycle] = useState(1);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
@@ -70,9 +71,9 @@ export default function BreathingGuide({
 
   const phases = BREATHING_PATTERNS[technique].phases;
   const phase = phases[phaseIdx];
-  const isInhale = phase.key === "inhale";
-  const isHold = phase.key === "hold";
-  const isExhale = phase.key === "exhale";
+  const isInhale = phase.key === BreathPhase.Inhale;
+  const isHold = phase.key === BreathPhase.Hold;
+  const isExhale = phase.key === BreathPhase.Exhale;
 
   const tick = useCallback(() => {
     if (completedRef.current) return;
@@ -181,9 +182,9 @@ export default function BreathingGuide({
         {!running ? (
           <>
             <SegmentGroup>
-              <SegmentButton active={technique === "box"} onClick={() => setTechnique("box")}>{t("breathing.techniqueBox")}</SegmentButton>
-              <SegmentButton active={technique === "478"} onClick={() => setTechnique("478")}>{t("breathing.technique478")}</SegmentButton>
-              <SegmentButton active={technique === "quick"} onClick={() => setTechnique("quick")}>{t("breathing.techniqueQuick")}</SegmentButton>
+              <SegmentButton active={technique === BreathingTechnique.Box} onClick={() => setTechnique(BreathingTechnique.Box)}>{t("breathing.techniqueBox")}</SegmentButton>
+              <SegmentButton active={technique === BreathingTechnique.FourSevenEight} onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}>{t("breathing.technique478")}</SegmentButton>
+              <SegmentButton active={technique === BreathingTechnique.Quick} onClick={() => setTechnique(BreathingTechnique.Quick)}>{t("breathing.techniqueQuick")}</SegmentButton>
             </SegmentGroup>
             <Button onClick={() => setRunning(true)}>{t("breathing.start")}</Button>
           </>

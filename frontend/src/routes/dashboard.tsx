@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TrendingUp, Sparkles, Radar } from "lucide-react";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
+import { Period } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { RadarChart } from "../features/analytics";
 import { QuickEntryIcons } from "../features/mood-entry";
@@ -15,7 +16,7 @@ import EmptyState from "../components/ui/empty-state";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const [period, setPeriod] = useState("2w");
+  const [period, setPeriod] = useState<Period>(Period.TwoWeeks);
 
   const {
     numericParams,

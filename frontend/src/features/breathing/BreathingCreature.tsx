@@ -4,27 +4,22 @@ import type { AnimationItem } from "lottie-web";
 import { Heart, HelpCircle } from "lucide-react";
 import animationData from "../../assets/lottie/breathing-creature.json";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { BreathPhase, ReactionType } from "./breathing.enums";
 
 interface Reaction {
   id: number;
-  type: "heart" | "question" | "dizzy";
+  type: ReactionType;
   x: number;
 }
 
 interface BreathingCreatureProps {
   calmness: number;
   size?: number;
-  breathingPhase?: "inhale" | "hold" | "exhale";
+  breathingPhase?: BreathPhase;
   breathingProgress?: number;
-  // while an actual breathing session is running we don't want the octopus scooting around
-  // after the cursor (it fights for attention with the breathing guide and can drift toward
-  // wherever the user's mouse settled, e.g. near the cancel button) — default true for the
-  // idle/done screens where the playful cursor-follow is the point
   followCursor?: boolean;
 }
 
-// how far the pupils are allowed to drift from their baked position, in the
-// animation's own 500x500 coordinate space
 const PUPIL_RANGE = 15;
 
 const REACTION_DURATION = 3200;
@@ -51,14 +46,14 @@ export default function BreathingCreature({
 
   const [reactions, setReactions] = useState<Reaction[]>([]);
 
-  const spawnReaction = useCallback((type: "heart" | "question" | "dizzy") => {
-    if (type === "dizzy") dizzyActiveRef.current = true;
+  const spawnReaction = useCallback((type: ReactionType) => {
+    if (type === ReactionType.Dizzy) dizzyActiveRef.current = true;
     const id = nextReactionId++;
     const x = (Math.random() - 0.5) * 30;
     setReactions((prev) => [...prev, { id, type, x }]);
     setTimeout(() => {
       setReactions((prev) => prev.filter((r) => r.id !== id));
-      if (type === "dizzy") dizzyActiveRef.current = false;
+      if (type === ReactionType.Dizzy) dizzyActiveRef.current = false;
     }, REACTION_DURATION);
   }, []);
 
@@ -76,13 +71,12 @@ export default function BreathingCreature({
 
     if (clickTimestampsRef.current.length >= CLICK_THRESHOLD) {
       clickTimestampsRef.current = [];
-      spawnReaction("dizzy");
+      spawnReaction(ReactionType.Dizzy);
     } else {
-      spawnReaction("heart");
+      spawnReaction(ReactionType.Heart);
     }
   }, [spawnReaction]);
 
-  // inactivity timer — spawns a question mark after 10s without mouse activity
   useEffect(() => {
     if (reducedMotion) return;
     const interval = setInterval(() => {
@@ -92,15 +86,12 @@ export default function BreathingCreature({
         !questionSpawnedRef.current
       ) {
         questionSpawnedRef.current = true;
-        spawnReaction("question");
+        spawnReaction(ReactionType.Question);
       }
     }, 1000);
     return () => clearInterval(interval);
   }, [reducedMotion, spawnReaction]);
 
-  // the octopus scoots left/right after the cursor, as if paddling itself with its tentacles:
-  // a noticeable horizontal drift, a lean into the direction of travel, and a squash/stretch +
-  // playback speed-up while it's actively "swimming" that settles once it catches up
   useEffect(() => {
     if (reducedMotion) return;
     let raf = 0;
@@ -124,7 +115,6 @@ export default function BreathingCreature({
     window.addEventListener("mousemove", onMove);
 
     const tick = () => {
-      // settle back to center (rather than freezing in place) once cursor-follow is turned off
       if (!followCursorRef.current) {
         targetX = 0;
         targetY = 0;
@@ -154,12 +144,9 @@ export default function BreathingCreature({
     };
   }, [reducedMotion]);
 
-  // eyes track the cursor: nudge the "pupilas" layer's rendered transform each frame,
-  // on top of whatever the baked animation is already doing (idle look/blink keyframes)
   useEffect(() => {
     if (reducedMotion) return;
 
-    // lottie-web internals aren't typed; reach into the SVG renderer's per-layer elements
     type RenderElement = { data?: { nm?: string }; layerElement?: SVGGElement };
     type InternalAnim = { renderer?: { elements?: RenderElement[] } };
 
@@ -186,12 +173,6 @@ export default function BreathingCreature({
         if (!pupilEl) return;
         const dx = pointerRef.current.x * PUPIL_RANGE;
         const dy = -pointerRef.current.y * PUPIL_RANGE;
-        // lottie rewrites this element's `transform` *attribute* every frame from the baked
-        // keyframes (its own idle look/blink motion) and there's no reliable point to hook in
-        // and out-race that write. A CSS `transform` on an SVG element wins over the attribute
-        // unconditionally, so we read this frame's baked position out of the attribute and
-        // re-apply it via CSS with our cursor offset added — that preserves the baked motion
-        // while guaranteeing our offset always sticks.
         const baked = new DOMMatrix(pupilEl.getAttribute("transform") ?? undefined);
         const combined = baked.translate(dx, dy);
         pupilEl.style.transform = combined.toString();
@@ -237,9 +218,9 @@ export default function BreathingCreature({
               className="absolute left-1/2 -translate-x-1/2 top-[35%] w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center animate-bubble-up"
               style={{ marginLeft: r.x }}
             >
-              {r.type === "dizzy" ? (
+              {r.type === ReactionType.Dizzy ? (
                 <span className="text-lg">🌀</span>
-              ) : r.type === "heart" ? (
+              ) : r.type === ReactionType.Heart ? (
                 <Heart className="w-4 h-4 text-accent" strokeWidth={2.5} />
               ) : (
                 <HelpCircle className="w-4 h-4 text-primary" strokeWidth={2.5} />

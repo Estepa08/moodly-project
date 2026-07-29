@@ -2,8 +2,7 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCreatureState, useCompleteExercise } from "../features/gamification";
 import { celebrate } from "../features/gamification";
-import { BreathingGuide } from "../features/breathing";
-import type { BreathingTechnique } from "../features/breathing";
+import { BreathingGuide, BreathPhase, BreathingTechnique } from "../features/breathing";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import { SegmentGroup, SegmentButton } from "../components/ui/segment-button";
@@ -19,9 +18,9 @@ const STEPS_QUICK = ["step1", "stepQuick1", "stepQuick2"] as const;
 export default function BreathingPage() {
   const { t } = useTranslation();
   const [phase, setPhase] = useState<Phase>("idle");
-  const [technique, setTechnique] = useState<BreathingTechnique>("box");
+  const [technique, setTechnique] = useState<BreathingTechnique>(BreathingTechnique.Box);
   const [lastDuration, setLastDuration] = useState(0);
-  const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const [breathPhase, setBreathPhase] = useState<BreathPhase>(BreathPhase.Inhale);
   const [breathProgress, setBreathProgress] = useState(0);
 
   const [countdown, setCountdown] = useState(3);
@@ -40,7 +39,7 @@ export default function BreathingPage() {
   const { data: creature } = useCreatureState();
   const completeExercise = useCompleteExercise();
 
-  const steps = technique === "478" ? STEPS_478 : technique === "quick" ? STEPS_QUICK : STEPS_BOX;
+  const steps = technique === BreathingTechnique.FourSevenEight ? STEPS_478 : technique === BreathingTechnique.Quick ? STEPS_QUICK : STEPS_BOX;
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
@@ -64,18 +63,18 @@ export default function BreathingPage() {
           <CardContent className="space-y-4">
             <p className="text-sm text-center text-muted-foreground">
               {t(
-                `breathing.description${technique === "box" ? "Box" : technique === "quick" ? "Quick" : "478"}`,
+                `breathing.description${technique === BreathingTechnique.Box ? "Box" : technique === BreathingTechnique.Quick ? "Quick" : "478"}`,
               )}
             </p>
             <div className="flex justify-center">
               <SegmentGroup>
-                <SegmentButton active={technique === "box"} onClick={() => setTechnique("box")}>
+                <SegmentButton active={technique === BreathingTechnique.Box} onClick={() => setTechnique(BreathingTechnique.Box)}>
                   {t("breathing.techniqueBox")}
                 </SegmentButton>
-                <SegmentButton active={technique === "478"} onClick={() => setTechnique("478")}>
+                <SegmentButton active={technique === BreathingTechnique.FourSevenEight} onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}>
                   {t("breathing.technique478")}
                 </SegmentButton>
-                <SegmentButton active={technique === "quick"} onClick={() => setTechnique("quick")}>
+                <SegmentButton active={technique === BreathingTechnique.Quick} onClick={() => setTechnique(BreathingTechnique.Quick)}>
                   {t("breathing.techniqueQuick")}
                 </SegmentButton>
               </SegmentGroup>
@@ -128,7 +127,7 @@ export default function BreathingPage() {
             </div>
             <p className="text-sm text-muted-foreground">
               {t(
-                `breathing.pattern${technique === "box" ? "Box" : technique === "quick" ? "Quick" : "478"}`,
+                `breathing.pattern${technique === BreathingTechnique.Box ? "Box" : technique === BreathingTechnique.Quick ? "Quick" : "478"}`,
               )}
             </p>
             <button
@@ -171,7 +170,7 @@ export default function BreathingPage() {
               }}
               onComplete={(duration) => {
                 setLastDuration(duration);
-                setBreathPhase("inhale");
+                setBreathPhase(BreathPhase.Inhale);
                 setBreathProgress(0);
                 completeExercise.mutate(duration, {
                   onSuccess: (data) => {
@@ -186,7 +185,7 @@ export default function BreathingPage() {
                 setPhase("done");
               }}
               onCancel={() => {
-                setBreathPhase("inhale");
+                setBreathPhase(BreathPhase.Inhale);
                 setBreathProgress(0);
                 setPhase("idle");
               }}

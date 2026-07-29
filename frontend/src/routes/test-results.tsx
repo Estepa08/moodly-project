@@ -10,7 +10,7 @@ import EmptyState from "../components/ui/empty-state";
 import { useTestTranslation } from "../hooks/useTestTranslation";
 import { useTestResultText, getCrisisSeverity } from "../hooks/useTestResultText";
 import { MedicalDisclaimer } from "../widgets";
-import { CrisisDialog } from "../features/dialogs";
+import { CrisisDialog, CrisisSeverity } from "../features/dialogs";
 import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
@@ -70,7 +70,7 @@ export default function TestResultsPage() {
     <>
       <CrisisDialog
         open={crisisOpen}
-        severity={crisisSeverity || "urgent"}
+        severity={crisisSeverity ?? CrisisSeverity.Urgent}
         onDismiss={() => setCrisisResultId(null)}
       />
 

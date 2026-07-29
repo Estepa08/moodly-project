@@ -1,7 +1,8 @@
 import { ResponsiveRadar } from "@nivo/radar";
 import { useTranslation } from "react-i18next";
+import { DistortionKey } from "../../lib/distortionsQuiz";
 
-export interface DistortionEntry { key: string; score: number; }
+export interface DistortionEntry { key: DistortionKey; score: number; }
 
 interface Props { data: DistortionEntry[]; maxValue?: number; className?: string; }
 

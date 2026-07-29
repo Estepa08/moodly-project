@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Sun, Flame, Sparkles, Zap } from "lucide-react";
 import { ModalShell } from "../../components/ui/modal-shell";
+import { ComponentSize } from "../../lib/constants";
 import { Button } from "../../components/ui/button";
 
 interface DailyCheckInModalProps {
@@ -32,7 +33,7 @@ export default function DailyCheckInModal({
       open={open}
       onOpenChange={(next) => { if (!next) onDismiss(); }}
       icon={Sun}
-      iconSize="md"
+      iconSize={ComponentSize.Md}
       iconBg="bg-accent/10"
       iconColor="text-accent"
       title={t(greetingKey)}

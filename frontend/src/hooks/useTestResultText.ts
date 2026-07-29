@@ -1,4 +1,6 @@
 import { useTestTranslation } from "./useTestTranslation";
+import { CrisisSeverity } from "../features/dialogs";
+import { Trend } from "../lib/constants";
 
 interface ResultFlags {
   templateKey?: string;
@@ -13,9 +15,9 @@ interface ResultLike {
   flags?: unknown;
 }
 
-export function getCrisisSeverity(recommendation: string): "urgent" | "critical" | null {
-  if (recommendation.startsWith("CRITICAL")) return "critical";
-  if (recommendation.startsWith("URGENT")) return "urgent";
+export function getCrisisSeverity(recommendation: string): CrisisSeverity | null {
+  if (recommendation.startsWith("CRITICAL")) return CrisisSeverity.Critical;
+  if (recommendation.startsWith("URGENT")) return CrisisSeverity.Urgent;
   return null;
 }
 

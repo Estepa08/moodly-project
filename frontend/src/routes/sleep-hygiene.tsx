@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry, useUpdateEntry } from "../hooks/useEntries";
-import { useRewardPractice } from "../features/gamification";
+import { useRewardPractice, PracticeSource } from "../features/gamification";
 import { SleepHygieneChecklist } from "../features/check-in";
 
 export default function SleepHygienePage() {
@@ -19,7 +19,7 @@ export default function SleepHygienePage() {
   );
   const rewardPractice = useRewardPractice();
   const createEntry = useCreateEntry(() => {
-    rewardPractice.mutate("sleepHygiene");
+    rewardPractice.mutate(PracticeSource.SleepHygiene);
   });
   const updateEntry = useUpdateEntry();
 

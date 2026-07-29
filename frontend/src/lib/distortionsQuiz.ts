@@ -1,61 +1,61 @@
-export const DISTORTION_KEYS = [
-  "allOrNothing",
-  "overgeneralization",
-  "mentalFilter",
-  "discountingPositive",
-  "jumpingToConclusions",
-  "magnification",
-  "emotionalReasoning",
-  "shouldStatements",
-  "labeling",
-  "personalization",
-] as const;
+export enum DistortionKey {
+  AllOrNothing = "allOrNothing",
+  Overgeneralization = "overgeneralization",
+  MentalFilter = "mentalFilter",
+  DiscountingPositive = "discountingPositive",
+  JumpingToConclusions = "jumpingToConclusions",
+  Magnification = "magnification",
+  EmotionalReasoning = "emotionalReasoning",
+  ShouldStatements = "shouldStatements",
+  Labeling = "labeling",
+  Personalization = "personalization",
+}
 
-export type DistortionKey = (typeof DISTORTION_KEYS)[number];
+export const DISTORTION_KEYS = Object.values(DistortionKey);
 
 export const QUIZ_PER_RUN = 7;
 
 export const QUIZ_ITEMS: { id: string; distortion: DistortionKey }[] = [
-  { id: "q1", distortion: "allOrNothing" },
-  { id: "q2", distortion: "overgeneralization" },
-  { id: "q3", distortion: "mentalFilter" },
-  { id: "q4", distortion: "discountingPositive" },
-  { id: "q5", distortion: "jumpingToConclusions" },
-  { id: "q6", distortion: "magnification" },
-  { id: "q7", distortion: "emotionalReasoning" },
-  { id: "q8", distortion: "shouldStatements" },
-  { id: "q9", distortion: "labeling" },
-  { id: "q10", distortion: "personalization" },
-  { id: "q11", distortion: "allOrNothing" },
-  { id: "q12", distortion: "jumpingToConclusions" },
-  { id: "q13", distortion: "overgeneralization" },
-  { id: "q14", distortion: "shouldStatements" },
-  { id: "q15", distortion: "mentalFilter" },
-  { id: "q16", distortion: "allOrNothing" },
-  { id: "q17", distortion: "overgeneralization" },
-  { id: "q18", distortion: "mentalFilter" },
-  { id: "q19", distortion: "discountingPositive" },
-  { id: "q20", distortion: "discountingPositive" },
-  { id: "q21", distortion: "jumpingToConclusions" },
-  { id: "q22", distortion: "magnification" },
-  { id: "q23", distortion: "magnification" },
-  { id: "q24", distortion: "emotionalReasoning" },
-  { id: "q25", distortion: "emotionalReasoning" },
-  { id: "q26", distortion: "shouldStatements" },
-  { id: "q27", distortion: "labeling" },
-  { id: "q28", distortion: "labeling" },
-  { id: "q29", distortion: "personalization" },
-  { id: "q30", distortion: "personalization" },
-  { id: "q31", distortion: "allOrNothing" },
-  { id: "q32", distortion: "overgeneralization" },
-  { id: "q33", distortion: "mentalFilter" },
-  { id: "q34", distortion: "discountingPositive" },
-  { id: "q35", distortion: "jumpingToConclusions" },
-  { id: "q36", distortion: "magnification" },
-  { id: "q37", distortion: "emotionalReasoning" },
-  { id: "q38", distortion: "shouldStatements" },
-  { id: "q39", distortion: "labeling" },
-  { id: "q40", distortion: "personalization" },
+  { id: "q1", distortion: DistortionKey.AllOrNothing },
+  { id: "q2", distortion: DistortionKey.Overgeneralization },
+  { id: "q3", distortion: DistortionKey.MentalFilter },
+  { id: "q4", distortion: DistortionKey.DiscountingPositive },
+  { id: "q5", distortion: DistortionKey.JumpingToConclusions },
+  { id: "q6", distortion: DistortionKey.Magnification },
+  { id: "q7", distortion: DistortionKey.EmotionalReasoning },
+  { id: "q8", distortion: DistortionKey.ShouldStatements },
+  { id: "q9", distortion: DistortionKey.Labeling },
+  { id: "q10", distortion: DistortionKey.Personalization },
+  { id: "q11", distortion: DistortionKey.AllOrNothing },
+  { id: "q12", distortion: DistortionKey.JumpingToConclusions },
+  { id: "q13", distortion: DistortionKey.Overgeneralization },
+  { id: "q14", distortion: DistortionKey.ShouldStatements },
+  { id: "q15", distortion: DistortionKey.MentalFilter },
+  { id: "q16", distortion: DistortionKey.AllOrNothing },
+  { id: "q17", distortion: DistortionKey.Overgeneralization },
+  { id: "q18", distortion: DistortionKey.MentalFilter },
+  { id: "q19", distortion: DistortionKey.DiscountingPositive },
+  { id: "q20", distortion: DistortionKey.DiscountingPositive },
+  { id: "q21", distortion: DistortionKey.JumpingToConclusions },
+  { id: "q22", distortion: DistortionKey.Magnification },
+  { id: "q23", distortion: DistortionKey.Magnification },
+  { id: "q24", distortion: DistortionKey.EmotionalReasoning },
+  { id: "q25", distortion: DistortionKey.EmotionalReasoning },
+  { id: "q26", distortion: DistortionKey.ShouldStatements },
+  { id: "q27", distortion: DistortionKey.Labeling },
+  { id: "q28", distortion: DistortionKey.Labeling },
+  { id: "q29", distortion: DistortionKey.Personalization },
+  { id: "q30", distortion: DistortionKey.Personalization },
+  { id: "q31", distortion: DistortionKey.AllOrNothing },
+  { id: "q32", distortion: DistortionKey.Overgeneralization },
+  { id: "q33", distortion: DistortionKey.MentalFilter },
+  { id: "q34", distortion: DistortionKey.DiscountingPositive },
+  { id: "q35", distortion: DistortionKey.JumpingToConclusions },
+  { id: "q36", distortion: DistortionKey.Magnification },
+  { id: "q37", distortion: DistortionKey.EmotionalReasoning },
+  { id: "q38", distortion: DistortionKey.ShouldStatements },
+  { id: "q39", distortion: DistortionKey.Labeling },
+  { id: "q40", distortion: DistortionKey.Personalization },
 ];
 
 export function shuffle<T>(arr: T[]): T[] {
@@ -68,6 +68,7 @@ export function shuffle<T>(arr: T[]): T[] {
 }
 
 export function pickOptions(correct: DistortionKey): DistortionKey[] {
-  const others = shuffle(DISTORTION_KEYS.filter((k) => k !== correct)).slice(0, 3);
+  const allValues = Object.values(DistortionKey);
+  const others = shuffle(allValues.filter((k) => k !== correct)).slice(0, 3);
   return shuffle([correct, ...others]);
 }

@@ -11,7 +11,7 @@ import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
 import { MedicalDisclaimer } from "../widgets";
 import { ContentWarningDialog } from "../features/dialogs";
-import { CrisisDialog } from "../features/dialogs";
+import { CrisisDialog, CrisisSeverity } from "../features/dialogs";
 import {
   Dialog,
   DialogContent,
@@ -65,7 +65,7 @@ export default function TestDetailPage() {
       <>
         <CrisisDialog
           open={crisisDialogOpen}
-          severity={crisisSeverity || "urgent"}
+          severity={crisisSeverity ?? CrisisSeverity.Urgent}
           onDismiss={() => setCrisisDialogOpen(false)}
         />
         <div className="max-w-lg mx-auto pb-20">

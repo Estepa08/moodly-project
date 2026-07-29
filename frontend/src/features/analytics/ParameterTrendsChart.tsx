@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { PARAM_COLORS, PARAM_NAME_KEYS } from "../../lib/constants";
+import type { ParameterName } from "../../lib/constants";
 import { ChartTooltip } from "../../lib/chart-tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import EmptyState from "../../components/ui/empty-state";
@@ -47,9 +48,9 @@ export default function ParameterTrendsChart({ trendData, paramNames, isLoading 
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
                 <XAxis dataKey="date" fontSize={11} stroke="hsl(var(--chart-tick))" interval={Math.max(1, Math.floor(trendData.length / 6))} />
                 <YAxis domain={Y_DOMAIN} fontSize={11} stroke="hsl(var(--chart-tick))" />
-                <Tooltip content={<ChartTooltip formatLabel={(name) => t(PARAM_NAME_KEYS[name] ?? name)} />} />
+                <Tooltip content={<ChartTooltip formatLabel={(name) => t(PARAM_NAME_KEYS[name as ParameterName] ?? name)} />} />
                 {paramNames.filter((name) => visibleParams.has(name)).map((name) => (
-                  <Line key={name} type="monotone" dataKey={name} stroke={PARAM_COLORS[name] ?? "hsl(var(--primary))"} strokeWidth={2} dot={{ r: 3 }} connectNulls />
+                  <Line key={name} type="monotone" dataKey={name} stroke={PARAM_COLORS[name as ParameterName] ?? "hsl(var(--primary))"} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                 ))}
               </LineChart>
             </ResponsiveContainer>
@@ -66,8 +67,8 @@ export default function ParameterTrendsChart({ trendData, paramNames, isLoading 
                     visibleParams.has(name) ? "bg-primary/10 text-primary shadow-neumorphic-sm ring-2 ring-primary/60" : "bg-muted text-muted-foreground shadow-neumorphic-inset"
                   }`}
                 >
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: PARAM_COLORS[name] ?? "hsl(var(--primary))" }} />
-                  {t(PARAM_NAME_KEYS[name] ?? name)}
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: PARAM_COLORS[name as ParameterName] ?? "hsl(var(--primary))" }} />
+                  {t(PARAM_NAME_KEYS[name as ParameterName] ?? name)}
                 </button>
               ))}
             </div>

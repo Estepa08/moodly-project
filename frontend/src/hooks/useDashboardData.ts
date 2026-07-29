@@ -6,18 +6,20 @@ import { useTests, useTestResults } from "./useTests";
 import { useCreatureState } from "../features/gamification";
 import type { components } from "../lib/api-types";
 import type { DistortionEntry } from "../features/analytics";
-import { TEXT_PARAMS } from "../lib/constants";
+import { DistortionKey } from "../lib/distortionsQuiz";
+import { TEXT_PARAMS, Period, Trend } from "../lib/constants";
+import type { ParameterName } from "../lib/constants";
 import { isWithinLastDays } from "../lib/utils";
 
 type Entry = components["schemas"]["Entry"];
 type TestResult = components["schemas"]["TestResult"];
 
 export const PERIODS = [
-  { key: "1w", labelKey: "dashboard.thisWeek", days: 7 },
-  { key: "2w", labelKey: "dashboard.twoWeeks", days: 14 },
-  { key: "1m", labelKey: "dashboard.oneMonth", days: 30 },
-  { key: "3m", labelKey: "dashboard.threeMonths", days: 90 },
-  { key: "all", labelKey: "dashboard.allTime", days: Infinity },
+  { key: Period.OneWeek, labelKey: "dashboard.thisWeek", days: 7 },
+  { key: Period.TwoWeeks, labelKey: "dashboard.twoWeeks", days: 14 },
+  { key: Period.OneMonth, labelKey: "dashboard.oneMonth", days: 30 },
+  { key: Period.ThreeMonths, labelKey: "dashboard.threeMonths", days: 90 },
+  { key: Period.All, labelKey: "dashboard.allTime", days: Infinity },
 ] as const;
 
 const TEST_ABBR_KEYS: Record<string, string> = {
@@ -28,7 +30,7 @@ const TEST_ABBR_KEYS: Record<string, string> = {
   "Cognitive Distortions Assessment": "tests.abbreviation.cd",
 };
 
-function getDateRange(period: string): { from?: string; to?: string } {
+function getDateRange(period: Period): { from?: string; to?: string } {
   const p = PERIODS.find((x) => x.key === period);
   if (!p || p.days === Infinity) return {};
   const now = new Date();
@@ -37,7 +39,7 @@ function getDateRange(period: string): { from?: string; to?: string } {
   return { from: from.toISOString(), to: today.toISOString() };
 }
 
-export function useDashboardData(period: string) {
+export function useDashboardData(period: Period) {
   const { t, i18n } = useTranslation();
 
   const { data: params } = useParameters();
@@ -55,7 +57,7 @@ export function useDashboardData(period: string) {
   const { data: creatureState } = useCreatureState();
   const createEntry = useCreateEntry();
 
-  const numericParams = useMemo(() => params?.filter((p) => !TEXT_PARAMS.has(p.name)), [params]);
+  const numericParams = useMemo(() => params?.filter((p) => !TEXT_PARAMS.has(p.name as ParameterName)), [params]);
 
   const paramNames = useMemo(() => {
     if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy"];
@@ -105,7 +107,7 @@ export function useDashboardData(period: string) {
 
   const { weeklyAverages, wellbeing } = useMemo(() => {
     if (!allEntries)
-      return { weeklyAverages: [], wellbeing: { average: null, trend: "flat" as const } };
+      return { weeklyAverages: [], wellbeing: { average: null, trend: Trend.Flat } };
     const range = getDateRange(period);
     const currentStart = range.from ? new Date(range.from).getTime() : 0;
     const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
@@ -126,9 +128,9 @@ export function useDashboardData(period: string) {
       const paramEntries = entriesByParam.get(name) ?? [];
       const current = calcAvg(paramEntries, currentStart, currentEnd);
       const previous = calcAvg(paramEntries, prevStart, prevEnd);
-      let trend: "up" | "down" | "flat" = "flat";
+      let trend: Trend = Trend.Flat;
       if (current !== null && previous !== null) {
-        trend = current > previous ? "up" : current < previous ? "down" : "flat";
+        trend = current > previous ? Trend.Up : current < previous ? Trend.Down : Trend.Flat;
       }
       return { name, average: current, previous, trend, visible: true };
     });
@@ -147,14 +149,14 @@ export function useDashboardData(period: string) {
     const previousByName = new Map(perParam.map((p) => [p.name, p.previous]));
     const wellbeingCurrent = wellbeingScore((name) => currentByName.get(name) ?? null);
     const wellbeingPrevious = wellbeingScore((name) => previousByName.get(name) ?? null);
-    let wellbeingTrend: "up" | "down" | "flat" = "flat";
+    let wellbeingTrend: Trend = Trend.Flat;
     if (wellbeingCurrent !== null && wellbeingPrevious !== null) {
       wellbeingTrend =
         wellbeingCurrent > wellbeingPrevious
-          ? "up"
+          ? Trend.Up
           : wellbeingCurrent < wellbeingPrevious
-            ? "down"
-            : "flat";
+            ? Trend.Down
+            : Trend.Flat;
     }
 
     return {
@@ -215,7 +217,7 @@ export function useDashboardData(period: string) {
       cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined
     )?.distortions;
     return cdDistortions
-      ? Object.entries(cdDistortions).map(([key, val]) => ({ key, score: val.score }))
+      ? Object.entries(cdDistortions).map(([key, val]) => ({ key: key as DistortionKey, score: val.score }))
       : [];
   }, [testResults]);
 

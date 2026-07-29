@@ -4,20 +4,21 @@ import { useCompletions } from "./useCreature";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { LoadingCard } from "../../components/ui/loading-card";
 import EmptyState from "../../components/ui/empty-state";
+import { PracticeSource } from "./practice.enums";
 
 interface PracticeProgressProps {
   breathingSessionCount?: number;
 }
 
-const SOURCE_CONFIG: Record<string, { icon: typeof Wind; labelKey: string }> = {
-  breathing: { icon: Wind, labelKey: "progress.activityBreathing" },
-  gratitude: { icon: Heart, labelKey: "progress.activityGratitude" },
-  sleepHygiene: { icon: Moon, labelKey: "progress.activitySleepHygiene" },
-  distortions: { icon: Brain, labelKey: "progress.activityDistortions" },
-  cba: { icon: Scale, labelKey: "progress.activityCba" },
+const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: string }> = {
+  [PracticeSource.Breathing]: { icon: Wind, labelKey: "progress.activityBreathing" },
+  [PracticeSource.Gratitude]: { icon: Heart, labelKey: "progress.activityGratitude" },
+  [PracticeSource.SleepHygiene]: { icon: Moon, labelKey: "progress.activitySleepHygiene" },
+  [PracticeSource.Distortions]: { icon: Brain, labelKey: "progress.activityDistortions" },
+  [PracticeSource.Cba]: { icon: Scale, labelKey: "progress.activityCba" },
 };
 
-const ALL_SOURCES = ["breathing", "gratitude", "sleepHygiene", "distortions", "cba"];
+const ALL_SOURCES = Object.values(PracticeSource);
 
 export default function PracticeProgress({ breathingSessionCount }: PracticeProgressProps) {
   const { t } = useTranslation();
@@ -34,8 +35,8 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
     bySource[c.source].xp += c.xpAwarded;
   }
 
-  if (breathingSessionCount !== undefined && bySource.breathing) {
-    bySource.breathing.count = Math.max(bySource.breathing.count, breathingSessionCount);
+  if (breathingSessionCount !== undefined && bySource[PracticeSource.Breathing]) {
+    bySource[PracticeSource.Breathing].count = Math.max(bySource[PracticeSource.Breathing].count, breathingSessionCount);
   }
 
   const totalXp = Object.values(bySource).reduce((sum, s) => sum + s.xp, 0);
@@ -91,7 +92,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                 </p>
                 <div className="space-y-1.5">
                   {recent.map((c, idx) => {
-                    const config = SOURCE_CONFIG[c.source];
+                    const config = SOURCE_CONFIG[c.source as PracticeSource];
                     const date = new Date(c.createdAt);
                     const dateStr = date.toLocaleDateString(undefined, {
                       month: "short",

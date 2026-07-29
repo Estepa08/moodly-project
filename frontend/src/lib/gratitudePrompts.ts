@@ -1,3 +1,6 @@
-export const GRATITUDE_PROMPT_CATEGORIES = ["person", "moment", "body", "anything"] as const;
-
-export type GratitudePromptCategory = (typeof GRATITUDE_PROMPT_CATEGORIES)[number];
+export enum GratitudeCategory {
+  Person = "person",
+  Moment = "moment",
+  Body = "body",
+  Anything = "anything",
+}

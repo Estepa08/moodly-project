@@ -7,7 +7,7 @@ import { DistortionQuiz } from "../features/mood-entry";
 import { ThoughtRelease } from "../features/journal";
 import { useParameters } from "../hooks/useParameters";
 import { useCreateEntry } from "../hooks/useEntries";
-import { useRewardPractice } from "../features/gamification";
+import { useRewardPractice, PracticeSource } from "../features/gamification";
 
 const TABS = [
   { key: "library", labelKey: "distortions.tabLibrary" },
@@ -27,7 +27,7 @@ export default function DistortionsPage() {
   );
   const rewardPractice = useRewardPractice();
   const createEntry = useCreateEntry(() => {
-    rewardPractice.mutate("distortions");
+    rewardPractice.mutate(PracticeSource.Distortions);
   });
 
   return (

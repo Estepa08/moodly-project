@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "../../components/ui/button";
 import { PhoneCall, Heart } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { CrisisSeverity } from "./crisis.enums";
 
 const WARM = "38 92% 50%";
 const WARM_BG = "38 92% 95%";
@@ -11,7 +12,7 @@ const WARM_BORDER = "38 60% 80%";
 
 interface Props {
   open: boolean;
-  severity: "urgent" | "critical";
+  severity: CrisisSeverity;
   onDismiss: () => void;
 }
 
@@ -47,7 +48,7 @@ export default function CrisisDialog({ open, severity, onDismiss }: Props) {
     return () => clearInterval(interval);
   }, [open]);
 
-  const isCritical = severity === "critical";
+  const isCritical = severity === CrisisSeverity.Critical;
 
   return (
     <Dialog open={open} onOpenChange={() => {}}>

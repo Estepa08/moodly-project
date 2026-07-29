@@ -6,6 +6,7 @@ import type { CreateEntryMutation } from "../../lib/app-types";
 import type { components } from "../../lib/api-types";
 import { PARAM_ICON_CONFIGS } from "../../lib/quickEntryIcons";
 import { PARAM_ICONS } from "../../lib/constants";
+import type { ParameterName } from "../../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Slider } from "../../components/ui/slider";
 import { Button } from "../../components/ui/button";
@@ -79,7 +80,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
         <div className="flex justify-center gap-3">
           {configs.map((cfg) => {
             const isActive = selectedParam === cfg.parameterName;
-            const Icon = PARAM_ICONS[cfg.parameterName];
+            const Icon = PARAM_ICONS[cfg.parameterName as ParameterName];
             return (
               <button
                 key={cfg.parameterName}

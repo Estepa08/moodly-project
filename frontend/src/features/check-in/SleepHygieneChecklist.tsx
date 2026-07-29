@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { Moon, Pencil, ChevronDown, X, Bed, Check } from "lucide-react";
 import type { CreateEntryMutation, UpdateEntryMutation } from "../../lib/app-types";
 import type { components } from "../../lib/api-types";
-import { SLEEP_HYGIENE_ITEMS, dayKey, parseCheckedNote, findTodayEntry } from "../../lib/sleepHygiene";
+import { SLEEP_HYGIENE_ITEMS, dayKey, parseCheckedNote, findTodayEntry, HygieneItem } from "../../lib/sleepHygiene";
+import { SleepHygieneListState } from "../../lib/constants";
 import { ChecklistItem } from "../../components/ui/checklist-item";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import EmptyState from "../../components/ui/empty-state";
@@ -28,8 +29,8 @@ export default function SleepHygieneChecklist({
   updateEntry,
 }: SleepHygieneChecklistProps) {
   const { t, i18n } = useTranslation();
-  const [checked, setChecked] = useState<Set<string>>(new Set());
-  const [listState, setListState] = useState<"checklist" | "completed">("checklist");
+  const [checked, setChecked] = useState<Set<HygieneItem>>(new Set());
+  const [listState, setListState] = useState<SleepHygieneListState>(SleepHygieneListState.Checklist);
   const [todayEntryId, setTodayEntryId] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -41,12 +42,12 @@ export default function SleepHygieneChecklist({
     if (today) {
       setTodayEntryId(today.id);
       setChecked(parseCheckedNote(today.note));
-      setListState("completed");
+      setListState(SleepHygieneListState.Completed);
     }
   }, [hygieneEntries]);
 
-  const toggleItem = (key: string) => {
-    if (listState === "completed" && !isEditing) return;
+  const toggleItem = (key: HygieneItem) => {
+    if (listState === SleepHygieneListState.Completed && !isEditing) return;
     setChecked((prev) => {
       const next = new Set(prev);
       if (next.has(key)) next.delete(key);
@@ -56,213 +57,161 @@ export default function SleepHygieneChecklist({
   };
 
   const handleSave = () => {
-    if (!parameterId) return;
-    createEntry.mutate(
-      { parameterId, value: checked.size, note: Array.from(checked).join(",") },
-      {
-        onSuccess: () => {
-          setListState("completed");
-          setShowDetails(false);
-          setIsEditing(false);
-          toast.success(t("sleepHygiene.saved"));
-        },
-      },
-    );
+    const note = Array.from(checked).join(",");
+    const value = checked.size;
+    if (todayEntryId) {
+      updateEntry.mutate(
+        { id: todayEntryId, value, note },
+        { onSuccess: () => { toast.success(t("sleepHygiene.saved")); setIsEditing(false); setListState(SleepHygieneListState.Completed); } },
+      );
+    } else {
+      createEntry.mutate(
+        { parameterId: parameterId!, value, note },
+        { onSuccess: () => { toast.success(t("sleepHygiene.saved")); setListState(SleepHygieneListState.Completed); } },
+      );
+    }
   };
 
-  const handleStartEdit = () => {
-    const today = findTodayEntry(hygieneEntries);
-    if (today) {
-      setChecked(parseCheckedNote(today.note));
-      setTodayEntryId(today.id);
-    }
+  const handleEdit = () => {
     setIsEditing(true);
-    setShowDetails(true);
+    setListState(SleepHygieneListState.Checklist);
   };
 
-  const handleCancelEdit = () => {
+  const todayData = useMemo(() => {
     const today = findTodayEntry(hygieneEntries);
-    if (today) setChecked(parseCheckedNote(today.note));
-    setIsEditing(false);
-    setShowDetails(false);
-  };
+    if (!today) return null;
+    return {
+      id: today.id,
+      checked: parseCheckedNote(today.note),
+      date: formatDateShort(new Date(today.createdAt), i18n.language),
+      value: today.value,
+    };
+  }, [hygieneEntries, i18n.language]);
 
-  const handleUpdate = () => {
-    if (!todayEntryId) return;
-    updateEntry.mutate(
-      { id: todayEntryId, value: checked.size, note: Array.from(checked).join(",") },
-      {
-        onSuccess: () => {
-          setIsEditing(false);
-          setShowDetails(false);
-          toast.success(t("sleepHygiene.saved"));
-        },
-      },
-    );
-  };
-
-  const recent = [...hygieneEntries]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 7);
-
-  const correlationData = useMemo(() => {
-    const byDay = new Map<string, { habits?: number; sleep?: number }>();
-    for (const e of hygieneEntries) {
-      const key = dayKey(new Date(e.createdAt));
-      if (!byDay.has(key)) byDay.set(key, {});
-      byDay.get(key)!.habits = e.value;
-    }
-    for (const e of sleepEntries) {
-      const key = dayKey(new Date(e.createdAt));
-      if (!byDay.has(key)) byDay.set(key, {});
-      byDay.get(key)!.sleep = e.value;
-    }
-    return Array.from(byDay.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, values]) => ({
-        date: formatDateShort(date, i18n.language),
-        habits: values.habits !== undefined ? Number(((values.habits / SLEEP_HYGIENE_ITEMS.length) * 10).toFixed(1)) : undefined,
-        sleep: values.sleep,
-      }));
-  }, [hygieneEntries, sleepEntries, i18n.language]);
+  const sleepChartData = useMemo(() => {
+    const totalMinutes = 7 * 24 * 60;
+    const entriesList = sleepEntries.filter((e) => {
+      const created = new Date(e.createdAt);
+      const now = new Date();
+      const diff = now.getTime() - created.getTime();
+      return diff < totalMinutes * 60 * 1000;
+    });
+    return entriesList.map((e) => ({
+      date: formatDateShort(new Date(e.createdAt), i18n.language),
+      habits: hygieneEntries.find((h) => formatDateShort(new Date(h.createdAt), i18n.language) === formatDateShort(new Date(e.createdAt), i18n.language))?.value ?? 0,
+      sleep: e.value,
+    }));
+  }, [sleepEntries, hygieneEntries, i18n.language]);
 
   return (
     <div className="space-y-4">
-      {listState === "checklist" ? (
-        <Card className="shadow-neumorphic">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Moon className="w-4 h-4 text-accent" />
-              {t("sleepHygiene.checklistTitle")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              {SLEEP_HYGIENE_ITEMS.map((key) => (
-                <ChecklistItem key={key} checked={checked.has(key)} onToggle={() => toggleItem(key)} label={t(`sleepHygiene.items.${key}`)} />
-              ))}
-            </div>
-            <Button className="w-full" disabled={isPending || !parameterId} onClick={handleSave}>
-              {isPending ? t("common.saving") : t("sleepHygiene.save")}
+      <Card className="shadow-neumorphic">
+        <CardHeader className="flex-row items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Moon className="w-5 h-5 text-primary" />
+            <CardTitle className="text-base">{t("sleepHygiene.checklistTitle")}</CardTitle>
+          </div>
+          {listState === SleepHygieneListState.Completed && todayEntryId && (
+            <Button size="sm" variant="ghost" onClick={handleEdit}>
+              <Pencil className="w-3.5 h-3.5" />
             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="shadow-neumorphic">
-          <CardContent className="p-6">
-            <div className="text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mx-auto">
-                <Check className="w-6 h-6 text-accent" />
+          )}
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {listState === SleepHygieneListState.Checklist && (
+            <>
+              <div className="space-y-2">
+                {SLEEP_HYGIENE_ITEMS.map((item) => (
+                  <ChecklistItem
+                    key={item}
+                    checked={checked.has(item)}
+                    onToggle={() => toggleItem(item)}
+                    label={t(`sleepHygiene.items.${item}`)}
+                  />
+                ))}
               </div>
-              <p className="text-base font-semibold text-foreground font-serif">{t("sleepHygiene.completed")}</p>
-              <p className="text-sm text-muted-foreground">{t("sleepHygiene.completedItems", { count: checked.size, total: SLEEP_HYGIENE_ITEMS.length })}</p>
-            </div>
-
-            <div className={cn("overflow-hidden transition-all duration-300", showDetails ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0")}>
-              <div className="space-y-2 pt-4 border-t border-border">
-                {SLEEP_HYGIENE_ITEMS.map((key) => {
-                  const isChecked = checked.has(key);
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => toggleItem(key)}
-                      disabled={!isEditing}
-                      aria-pressed={isChecked}
-                      className={cn(
-                        "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        isEditing && "cursor-pointer active:scale-[0.99]",
-                        isChecked ? "bg-accent/10 text-accent" : "bg-muted text-muted-foreground",
-                        isEditing && isChecked && "shadow-neumorphic-inset",
-                      )}
-                    >
-                      <span className={cn("w-5 h-5 rounded-md border flex items-center justify-center shrink-0", isChecked ? "bg-accent border-accent" : "border-border", isEditing && isChecked && "bg-primary border-primary")}>
-                        {isChecked && <Check className={cn("w-3.5 h-3.5", isEditing ? "text-primary-foreground" : "text-white")} />}
-                      </span>
-                      {t(`sleepHygiene.items.${key}`)}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex gap-2 mt-4">
-                {isEditing ? (
-                  <>
-                    <Button variant="outline" className="flex-1" onClick={handleCancelEdit}>{t("common.cancel")}</Button>
-                    <Button className="flex-1" disabled={isPending || !todayEntryId} onClick={handleUpdate}>
-                      {isPending ? t("common.saving") : t("sleepHygiene.saveEdit")}
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="ghost" className="flex-1" onClick={handleStartEdit}>
-                      <Pencil className="w-4 h-4 mr-1.5" />{t("sleepHygiene.viewEdit")}
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)} aria-label={t("common.close")}>
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </>
+              <div className="flex gap-2">
+                <Button onClick={handleSave} disabled={isPending || checked.size === 0}>
+                  {t(isPending ? "common.saving" : "sleepHygiene.save")}
+                </Button>
+                {isEditing && (
+                  <Button variant="ghost" onClick={() => { setIsEditing(false); setListState(SleepHygieneListState.Completed); }}>
+                    {t("common.cancel")}
+                  </Button>
                 )}
               </div>
-            </div>
-
-            {!showDetails && (
-              <div className="flex justify-center pt-4">
-                <Button variant="ghost" onClick={() => setShowDetails(true)} className="flex items-center gap-1">
-                  {t("sleepHygiene.viewEdit")}<ChevronDown className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
-
-      <SleepHygieneChart data={correlationData} />
-
-      <Card className="shadow-neumorphic">
-        <CardHeader>
-          <CardTitle className="text-base">{t("sleepHygiene.historyTitle")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {recent.length === 0 ? (
-            <EmptyState icon={Bed} title={t("sleepHygiene.empty")} className="py-4" />
-          ) : (
-            <ul className="space-y-2">
-              {recent.map((e) => {
-                const isExpanded = expandedEntryId === e.id;
-                return (
-                  <li key={e.id}>
-                    <button
-                      onClick={() => setExpandedEntryId(isExpanded ? null : e.id)}
-                      className="w-full flex items-center justify-between text-sm bg-muted/30 rounded-lg px-3 py-2 transition-all duration-150 cursor-pointer hover:bg-muted/50 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      <span className="text-foreground">{formatDateShort(e.createdAt, i18n.language)}</span>
-                      <span className="text-muted-foreground flex items-center gap-1">
-                        {e.value}/{SLEEP_HYGIENE_ITEMS.length}
-                        <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isExpanded && "rotate-180")} />
-                      </span>
-                    </button>
-                    <div className={cn("overflow-hidden transition-all duration-300", isExpanded ? "max-h-[400px] opacity-100 mt-2" : "max-h-0 opacity-0")}>
-                      <div className="space-y-1.5 pl-2 pr-2 pb-2">
-                        {SLEEP_HYGIENE_ITEMS.map((key) => {
-                          const done = parseCheckedNote(e.note).has(key);
-                          return (
-                            <div key={key} className={cn("flex items-center gap-3 px-3 py-2 rounded-xl text-sm", done ? "bg-accent/10 text-accent" : "bg-muted text-muted-foreground")}>
-                              <span className={cn("w-5 h-5 rounded-md border flex items-center justify-center shrink-0", done ? "bg-accent border-accent" : "border-border")}>
-                                {done && <Check className="w-3.5 h-3.5 text-white" />}
-                              </span>
-                              <span>{t(`sleepHygiene.items.${key}`)}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            </>
+          )}
+          {listState === SleepHygieneListState.Completed && (
+            <>
+              {todayData ? (
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-muted">
+                  <Check className="w-6 h-6 text-accent shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{t("sleepHygiene.todayCompleted", { count: todayData.checked.size })}</p>
+                    <p className="text-xs text-muted-foreground">{todayData.date}</p>
+                  </div>
+                </div>
+              ) : (
+                <EmptyState icon={Bed} title={t("sleepHygiene.noEntryYet")} />
+              )}
+            </>
           )}
         </CardContent>
       </Card>
+
+      <button
+        onClick={() => setShowDetails(!showDetails)}
+        className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {t(showDetails ? "sleepHygiene.hideHistory" : "sleepHygiene.showHistory")}
+        <ChevronDown className={cn("w-4 h-4 transition-transform", showDetails && "rotate-180")} />
+      </button>
+
+      {showDetails && hygieneEntries
+        .filter((e) => e.id !== todayEntryId)
+        .slice()
+        .reverse()
+        .map((entry) => {
+          const entryChecked = parseCheckedNote(entry.note);
+          return (
+            <Card key={entry.id} className="shadow-neumorphic-sm">
+              <CardContent className="pt-3 pb-3">
+                <button
+                  onClick={() => setExpandedEntryId(expandedEntryId === entry.id ? null : entry.id)}
+                  className="w-full flex items-center justify-between cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="flex items-center gap-2">
+                    <Moon className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium text-foreground">
+                      {formatDateShort(new Date(entry.createdAt), i18n.language)}
+                    </span>
+                    <span className="text-xs text-muted-foreground">({entryChecked.size}/{SLEEP_HYGIENE_ITEMS.length})</span>
+                  </div>
+                  <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform", expandedEntryId === entry.id && "rotate-180")} />
+                </button>
+                {expandedEntryId === entry.id && (
+                  <div className="mt-3 space-y-1">
+                    {SLEEP_HYGIENE_ITEMS.map((item) => (
+                      <div key={item} className="flex items-center gap-2 text-xs">
+                        {entryChecked.has(item) ? (
+                          <Check className="w-3.5 h-3.5 text-accent" />
+                        ) : (
+                          <X className="w-3.5 h-3.5 text-muted-foreground" />
+                        )}
+                        <span className={entryChecked.has(item) ? "text-foreground" : "text-muted-foreground"}>
+                          {t(`sleepHygiene.items.${item}`)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+
+      {sleepChartData.length > 0 && <SleepHygieneChart data={sleepChartData} />}
     </div>
   );
 }
