@@ -2,7 +2,7 @@
 ALTER TABLE "User" ADD COLUMN "emailVerified" BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE "User" ADD COLUMN "emailVerificationToken" TEXT;
 ALTER TABLE "User" ADD COLUMN "emailVerificationSentAt" TIMESTAMP(3);
-ALTER TABLE "User" ADD UNIQUE INDEX "User_emailVerificationToken_key" ON "emailVerificationToken";
+CREATE UNIQUE INDEX "User_emailVerificationToken_key" ON "User"("emailVerificationToken");
 
 -- AlterTable: existing users should have emailVerified = true
 -- so they don't get locked out by the new login check

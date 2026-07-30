@@ -113,6 +113,7 @@ Parameter, Test, OnboardingStory, Achievement, CbaExample, CbaCommonItem не и
 - Все коммиты идут в `develop` (по команде пользователя).
 - Релиз в prod — только по команде «сделай PR в прод»: создаётся PR `develop → main` на GitHub.
 - Conventional Commits (`feat:`, `fix:`, `chore:`).
+- При изменении `schema.prisma` — создать миграцию через `npm run db:migrate` и закоммитить её вместе с изменениями схемы.
 
 ### Нейминг
 
