@@ -2,7 +2,7 @@ services:
   - type: web
     name: moodly
     runtime: docker
-    repo: https://github.com/evgeniystepanov/moodly-project
+    repo: https://github.com/Estepa08/moodly-project
     plan: free
     envVars:
       - key: DATABASE_URL
