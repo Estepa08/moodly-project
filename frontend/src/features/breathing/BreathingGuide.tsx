@@ -153,11 +153,11 @@ export default function BreathingGuide({
         />
         <div className="absolute inset-0 flex items-center justify-center">
           {isInhale ? (
-            <CircleArrowUp className="w-14 h-14 text-primary" />
+            <CircleArrowUp aria-hidden="true" className="w-14 h-14 text-primary" />
           ) : isHold ? (
-            <Timer className="w-14 h-14 text-primary" />
+            <Timer aria-hidden="true" className="w-14 h-14 text-primary" />
           ) : (
-            <Wind className="w-14 h-14 text-primary" />
+            <Wind aria-hidden="true" className="w-14 h-14 text-primary" />
           )}
         </div>
       </div>

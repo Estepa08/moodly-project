@@ -47,14 +47,14 @@ export default function PetCollection() {
                 isActive ? pet.color : isUnlocked ? "bg-secondary" : "bg-muted",
               )}
             >
-              {isUnlocked ? pet.emoji : <Lock className="w-4 h-4 text-muted-foreground" />}
+              {isUnlocked ? pet.emoji : <Lock aria-hidden="true" className="w-4 h-4 text-muted-foreground" />}
             </div>
             <span className="text-[11px] font-medium text-center leading-tight">
               {t(pet.labelKey)}
             </span>
             {isActive && (
               <span className="text-[10px] text-primary font-semibold flex items-center gap-0.5">
-                <Check className="w-3 h-3" /> {t("pets.active")}
+                <Check aria-hidden="true" className="w-3 h-3" /> {t("pets.active")}
               </span>
             )}
           </button>

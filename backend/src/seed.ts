@@ -35,174 +35,11 @@ const bdcOptions = [
 ];
 
 const tests = [
+
   {
-    title: "Оценка настроения",
-    description: "Опросник для оценки настроения — скрининг депрессии",
-    type: "standard",
-    questions: [
-      {
-        id: "phq9-1",
-        text: "Потеря интереса или удовольствия от дел",
-        options: [
-          { id: "phq9-1-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-1-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-1-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-1-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-2",
-        text: "Подавленное настроение, депрессия или чувство безнадёжности",
-        options: [
-          { id: "phq9-2-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-2-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-2-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-2-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-3",
-        text: "Проблемы со сном: трудности засыпания, прерывистый сон или сонливость",
-        options: [
-          { id: "phq9-3-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-3-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-3-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-3-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-4",
-        text: "Утомляемость или упадок сил",
-        options: [
-          { id: "phq9-4-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-4-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-4-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-4-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-5",
-        text: "Отсутствие аппетита или переедание",
-        options: [
-          { id: "phq9-5-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-5-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-5-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-5-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-6",
-        text: "Негативное отношение к себе — чувство неудачи или что подвели себя или семью",
-        options: [
-          { id: "phq9-6-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-6-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-6-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-6-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-7",
-        text: "Трудности с концентрацией внимания (например, при чтении газеты или просмотре телевизора)",
-        options: [
-          { id: "phq9-7-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-7-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-7-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-7-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "phq9-8",
-        text: "Вы говорили или двигались так медленно, что это замечали другие? Или наоборот — были так возбуждены, что двигались гораздо больше обычного",
-        options: [
-          { id: "phq9-8-0", text: "Совсем нет", score: 0 },
-          { id: "phq9-8-1", text: "Несколько дней", score: 1 },
-          { id: "phq9-8-2", text: "Более половины дней", score: 2 },
-          { id: "phq9-8-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Оценка уровня тревоги",
-    description: "Оценка генерализованного тревожного расстройства",
-    type: "standard",
-    questions: [
-      {
-        id: "gad7-1",
-        text: "Нервозность, тревожность, ощущение напряжённости",
-        options: [
-          { id: "gad7-1-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-1-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-1-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-1-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "gad7-2",
-        text: "Неконтролируемое беспокойство",
-        options: [
-          { id: "gad7-2-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-2-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-2-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-2-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "gad7-3",
-        text: "Чрезмерное беспокойство по разным поводам",
-        options: [
-          { id: "gad7-3-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-3-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-3-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-3-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "gad7-4",
-        text: "Трудности с расслаблением",
-        options: [
-          { id: "gad7-4-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-4-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-4-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-4-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "gad7-5",
-        text: "Такая беспокойность, что трудно усидеть на месте",
-        options: [
-          { id: "gad7-5-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-5-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-5-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-5-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "gad7-6",
-        text: "Раздражительность или вспыльчивость",
-        options: [
-          { id: "gad7-6-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-6-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-6-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-6-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-      {
-        id: "gad7-7",
-        text: "Чувство страха, будто может случиться что-то ужасное",
-        options: [
-          { id: "gad7-7-0", text: "Совсем нет", score: 0 },
-          { id: "gad7-7-1", text: "Несколько дней", score: 1 },
-          { id: "gad7-7-2", text: "Более половины дней", score: 2 },
-          { id: "gad7-7-3", text: "Почти каждый день", score: 3 },
-        ],
-      },
-    ],
-  },
-  {
-    title: "Оценка тревоги по шкале Бернса",
+    title: "Оценка эмоционального состояния",
     description:
-      "Оценка тревоги по шкале Бернса. 33 пункта: тревожные чувства, мысли и физические симптомы.",
+      "Опросник для оценки эмоционального состояния и уровня напряжения. 33 пункта: чувства, мысли и физические ощущения.",
     type: "standard",
     questions: [
       { id: "bai-1", text: "Тревога, нервозность, беспокойство или страх", options: baiOptions },
@@ -277,9 +114,9 @@ const tests = [
     ],
   },
   {
-    title: "Оценка депрессии по шкале Бернса",
+    title: "Оценка самочувствия",
     description:
-      "Оценка депрессии по шкале Бернса. 22 пункта: мысли, активность и физические симптомы.",
+      "Опросник для оценки общего самочувствия и эмоционального фона. 22 пункта: мысли, активность и физические ощущения.",
     type: "standard",
     questions: [
       { id: "bdc-1", text: "Грусть или уныние", options: bdcOptions },
@@ -474,34 +311,19 @@ const scoreBandsByTitle: Record<
   string,
   { maxScore: number; key: string; interpretation: string; recommendation: string }[]
 > = {
-  "Оценка настроения": [
-    { maxScore: 4, key: "minimal", interpretation: "Минимальная депрессия", recommendation: "Действия не требуются. Продолжайте наблюдение." },
-    { maxScore: 9, key: "mild", interpretation: "Лёгкая депрессия", recommendation: "Следите за симптомами. Помогут самопомощь, упражнения и гигиена сна." },
-    { maxScore: 14, key: "moderate", interpretation: "Умеренная депрессия", recommendation: "Рекомендуется консультация терапевта. Может быть полезна терапия и/или медикаменты." },
-    { maxScore: 19, key: "moderatelySevere", interpretation: "Умеренно тяжёлая депрессия", recommendation: "Рекомендуем обратиться к специалисту. Наиболее эффективно сочетание терапии и медикаментов." },
-    { maxScore: 999, key: "severe", interpretation: "Тяжёлая депрессия", recommendation: "Настоятельно рекомендуем немедленно обратиться к специалисту. Требуется активное лечение." },
+  "Оценка эмоционального состояния": [
+    { maxScore: 4, key: "low", interpretation: "Спокойное состояние", recommendation: "Продолжайте наблюдение. Дневник настроения поможет замечать закономерности." },
+    { maxScore: 10, key: "mild", interpretation: "Небольшое напряжение", recommendation: "Попробуйте дыхательные упражнения или короткую прогулку." },
+    { maxScore: 20, key: "moderate", interpretation: "Повышенный уровень напряжения", recommendation: "Попробуйте технику тройной колонки или дневник мыслей." },
+    { maxScore: 30, key: "elevated", interpretation: "Значительное напряжение", recommendation: "Рекомендуем практики релаксации. Если состояние сохраняется — обратитесь к близким или специалисту." },
+    { maxScore: 999, key: "high", interpretation: "Высокий уровень напряжения", recommendation: "Рекомендуется обратиться за поддержкой к близким или профессиональному консультанту." },
   ],
-  "Оценка уровня тревоги": [
-    { maxScore: 4, key: "minimal", interpretation: "Минимальная тревога", recommendation: "Действия не требуются. Продолжайте наблюдение." },
-    { maxScore: 9, key: "mild", interpretation: "Лёгкая тревога", recommendation: "Следите за симптомами. Помогут техники самопомощи." },
-    { maxScore: 14, key: "moderate", interpretation: "Умеренная тревога", recommendation: "Рекомендуется консультация терапевта. Терапия или консультирование могут быть полезны." },
-    { maxScore: 999, key: "severe", interpretation: "Тяжёлая тревога", recommendation: "Рекомендуем обратиться к специалисту для оценки и лечения." },
-  ],
-  "Оценка тревоги по шкале Бернса": [
-    { maxScore: 4, key: "minimal", interpretation: "Тревоги нет или минимальна", recommendation: "Действия не требуются. Ведите дневник настроения для закрепления результата." },
-    { maxScore: 10, key: "borderline", interpretation: "Пограничная тревога", recommendation: "Попробуйте декатастрофизацию: запишите худший сценарий и оцените его реальную вероятность." },
-    { maxScore: 20, key: "mild", interpretation: "Лёгкая тревога", recommendation: "Практикуйте технику тройной колонки. Дыхательные упражнения помогут в моменте. При сохранении — обратитесь к специалисту." },
-    { maxScore: 30, key: "moderate", interpretation: "Умеренная тревога", recommendation: "Составьте список пугающих ситуаций и прорабатывайте их постепенно. Рекомендуется консультация специалиста." },
-    { maxScore: 50, key: "severe", interpretation: "Тяжёлая тревога", recommendation: "Рекомендуется сочетать техники самопомощи с профессиональной поддержкой." },
-    { maxScore: 999, key: "extreme", interpretation: "Крайняя тревога или паника", recommendation: "Настоятельно рекомендуется консультация специалиста." },
-  ],
-  "Оценка депрессии по шкале Бернса": [
-    { maxScore: 5, key: "none", interpretation: "Депрессии нет", recommendation: "Депрессии не выявлено. Дневник настроения поможет замечать закономерности." },
-    { maxScore: 10, key: "normalUnhappy", interpretation: "Нормально, но есть недовольство", recommendation: "Попробуйте анализ затрат и выгод повторяющегося негативного убеждения." },
-    { maxScore: 25, key: "mild", interpretation: "Лёгкая депрессия", recommendation: "Используйте технику тройной колонки и метод двойного стандарта. При сохранении — рассмотрите терапию." },
-    { maxScore: 50, key: "moderate", interpretation: "Умеренная депрессия", recommendation: "Добавьте поведенческую активацию. При сохранении симптомов обратитесь за поддержкой." },
-    { maxScore: 75, key: "severe", interpretation: "Тяжёлая депрессия", recommendation: "Настоятельно рекомендуется профессиональная поддержка." },
-    { maxScore: 999, key: "extreme", interpretation: "Крайняя депрессия", recommendation: "Настоятельно рекомендуется консультация специалиста." },
+  "Оценка самочувствия": [
+    { maxScore: 5, key: "good", interpretation: "Хорошее самочувствие", recommendation: "Продолжайте заботиться о себе. Дневник благодарности помогает укрепить позитивный настрой." },
+    { maxScore: 10, key: "mild", interpretation: "Небольшой спад настроения", recommendation: "Попробуйте поведенческую активацию — запланируйте приятное занятие." },
+    { maxScore: 25, key: "moderate", interpretation: "Заметный спад настроения", recommendation: "Практикуйте технику тройной колонки. При сохранении — обратитесь за поддержкой." },
+    { maxScore: 50, key: "elevated", interpretation: "Значительный спад настроения", recommendation: "Рекомендуется профессиональная поддержка. Вы не одни." },
+    { maxScore: 999, key: "high", interpretation: "Сильный спад настроения", recommendation: "Рекомендуется обратиться к консультанту или психотерапевту." },
   ],
 };
 
@@ -741,10 +563,8 @@ async function seed() {
   const allTests = await prisma.test.findMany();
   const allParams = await prisma.parameter.findMany();
 
-  const phq9 = allTests.find((t) => t.title === "Оценка настроения")!;
-  const gad7 = allTests.find((t) => t.title === "Оценка уровня тревоги")!;
-  const bai = allTests.find((t) => t.title === "Оценка тревоги по шкале Бернса")!;
-  const bdc = allTests.find((t) => t.title === "Оценка депрессии по шкале Бернса")!;
+  const moodTest = allTests.find((t) => t.title === "Оценка эмоционального состояния")!;
+  const wellbeingTest = allTests.find((t) => t.title === "Оценка самочувствия")!;
   const cd = allTests.find((t) => t.title === "Определение когнитивных искажений")!;
 
   const paramMap = new Map(allParams.map((p) => [p.name, p.id]));
@@ -786,120 +606,54 @@ async function seed() {
   await prisma.testResult.createMany({
     data: [
       {
-        testId: gad7.id,
-        userId: demoUser.id,
-        score: 15,
-        interpretation: "Умеренная тревога",
-        recommendation: "Рекомендуется консультация терапевта.",
-        completedAt: new Date(now.getTime() - 14 * DAY),
-      },
-      {
-        testId: gad7.id,
-        userId: demoUser.id,
-        score: 13,
-        interpretation: "Умеренная тревога",
-        recommendation: "Рекомендуется консультация терапевта.",
-        completedAt: new Date(now.getTime() - 10 * DAY),
-      },
-      {
-        testId: gad7.id,
-        userId: demoUser.id,
-        score: 10,
-        interpretation: "Лёгкая тревога",
-        recommendation: "Следите за симптомами. Помогут техники самопомощи.",
-        completedAt: new Date(now.getTime() - 5 * DAY),
-      },
-      {
-        testId: gad7.id,
-        userId: demoUser.id,
-        score: 8,
-        interpretation: "Лёгкая тревога",
-        recommendation: "Продолжайте практики самопомощи.",
-        completedAt: new Date(now.getTime() - 1 * DAY),
-      },
-
-      {
-        testId: phq9.id,
-        userId: demoUser.id,
-        score: 17,
-        interpretation: "Умеренно тяжёлая депрессия",
-        recommendation: "Рекомендуем обратиться к специалисту. Наиболее эффективно сочетание терапии и медикаментов.",
-        completedAt: new Date(now.getTime() - 14 * DAY),
-      },
-      {
-        testId: phq9.id,
-        userId: demoUser.id,
-        score: 14,
-        interpretation: "Умеренная депрессия",
-        recommendation: "Рекомендуется консультация терапевта. Внимательно следите за симптомами.",
-        completedAt: new Date(now.getTime() - 9 * DAY),
-      },
-      {
-        testId: phq9.id,
-        userId: demoUser.id,
-        score: 11,
-        interpretation: "Умеренная депрессия",
-        recommendation: "Рекомендуется консультация терапевта. Внимательно следите за симптомами.",
-        completedAt: new Date(now.getTime() - 4 * DAY),
-      },
-      {
-        testId: phq9.id,
-        userId: demoUser.id,
-        score: 8,
-        interpretation: "Лёгкая депрессия",
-        recommendation: "Следите за симптомами. Помогут упражнения и самопомощь.",
-        completedAt: new Date(now.getTime() - 1 * DAY),
-      },
-
-      {
-        testId: bai.id,
+        testId: moodTest.id,
         userId: demoUser.id,
         score: 26,
-        interpretation: "Лёгкая тревога",
+        interpretation: "Повышенный уровень напряжения",
         recommendation: "Попробуйте техники самопомощи.",
         completedAt: new Date(now.getTime() - 12 * DAY),
       },
       {
-        testId: bai.id,
+        testId: moodTest.id,
         userId: demoUser.id,
         score: 22,
-        interpretation: "Лёгкая тревога",
+        interpretation: "Повышенный уровень напряжения",
         recommendation:
-          "Практикуйте технику тройной колонки: запишите тревожную мысль, назовите искажение, сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте.",
+          "Практикуйте технику тройной колонки: запишите беспокойную мысль, назовите искажение, сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте.",
         completedAt: new Date(now.getTime() - 7 * DAY),
       },
       {
-        testId: bai.id,
+        testId: moodTest.id,
         userId: demoUser.id,
         score: 18,
-        interpretation: "Лёгкая тревога",
+        interpretation: "Небольшое напряжение",
         recommendation: "Продолжайте практики самопомощи.",
         completedAt: new Date(now.getTime() - 2 * DAY),
       },
 
       {
-        testId: bdc.id,
+        testId: wellbeingTest.id,
         userId: demoUser.id,
         score: 36,
-        interpretation: "Умеренная депрессия",
-        recommendation: "Рекомендуется консультация специалиста.",
+        interpretation: "Значительный спад настроения",
+        recommendation: "Рекомендуется профессиональная поддержка.",
         completedAt: new Date(now.getTime() - 13 * DAY),
       },
       {
-        testId: bdc.id,
+        testId: wellbeingTest.id,
         userId: demoUser.id,
         score: 32,
-        interpretation: "Умеренная депрессия",
-        recommendation: "Рекомендуется консультация специалиста.",
+        interpretation: "Значительный спад настроения",
+        recommendation: "Рекомендуется профессиональная поддержка.",
         completedAt: new Date(now.getTime() - 8 * DAY),
       },
       {
-        testId: bdc.id,
+        testId: wellbeingTest.id,
         userId: demoUser.id,
         score: 28,
-        interpretation: "Лёгкая депрессия",
+        interpretation: "Заметный спад настроения",
         recommendation:
-          "Используйте технику тройной колонки и метод двойного стандарта: сказали бы вы это другу? При сохранении — рассмотрите терапию.",
+          "Используйте технику тройной колонки и метод двойного стандарта: сказали бы вы это другу? При сохранении — обратитесь за поддержкой.",
         completedAt: new Date(now.getTime() - 3 * DAY),
       },
 

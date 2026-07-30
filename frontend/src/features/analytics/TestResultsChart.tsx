@@ -73,7 +73,7 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
     <Card className="shadow-neumorphic">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-primary" />
+          <BarChart3 aria-hidden="true" className="w-4 h-4 text-primary" />
           {t("testResults.scoreHistory")}
         </CardTitle>
       </CardHeader>

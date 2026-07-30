@@ -2,6 +2,7 @@
 .PHONY: test test-backend test-frontend test-watch test-coverage
 .PHONY: db-generate db-push db-seed db-setup db-reset clean
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
+.PHONY: start-feature
 
 # ─── Install ────────────────────────────────────────────
 
@@ -83,6 +84,11 @@ db-studio:
 db-reset:
 	cd backend && npx prisma db push --force-reset
 	cd backend && npm run db:seed
+
+# ─── Dev/Prod Workflow ──────────────────────────────────
+
+start-feature:
+	bash .opencode/scripts/start-feature.sh $(filter-out $@,$(MAKECMDGOALS))
 
 # ─── Utils ──────────────────────────────────────────────
 

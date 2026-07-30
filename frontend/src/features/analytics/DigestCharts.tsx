@@ -116,7 +116,7 @@ export default function DigestCharts({ averages, practicesCompleted }: DigestCha
             ) : (
               practiceChartData.map((entry) => (
                 <div key={entry.name} className="flex items-center gap-2 text-sm">
-                  <BarChart3 className="w-4 h-4 text-primary shrink-0" />
+                  <BarChart3 aria-hidden="true" className="w-4 h-4 text-primary shrink-0" />
                   <span className="text-muted-foreground flex-1">{entry.name}</span>
                   <span className="font-medium">{entry.value}x</span>
                 </div>

@@ -2,6 +2,7 @@ import { ApiError } from "./api-error";
 import type { components } from "./api-types";
 
 type AuthResponse = components["schemas"]["AuthResponse"];
+type RegisterResponse = { user: components["schemas"]["User"]; message: string };
 type RefreshResponse = components["schemas"]["RefreshResponse"];
 type ResetPasswordResponse = components["schemas"]["ResetPasswordResponse"];
 type Entry = components["schemas"]["Entry"];
@@ -194,11 +195,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 export const api = {
   auth: {
     register: (body: { email: string; password: string; name?: string; ageConfirmed?: boolean }) =>
-      request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
+      request<RegisterResponse>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
     login: (body: { email: string; password: string }) =>
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
-    demo: () => request<AuthResponse>("/auth/demo", { method: "POST" }),
     refresh: () => request<RefreshResponse>("/auth/refresh", { method: "POST" }),
     forgotPassword: (body: { email: string }) =>
       request<{ message: string }>("/auth/forgot-password", {
@@ -209,6 +209,12 @@ export const api = {
       request<ResetPasswordResponse>("/auth/reset-password", {
         method: "POST",
         body: JSON.stringify(body),
+      }),
+    verifyEmail: (token: string) => request<{ message?: string }>(`/auth/verify-email?token=${token}`, { method: "GET" }),
+    sendVerificationEmail: (email: string) =>
+      request<{ message: string }>("/auth/send-verification-email", {
+        method: "POST",
+        body: JSON.stringify({ email }),
       }),
   },
   users: {

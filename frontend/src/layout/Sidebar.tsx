@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useNavHighlights } from "../hooks/useNavHighlights";
@@ -58,7 +58,7 @@ export default function Sidebar() {
 
       <div className="flex items-center gap-2 px-3 py-2 mb-4 rounded-xl bg-muted/50 shadow-neumorphic-sm">
         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-          <User className="w-4 h-4 text-primary" />
+          <User aria-hidden="true" className="w-4 h-4 text-primary" />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-primary truncate">
@@ -71,26 +71,27 @@ export default function Sidebar() {
           className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={t("common.logout")}
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut aria-hidden="true" className="w-4 h-4" />
         </button>
       </div>
 
-      <button
-        onClick={() => navigate(DASHBOARD_ITEM.path)}
+      <Link
+        to={DASHBOARD_ITEM.path}
         className={navButtonClass(location.pathname === "/")}
       >
-        <DASHBOARD_ITEM.icon className={`w-5 h-5 shrink-0 ${highlights.dashboard ? 'text-primary' : ''}`} />
+        <DASHBOARD_ITEM.icon aria-hidden="true" className={`w-5 h-5 shrink-0 ${highlights.dashboard ? 'text-primary' : ''}`} />
         <span className="text-sm font-medium truncate">{t(DASHBOARD_ITEM.labelKey)}</span>
-      </button>
+      </Link>
 
       <button
         onClick={() => setPracticesOpen((o) => !o)}
         aria-expanded={practicesOpen}
         className={navButtonClass(isPracticeActive)}
       >
-        <Sparkles className={`w-5 h-5 shrink-0 ${highlights.practices ? 'text-primary' : ''}`} />
+        <Sparkles aria-hidden="true" className={`w-5 h-5 shrink-0 ${highlights.practices ? 'text-primary' : ''}`} />
         <span className="text-sm font-medium truncate flex-1 text-left">{t("nav.practices")}</span>
         <ChevronDown
+          aria-hidden="true"
           className={`w-4 h-4 shrink-0 transition-transform duration-150 ${practicesOpen ? "rotate-180" : ""}`}
         />
       </button>
@@ -100,28 +101,28 @@ export default function Sidebar() {
           {PRACTICE_ITEMS.map((item) => {
             const source = PATH_TO_SOURCE[item.path];
             return (
-              <button
+              <Link
                 key={item.path}
-                onClick={() => navigate(item.path)}
+                to={item.path}
                 className={navButtonClass(location.pathname.startsWith(item.path))}
               >
-                <item.icon className={`w-4 h-4 shrink-0 ${source && isStale(source) ? 'text-primary' : ''}`} />
+                <item.icon aria-hidden="true" className={`w-4 h-4 shrink-0 ${source && isStale(source) ? 'text-primary' : ''}`} />
                 <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
-              </button>
+              </Link>
             );
           })}
         </div>
       )}
 
       {OTHER_ITEMS.map((item) => (
-        <button
+        <Link
           key={item.path}
-          onClick={() => navigate(item.path)}
+          to={item.path}
           className={navButtonClass(location.pathname.startsWith(item.path))}
         >
-          <item.icon className={`w-5 h-5 shrink-0 ${item.path === '/tests' && highlights.tests ? 'text-primary' : ''}`} />
+          <item.icon aria-hidden="true" className={`w-5 h-5 shrink-0 ${item.path === '/tests' && highlights.tests ? 'text-primary' : ''}`} />
           <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
-        </button>
+        </Link>
       ))}
     </nav>
   );

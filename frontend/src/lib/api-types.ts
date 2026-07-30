@@ -201,6 +201,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/creature/completions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description История выполненных практик за последние N дней (по умолчанию 30) */
+        get: operations["Creature_getCompletions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/creature/exercise/complete": {
         parameters: {
             query?: never;
@@ -210,8 +227,42 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Завершить дыхательное упражнение, обновить уровень спокойствия */
+        /** @description Завершить дыхательное упражнение, обновить уровень спокойствия, начислить опыт */
         post: operations["Creature_completeExercise"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creature/reward": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba) */
+        post: operations["Creature_reward"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/digest/weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Недельный дайджест активности пользователя */
+        get: operations["Digest_getWeekly"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -458,6 +509,22 @@ export interface paths {
         patch: operations["Users_updateMe"];
         trace?: never;
     };
+    "/users/me/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Users_getPreferences"];
+        put: operations["Users_savePreferences"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -667,6 +734,14 @@ export interface components {
             description?: string;
             unit?: string;
         };
+        /** @description Запись о выполненной практике и полученном опыте */
+        PracticeCompletion: {
+            source: string;
+            /** Format: int32 */
+            xpAwarded: number;
+            /** Format: date-time */
+            createdAt: string;
+        };
         RefreshResponse: {
             accessToken: string;
         };
@@ -706,16 +781,33 @@ export interface components {
             accessToken: string;
             message: string;
         };
+        /** @description Запрос на награду за практику */
+        RewardRequest: {
+            source: string;
+        };
+        /** @description Результат награды за практику */
+        RewardResponse: {
+            state: components["schemas"]["CreatureState"];
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
+        };
         /** @description Психологический тест, построенный на справочниках/книгах по психологии. Шаблон: вопросы + правила подсчёта баллов. */
         Test: {
             id: string;
             title: string;
             description?: string;
+            active: boolean;
             questions: components["schemas"]["TestQuestion"][];
         };
         TestAnswer: {
             questionId: string;
             optionId: string;
+        };
+        TestDigest: {
+            id: string;
+            title: string;
+            description?: string;
+            active: boolean;
         };
         TestQuestion: {
             id: string;
@@ -742,6 +834,13 @@ export interface components {
             /** Format: date-time */
             completedAt: string;
         };
+        TestResultDigest: {
+            testId: string;
+            title: string;
+            /** Format: int32 */
+            score: number;
+            interpretation: string;
+        };
         TestResultSubmit: {
             answers: components["schemas"]["TestAnswer"][];
         };
@@ -758,8 +857,41 @@ export interface components {
             password: string;
             name?: string;
         };
+        /** @description Настройки и предпочтения пользователя */
+        UserPreference: {
+            goals: string[];
+            experienceLevel: string;
+            dailyReminder: boolean;
+            reminderTime?: string;
+            onboardingDone: boolean;
+        };
+        UserPreferenceUpdate: {
+            goals?: string[];
+            experienceLevel?: string;
+            dailyReminder?: boolean;
+            reminderTime?: string;
+            onboardingDone?: boolean;
+        };
         UserUpdate: {
             name?: string;
+        };
+        /** @description Результаты тестирования за неделю */
+        WeeklyDigest: {
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** Format: int32 */
+            totalEntries: number;
+            averages: unknown;
+            /** Format: int32 */
+            checkInDays: number;
+            testsTaken: components["schemas"]["TestResultDigest"][];
+            practicesCompleted: unknown;
+            /** Format: int32 */
+            creatureXpGained: number;
+            /** Format: int32 */
+            creatureLevel: number;
         };
     };
     responses: never;
@@ -1046,6 +1178,28 @@ export interface operations {
             };
         };
     };
+    Creature_getCompletions: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PracticeCompletion"][];
+                };
+            };
+        };
+    };
     Creature_completeExercise: {
         parameters: {
             query?: never;
@@ -1065,7 +1219,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreatureState"];
+                    "application/json": components["schemas"]["CheckInResponse"];
+                };
+            };
+        };
+    };
+    Creature_reward: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RewardRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RewardResponse"];
+                };
+            };
+        };
+    };
+    Digest_getWeekly: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyDigest"];
                 };
             };
         };
@@ -1437,7 +1635,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Test"][];
+                    "application/json": components["schemas"]["TestDigest"][];
                 };
             };
         };
@@ -1548,6 +1746,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["User"];
+                };
+            };
+        };
+    };
+    Users_getPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPreference"];
+                };
+            };
+        };
+    };
+    Users_savePreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserPreferenceUpdate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPreference"];
                 };
             };
         };

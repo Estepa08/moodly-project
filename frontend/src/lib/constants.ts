@@ -86,7 +86,6 @@ export const CLICK_THRESHOLD = 5;
 export const LOCKOUT_DURATION_MS = 5000;
 export const CLICK_WINDOW_MS = 2000;
 
-export const DISCLAIMER_ACCEPTED_KEY = "moodly_disclaimer_accepted";
 export const ONBOARDING_DONE_KEY = "moodly_onboarding_done";
 
 export enum Trend {

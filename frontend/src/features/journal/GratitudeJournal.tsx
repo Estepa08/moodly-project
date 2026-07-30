@@ -116,11 +116,11 @@ export default function GratitudeJournal({
           />
           <div className="flex gap-2">
             <Button onClick={handleSave} disabled={!note.trim() || createEntry.isPending}>
-              <Heart className="w-4 h-4 mr-1.5" />
+              <Heart aria-hidden="true" className="w-4 h-4 mr-1.5" />
               {t("dashboard.saveGratitude")}
             </Button>
             <Button variant="ghost" onClick={() => setShowChart(!showChart)}>
-              <Smile className="w-4 h-4 mr-1.5" />
+              <Smile aria-hidden="true" className="w-4 h-4 mr-1.5" />
               {t(showChart ? "dashboard.hideCorrelation" : "dashboard.showCorrelation")}
             </Button>
           </div>
@@ -147,7 +147,7 @@ export default function GratitudeJournal({
         <div className="space-y-2">
           {recentEntries.map((entry) => (
             <div key={entry.id} className="flex items-start gap-2 p-3 rounded-xl bg-card shadow-neumorphic-sm">
-              <Heart className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+              <Heart aria-hidden="true" className="w-4 h-4 text-accent shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-sm text-foreground break-words">{entry.note || entry.value}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">

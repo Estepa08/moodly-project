@@ -112,7 +112,7 @@ export default function OnboardingPage() {
                         : "border-border bg-card shadow-neumorphic-sm"
                     }`}
                   >
-                    <Icon className="w-5 h-5 text-primary shrink-0" />
+                    <Icon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                     <span className="text-sm font-medium text-foreground">
                       {t(`onboarding2.goal${key.charAt(0).toUpperCase() + key.slice(1)}`)}
                     </span>
@@ -146,6 +146,7 @@ export default function OnboardingPage() {
                     }`}
                   >
                     <Sparkles
+                      aria-hidden="true"
                       className={`w-5 h-5 shrink-0 ${
                         expLevel === level ? "text-primary" : "text-muted-foreground"
                       }`}
@@ -174,7 +175,7 @@ export default function OnboardingPage() {
               </h2>
               <p className="text-muted-foreground text-sm">{t("onboarding2.reminderDesc")}</p>
               <div className="flex items-center justify-center gap-4 py-2">
-                <Bell className="w-6 h-6 text-primary" />
+                <Bell aria-hidden="true" className="w-6 h-6 text-primary" />
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -215,7 +216,7 @@ export default function OnboardingPage() {
                   onClick={() => handleFinish("/")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <LayoutDashboard className="w-5 h-5 text-primary shrink-0" />
+                  <LayoutDashboard aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
                       {t("onboarding.chooseDashboard")}
@@ -229,7 +230,7 @@ export default function OnboardingPage() {
                   onClick={() => handleFinish("/breathing")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <Wind className="w-5 h-5 text-primary shrink-0" />
+                  <Wind aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
                       {t("onboarding.chooseBreathing")}
@@ -241,7 +242,7 @@ export default function OnboardingPage() {
                   onClick={() => handleFinish("/tests")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <ClipboardList className="w-5 h-5 text-primary shrink-0" />
+                  <ClipboardList aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
                       {t("onboarding.chooseTest")}

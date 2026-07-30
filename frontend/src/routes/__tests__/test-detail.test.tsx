@@ -53,7 +53,8 @@ describe("TestDetailPage", () => {
     const { api } = await import("../../lib/api");
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "1",
-      title: "GAD-7",
+      title: "Emotional State",
+      active: true,
       questions: [
         {
           id: "q1",
@@ -89,7 +90,8 @@ describe("TestDetailPage", () => {
     const { api } = await import("../../lib/api");
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "1",
-      title: "GAD-7",
+      title: "Emotional State",
+      active: true,
       questions: [
         {
           id: "q1",
@@ -129,6 +131,7 @@ describe("TestDetailPage", () => {
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "2",
       title: "Cognitive Distortions Assessment",
+      active: true,
       questions: [
         {
           id: "q1",
@@ -169,36 +172,5 @@ describe("TestDetailPage", () => {
     expect(screen.getByText("personalization")).toBeInTheDocument();
   });
 
-  it("shows a thinking patterns suggestion when the result is severe", async () => {
-    const { api } = await import("../../lib/api");
-    (api.tests.get as Mock).mockResolvedValueOnce({
-      id: "phq9",
-      title: "PHQ-9",
-      questions: [
-        {
-          id: "q1",
-          text: "Feeling down?",
-          options: [{ id: "a1", text: "Nearly every day", score: 3 }],
-        },
-      ],
-    });
-    (api.tests.submitResult as Mock).mockResolvedValueOnce({
-      score: 27,
-      interpretation: "Severe depression",
-      recommendation: "Please consult a professional.",
-    });
 
-    const user = userEvent.setup();
-    renderAt("/tests/phq9");
-
-    await waitFor(() => expect(screen.getByText("Feeling down?")).toBeInTheDocument());
-    await user.click(screen.getByText("Nearly every day"));
-    await user.click(screen.getByRole("button", { name: /review/i }));
-    await user.click(screen.getByRole("button", { name: /submit/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText("Severe depression")).toBeInTheDocument();
-    });
-    expect(screen.getByText("Learn about thinking patterns")).toBeInTheDocument();
-  });
 });

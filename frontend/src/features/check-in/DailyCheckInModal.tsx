@@ -41,7 +41,7 @@ export default function DailyCheckInModal({
     >
       {streak > 0 && (
         <div className="flex items-center justify-center gap-2 py-3 rounded-xl bg-muted/50">
-          <Flame className="w-5 h-5 text-accent" />
+          <Flame aria-hidden="true" className="w-5 h-5 text-accent" />
           <span className="text-sm font-semibold text-foreground">
             {t("dailyCheckIn.streak", { count: streak })}
           </span>
@@ -50,11 +50,11 @@ export default function DailyCheckInModal({
 
       <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
-          <Sparkles className="w-3 h-3" />
+          <Sparkles aria-hidden="true" className="w-3 h-3" />
           <span>{t("dailyCheckIn.expGained")}</span>
         </div>
         <div className="flex items-center gap-1">
-          <Zap className="w-3 h-3" />
+          <Zap aria-hidden="true" className="w-3 h-3" />
           <span>{t("dailyCheckIn.energyRestored")}</span>
         </div>
       </div>

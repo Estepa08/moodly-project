@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { setToken, api } from "../lib/api";
-import { DISCLAIMER_ACCEPTED_KEY, ONBOARDING_DONE_KEY } from "../lib/constants";
+import { ONBOARDING_DONE_KEY } from "../lib/constants";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -47,7 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setToken(null);
     setIsAuthenticated(false);
-    localStorage.removeItem(DISCLAIMER_ACCEPTED_KEY);
     localStorage.removeItem(ONBOARDING_DONE_KEY);
   }, []);
 

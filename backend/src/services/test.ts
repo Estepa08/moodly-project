@@ -11,7 +11,8 @@ interface TestAnswer {
 export const testService = {
   async list() {
     return prisma.test.findMany({
-      select: { id: true, title: true, description: true },
+      where: { active: true },
+      select: { id: true, title: true, description: true, active: true },
     });
   },
 
@@ -24,6 +25,7 @@ export const testService = {
   async submitResult(testId: string, userId: string, answers: TestAnswer[]) {
     const test = await prisma.test.findUnique({ where: { id: testId } });
     if (!test) throw new NotFoundError("Test");
+    if (!test.active) throw new NotFoundError("Test");
 
     const questions = test.questions as { id: string; options: { id: string; score: number }[] }[];
     let score = 0;

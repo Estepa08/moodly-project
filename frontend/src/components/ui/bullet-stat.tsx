@@ -26,7 +26,7 @@ export default function BulletStat({
           className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
           style={{ backgroundColor: `${color}15` }}
         >
-          <Icon className="w-3.5 h-3.5" style={{ color }} />
+          <Icon aria-hidden="true" className="w-3.5 h-3.5" style={{ color }} />
         </div>
         <span className="text-xs text-muted-foreground leading-tight flex-1">{label}</span>
         <span className="text-sm font-bold text-foreground tabular-nums">

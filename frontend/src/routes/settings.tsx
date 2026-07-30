@@ -43,7 +43,7 @@ export default function SettingsPage() {
       <Card className="border-destructive/30">
         <CardHeader>
           <CardTitle className="text-destructive flex items-center gap-2">
-            <Trash2 className="w-4 h-4" />
+            <Trash2 aria-hidden="true" className="w-4 h-4" />
             {t("settings.deleteAccount")}
           </CardTitle>
         </CardHeader>
@@ -68,7 +68,7 @@ export default function SettingsPage() {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <div className="flex items-center gap-2 mb-2">
-              <AlertTriangle className="w-5 h-5 text-destructive" />
+              <AlertTriangle aria-hidden="true" className="w-5 h-5 text-destructive" />
               <DialogTitle className="text-lg">{t("settings.confirmTitle")}</DialogTitle>
             </div>
             <DialogDescription className="text-sm">

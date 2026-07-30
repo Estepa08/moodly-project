@@ -137,7 +137,15 @@ model Test {
   id: string;
   title: string;
   description?: string;
+  active: boolean;
   questions: TestQuestion[];
+}
+
+model TestDigest {
+  id: string;
+  title: string;
+  description?: string;
+  active: boolean;
 }
 
 model TestAnswer {

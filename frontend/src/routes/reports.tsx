@@ -187,14 +187,14 @@ export default function ReportsPage() {
             )}
             {r.status === "failed" && (
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-destructive" />
+                <AlertTriangle aria-hidden="true" className="w-4 h-4 text-destructive" />
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => handleRetry(r)}
                   disabled={createReport.isPending}
                 >
-                  <RotateCcw className="w-3.5 h-3.5 mr-1" />
+                  <RotateCcw aria-hidden="true" className="w-3.5 h-3.5 mr-1" />
                   {t("reports.retry")}
                 </Button>
               </div>

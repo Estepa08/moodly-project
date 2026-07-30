@@ -33,7 +33,9 @@
     "fastify-plugin": "^5.0.0",
     "pdfkit": "^0.15.0",
     "prisma": "^6.0.0",
-    "web-push": "^3.6.7"
+    "resend": "^6.18.1",
+    "web-push": "^3.6.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

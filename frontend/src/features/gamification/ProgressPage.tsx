@@ -48,7 +48,7 @@ export default function ProgressPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <Trophy className="w-5 h-5 text-accent" />
+        <Trophy aria-hidden="true" className="w-5 h-5 text-accent" />
         <h2 className="text-lg font-semibold text-foreground font-serif">
           {t("progress.pageTitle")}
         </h2>

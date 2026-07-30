@@ -27,7 +27,7 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
           className="w-full flex items-center gap-2"
           onClick={() => { navigate("/breathing"); onDismiss(); }}
         >
-          <Wind className="w-4 h-4" />
+          <Wind aria-hidden="true" className="w-4 h-4" />
           {t("lowMood.actionBreathing")}
         </Button>
         <Button
@@ -35,7 +35,7 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
           className="w-full flex items-center gap-2"
           onClick={() => { navigate("/tests"); onDismiss(); }}
         >
-          <ClipboardList className="w-4 h-4" />
+          <ClipboardList aria-hidden="true" className="w-4 h-4" />
           {t("lowMood.actionTest")}
         </Button>
       </div>

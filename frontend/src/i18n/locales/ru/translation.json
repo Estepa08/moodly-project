@@ -65,7 +65,23 @@
     "hasAccount": "Уже есть аккаунт?",
     "signIn": "Войти",
     "registrationFailed": "Ошибка регистрации",
-    "consentRequired": "Необходимо подтвердить возраст и согласие на обработку данных"
+    "consentRequired": "Необходимо подтвердить возраст и согласие на обработку данных",
+    "checkEmailTitle": "Проверьте почту",
+    "checkEmailMessage": "Мы отправили ссылку для подтверждения на {{email}}. Перейдите по ней, чтобы активировать аккаунт.",
+    "resendEmail": "Отправить письмо повторно",
+    "backToLogin": "Вернуться ко входу",
+    "emailVerifiedTitle": "Email подтверждён!",
+    "emailVerifiedMessage": "Ваш email подтверждён. Теперь вы можете войти.",
+    "verifyingEmail": "Проверяем email...",
+    "verificationFailed": "Ошибка подтверждения",
+    "verificationFailedMessage": "Ссылка недействительна или истекла. Попробуйте зарегистрироваться снова.",
+    "consentText": "Я подтверждаю, что мне есть 18 лет, и я принимаю",
+    "termsLink": "Условия использования",
+    "and": "и",
+    "privacyLink": "Политику конфиденциальности"
+  },
+  "auth": {
+    "emailNotVerified": "Пожалуйста, подтвердите email перед входом. Проверьте почту — мы отправили ссылку."
   },
   "dashboard": {
     "title": "Дашборд",
@@ -174,13 +190,11 @@
     "skip": "Пропустить"
   },
   "tests": {
-    "title": "Тесты",
+    "title": "Оценки",
     "abbreviation": {
-      "phq9": "PHQ-9",
-      "gad7": "GAD-7",
-      "bai": "BAI",
-      "bdc": "BDC",
-      "cd": "CD"
+      "mood": "ОЭС",
+      "wellbeing": "ОС",
+      "cd": "КИ"
     }
   },
   "testDetail": {
@@ -202,7 +216,9 @@
     "exitConfirmDesc": "Вы всегда можете вернуться и продолжить с того же места.",
     "exitConfirmCancel": "Продолжить",
     "exitConfirmExit": "Выйти сейчас",
-    "supportResources": "Ресурсы поддержки"
+    "supportResources": "Ресурсы поддержки",
+    "unavailable": "Этот опрос больше не доступен",
+    "unavailableDesc": "Этот опрос был удалён. Вы всё ещё можете просмотреть свои прошлые результаты."
   },
   "testResults": {
     "title": "Результаты тестов",

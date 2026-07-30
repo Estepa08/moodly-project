@@ -2,27 +2,27 @@ import { describe, it, expect } from "vitest";
 import { isSevereInterpretation } from "../useTestResultText";
 
 describe("isSevereInterpretation", () => {
-  it("returns true for interpretations starting with Severe", () => {
-    expect(isSevereInterpretation("Severe depression")).toBe(true);
+  it("returns true for bandKey 'severe'", () => {
+    expect(isSevereInterpretation("any", { bandKey: "severe" })).toBe(true);
   });
 
-  it("returns true for interpretations starting with Extreme", () => {
-    expect(isSevereInterpretation("Extreme anxiety")).toBe(true);
+  it("returns true for bandKey 'extreme'", () => {
+    expect(isSevereInterpretation("any", { bandKey: "extreme" })).toBe(true);
   });
 
-  it("returns false for mild/moderate interpretations", () => {
-    expect(isSevereInterpretation("Mild symptoms")).toBe(false);
+  it("returns true for bandKey 'high'", () => {
+    expect(isSevereInterpretation("any", { bandKey: "high" })).toBe(true);
   });
 
-  it("returns false for an empty string", () => {
-    expect(isSevereInterpretation("")).toBe(false);
+  it("returns false for mild/moderate bandKeys", () => {
+    expect(isSevereInterpretation("any", { bandKey: "mild" })).toBe(false);
   });
 
-  it("returns false for minimal text even with empty flags", () => {
-    expect(isSevereInterpretation("Minimal depression", {})).toBe(false);
+  it("returns false for an empty flags object", () => {
+    expect(isSevereInterpretation("any", {})).toBe(false);
   });
 
   it("returns false when flags is undefined", () => {
-    expect(isSevereInterpretation("Minimal depression", undefined)).toBe(false);
+    expect(isSevereInterpretation("any", undefined)).toBe(false);
   });
 });

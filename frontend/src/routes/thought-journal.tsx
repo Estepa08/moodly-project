@@ -149,14 +149,14 @@ export default function ThoughtJournalPage() {
         <Card>
           <CardContent className="p-8 text-center space-y-4">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-              <BookOpen className="w-8 h-8 text-primary" />
+              <BookOpen aria-hidden="true" className="w-8 h-8 text-primary" />
             </div>
             <p className="text-lg font-medium text-foreground">
               {t("thoughtJournal.saved")}
             </p>
             {streak > 0 && (
               <div className="flex items-center justify-center gap-1.5 text-sm text-accent font-medium">
-                <Flame className="w-4 h-4" />
+                <Flame aria-hidden="true" className="w-4 h-4" />
                 <span>{t("thoughtJournal.streak", { count: streak })}</span>
               </div>
             )}
@@ -221,7 +221,7 @@ export default function ThoughtJournalPage() {
       <Card className="shadow-neumorphic">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <ClipboardList className="w-4 h-4 text-primary" />
+            <ClipboardList aria-hidden="true" className="w-4 h-4 text-primary" />
             {t("thoughtJournal.historyTitle")}
           </CardTitle>
         </CardHeader>
@@ -263,7 +263,7 @@ export default function ThoughtJournalPage() {
       <Card className="shadow-neumorphic">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-primary" />
+            <BarChart3 aria-hidden="true" className="w-4 h-4 text-primary" />
             {t("thoughtJournal.chartTitle")}
           </CardTitle>
         </CardHeader>
