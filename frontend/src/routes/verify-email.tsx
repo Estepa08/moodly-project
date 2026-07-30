@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { api } from "../lib/api";
 import { Card, CardContent } from "../components/ui/card";
@@ -8,6 +8,7 @@ import { MailCheck, Loader2, XCircle } from "lucide-react";
 
 export default function VerifyEmailPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -19,9 +20,12 @@ export default function VerifyEmailPage() {
     }
     api.auth
       .verifyEmail(token)
-      .then(() => setStatus("success"))
+      .then(() => {
+        setStatus("success");
+        setTimeout(() => navigate("/login?verified=true", { replace: true }), 1500);
+      })
       .catch(() => setStatus("error"));
-  }, [token]);
+  }, [token, navigate]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -42,9 +46,6 @@ export default function VerifyEmailPage() {
               </div>
               <h2 className="text-xl font-semibold">{t("register.emailVerifiedTitle")}</h2>
               <p className="text-muted-foreground">{t("register.emailVerifiedMessage")}</p>
-              <Button asChild>
-                <Link to="/login">{t("login.signIn")}</Link>
-              </Button>
             </>
           )}
           {status === "error" && (

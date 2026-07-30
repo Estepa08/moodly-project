@@ -43,6 +43,7 @@ export default function LoginPage({ defaultRegister }: Props) {
     handleLoginSubmit,
     handleRegisterSubmit,
     handleResendVerification,
+    devVerificationLink,
     handleDemo,
     demoMode,
   } = useAuthForms();
@@ -77,6 +78,13 @@ export default function LoginPage({ defaultRegister }: Props) {
             </div>
             <h2 className="text-2xl font-serif font-semibold">{t("register.checkEmailTitle")}</h2>
             <p className="text-muted-foreground">{t("register.checkEmailMessage", { email: registeredEmail })}</p>
+            {devVerificationLink && (
+              <p>
+                <a href={devVerificationLink} className="text-primary hover:underline text-sm">
+                  {t("register.devVerifyLink")}
+                </a>
+              </p>
+            )}
             <Button variant="outline" onClick={handleResendVerification}>
               {t("register.resendEmail")}
             </Button>

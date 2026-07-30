@@ -75,6 +75,7 @@
     "verifyingEmail": "Проверяем email...",
     "verificationFailed": "Ошибка подтверждения",
     "verificationFailedMessage": "Ссылка недействительна или истекла. Попробуйте зарегистрироваться снова.",
+    "devVerifyLink": "Dev: нажмите, чтобы подтвердить email",
     "consentText": "Я подтверждаю, что мне есть 18 лет, и я принимаю",
     "termsLink": "Условия использования",
     "and": "и",

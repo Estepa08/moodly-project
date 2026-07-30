@@ -75,6 +75,7 @@
     "verifyingEmail": "Verifying your email...",
     "verificationFailed": "Verification failed",
     "verificationFailedMessage": "This link is invalid or expired. Please try registering again.",
+    "devVerifyLink": "Dev mode: Click here to verify your email",
     "consentText": "I confirm that I am 18 years or older and agree to the",
     "termsLink": "Terms of Service",
     "and": "and",

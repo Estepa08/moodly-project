@@ -43,6 +43,7 @@ export function useAuthForms() {
   const [regAgeConfirmed, setRegAgeConfirmed] = useState(false);
 
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
+  const [devVerificationLink, setDevVerificationLink] = useState<string | undefined>();
   const [demoLoading, setDemoLoading] = useState(false);
 
   const verified = searchParams.get("verified") === "true";
@@ -63,13 +64,14 @@ export function useAuthForms() {
     e.preventDefault();
     setRegError("");
     try {
-      await api.auth.register({
+      const res = await api.auth.register({
         email: regEmail,
         password: regPassword,
         name: regName || undefined,
         ageConfirmed: regAgeConfirmed,
       });
       setRegisteredEmail(regEmail);
+      setDevVerificationLink(res.devVerificationLink);
     } catch (err) {
       setRegError(getErrorMessage(err, "register.registrationFailed", t));
     }
@@ -116,6 +118,7 @@ export function useAuthForms() {
     regError,
     registeredEmail,
     setRegisteredEmail,
+    devVerificationLink,
     verified,
     demoMode: DEMO_MODE,
     demoLoading,
