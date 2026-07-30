@@ -35,7 +35,7 @@ export default function DistortionsPage() {
   );
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold text-foreground font-serif">
           {t("distortions.title")}
@@ -80,14 +80,22 @@ export default function DistortionsPage() {
         hidden={tab !== "library"}
       >
         {tab === "library" ? (
-          <div className="space-y-3">
-            {DISTORTION_KEYS.map((key) => (
-              <Card key={key} className="shadow-neumorphic">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">{t(`cognitiveDistortions.${key}`)}</CardTitle>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {DISTORTION_KEYS.map((key, index) => (
+              <Card
+                key={key}
+                className={`shadow-neumorphic border-t-2 transition-[transform,box-shadow,border-color] duration-200 animate-card-enter hover:-translate-y-0.5 hover:shadow-elevation-3 ${
+                  expanded[key] ? "border-primary/60" : "border-primary/20"
+                }`}
+                style={{ animationDelay: `${index * 60}ms` }}
+              >
+                <CardHeader className="pb-2 p-4">
+                  <CardTitle className="text-sm">{t(`cognitiveDistortions.${key}`)}</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <p className="text-sm text-muted-foreground">
+                <CardContent className="space-y-3 p-4 pt-0">
+                  <p
+                    className={`text-sm text-muted-foreground ${expanded[key] ? "" : "line-clamp-3"}`}
+                  >
                     {t(`distortionsLibrary.${key}.definition`)}
                   </p>
 
@@ -96,7 +104,10 @@ export default function DistortionsPage() {
                     className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))}
                   >
-                    <ChevronRight aria-hidden="true" className={`w-4 h-4 ${expanded[key] ? "rotate-90" : ""}`} />
+                    <ChevronRight
+                      aria-hidden="true"
+                      className={`w-4 h-4 transition-transform duration-150 ${expanded[key] ? "rotate-90" : ""}`}
+                    />
                     {expanded[key] ? t("distortions.hideExample") : t("distortions.showExample")}
                   </button>
 

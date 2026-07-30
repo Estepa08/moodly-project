@@ -1,10 +1,7 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Scale } from "lucide-react";
-import { ChartTooltip } from "../../lib/chart-tooltip";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import EmptyState from "../../components/ui/empty-state";
+import { Chart } from "../../lib/chart";
 import type { CbaEntry } from "../cost-benefit-analysis/cba.types";
 
 interface CbaTrendChartProps {
@@ -35,50 +32,38 @@ export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
     return grand > 0 ? Math.round((totalPros / grand) * 100) : 50;
   }, [chartData]);
 
+  const needsTwoPoints = chartData.length > 1;
+
   if (chartData.length === 0) return null;
 
   return (
-    <Card className="shadow-neumorphic">
-      <CardHeader>
-        <CardTitle className="text-base flex items-center gap-2">
-          <Scale aria-hidden="true" className="w-4 h-4 text-primary" />
-          {t("cba.trendTitle")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {chartData.length > 1 ? (
-          <>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                <XAxis dataKey="name" fontSize={11} stroke="hsl(var(--chart-tick))" />
-                <YAxis fontSize={11} stroke="hsl(var(--chart-tick))" domain={[0, 10]} />
-                <Tooltip
-                  content={
-                    <ChartTooltip
-                      formatLabel={(name, value, row) => {
-                        const thought = (row?.thought as string) ?? "";
-                        const truncated = thought.length > 40 ? thought.slice(0, 40) + "..." : thought;
-                        return `${name}: ${value}${name === "Pros" ? " 👍" : " 👎"} ${truncated ? `— ${truncated}` : ""}`;
-                      }}
-                    />
-                  }
-                />
-                <Legend wrapperStyle={{ fontSize: 11, color: "hsl(var(--muted-foreground))" }} />
-                <Bar dataKey="Pros" fill="hsl(var(--accent))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Cons" fill="hsl(var(--destructive))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-            {overallBalance !== null && (
-              <p className="text-xs text-muted-foreground text-center mt-2">
-                {t("cba.overallBalance")}: {overallBalance}% Pros / {100 - overallBalance}% Cons
-              </p>
-            )}
-          </>
-        ) : (
-          <EmptyState icon={Scale} title={t("cba.addMoreEntries")} />
-        )}
-      </CardContent>
-    </Card>
+    <Chart
+      type="bar"
+      data={needsTwoPoints ? chartData : []}
+      series={[
+        { dataKey: "Pros", color: "hsl(var(--accent))", label: "Pros" },
+        { dataKey: "Cons", color: "hsl(var(--destructive))", label: "Cons" },
+      ]}
+      xKey="name"
+      title={t("cba.trendTitle")}
+      icon={<Scale aria-hidden="true" className="w-4 h-4 text-primary" />}
+      emptyMessage={t("cba.addMoreEntries")}
+      emptyIcon={Scale}
+      formatTooltip={(name, value, row) => {
+        const thought = (row?.thought as string) ?? "";
+        const truncated = thought.length > 40 ? thought.slice(0, 40) + "..." : thought;
+        return `${name}: ${value}${name === "Pros" ? " 👍" : " 👎"}${truncated ? `— ${truncated}` : ""}`;
+      }}
+      height={200}
+      yDomain={[0, 10]}
+      showLegend
+      footer={
+        overallBalance !== null && needsTwoPoints ? (
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            {t("cba.overallBalance")}: {overallBalance}% Pros / {100 - overallBalance}% Cons
+          </p>
+        ) : undefined
+      }
+    />
   );
 }

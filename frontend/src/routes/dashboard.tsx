@@ -1,24 +1,18 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router-dom";
-import { TrendingUp, Sparkles, Radar, ArrowRight } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Period } from "../lib/constants";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import PeriodSelector from "../components/ui/PeriodSelector";
-import { RadarChart } from "../features/analytics";
-import { QuickEntryIcons } from "../features/mood-entry";
 import { ParameterTrendsChart } from "../features/analytics";
-import { WeeklyAveragesGrid } from "../features/analytics";
-import { PracticeProgress } from "../features/gamification";
-import { WellbeingCard } from "../widgets";
-import CollapsibleSection from "../components/ui/collapsible-section";
-import EmptyState from "../components/ui/empty-state";
+import { WellbeingCard, WeeklyDigest } from "../widgets";
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPeriod = (Object.values(Period) as string[]).includes(searchParams.get("period") ?? "")
+  const initialPeriod = (Object.values(Period) as string[]).includes(
+    searchParams.get("period") ?? "",
+  )
     ? (searchParams.get("period") as Period)
     : Period.TwoWeeks;
   const [period, setPeriod] = useState<Period>(initialPeriod);
@@ -29,15 +23,9 @@ export default function Dashboard() {
   );
 
   const {
-    numericParams,
     trendData,
     paramNames,
     wellbeing,
-    weeklyAverages,
-    entriesByParam,
-    creatureState,
-    radarData,
-    createEntry,
     isDataLoading,
   } = useDashboardData(period);
 
@@ -57,97 +45,27 @@ export default function Dashboard() {
         />
       </div>
 
-      <QuickEntryIcons
-        numericParams={numericParams}
-        createEntry={createEntry}
-        hasEntries={(numericParams ?? []).some(
-          (p) => (entriesByParam.get(p.name) ?? []).length > 0,
-        )}
+      <WellbeingCard
+        average={wellbeing.average}
+        trend={wellbeing.trend}
+        isLoading={isDataLoading}
       />
 
-      <CollapsibleSection
-        title={t("dashboard.practicesSummary")}
-        icon={Sparkles}
-        defaultOpen
-        storageKey="moodly_collapse_practices"
-      >
-        <PracticeProgress breathingSessionCount={creatureState?.sessionCount} />
-            <div className="mt-2 flex justify-end">
-          <Link
-            to="/practices"
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
-          >
-            {t("dashboard.allPractices")}
-            <ArrowRight aria-hidden="true" className="w-3 h-3" />
-          </Link>
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-4 h-4 rounded bg-primary/30" />
+          <h3 className="text-base font-semibold text-foreground">
+            {t("dashboard.parameterTrends")}
+          </h3>
         </div>
-      </CollapsibleSection>
-
-      <CollapsibleSection
-        title={t("dashboard.parameterTrends")}
-        icon={TrendingUp}
-        defaultOpen
-        storageKey="moodly_collapse_trends"
-      >
         <ParameterTrendsChart
           trendData={trendData}
           paramNames={paramNames}
           isLoading={isDataLoading}
         />
+      </div>
 
-        <div className="mt-3">
-          <WellbeingCard
-            average={wellbeing.average}
-            trend={wellbeing.trend}
-            isLoading={isDataLoading}
-          />
-        </div>
-        <div className="mt-2 flex justify-end">
-          <Link
-            to="/reports"
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
-          >
-            {t("dashboard.allReports")}
-            <ArrowRight aria-hidden="true" className="w-3 h-3" />
-          </Link>
-        </div>
-      </CollapsibleSection>
-
-      {radarData.length > 0 ? (
-        <Card className="shadow-neumorphic">
-          <CardHeader>
-            <CardTitle className="text-base">{t("dashboard.cdProfile")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <RadarChart data={radarData} />
-            <Link
-              to="/distortions"
-              className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1.5"
-            >
-              {t("dashboard.goToDistortions")}
-              <ArrowRight aria-hidden="true" className="w-3 h-3" />
-            </Link>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="flex flex-col items-center gap-3">
-          <EmptyState icon={Radar} title={t("dashboard.cdProfileEmpty")} />
-          <Link
-            to="/tests"
-            className="text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-3 py-1.5"
-          >
-            {t("dashboard.takeTest")}
-          </Link>
-        </div>
-      )}
-
-      <CollapsibleSection
-        title={t("dashboard.weeklyAverages")}
-        defaultOpen={false}
-        storageKey="moodly_collapse_averages"
-      >
-        <WeeklyAveragesGrid weeklyAverages={weeklyAverages} isLoading={isDataLoading} />
-      </CollapsibleSection>
+      <WeeklyDigest />
     </div>
   );
 }

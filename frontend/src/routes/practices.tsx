@@ -6,17 +6,17 @@ import { PracticeSource } from "../features/gamification/practice.enums";
 import { Wind, Heart, BrainCircuit, Moon, Scale, BookOpen, Clock } from "lucide-react";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  "/thought-journal": PracticeSource.ThoughtJournal,
-  "/gratitude-journal": PracticeSource.Gratitude,
-  "/distortions": PracticeSource.Distortions,
-  "/sleep-hygiene": PracticeSource.SleepHygiene,
-  "/cost-benefit-analysis": PracticeSource.Cba,
-  "/breathing": PracticeSource.Breathing,
+  "/practices/thought-journal": PracticeSource.ThoughtJournal,
+  "/practices/gratitude": PracticeSource.Gratitude,
+  "/practices/distortions": PracticeSource.Distortions,
+  "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
+  "/practices/cost-benefit-analysis": PracticeSource.Cba,
+  "/practices/breathing": PracticeSource.Breathing,
 };
 
 const PRACTICES = [
   {
-    path: "/thought-journal",
+    path: "/practices/thought-journal",
     icon: BookOpen,
     labelKey: "nav.thoughtJournal",
     descKey: "practices.descThoughtJournal",
@@ -24,7 +24,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/gratitude-journal",
+    path: "/practices/gratitude",
     icon: Heart,
     labelKey: "nav.gratitude",
     descKey: "practices.descGratitude",
@@ -32,7 +32,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/distortions",
+    path: "/practices/distortions",
     icon: BrainCircuit,
     labelKey: "nav.distortions",
     descKey: "practices.descDistortions",
@@ -40,7 +40,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/sleep-hygiene",
+    path: "/practices/sleep-hygiene",
     icon: Moon,
     labelKey: "nav.sleepHygiene",
     descKey: "practices.descSleepHygiene",
@@ -48,7 +48,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryBody",
   },
   {
-    path: "/cost-benefit-analysis",
+    path: "/practices/cost-benefit-analysis",
     icon: Scale,
     labelKey: "nav.cba",
     descKey: "practices.descCba",
@@ -56,7 +56,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/breathing",
+    path: "/practices/breathing",
     icon: Wind,
     labelKey: "nav.breathing",
     descKey: "practices.descBreathing",
@@ -72,9 +72,7 @@ export default function PracticesPage() {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground font-serif">
-          {t("nav.practices")}
-        </h2>
+        <h2 className="text-xl font-semibold text-foreground font-serif">{t("nav.practices")}</h2>
         <p className="text-sm text-muted-foreground mt-1">{t("practices.subtitle")}</p>
       </div>
 
@@ -85,27 +83,31 @@ export default function PracticesPage() {
           const stale = source ? isStale(source) : false;
           return (
             <Link key={p.path} to={p.path} className="block">
-            <Card className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? 'border-l-2 border-primary' : ''}`}>
-              <CardContent className="flex items-start gap-4 p-5">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? 'bg-primary/20' : 'bg-primary/10'}`}>
-                  <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <span className="inline-block px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">
-                    {t(p.categoryKey)}
-                  </span>
-                  <p className="text-sm font-semibold text-foreground">{t(p.labelKey)}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t(p.descKey)}</p>
-                  <p className="flex items-center gap-1 text-xs text-muted-foreground/70 mt-1.5">
-                    <Clock aria-hidden="true" className="w-3 h-3" />
-                    {t(p.timeKey)}
-                  </p>
-                  {stale && (
-                    <p className="text-xs text-primary mt-1">{t("practices.staleLabel")}</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+              <Card
+                className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? "border-l-2 border-primary" : ""}`}
+              >
+                <CardContent className="flex items-start gap-4 p-5">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? "bg-primary/20" : "bg-primary/10"}`}
+                  >
+                    <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">
+                      {t(p.categoryKey)}
+                    </span>
+                    <p className="text-sm font-semibold text-foreground">{t(p.labelKey)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t(p.descKey)}</p>
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground/70 mt-1.5">
+                      <Clock aria-hidden="true" className="w-3 h-3" />
+                      {t(p.timeKey)}
+                    </p>
+                    {stale && (
+                      <p className="text-xs text-primary mt-1">{t("practices.staleLabel")}</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </Link>
           );
         })}

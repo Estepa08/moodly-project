@@ -30,7 +30,8 @@ export default function BulletStat({
         </div>
         <span className="text-xs text-muted-foreground leading-tight flex-1">{label}</span>
         <span className="text-sm font-bold text-foreground tabular-nums">
-          {value}{unit}
+          {value}
+          {unit}
         </span>
       </div>
       <div className="relative h-2 rounded-full bg-muted overflow-hidden">
@@ -41,7 +42,10 @@ export default function BulletStat({
       </div>
       <div className="flex justify-between text-[10px] text-muted-foreground">
         <span>{Math.round(progress)}%</span>
-        <span>Goal: {target}{unit}</span>
+        <span>
+          Goal: {target}
+          {unit}
+        </span>
       </div>
     </div>
   );

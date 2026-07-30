@@ -5,11 +5,11 @@ import { toast } from "sonner";
 import { Heart, Smile } from "lucide-react";
 import type { CreateEntryMutation } from "../../lib/app-types";
 import { isWithinLastDays, cn, formatDateShort, formatChartDate } from "../../lib/utils";
-import { CorrelationChart } from "../analytics";
+import { Chart } from "../analytics";
 import { GratitudeCategory } from "../../lib/gratitudePrompts";
 import { Button } from "../../components/ui/button";
 import { Textarea } from "../../components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 import EmptyState from "../../components/ui/empty-state";
 
 interface GratitudeJournalProps {
@@ -59,10 +59,7 @@ export default function GratitudeJournal({
       .slice(-limit);
   }, [entries, moodEntries, i18n.language, limit]);
 
-  const recentEntries = useMemo(
-    () => entries.slice(-limit).reverse(),
-    [entries, limit],
-  );
+  const recentEntries = useMemo(() => entries.slice(-limit).reverse(), [entries, limit]);
 
   const weekCount = useMemo(
     () => entries.filter((e) => isWithinLastDays(e.createdAt, 7)).length,
@@ -77,7 +74,13 @@ export default function GratitudeJournal({
     if (!parameterId || !createEntry) return;
     createEntry.mutate(
       { parameterId, value: 1, note: note || activePrompt || undefined },
-      { onSuccess: () => { setNote(""); setActivePrompt(null); toast.success(t("dashboard.gratitudeSaved")); } },
+      {
+        onSuccess: () => {
+          setNote("");
+          setActivePrompt(null);
+          toast.success(t("dashboard.gratitudeSaved"));
+        },
+      },
     );
   };
 
@@ -97,7 +100,9 @@ export default function GratitudeJournal({
                 onClick={() => handlePromptSelect(cat)}
                 className={cn(
                   "px-3 py-1.5 text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  activePrompt === cat ? "bg-primary/10 text-primary shadow-neumorphic-sm" : "bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-foreground",
+                  activePrompt === cat
+                    ? "bg-primary/10 text-primary shadow-neumorphic-sm"
+                    : "bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-foreground",
                 )}
               >
                 {t(`gratitudePrompts.${cat}`)}
@@ -128,12 +133,19 @@ export default function GratitudeJournal({
       </Card>
 
       {showChart && correlationData.length > 0 && (
-        <CorrelationChart
+        <Chart
+          type="line"
           data={correlationData}
-          lines={[
-            { dataKey: "gratitude", stroke: "hsl(var(--accent))", label: t("dashboard.gratitude") },
-            { dataKey: "mood", stroke: "hsl(var(--primary))", label: t("dashboard.mood") },
+          series={[
+            { dataKey: "gratitude", color: "hsl(var(--accent))", label: t("dashboard.gratitude") },
+            { dataKey: "mood", color: "hsl(var(--primary))", label: t("dashboard.mood") },
           ]}
+          xKey="date"
+          title={t("dashboard.gratitudeCorrelation")}
+          icon={<Smile aria-hidden="true" className="w-4 h-4 text-primary" />}
+          showLegend
+          height={160}
+          showDots={false}
         />
       )}
 
@@ -146,7 +158,10 @@ export default function GratitudeJournal({
       {recentEntries.length > 0 && (
         <div className="space-y-2">
           {recentEntries.map((entry) => (
-            <div key={entry.id} className="flex items-start gap-2 p-3 rounded-xl bg-card shadow-neumorphic-sm">
+            <div
+              key={entry.id}
+              className="flex items-start gap-2 p-3 rounded-xl bg-card shadow-neumorphic-sm"
+            >
               <Heart aria-hidden="true" className="w-4 h-4 text-accent shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-sm text-foreground break-words">{entry.note || entry.value}</p>

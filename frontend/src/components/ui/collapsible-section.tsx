@@ -25,6 +25,7 @@ export default function CollapsibleSection({
         const stored = sessionStorage.getItem(storageKey);
         if (stored !== null) return stored === "1";
       } catch {
+        /* sessionStorage may throw in private browsing */
       }
     }
     return defaultOpen;
@@ -39,6 +40,7 @@ export default function CollapsibleSection({
         try {
           sessionStorage.setItem(storageKey, next ? "1" : "0");
         } catch {
+          /* sessionStorage may throw in private browsing */
         }
       }
       return next;

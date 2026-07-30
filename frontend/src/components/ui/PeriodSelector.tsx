@@ -20,9 +20,7 @@ export default function PeriodSelector({
 }: PeriodSelectorProps) {
   return (
     <div className="flex items-center gap-2">
-      {label && (
-        <span className="text-xs font-medium text-muted-foreground shrink-0">{label}</span>
-      )}
+      {label && <span className="text-xs font-medium text-muted-foreground shrink-0">{label}</span>}
       <div
         className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
         role="tablist"
@@ -39,9 +37,7 @@ export default function PeriodSelector({
                 ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                 : "text-muted-foreground hover:text-primary"
             } ${
-              size === "sm"
-                ? "px-2 py-1 text-[10px] min-h-[32px]"
-                : "px-3 min-h-[44px] text-xs"
+              size === "sm" ? "px-2 py-1 text-[10px] min-h-[32px]" : "px-3 min-h-[44px] text-xs"
             }`}
           >
             {opt.label}

@@ -13,7 +13,8 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "cancel": "Cancel",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "date": "Date"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -26,10 +27,12 @@
     "thoughtJournal": "Thought Journal",
     "tests": "Tests",
     "results": "Results",
-    "reports": "Reports",
     "feedback": "Feedback",
     "settings": "Settings",
     "progress": "Progress",
+    "onboarding": "Getting Started",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
     "more": "More"
   },
   "login": {
@@ -88,6 +91,7 @@
     "title": "Dashboard",
     "quickEntry": {
       "title": "Quick Entry",
+      "subtitle": "How are you feeling right now?",
       "firstTimeHint": "Tap an icon, then set today's level with the slider",
       "paramMood": "Mood",
       "paramAnxiety": "Anxiety",
@@ -141,9 +145,9 @@
     "gratitudeHideChart": "Hide chart",
     "sleepHygiene": "Sleep Hygiene",
     "distortionQuiz": "Distortion Quiz",
+    "thoughtJournalMood": "Thought Journal Mood",
     "practicesSummary": "Practices",
     "allPractices": "All practices",
-    "allReports": "All reports",
     "gratitudePrompt": "What are you grateful for today?",
     "saveGratitude": "Add",
     "noGratitudeYet": "No gratitude entries yet",
@@ -242,31 +246,11 @@
     "placeholder": "Share your thoughts...",
     "send": "Send",
     "sent": "Feedback sent!",
-    "noFeedback": "No feedback yet."
-  },
-  "reports": {
-    "title": "Reports",
-    "cardTitle": "Export your data",
-    "format": "Format",
-    "period": "Period",
-    "custom": "Custom",
-    "sixMonths": "6 months",
-    "pdf": "PDF",
-    "csv": "CSV",
-    "from": "From",
-    "to": "To",
-    "submit": "Generate",
-    "download": "Download",
-    "created": "Report generated!",
-    "noReports": "No exports yet...",
-    "statusPending": "Generating...",
-    "statusReady": "Ready",
-    "statusFailed": "Failed",
-    "retry": "Retry",
-    "summary": "Summary",
-    "totalEntries": "Total entries",
-    "average": "Average",
-    "testResultsSection": "Test Results"
+    "noFeedback": "No feedback yet.",
+    "unsavedTitle": "Unsaved changes",
+    "unsavedDesc": "You have unsaved feedback. Do you really want to leave?",
+    "unsavedStay": "Stay",
+    "unsavedLeave": "Leave"
   },
   "breathing": {
     "title": "Breathing Exercise",
@@ -354,7 +338,7 @@
     "showExample": "Show example",
     "hideExample": "Hide example",
     "exampleThought": "Example thought",
-      "reframe": "Reframe",
+    "reframe": "Reframe",
     "quizTitle": "Distortion Quiz",
     "quizProgress": "Question {{current}} of {{total}}",
     "quizDone": "Great job!",
@@ -632,7 +616,9 @@
     "creatureLevel": "Pet level",
     "averagesTitle": "Average values",
     "practicesTitle": "Practices completed",
-    "testsTitle": "Tests taken"
+    "testsTitle": "Tests taken",
+    "averagesChartTitle": "Average Values",
+    "practicesChartTitle": "Practices Completed"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -667,6 +653,11 @@
   },
   "settings": {
     "title": "Settings",
+    "account": "Account",
+    "email": "Email",
+    "password": "Change Password",
+    "notifications": "Notifications",
+    "comingSoon": "Coming soon",
     "deleteAccount": "Delete Account",
     "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteButton": "Delete my account",
@@ -770,7 +761,8 @@
     "complete3Practices": "Complete 3 practices",
     "logMoodEntry": "Log a mood entry",
     "claim": "Claim reward",
-    "allDone": "All missions complete! Great job!"
+    "allDone": "All missions complete! Great job!",
+    "thinkingPatterns": "Thinking Patterns"
   },
   "pets": {
     "puff": "Puff",

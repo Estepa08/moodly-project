@@ -65,13 +65,15 @@ export const testService = {
     const where: Record<string, unknown> = { userId };
     if (testId) where.testId = testId;
     const [data, total] = await Promise.all([
-      prisma.testResult.findMany({
-        where,
-        orderBy: { completedAt: "desc" },
-        skip,
-        take: take ?? 200,
-        include: { test: { select: { title: true } } },
-      }).then((results) => results.map((r) => ({ ...r, testTitle: r.test.title }))),
+      prisma.testResult
+        .findMany({
+          where,
+          orderBy: { completedAt: "desc" },
+          skip,
+          take: take ?? 200,
+          include: { test: { select: { title: true } } },
+        })
+        .then((results) => results.map((r) => ({ ...r, testTitle: r.test.title }))),
       prisma.testResult.count({ where }),
     ]);
     return { data, total };

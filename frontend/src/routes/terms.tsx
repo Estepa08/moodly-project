@@ -21,7 +21,9 @@ export default function TermsPage() {
           <p>{t("terms.acceptanceText")}</p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground">{t("terms.serviceDescription")}</h2>
+          <h2 className="text-base font-semibold text-foreground">
+            {t("terms.serviceDescription")}
+          </h2>
           <p>{t("terms.serviceDescriptionText")}</p>
         </section>
         <section>
@@ -29,11 +31,15 @@ export default function TermsPage() {
           <p>{t("terms.userObligationsText")}</p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground">{t("terms.medicalDisclaimer")}</h2>
+          <h2 className="text-base font-semibold text-foreground">
+            {t("terms.medicalDisclaimer")}
+          </h2>
           <p>{t("terms.medicalDisclaimerText")}</p>
         </section>
         <section>
-          <h2 className="text-base font-semibold text-foreground">{t("terms.limitationOfLiability")}</h2>
+          <h2 className="text-base font-semibold text-foreground">
+            {t("terms.limitationOfLiability")}
+          </h2>
           <p>{t("terms.limitationOfLiabilityText")}</p>
         </section>
         <section>

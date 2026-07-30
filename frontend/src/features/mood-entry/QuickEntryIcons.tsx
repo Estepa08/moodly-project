@@ -14,10 +14,12 @@ import { Button } from "../../components/ui/button";
 interface QuickEntryIconsProps {
   createEntry: CreateEntryMutation;
   numericParams: components["schemas"]["Parameter"][] | undefined;
-  hasEntries: boolean;
 }
 
-export default function QuickEntryIcons({ createEntry, numericParams, hasEntries }: QuickEntryIconsProps) {
+export default function QuickEntryIcons({
+  createEntry,
+  numericParams,
+}: QuickEntryIconsProps) {
   const { t } = useTranslation();
   const [selectedParam, setSelectedParam] = useState<string | null>(null);
   const [sliderValue, setSliderValue] = useState(5);
@@ -66,17 +68,17 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
   );
 
   return (
-    <Card className="shadow-neumorphic">
+    <Card className="shadow-neumorphic border-l-4 border-l-accent">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 font-serif">
-          <Sparkles aria-hidden="true" className="w-4 h-4 text-accent" />
-          {t("dashboard.quickEntry.title")}
+          <Sparkles aria-hidden="true" className="w-5 h-5 text-accent" />
+          <span>{t("dashboard.quickEntry.title")}</span>
         </CardTitle>
+        <p className="text-xs text-muted-foreground ml-7">
+          {t("dashboard.quickEntry.subtitle")}
+        </p>
       </CardHeader>
       <CardContent className="space-y-3">
-        {!hasEntries && (
-          <p className="text-xs text-muted-foreground text-center">{t("dashboard.quickEntry.firstTimeHint")}</p>
-        )}
         <div className="flex justify-center gap-3">
           {configs.map((cfg) => {
             const isActive = selectedParam === cfg.parameterName;
@@ -93,10 +95,12 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                 aria-label={t(cfg.labelKey)}
                 aria-pressed={isActive}
               >
-                <div className="w-12 h-12 flex items-center justify-center">
-                  {Icon && <Icon aria-hidden="true" className="w-8 h-8 text-primary" />}
+                <div className="w-14 h-14 flex items-center justify-center">
+                  {Icon && <Icon aria-hidden="true" className="w-9 h-9 text-primary" />}
                 </div>
-                <span className="text-xs font-medium leading-tight text-center">{t(cfg.labelKey)}</span>
+                <span className="text-xs font-medium leading-tight text-center">
+                  {t(cfg.labelKey)}
+                </span>
               </button>
             );
           })}
@@ -112,18 +116,33 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                 <div className="space-y-3">
                   <div className="px-2 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold font-serif text-primary">{sliderValue}</span>
+                      <span className="text-2xl font-bold font-serif text-primary">
+                        {sliderValue}
+                      </span>
                     </div>
-                    <Slider min={0} max={10} step={1} value={[sliderValue]} onValueChange={([v]) => setSliderValue(v)} disabled={createEntry.isPending} aria-label={t(cfg.labelKey)} />
+                    <Slider
+                      min={0}
+                      max={10}
+                      step={1}
+                      value={[sliderValue]}
+                      onValueChange={([v]) => setSliderValue(v)}
+                      disabled={createEntry.isPending}
+                      aria-label={t(cfg.labelKey)}
+                    />
                     <div className="flex justify-between px-0.5">
                       {Array.from({ length: 11 }, (_, i) => (
-                        <span key={i} className="text-[11px] text-muted-foreground w-3 text-center">{i}</span>
+                        <span key={i} className="text-[11px] text-muted-foreground w-3 text-center">
+                          {i}
+                        </span>
                       ))}
                     </div>
                   </div>
 
                   <div className="flex justify-center">
-                    <Button onClick={() => handleSave(cfg.parameterName, sliderValue)} disabled={createEntry.isPending}>
+                    <Button
+                      onClick={() => handleSave(cfg.parameterName, sliderValue)}
+                      disabled={createEntry.isPending}
+                    >
                       {t("dashboard.quickEntry.save")}
                     </Button>
                   </div>
@@ -131,7 +150,10 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                   <div className="flex items-center justify-center gap-2">
                     {!showNote ? (
                       <button
-                        onClick={() => { setShowNote(true); setTimeout(() => noteInputRef.current?.focus(), 100); }}
+                        onClick={() => {
+                          setShowNote(true);
+                          setTimeout(() => noteInputRef.current?.focus(), 100);
+                        }}
                         className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 min-h-[44px]"
                         aria-label={t("dashboard.quickEntry.addNote")}
                       >
@@ -140,7 +162,9 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                       </button>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <label className="sr-only" htmlFor="quick-entry-note">{t("dashboard.quickEntry.notePlaceholder")}</label>
+                        <label className="sr-only" htmlFor="quick-entry-note">
+                          {t("dashboard.quickEntry.notePlaceholder")}
+                        </label>
                         <input
                           id="quick-entry-note"
                           ref={noteInputRef}
@@ -151,7 +175,11 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                           autoComplete="off"
                           enterKeyHint="done"
                           className="w-full md:w-40 text-sm bg-muted rounded-lg px-3 py-2 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          onKeyDown={(e) => { if (e.key === "Enter") { handleSave(cfg.parameterName, sliderValue); } }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleSave(cfg.parameterName, sliderValue);
+                            }
+                          }}
                         />
                       </div>
                     )}

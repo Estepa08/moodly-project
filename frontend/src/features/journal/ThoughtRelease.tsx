@@ -106,7 +106,9 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
             {hintKey && !released && (
               <div className="bg-muted/30 rounded-lg px-3 py-2 space-y-1.5">
                 <p className="text-sm text-foreground">
-                  {t("distortions.letGo.hintQuestion", { distortion: t(`cognitiveDistortions.${hintKey}`) })}
+                  {t("distortions.letGo.hintQuestion", {
+                    distortion: t(`cognitiveDistortions.${hintKey}`),
+                  })}
                 </p>
                 <button
                   type="button"
@@ -114,11 +116,19 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                   onClick={() => setShowHintDetail((v) => !v)}
                   className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <ChevronRight aria-hidden="true" className={cn("w-3.5 h-3.5 transition-transform", showHintDetail && "rotate-90")} />
+                  <ChevronRight
+                    aria-hidden="true"
+                    className={cn(
+                      "w-3.5 h-3.5 transition-transform",
+                      showHintDetail && "rotate-90",
+                    )}
+                  />
                   {showHintDetail ? t("distortions.hideExample") : t("distortions.showExample")}
                 </button>
                 {showHintDetail && (
-                  <p className="text-xs text-muted-foreground">{t(`distortionsLibrary.${hintKey}.reframe`)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t(`distortionsLibrary.${hintKey}.reframe`)}
+                  </p>
                 )}
               </div>
             )}
@@ -137,7 +147,12 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                   : released
                     ? `translateY(56px) scaleX(0.14) scaleY(0.16) rotate(${dragX >= 0 ? 30 : -30}deg)`
                     : `translateX(${dragX}px) rotate(${dragX / 12}deg)`,
-                opacity: released && !crumpling ? 0 : crumpling ? 0.9 : 1 - Math.min(Math.abs(dragX) / 220, 0.6),
+                opacity:
+                  released && !crumpling
+                    ? 0
+                    : crumpling
+                      ? 0.9
+                      : 1 - Math.min(Math.abs(dragX) / 220, 0.6),
                 borderRadius: crumpling || released ? "9999px" : undefined,
                 transition: dragging
                   ? "none"
@@ -170,7 +185,12 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
               <Trash2
                 aria-hidden="true"
                 className="w-5 h-5 text-muted-foreground transition-colors duration-150"
-                style={{ color: dragProgress > 0 ? `hsl(var(--destructive) / ${0.5 + dragProgress * 0.5})` : undefined }}
+                style={{
+                  color:
+                    dragProgress > 0
+                      ? `hsl(var(--destructive) / ${0.5 + dragProgress * 0.5})`
+                      : undefined,
+                }}
               />
             </div>
 
@@ -178,7 +198,12 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
               {t("distortions.letGo.dragHint")}
             </p>
 
-            <Button variant="outline" disabled={!canRelease} onClick={finishRelease} className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              disabled={!canRelease}
+              onClick={finishRelease}
+              className="flex items-center gap-2"
+            >
               <Trash2 aria-hidden="true" className="w-4 h-4" />
               {t("distortions.letGo.releaseButton")}
             </Button>

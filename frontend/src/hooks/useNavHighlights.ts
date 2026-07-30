@@ -17,12 +17,9 @@ export function useNavHighlights() {
 
   const practices = staleCount > 0;
 
-  const lastTest = testResults && testResults.length > 0
-    ? new Date(testResults[0].completedAt)
-    : null;
-  const daysSinceTest = lastTest
-    ? Math.floor((Date.now() - lastTest.getTime()) / MS_PER_DAY)
-    : 999;
+  const lastTest =
+    testResults && testResults.length > 0 ? new Date(testResults[0].completedAt) : null;
+  const daysSinceTest = lastTest ? Math.floor((Date.now() - lastTest.getTime()) / MS_PER_DAY) : 999;
   const tests = daysSinceTest >= 14;
 
   return { dashboard, practices, tests } as const;

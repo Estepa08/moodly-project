@@ -1,13 +1,20 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { ChartTooltip } from "../../lib/chart-tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import EmptyState from "../../components/ui/empty-state";
 
 interface DigestChartsProps {
   averages: Record<string, number>;
@@ -66,7 +73,9 @@ export default function DigestCharts({ averages, practicesCompleted }: DigestCha
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
                 <XAxis dataKey="name" fontSize={11} stroke="hsl(var(--chart-tick))" />
                 <YAxis domain={[0, 10]} fontSize={11} stroke="hsl(var(--chart-tick))" />
-                <Tooltip content={<ChartTooltip formatLabel={(name, value) => `${name}: ${value}`} />} />
+                <Tooltip
+                  content={<ChartTooltip formatLabel={(name, value) => `${name}: ${value}`} />}
+                />
                 <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

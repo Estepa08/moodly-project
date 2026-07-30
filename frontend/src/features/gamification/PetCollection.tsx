@@ -47,7 +47,11 @@ export default function PetCollection() {
                 isActive ? pet.color : isUnlocked ? "bg-secondary" : "bg-muted",
               )}
             >
-              {isUnlocked ? pet.emoji : <Lock aria-hidden="true" className="w-4 h-4 text-muted-foreground" />}
+              {isUnlocked ? (
+                pet.emoji
+              ) : (
+                <Lock aria-hidden="true" className="w-4 h-4 text-muted-foreground" />
+              )}
             </div>
             <span className="text-[11px] font-medium text-center leading-tight">
               {t(pet.labelKey)}

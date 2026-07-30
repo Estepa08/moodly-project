@@ -2,7 +2,11 @@ import { ApiError } from "./api-error";
 import type { components } from "./api-types";
 
 type AuthResponse = components["schemas"]["AuthResponse"];
-type RegisterResponse = { user: components["schemas"]["User"]; message: string; devVerificationLink?: string };
+type RegisterResponse = {
+  user: components["schemas"]["User"];
+  message: string;
+  devVerificationLink?: string;
+};
 type RefreshResponse = components["schemas"]["RefreshResponse"];
 type ResetPasswordResponse = components["schemas"]["ResetPasswordResponse"];
 type Entry = components["schemas"]["Entry"];
@@ -13,8 +17,6 @@ type TestResult = components["schemas"]["TestResult"];
 type Feedback = components["schemas"]["Feedback"];
 type FeedbackCreate = components["schemas"]["FeedbackCreate"];
 type OnboardingStory = components["schemas"]["OnboardingStory"];
-type Report = components["schemas"]["Report"];
-type ReportCreate = components["schemas"]["ReportCreate"];
 type User = components["schemas"]["User"];
 type UserUpdate = components["schemas"]["UserUpdate"];
 type CbaExample = components["schemas"]["CbaExample"];
@@ -210,7 +212,8 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    verifyEmail: (token: string) => request<{ message?: string }>(`/auth/verify-email?token=${token}`, { method: "GET" }),
+    verifyEmail: (token: string) =>
+      request<{ message?: string }>(`/auth/verify-email?token=${token}`, { method: "GET" }),
     sendVerificationEmail: (email: string) =>
       request<{ message: string }>("/auth/send-verification-email", {
         method: "POST",
@@ -272,14 +275,6 @@ export const api = {
   onboarding: {
     list: () => request<OnboardingStory[]>("/onboarding-stories"),
   },
-  reports: {
-    create: (body: ReportCreate) =>
-      request<Report>("/reports", { method: "POST", body: JSON.stringify(body) }),
-    list: () => request<Report[]>("/reports"),
-    get: (id: string) => request<Report>(`/reports/${id}`),
-    download: (id: string) => `${BASE_URL}/reports/${id}/download`,
-    delete: (id: string) => request<void>(`/reports/${id}`, { method: "DELETE" }),
-  },
   creature: {
     getState: () => request<CreatureState>("/creature"),
     checkIn: () => request<CheckInResponse>("/creature/check-in", { method: "POST" }),
@@ -302,8 +297,7 @@ export const api = {
         method: "PATCH",
         body: JSON.stringify({ petType }),
       }),
-    getHeatmap: (days = 90) =>
-      request<HeatmapEntry[]>(`/creature/heatmap?days=${days}`),
+    getHeatmap: (days = 90) => request<HeatmapEntry[]>(`/creature/heatmap?days=${days}`),
     getMissions: () => request<Mission[]>("/creature/missions"),
     claimMission: (id: string) =>
       request<ClaimMissionResponse>(`/creature/missions/${id}/claim`, { method: "POST" }),

@@ -10,12 +10,12 @@ import { User, LogOut, Sparkles, ChevronDown } from "lucide-react";
 import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS } from "./nav-config";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  "/thought-journal": PracticeSource.ThoughtJournal,
-  "/gratitude-journal": PracticeSource.Gratitude,
-  "/distortions": PracticeSource.Distortions,
-  "/sleep-hygiene": PracticeSource.SleepHygiene,
-  "/cost-benefit-analysis": PracticeSource.Cba,
-  "/breathing": PracticeSource.Breathing,
+  "/practices/thought-journal": PracticeSource.ThoughtJournal,
+  "/practices/gratitude": PracticeSource.Gratitude,
+  "/practices/distortions": PracticeSource.Distortions,
+  "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
+  "/practices/cost-benefit-analysis": PracticeSource.Cba,
+  "/practices/breathing": PracticeSource.Breathing,
 };
 
 export default function Sidebar() {
@@ -26,9 +26,9 @@ export default function Sidebar() {
   const { data: userData } = useCurrentUser();
 
   const highlights = useNavHighlights();
-  const { staleCount, isStale } = useStalePractices(3);
+  const { isStale } = useStalePractices(3);
 
-  const isPracticeActive = PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
+  const isPracticeActive = location.pathname === "/practices" || PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
 
   useEffect(() => {
@@ -52,7 +52,10 @@ export default function Sidebar() {
       aria-label={t("nav.dashboard")}
       className="hidden md:flex flex-col w-56 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
     >
-      <div className="text-lg font-serif font-bold text-primary mb-4 px-3 text-balance" translate="no">
+      <div
+        className="text-lg font-serif font-bold text-primary mb-4 px-3 text-balance"
+        translate="no"
+      >
         {t("common.moodly")}
       </div>
 
@@ -75,11 +78,11 @@ export default function Sidebar() {
         </button>
       </div>
 
-      <Link
-        to={DASHBOARD_ITEM.path}
-        className={navButtonClass(location.pathname === "/")}
-      >
-        <DASHBOARD_ITEM.icon aria-hidden="true" className={`w-5 h-5 shrink-0 ${highlights.dashboard ? 'text-primary' : ''}`} />
+      <Link to={DASHBOARD_ITEM.path} className={navButtonClass(location.pathname === "/")} aria-current={location.pathname === "/" ? "page" : undefined}>
+        <DASHBOARD_ITEM.icon
+          aria-hidden="true"
+          className={`w-5 h-5 shrink-0 ${highlights.dashboard ? "text-primary" : ""}`}
+        />
         <span className="text-sm font-medium truncate">{t(DASHBOARD_ITEM.labelKey)}</span>
       </Link>
 
@@ -88,7 +91,10 @@ export default function Sidebar() {
         aria-expanded={practicesOpen}
         className={navButtonClass(isPracticeActive)}
       >
-        <Sparkles aria-hidden="true" className={`w-5 h-5 shrink-0 ${highlights.practices ? 'text-primary' : ''}`} />
+        <Sparkles
+          aria-hidden="true"
+          className={`w-5 h-5 shrink-0 ${highlights.practices ? "text-primary" : ""}`}
+        />
         <span className="text-sm font-medium truncate flex-1 text-left">{t("nav.practices")}</span>
         <ChevronDown
           aria-hidden="true"
@@ -105,8 +111,12 @@ export default function Sidebar() {
                 key={item.path}
                 to={item.path}
                 className={navButtonClass(location.pathname.startsWith(item.path))}
+                aria-current={location.pathname === item.path ? "page" : undefined}
               >
-                <item.icon aria-hidden="true" className={`w-4 h-4 shrink-0 ${source && isStale(source) ? 'text-primary' : ''}`} />
+                <item.icon
+                  aria-hidden="true"
+                  className={`w-4 h-4 shrink-0 ${source && isStale(source) ? "text-primary" : ""}`}
+                />
                 <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
               </Link>
             );
@@ -119,8 +129,12 @@ export default function Sidebar() {
           key={item.path}
           to={item.path}
           className={navButtonClass(location.pathname.startsWith(item.path))}
+          aria-current={location.pathname === item.path ? "page" : undefined}
         >
-          <item.icon aria-hidden="true" className={`w-5 h-5 shrink-0 ${item.path === '/tests' && highlights.tests ? 'text-primary' : ''}`} />
+          <item.icon
+            aria-hidden="true"
+            className={`w-5 h-5 shrink-0 ${item.path === "/tests" && highlights.tests ? "text-primary" : ""}`}
+          />
           <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
         </Link>
       ))}

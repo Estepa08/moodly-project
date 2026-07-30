@@ -36,7 +36,13 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <ProgressBar
-                segments={[{ value: expPercent, className: "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300" }]}
+                segments={[
+                  {
+                    value: expPercent,
+                    className:
+                      "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300",
+                  },
+                ]}
                 height={4}
                 trackClassName="bg-muted"
               />

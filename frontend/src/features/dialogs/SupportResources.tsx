@@ -1,5 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
 import { PhoneCall, Heart } from "lucide-react";
 
@@ -13,7 +19,12 @@ export default function SupportResources({ open, onDismiss }: Props) {
   const isRu = i18n.language === "ru";
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) onDismiss(); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) onDismiss();
+      }}
+    >
       <DialogContent className="max-w-sm">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-2">

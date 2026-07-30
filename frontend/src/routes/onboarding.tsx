@@ -4,7 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import {
-  Wind, LayoutDashboard, ClipboardList, Brain, Moon, Heart, Sparkles, Bell,
+  Wind,
+  LayoutDashboard,
+  ClipboardList,
+  Brain,
+  Moon,
+  Heart,
+  Sparkles,
+  Bell,
 } from "lucide-react";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { ExpLevel } from "../lib/constants";
@@ -48,9 +55,7 @@ export default function OnboardingPage() {
   }
 
   const toggleGoal = (key: string) => {
-    setGoals((prev) =>
-      prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key],
-    );
+    setGoals((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]));
   };
 
   const handleFinish = async (destination = "/") => {
@@ -227,7 +232,7 @@ export default function OnboardingPage() {
                   </div>
                 </button>
                 <button
-                  onClick={() => handleFinish("/breathing")}
+                  onClick={() => handleFinish("/practices/breathing")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Wind aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />

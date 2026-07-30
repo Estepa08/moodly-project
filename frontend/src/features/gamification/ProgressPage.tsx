@@ -1,23 +1,17 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  useCreatureState,
-  useCreatureStats,
-} from "./index";
+import { useCreatureState, useCreatureStats } from "./index";
+import { useTestResults } from "../../hooks/useTests";
+import { DistortionKey } from "../../lib/distortionsQuiz";
 import ProgressHero from "./ProgressHero";
 import CreatureStatsBlock from "./CreatureStatsBlock";
 import PetCollection from "./PetCollection";
 import AchievementGrid from "./AchievementGrid";
 import DailyMissions from "./DailyMissions";
 import ActivityHeatmap from "./ActivityHeatmap";
-import {
-  Trophy,
-  Target,
-  PawPrint,
-  ListChecks,
-  Activity,
-  Medal,
-} from "lucide-react";
+import { Trophy, Target, PawPrint, ListChecks, Activity, Medal, BrainCircuit } from "lucide-react";
 import CollapsibleSection from "../../components/ui/collapsible-section";
+import { RadarChart, type DistortionEntry } from "../analytics";
 import TitleSelector from "./TitleSelector";
 import { api } from "../../lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +20,23 @@ export default function ProgressPage() {
   const { t } = useTranslation();
   const { data: creature, isLoading: creatureLoading } = useCreatureState();
   const { data: stats, isLoading: statsLoading } = useCreatureStats();
+  const { data: testResults } = useTestResults();
   const queryClient = useQueryClient();
+
+  const radarData: DistortionEntry[] = useMemo(() => {
+    const cdResult = testResults?.find(
+      (r) => (r.flags as Record<string, unknown> | undefined)?.distortions,
+    );
+    const cdDistortions = (
+      cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined
+    )?.distortions;
+    return cdDistortions
+      ? Object.entries(cdDistortions).map(([key, val]) => ({
+          key: key as DistortionKey,
+          score: val.score,
+        }))
+      : [];
+  }, [testResults]);
 
   const setTitle = useMutation({
     mutationFn: (title: string | null) => api.creature.setTitle(title),
@@ -64,6 +74,17 @@ export default function ProgressPage() {
           storageKey="moodly_collapse_progress_stats"
         >
           <CreatureStatsBlock stats={stats} />
+        </CollapsibleSection>
+      )}
+
+      {radarData.length > 0 && (
+        <CollapsibleSection
+          title={t("progress.thinkingPatterns")}
+          icon={BrainCircuit}
+          defaultOpen
+          storageKey="moodly_collapse_progress_thinking"
+        >
+          <RadarChart data={radarData} />
         </CollapsibleSection>
       )}
 

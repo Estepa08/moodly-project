@@ -4,7 +4,12 @@ import { toast } from "sonner";
 import { Moon, Pencil, ChevronDown, X, Bed, Check } from "lucide-react";
 import type { CreateEntryMutation, UpdateEntryMutation } from "../../lib/app-types";
 import type { components } from "../../lib/api-types";
-import { SLEEP_HYGIENE_ITEMS, dayKey, parseCheckedNote, findTodayEntry, HygieneItem } from "../../lib/sleepHygiene";
+import {
+  SLEEP_HYGIENE_ITEMS,
+  parseCheckedNote,
+  findTodayEntry,
+  HygieneItem,
+} from "../../lib/sleepHygiene";
 import { SleepHygieneListState } from "../../lib/constants";
 import { ChecklistItem } from "../../components/ui/checklist-item";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -37,7 +42,9 @@ export default function SleepHygieneChecklist({
 }: SleepHygieneChecklistProps) {
   const { t, i18n } = useTranslation();
   const [checked, setChecked] = useState<Set<HygieneItem>>(new Set());
-  const [listState, setListState] = useState<SleepHygieneListState>(SleepHygieneListState.Checklist);
+  const [listState, setListState] = useState<SleepHygieneListState>(
+    SleepHygieneListState.Checklist,
+  );
   const [todayEntryId, setTodayEntryId] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -70,12 +77,23 @@ export default function SleepHygieneChecklist({
     if (todayEntryId) {
       updateEntry.mutate(
         { id: todayEntryId, value, note },
-        { onSuccess: () => { toast.success(t("sleepHygiene.saved")); setIsEditing(false); setListState(SleepHygieneListState.Completed); } },
+        {
+          onSuccess: () => {
+            toast.success(t("sleepHygiene.saved"));
+            setIsEditing(false);
+            setListState(SleepHygieneListState.Completed);
+          },
+        },
       );
     } else {
       createEntry.mutate(
         { parameterId: parameterId!, value, note },
-        { onSuccess: () => { toast.success(t("sleepHygiene.saved")); setListState(SleepHygieneListState.Completed); } },
+        {
+          onSuccess: () => {
+            toast.success(t("sleepHygiene.saved"));
+            setListState(SleepHygieneListState.Completed);
+          },
+        },
       );
     }
   };
@@ -155,7 +173,13 @@ export default function SleepHygieneChecklist({
                   {t(isPending ? "common.saving" : "sleepHygiene.save")}
                 </Button>
                 {isEditing && (
-                  <Button variant="ghost" onClick={() => { setIsEditing(false); setListState(SleepHygieneListState.Completed); }}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setIsEditing(false);
+                      setListState(SleepHygieneListState.Completed);
+                    }}
+                  >
                     {t("common.cancel")}
                   </Button>
                 )}
@@ -168,7 +192,9 @@ export default function SleepHygieneChecklist({
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-muted">
                   <Check aria-hidden="true" className="w-6 h-6 text-accent shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-foreground">{t("sleepHygiene.todayCompleted", { count: todayData.checked.size })}</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {t("sleepHygiene.todayCompleted", { count: todayData.checked.size })}
+                    </p>
                     <p className="text-xs text-muted-foreground">{todayData.date}</p>
                   </div>
                 </div>
@@ -185,51 +211,69 @@ export default function SleepHygieneChecklist({
         className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {t(showDetails ? "sleepHygiene.hideHistory" : "sleepHygiene.showHistory")}
-        <ChevronDown aria-hidden="true" className={cn("w-4 h-4 transition-transform", showDetails && "rotate-180")} />
+        <ChevronDown
+          aria-hidden="true"
+          className={cn("w-4 h-4 transition-transform", showDetails && "rotate-180")}
+        />
       </button>
 
-      {showDetails && hygieneEntries
-        .filter((e) => e.id !== todayEntryId)
-        .slice()
-        .reverse()
-        .map((entry) => {
-          const entryChecked = parseCheckedNote(entry.note);
-          return (
-            <Card key={entry.id} className="shadow-neumorphic-sm">
-              <CardContent className="pt-3 pb-3">
-                <button
-                  onClick={() => setExpandedEntryId(expandedEntryId === entry.id ? null : entry.id)}
-                  className="w-full flex items-center justify-between cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <div className="flex items-center gap-2">
-                    <Moon aria-hidden="true" className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-foreground">
-                      {formatDateShort(new Date(entry.createdAt), i18n.language)}
-                    </span>
-                    <span className="text-xs text-muted-foreground">({entryChecked.size}/{SLEEP_HYGIENE_ITEMS.length})</span>
-                  </div>
-                  <ChevronDown aria-hidden="true" className={cn("w-4 h-4 text-muted-foreground transition-transform", expandedEntryId === entry.id && "rotate-180")} />
-                </button>
-                {expandedEntryId === entry.id && (
-                  <div className="mt-3 space-y-1">
-                    {SLEEP_HYGIENE_ITEMS.map((item) => (
-                      <div key={item} className="flex items-center gap-2 text-xs">
-                        {entryChecked.has(item) ? (
-                          <Check aria-hidden="true" className="w-3.5 h-3.5 text-accent" />
-                        ) : (
-                          <X aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />
-                        )}
-                        <span className={entryChecked.has(item) ? "text-foreground" : "text-muted-foreground"}>
-                          {t(`sleepHygiene.items.${item}`)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
+      {showDetails &&
+        hygieneEntries
+          .filter((e) => e.id !== todayEntryId)
+          .slice()
+          .reverse()
+          .map((entry) => {
+            const entryChecked = parseCheckedNote(entry.note);
+            return (
+              <Card key={entry.id} className="shadow-neumorphic-sm">
+                <CardContent className="pt-3 pb-3">
+                  <button
+                    onClick={() =>
+                      setExpandedEntryId(expandedEntryId === entry.id ? null : entry.id)
+                    }
+                    className="w-full flex items-center justify-between cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Moon aria-hidden="true" className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-medium text-foreground">
+                        {formatDateShort(new Date(entry.createdAt), i18n.language)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        ({entryChecked.size}/{SLEEP_HYGIENE_ITEMS.length})
+                      </span>
+                    </div>
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cn(
+                        "w-4 h-4 text-muted-foreground transition-transform",
+                        expandedEntryId === entry.id && "rotate-180",
+                      )}
+                    />
+                  </button>
+                  {expandedEntryId === entry.id && (
+                    <div className="mt-3 space-y-1">
+                      {SLEEP_HYGIENE_ITEMS.map((item) => (
+                        <div key={item} className="flex items-center gap-2 text-xs">
+                          {entryChecked.has(item) ? (
+                            <Check aria-hidden="true" className="w-3.5 h-3.5 text-accent" />
+                          ) : (
+                            <X aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />
+                          )}
+                          <span
+                            className={
+                              entryChecked.has(item) ? "text-foreground" : "text-muted-foreground"
+                            }
+                          >
+                            {t(`sleepHygiene.items.${item}`)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
 
       {sleepChartData.length > 0 && (
         <div className="space-y-2">

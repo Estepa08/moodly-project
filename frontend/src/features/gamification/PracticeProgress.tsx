@@ -21,18 +21,18 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
-  [PracticeSource.Breathing]: "/breathing",
-  [PracticeSource.Gratitude]: "/gratitude-journal",
-  [PracticeSource.SleepHygiene]: "/sleep-hygiene",
-  [PracticeSource.Distortions]: "/distortions",
-  [PracticeSource.Cba]: "/cost-benefit-analysis",
-  [PracticeSource.ThoughtJournal]: "/thought-journal",
+  [PracticeSource.Breathing]: "/practices/breathing",
+  [PracticeSource.Gratitude]: "/practices/gratitude",
+  [PracticeSource.SleepHygiene]: "/practices/sleep-hygiene",
+  [PracticeSource.Distortions]: "/practices/distortions",
+  [PracticeSource.Cba]: "/practices/cost-benefit-analysis",
+  [PracticeSource.ThoughtJournal]: "/practices/thought-journal",
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);
 
 export default function PracticeProgress({ breathingSessionCount }: PracticeProgressProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: completions, isLoading } = useCompletions(30);
 
   if (isLoading) {
@@ -47,7 +47,10 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
   }
 
   if (breathingSessionCount !== undefined && bySource[PracticeSource.Breathing]) {
-    bySource[PracticeSource.Breathing].count = Math.max(bySource[PracticeSource.Breathing].count, breathingSessionCount);
+    bySource[PracticeSource.Breathing].count = Math.max(
+      bySource[PracticeSource.Breathing].count,
+      breathingSessionCount,
+    );
   }
 
   const totalXp = Object.values(bySource).reduce((sum, s) => sum + s.xp, 0);
@@ -113,7 +116,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                   {recent.map((c, idx) => {
                     const config = SOURCE_CONFIG[c.source as PracticeSource];
                     const date = new Date(c.createdAt);
-                    const dateStr = date.toLocaleDateString(undefined, {
+                    const dateStr = date.toLocaleDateString(i18n.language, {
                       month: "short",
                       day: "numeric",
                     });
@@ -138,9 +141,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
           </>
         )}
 
-        {!hasAnyData && (
-          <EmptyState icon={Sparkles} title={t("progress.noData")} />
-        )}
+        {!hasAnyData && <EmptyState icon={Sparkles} title={t("progress.noData")} />}
       </CardContent>
     </Card>
   );

@@ -97,7 +97,11 @@ export default function ResetPasswordPage() {
                 hideLabel={t("common.hidePassword")}
               />
             </div>
-            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
+            {error && (
+              <p className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t("resetPassword.resetting") : t("resetPassword.reset")}
             </Button>

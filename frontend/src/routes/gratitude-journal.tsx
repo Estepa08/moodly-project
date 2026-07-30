@@ -22,9 +22,7 @@ export default function GratitudeJournalPage() {
   const { data: entries } = useEntries(
     gratitudeParam ? { parameterId: gratitudeParam.id } : undefined,
   );
-  const { data: moodEntries } = useEntries(
-    moodParam ? { parameterId: moodParam.id } : undefined,
-  );
+  const { data: moodEntries } = useEntries(moodParam ? { parameterId: moodParam.id } : undefined);
   const rewardPractice = useRewardPractice();
   const createEntry = useCreateEntry(() => {
     rewardPractice.mutate(PracticeSource.Gratitude);
@@ -33,12 +31,18 @@ export default function GratitudeJournalPage() {
   const periodDays = period === "all" ? Infinity : parseInt(period) * 30;
 
   const filteredEntries = useMemo(
-    () => (entries ?? []).filter((e) => (periodDays === Infinity ? true : isWithinLastDays(e.createdAt, periodDays))),
+    () =>
+      (entries ?? []).filter((e) =>
+        periodDays === Infinity ? true : isWithinLastDays(e.createdAt, periodDays),
+      ),
     [entries, periodDays],
   );
 
   const filteredMoodEntries = useMemo(
-    () => (moodEntries ?? []).filter((e) => (periodDays === Infinity ? true : isWithinLastDays(e.createdAt, periodDays))),
+    () =>
+      (moodEntries ?? []).filter((e) =>
+        periodDays === Infinity ? true : isWithinLastDays(e.createdAt, periodDays),
+      ),
     [moodEntries, periodDays],
   );
 

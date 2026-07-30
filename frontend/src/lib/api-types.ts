@@ -365,54 +365,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/reports": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Reports_list"];
-        put?: never;
-        post: operations["Reports_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/reports/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Reports_get"];
-        put?: never;
-        post?: never;
-        delete: operations["Reports_delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/reports/{id}/download": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Reports_download"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/test-results": {
         parameters: {
             query?: never;
@@ -745,34 +697,6 @@ export interface components {
         RefreshResponse: {
             accessToken: string;
         };
-        /** @description Отчёт для выгрузки статистики врачу (PDF/CSV), без участия врача в самом приложении */
-        Report: {
-            id: string;
-            userId: string;
-            format: components["schemas"]["ReportFormat"];
-            status: components["schemas"]["ReportStatus"];
-            /** Format: date-time */
-            periodFrom: string;
-            /** Format: date-time */
-            periodTo: string;
-            /** Format: date-time */
-            createdAt: string;
-            downloadUrl?: string;
-        };
-        ReportCreate: {
-            format: components["schemas"]["ReportFormat"];
-            /** Format: date-time */
-            periodFrom: string;
-            /** Format: date-time */
-            periodTo: string;
-        };
-        /** @enum {string} */
-        ReportFormat: "pdf" | "csv";
-        /**
-         * @description Статус генерации отчёта
-         * @enum {string}
-         */
-        ReportStatus: "pending" | "ready" | "failed";
         ResetPasswordRequest: {
             token: string;
             password: string;
@@ -1464,114 +1388,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Parameter"][];
-                };
-            };
-        };
-    };
-    Reports_list: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Report"][];
-                };
-            };
-        };
-    };
-    Reports_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReportCreate"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Report"];
-                };
-            };
-        };
-    };
-    Reports_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Report"];
-                };
-            };
-        };
-    };
-    Reports_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description There is no content to send for this request, but the headers may be useful. */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    Reports_download: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/octet-stream": string;
                 };
             };
         };

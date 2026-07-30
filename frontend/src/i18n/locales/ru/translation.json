@@ -13,7 +13,8 @@
     "showPassword": "Показать пароль",
     "hidePassword": "Скрыть пароль",
     "cancel": "Отмена",
-    "somethingWentWrong": "Что-то пошло не так"
+    "somethingWentWrong": "Что-то пошло не так",
+    "date": "Дата"
   },
   "nav": {
     "dashboard": "Дашборд",
@@ -26,10 +27,12 @@
     "thoughtJournal": "Дневник",
     "tests": "Тесты",
     "results": "Результаты",
-    "reports": "Отчёты",
     "feedback": "Обратная связь",
     "settings": "Настройки",
     "progress": "Прогресс",
+    "onboarding": "Знакомство",
+    "privacy": "Конфиденциальность",
+    "terms": "Условия использования",
     "more": "Ещё"
   },
   "login": {
@@ -88,6 +91,7 @@
     "title": "Дашборд",
     "quickEntry": {
       "title": "Быстрая запись",
+      "subtitle": "Как вы себя чувствуете прямо сейчас?",
       "firstTimeHint": "Нажмите на иконку, затем выберите уровень ползунком",
       "paramMood": "Настроение",
       "paramAnxiety": "Тревога",
@@ -142,9 +146,9 @@
     "gratitudeHideChart": "Скрыть график",
     "sleepHygiene": "Гигиена сна",
     "distortionQuiz": "Квиз искажений",
+    "thoughtJournalMood": "Настроение дневника мыслей",
     "practicesSummary": "Практики",
     "allPractices": "Все практики",
-    "allReports": "Все отчёты",
     "gratitudePrompt": "За что вы сегодня благодарны?",
     "saveGratitude": "Добавить",
     "noGratitudeYet": "Записей благодарности пока нет",
@@ -246,31 +250,11 @@
     "placeholder": "Поделитесь мыслями...",
     "send": "Отправить",
     "sent": "Отзыв отправлен!",
-    "noFeedback": "Отзывов пока нет."
-  },
-  "reports": {
-    "title": "Отчёты",
-    "cardTitle": "Экспортировать данные",
-    "format": "Формат",
-    "period": "Период",
-    "custom": "Свой",
-    "sixMonths": "6 месяцев",
-    "pdf": "PDF",
-    "csv": "CSV",
-    "from": "От",
-    "to": "До",
-    "submit": "Сгенерировать",
-    "download": "Скачать",
-    "created": "Отчёт сгенерирован!",
-    "noReports": "Экспортов пока нет...",
-    "statusPending": "Генерируется...",
-    "statusReady": "Готов",
-    "statusFailed": "Ошибка",
-    "retry": "Повторить",
-    "summary": "Сводка",
-    "totalEntries": "Всего записей",
-    "average": "Среднее",
-    "testResultsSection": "Результаты тестов"
+    "noFeedback": "Отзывов пока нет.",
+    "unsavedTitle": "Несохранённые изменения",
+    "unsavedDesc": "У вас есть несохранённый отзыв. Вы уверены, что хотите уйти?",
+    "unsavedStay": "Остаться",
+    "unsavedLeave": "Уйти"
   },
   "breathing": {
     "title": "Дыхательное упражнение",
@@ -358,7 +342,7 @@
     "showExample": "Показать пример",
     "hideExample": "Скрыть пример",
     "exampleThought": "Пример мысли",
-      "reframe": "Как переформулировать",
+    "reframe": "Как переформулировать",
     "quizTitle": "Квиз искажений",
     "quizProgress": "Вопрос {{current}} из {{total}}",
     "quizDone": "Отлично!",
@@ -636,7 +620,9 @@
     "creatureLevel": "Уровень питомца",
     "averagesTitle": "Средние значения",
     "practicesTitle": "Выполнено практик",
-    "testsTitle": "Пройдено тестов"
+    "testsTitle": "Пройдено тестов",
+    "averagesChartTitle": "Средние значения",
+    "practicesChartTitle": "Выполнено практик"
   },
   "privacy": {
     "title": "Политика обработки персональных данных",
@@ -671,6 +657,11 @@
   },
   "settings": {
     "title": "Настройки",
+    "account": "Аккаунт",
+    "email": "Email",
+    "password": "Сменить пароль",
+    "notifications": "Уведомления",
+    "comingSoon": "Скоро",
     "deleteAccount": "Удалить аккаунт",
     "deleteDesc": "Навсегда удалить ваш аккаунт и все связанные данные. Это действие нельзя отменить.",
     "deleteButton": "Удалить аккаунт",
@@ -774,7 +765,8 @@
     "complete3Practices": "Выполнить 3 практики",
     "logMoodEntry": "Записать настроение",
     "claim": "Забрать награду",
-    "allDone": "Все задания выполнены! Отлично!"
+    "allDone": "Все задания выполнены! Отлично!",
+    "thinkingPatterns": "Профиль мышления"
   },
   "pets": {
     "puff": "Пых",

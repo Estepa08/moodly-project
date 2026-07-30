@@ -41,7 +41,11 @@ function hashToken(token: string): string {
 export const userService = {
   async register(input: RegisterInput) {
     if (!input.ageConfirmed) {
-      throw new AppError("CONSENT_REQUIRED", 400, "You must confirm you are 18+ and agree to data processing");
+      throw new AppError(
+        "CONSENT_REQUIRED",
+        400,
+        "You must confirm you are 18+ and agree to data processing",
+      );
     }
     const existing = await prisma.user.findUnique({ where: { email: input.email } });
     if (existing) throw new ConflictError("Email already registered");
@@ -82,7 +86,12 @@ export const userService = {
   async verifyEmail(token: string) {
     const tokenHash = hashToken(token);
     const user = await prisma.user.findUnique({ where: { emailVerificationToken: tokenHash } });
-    if (!user) throw new AppError("INVALID_VERIFICATION_TOKEN", 400, "Invalid or expired verification token");
+    if (!user)
+      throw new AppError(
+        "INVALID_VERIFICATION_TOKEN",
+        400,
+        "Invalid or expired verification token",
+      );
 
     await prisma.user.update({
       where: { id: user.id },

@@ -6,7 +6,15 @@ import { useEntries, useCreateEntry } from "../hooks/useEntries";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { BookOpen, Flame, BarChart3, ClipboardList } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { ChartTooltip } from "../lib/chart-tooltip";
 import PeriodSelector from "../components/ui/PeriodSelector";
 import EmptyState from "../components/ui/empty-state";
@@ -103,7 +111,7 @@ export default function ThoughtJournalPage() {
         grouped.set(day, { date: day, _values: {} as Record<string, number[]> });
       }
       const row = grouped.get(day)!;
-      const values = (row._values as Record<string, number[]>);
+      const values = row._values as Record<string, number[]>;
       if (!values.Mood) values.Mood = [];
       values.Mood.push(e.value);
       row.Mood = values.Mood.reduce((s, v) => s + v, 0) / values.Mood.length;
@@ -117,10 +125,10 @@ export default function ThoughtJournalPage() {
     const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return t("thoughtJournal.today");
     if (diffDays === 1) return t("thoughtJournal.yesterday");
-    return d.toLocaleDateString(
-      i18n.language === "ru" ? "ru-RU" : "en-US",
-      { month: "short", day: "numeric" },
-    );
+    return d.toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US", {
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const isSaved = saved || todayEntry === true;
@@ -140,9 +148,7 @@ export default function ThoughtJournalPage() {
         <h2 className="text-xl font-semibold text-foreground font-serif">
           {t("thoughtJournal.title")}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t("thoughtJournal.subtitle")}
-        </p>
+        <p className="text-sm text-muted-foreground mt-1">{t("thoughtJournal.subtitle")}</p>
       </div>
 
       {isSaved ? (
@@ -151,18 +157,14 @@ export default function ThoughtJournalPage() {
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
               <BookOpen aria-hidden="true" className="w-8 h-8 text-primary" />
             </div>
-            <p className="text-lg font-medium text-foreground">
-              {t("thoughtJournal.saved")}
-            </p>
+            <p className="text-lg font-medium text-foreground">{t("thoughtJournal.saved")}</p>
             {streak > 0 && (
               <div className="flex items-center justify-center gap-1.5 text-sm text-accent font-medium">
                 <Flame aria-hidden="true" className="w-4 h-4" />
                 <span>{t("thoughtJournal.streak", { count: streak })}</span>
               </div>
             )}
-            <p className="text-sm text-muted-foreground">
-              {t("thoughtJournal.alreadySaved")}
-            </p>
+            <p className="text-sm text-muted-foreground">{t("thoughtJournal.alreadySaved")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -181,9 +183,10 @@ export default function ThoughtJournalPage() {
                       w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center
                       text-2xl sm:text-3xl transition-[background-color,box-shadow,transform] duration-150
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-                      ${selected === mood.value
-                        ? "bg-primary/20 shadow-elevation-2 scale-110 ring-2 ring-primary"
-                        : "bg-muted hover:bg-muted/80 shadow-neumorphic-sm active:scale-[0.97]"
+                      ${
+                        selected === mood.value
+                          ? "bg-primary/20 shadow-elevation-2 scale-110 ring-2 ring-primary"
+                          : "bg-muted hover:bg-muted/80 shadow-neumorphic-sm active:scale-[0.97]"
                       }
                     `}
                     aria-label={mood.label}
@@ -207,11 +210,7 @@ export default function ThoughtJournalPage() {
               />
             </div>
 
-            <Button
-              onClick={handleSave}
-              disabled={selected === null}
-              className="w-full"
-            >
+            <Button onClick={handleSave} disabled={selected === null} className="w-full">
               {t("thoughtJournal.save")}
             </Button>
           </CardContent>
@@ -229,17 +228,12 @@ export default function ThoughtJournalPage() {
           {historyEntries.length > 0 ? (
             <div className="space-y-2">
               {historyEntries.slice(0, 10).map((e) => (
-                <div
-                  key={e.id}
-                  className="flex items-start gap-3 p-3 rounded-xl bg-muted/30"
-                >
+                <div key={e.id} className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
                   <span className="text-xl flex-shrink-0 mt-0.5">
                     {EMOJIS[Math.round(e.value)] ?? "😐"}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(e.createdAt)}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{formatDate(e.createdAt)}</p>
                     {e.note ? (
                       <p className="text-sm text-foreground truncate">{e.note}</p>
                     ) : (
@@ -252,10 +246,7 @@ export default function ThoughtJournalPage() {
               ))}
             </div>
           ) : (
-            <EmptyState
-              icon={ClipboardList}
-              title={t("thoughtJournal.noEntries")}
-            />
+            <EmptyState icon={ClipboardList} title={t("thoughtJournal.noEntries")} />
           )}
         </CardContent>
       </Card>
@@ -298,7 +289,9 @@ export default function ThoughtJournalPage() {
                   content={
                     <ChartTooltip
                       formatLabel={(name, value, row) => {
-                        const values = (row?._values as Record<string, number[]> | undefined)?.[name];
+                        const values = (row?._values as Record<string, number[]> | undefined)?.[
+                          name
+                        ];
                         if (values && values.length > 1) {
                           return `${EMOJIS[Math.round(value as number)] ?? "😐"} ${t("dashboard.mood")}: ${(value as number).toFixed(1)} (${values.join(", ")})`;
                         }
@@ -318,10 +311,7 @@ export default function ThoughtJournalPage() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <EmptyState
-              icon={BarChart3}
-              title={t("thoughtJournal.emptyChart")}
-            />
+            <EmptyState icon={BarChart3} title={t("thoughtJournal.emptyChart")} />
           )}
         </CardContent>
       </Card>

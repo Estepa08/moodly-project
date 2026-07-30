@@ -77,7 +77,7 @@ describe("CostBenefitAnalysisPage", () => {
     await user.click(await screen.findByText("New Entry"));
 
     const textarea = await screen.findByPlaceholderText(
-      "e.g. \"If I make a mistake, everyone will think I'm incompetent\"",
+      'e.g. "If I make a mistake, everyone will think I\'m incompetent"',
     );
     await user.type(textarea, "New thought");
     await user.click(screen.getByText("Common pro"));

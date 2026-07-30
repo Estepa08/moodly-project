@@ -22,16 +22,19 @@ export default function DailyCheckInModal({
   const { t } = useTranslation();
 
   const hour = new Date().getHours();
-  const greetingKey = hour < 12
-    ? "dailyCheckIn.greetingMorning"
-    : hour < 18
-      ? "dailyCheckIn.greetingAfternoon"
-      : "dailyCheckIn.greetingEvening";
+  const greetingKey =
+    hour < 12
+      ? "dailyCheckIn.greetingMorning"
+      : hour < 18
+        ? "dailyCheckIn.greetingAfternoon"
+        : "dailyCheckIn.greetingEvening";
 
   return (
     <ModalShell
       open={open}
-      onOpenChange={(next) => { if (!next) onDismiss(); }}
+      onOpenChange={(next) => {
+        if (!next) onDismiss();
+      }}
       icon={Sun}
       iconSize={ComponentSize.Md}
       iconBg="bg-accent/10"

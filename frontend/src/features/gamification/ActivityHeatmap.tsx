@@ -69,10 +69,7 @@ export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
               return (
                 <div
                   key={entry.date}
-                  className={cn(
-                    "w-[10px] h-[10px] rounded-sm",
-                    getColor(entry.count, maxCount),
-                  )}
+                  className={cn("w-[10px] h-[10px] rounded-sm", getColor(entry.count, maxCount))}
                   title={`${entry.date}: ${entry.count} activities`}
                 />
               );

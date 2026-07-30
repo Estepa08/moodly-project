@@ -16,7 +16,6 @@ const TestsPage = lazy(() => import("./routes/tests"));
 const TestDetailPage = lazy(() => import("./routes/test-detail"));
 const TestResultsPage = lazy(() => import("./routes/test-results"));
 const FeedbackPage = lazy(() => import("./routes/feedback"));
-const ReportsPage = lazy(() => import("./routes/reports"));
 const BreathingPage = lazy(() => import("./routes/breathing"));
 const PracticesPage = lazy(() => import("./routes/practices"));
 const GratitudeJournalPage = lazy(() => import("./routes/gratitude-journal"));
@@ -24,7 +23,6 @@ const DistortionsPage = lazy(() => import("./routes/distortions"));
 const SleepHygienePage = lazy(() => import("./routes/sleep-hygiene"));
 const ThoughtJournalPage = lazy(() => import("./routes/thought-journal"));
 const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysis"));
-const DigestPage = lazy(() => import("./routes/digest"));
 const SettingsPage = lazy(() => import("./routes/settings"));
 const ProgressPage = lazy(() => import("./routes/progress"));
 
@@ -65,9 +63,7 @@ function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
   if (isBootstrapping) return <BootstrapSpinner />;
   if (isAuthenticated) return <Navigate to="/" replace />;
-  return (
-    <Outlet />
-  );
+  return <Outlet />;
 }
 
 export default function App() {
@@ -90,14 +86,20 @@ export default function App() {
         <Route path="/tests/:testId" element={<TestDetailPage />} />
         <Route path="/results" element={<TestResultsPage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/breathing" element={<BreathingPage />} />
-        <Route path="/gratitude-journal" element={<GratitudeJournalPage />} />
-        <Route path="/distortions" element={<DistortionsPage />} />
-        <Route path="/sleep-hygiene" element={<SleepHygienePage />} />
-        <Route path="/thought-journal" element={<ThoughtJournalPage />} />
-        <Route path="/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
-        <Route path="/digest" element={<DigestPage />} />
+        <Route path="/practices/breathing" element={<BreathingPage />} />
+        <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
+        <Route path="/practices/distortions" element={<DistortionsPage />} />
+        <Route path="/practices/sleep-hygiene" element={<SleepHygienePage />} />
+        <Route path="/practices/thought-journal" element={<ThoughtJournalPage />} />
+        <Route path="/practices/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
+
+        {/* Old practice route redirects */}
+        <Route path="/breathing" element={<Navigate to="/practices/breathing" replace />} />
+        <Route path="/gratitude-journal" element={<Navigate to="/practices/gratitude" replace />} />
+        <Route path="/distortions" element={<Navigate to="/practices/distortions" replace />} />
+        <Route path="/sleep-hygiene" element={<Navigate to="/practices/sleep-hygiene" replace />} />
+        <Route path="/thought-journal" element={<Navigate to="/practices/thought-journal" replace />} />
+        <Route path="/cost-benefit-analysis" element={<Navigate to="/practices/cost-benefit-analysis" replace />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>

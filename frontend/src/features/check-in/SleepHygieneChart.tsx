@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { CorrelationChart } from "../analytics";
+import { Chart } from "../analytics";
 
 interface CorrelationDataPoint {
   date: string;
@@ -33,20 +33,29 @@ export default function SleepHygieneChart({ data }: SleepHygieneChartProps) {
           {showChart ? t("sleepHygiene.hideChart") : t("sleepHygiene.showChart")}
         </button>
         {showChart && (
-          <CorrelationChart
+          <Chart
+            type="line"
+            noCard
             data={data as unknown as Record<string, unknown>[]}
-            lines={[
-              { dataKey: "habits", stroke: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
-              { dataKey: "sleep", stroke: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
+            series={[
+              { dataKey: "habits", color: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
+              { dataKey: "sleep", color: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
             ]}
-            formatLabel={(name, value, row) => {
-              const label = name === "habits" ? t("sleepHygiene.comparisonHabits") : t("sleepHygiene.comparisonSleep");
+            xKey="date"
+            formatTooltip={(name, value, row) => {
+              const label =
+                name === "habits"
+                  ? t("sleepHygiene.comparisonHabits")
+                  : t("sleepHygiene.comparisonSleep");
               const entryValues = (row?._values as Record<string, number[]> | undefined)?.[name];
               if (entryValues && entryValues.length > 1) {
                 return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;
               }
               return `${label}: ${value}`;
             }}
+            height={160}
+            showLegend
+            showDots={false}
           />
         )}
       </CardContent>

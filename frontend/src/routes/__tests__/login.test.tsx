@@ -74,5 +74,4 @@ describe("LoginPage", () => {
     await user.click(signUpButton);
     expect(screen.getByLabelText("Name (optional)")).toBeInTheDocument();
   });
-
 });

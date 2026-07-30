@@ -24,4 +24,5 @@ export function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptio
   return render(ui, { wrapper: createWrapper(), ...options });
 }
 
+/* eslint-disable-next-line react-refresh/only-export-components */
 export * from "@testing-library/react";

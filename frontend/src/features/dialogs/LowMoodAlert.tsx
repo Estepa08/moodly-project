@@ -16,7 +16,9 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
   return (
     <ModalShell
       open={open}
-      onOpenChange={(next) => { if (!next) onDismiss(); }}
+      onOpenChange={(next) => {
+        if (!next) onDismiss();
+      }}
       icon={Heart}
       title={t("lowMood.title")}
       description={t("lowMood.body")}
@@ -25,7 +27,10 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
         <Button
           variant="default"
           className="w-full flex items-center gap-2"
-          onClick={() => { navigate("/breathing"); onDismiss(); }}
+          onClick={() => {
+            navigate("/practices/breathing");
+            onDismiss();
+          }}
         >
           <Wind aria-hidden="true" className="w-4 h-4" />
           {t("lowMood.actionBreathing")}
@@ -33,7 +38,10 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
         <Button
           variant="secondary"
           className="w-full flex items-center gap-2"
-          onClick={() => { navigate("/tests"); onDismiss(); }}
+          onClick={() => {
+            navigate("/tests");
+            onDismiss();
+          }}
         >
           <ClipboardList aria-hidden="true" className="w-4 h-4" />
           {t("lowMood.actionTest")}

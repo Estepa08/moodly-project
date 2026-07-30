@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useCbaExamples, useCbaCommonItems, useCbaEntries, useCreateCbaEntry, useDeleteCbaEntry, CbaLibrary, CbaEntryForm, CbaHistory } from "../features/cost-benefit-analysis";
+import {
+  useCbaExamples,
+  useCbaCommonItems,
+  useCbaEntries,
+  useCreateCbaEntry,
+  useDeleteCbaEntry,
+  CbaLibrary,
+  CbaEntryForm,
+  CbaHistory,
+} from "../features/cost-benefit-analysis";
 import { useRewardPractice, PracticeSource } from "../features/gamification";
 import Spinner from "../components/ui/spinner";
 import { CbaTrendChart } from "../features/analytics";
@@ -70,7 +79,9 @@ export default function CostBenefitAnalysisPage() {
       >
         {tab === "library" ? (
           examplesLoading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+            <div className="flex justify-center py-8">
+              <Spinner size={32} />
+            </div>
           ) : (
             <CbaLibrary examples={examples ?? []} />
           )
@@ -84,7 +95,9 @@ export default function CostBenefitAnalysisPage() {
       >
         {tab === "form" ? (
           commonItemsLoading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+            <div className="flex justify-center py-8">
+              <Spinner size={32} />
+            </div>
           ) : (
             <CbaEntryForm commonItems={commonItems ?? []} createEntry={createEntry} />
           )
@@ -98,7 +111,9 @@ export default function CostBenefitAnalysisPage() {
       >
         {tab === "history" ? (
           entriesLoading ? (
-            <div className="flex justify-center py-8"><Spinner size={32} /></div>
+            <div className="flex justify-center py-8">
+              <Spinner size={32} />
+            </div>
           ) : (
             <div className="space-y-4">
               {entries && entries.length > 0 && <CbaTrendChart entries={entries} />}

@@ -171,6 +171,4 @@ describe("TestDetailPage", () => {
     expect(screen.getByText("shouldStatements")).toBeInTheDocument();
     expect(screen.getByText("personalization")).toBeInTheDocument();
   });
-
-
 });

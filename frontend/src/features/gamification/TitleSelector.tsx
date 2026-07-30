@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Check, Award } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { useCreatureState } from "./useCreature";
 
 interface TitleSelectorProps {
   titles: string[];
@@ -10,12 +9,12 @@ interface TitleSelectorProps {
 }
 
 const TITLE_MAP: Record<string, string> = {
-  "serenity_keeper": "progress.titleSerenityKeeper",
-  "spark": "progress.titleSpark",
-  "sage": "progress.titleSage",
-  "warrior": "progress.titleWarrior",
-  "guardian": "progress.titleGuardian",
-  "seeker": "progress.titleSeeker",
+  serenity_keeper: "progress.titleSerenityKeeper",
+  spark: "progress.titleSpark",
+  sage: "progress.titleSage",
+  warrior: "progress.titleWarrior",
+  guardian: "progress.titleGuardian",
+  seeker: "progress.titleSeeker",
 };
 
 export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSelectorProps) {

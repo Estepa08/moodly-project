@@ -1,6 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import { useCreatureState, useCompleteExercise } from "../features/gamification";
+import { useCompleteExercise } from "../features/gamification";
 import { celebrate } from "../features/gamification";
 import { BreathingGuide, BreathPhase, BreathingTechnique } from "../features/breathing";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -36,10 +36,14 @@ export default function BreathingPage() {
     return () => clearTimeout(timer);
   }, [phase, countdown]);
 
-  const { data: creature } = useCreatureState();
   const completeExercise = useCompleteExercise();
 
-  const steps = technique === BreathingTechnique.FourSevenEight ? STEPS_478 : technique === BreathingTechnique.Quick ? STEPS_QUICK : STEPS_BOX;
+  const steps =
+    technique === BreathingTechnique.FourSevenEight
+      ? STEPS_478
+      : technique === BreathingTechnique.Quick
+        ? STEPS_QUICK
+        : STEPS_BOX;
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
@@ -68,13 +72,22 @@ export default function BreathingPage() {
             </p>
             <div className="flex justify-center">
               <SegmentGroup>
-                <SegmentButton active={technique === BreathingTechnique.Box} onClick={() => setTechnique(BreathingTechnique.Box)}>
+                <SegmentButton
+                  active={technique === BreathingTechnique.Box}
+                  onClick={() => setTechnique(BreathingTechnique.Box)}
+                >
                   {t("breathing.techniqueBox")}
                 </SegmentButton>
-                <SegmentButton active={technique === BreathingTechnique.FourSevenEight} onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}>
+                <SegmentButton
+                  active={technique === BreathingTechnique.FourSevenEight}
+                  onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}
+                >
                   {t("breathing.technique478")}
                 </SegmentButton>
-                <SegmentButton active={technique === BreathingTechnique.Quick} onClick={() => setTechnique(BreathingTechnique.Quick)}>
+                <SegmentButton
+                  active={technique === BreathingTechnique.Quick}
+                  onClick={() => setTechnique(BreathingTechnique.Quick)}
+                >
                   {t("breathing.techniqueQuick")}
                 </SegmentButton>
               </SegmentGroup>
