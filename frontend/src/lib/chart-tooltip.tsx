@@ -1,16 +1,15 @@
 import { cn } from "./utils";
 
-interface ChartTooltipPayload {
-  name: string;
-  value: number;
-  color: string;
-}
-
 interface ChartTooltipProps {
   active?: boolean;
-  payload?: ChartTooltipPayload[];
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+    payload: Record<string, unknown>;
+  }>;
   label?: string;
-  formatLabel?: (name: string, value: number) => string;
+  formatLabel?: (name: string, value: number, row?: Record<string, unknown>) => string;
   className?: string;
 }
 
@@ -24,7 +23,7 @@ export function ChartTooltip({ active, payload, label, formatLabel, className }:
       <p className="text-xs text-muted-foreground mb-1">{label}</p>
       {payload.map((entry) => (
         <p key={entry.name} className="font-medium" style={{ color: entry.color }}>
-          {formatLabel ? formatLabel(entry.name, entry.value) : `${entry.name}: ${entry.value}`}
+          {formatLabel ? formatLabel(entry.name, entry.value, entry.payload) : `${entry.name}: ${entry.value}`}
         </p>
       ))}
     </div>

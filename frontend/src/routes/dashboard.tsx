@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { TrendingUp, Sparkles, Radar, ArrowRight } from "lucide-react";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Period } from "../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import PeriodSelector from "../components/ui/PeriodSelector";
 import { RadarChart } from "../features/analytics";
 import { QuickEntryIcons } from "../features/mood-entry";
 import { ParameterTrendsChart } from "../features/analytics";
@@ -18,6 +19,11 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [period, setPeriod] = useState<Period>(Period.TwoWeeks);
+
+  const periodOptions = useMemo(
+    () => PERIODS.map((p) => ({ key: p.key, label: t(p.labelKey) })),
+    [t],
+  );
 
   const {
     numericParams,
@@ -38,27 +44,11 @@ export default function Dashboard() {
         <h2 className="text-lg font-semibold text-foreground font-serif">
           {t("dashboard.dateRange")}
         </h2>
-        <div
-          className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
-          role="tablist"
-          aria-label={t("dashboard.dateRange")}
-        >
-          {PERIODS.map((p) => (
-            <button
-              key={p.key}
-              role="tab"
-              aria-selected={period === p.key}
-              onClick={() => setPeriod(p.key)}
-              className={`px-3 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                period === p.key
-                  ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
-                  : "text-muted-foreground hover:text-primary"
-              }`}
-            >
-              {t(p.labelKey)}
-            </button>
-          ))}
-        </div>
+        <PeriodSelector
+          options={periodOptions}
+          value={period}
+          onChange={(key) => setPeriod(key as Period)}
+        />
       </div>
 
       <QuickEntryIcons

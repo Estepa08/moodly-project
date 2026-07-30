@@ -4,7 +4,7 @@ import type { components } from "../../lib/api-types";
 import { toast } from "sonner";
 import { Heart, Smile } from "lucide-react";
 import type { CreateEntryMutation } from "../../lib/app-types";
-import { isWithinLastDays, cn, formatDateShort } from "../../lib/utils";
+import { isWithinLastDays, cn, formatDateShort, formatChartDate } from "../../lib/utils";
 import { CorrelationChart } from "../analytics";
 import { GratitudeCategory } from "../../lib/gratitudePrompts";
 import { Button } from "../../components/ui/button";
@@ -37,19 +37,25 @@ export default function GratitudeJournal({
   const [showChart, setShowChart] = useState(false);
 
   const correlationData = useMemo(() => {
-    const byDay = new Map<string, { gratitude: number; mood?: number }>();
+    const byDay = new Map<string, { gratitude: number[]; mood: number[] }>();
     for (const e of entries) {
-      const key = formatDateShort(new Date(e.createdAt), i18n.language, { day: "2-digit", month: "2-digit", year: "numeric" });
-      if (!byDay.has(key)) byDay.set(key, { gratitude: e.value });
+      const key = formatChartDate(new Date(e.createdAt), i18n.language, false);
+      if (!byDay.has(key)) byDay.set(key, { gratitude: [], mood: [] });
+      byDay.get(key)!.gratitude.push(e.value);
     }
     for (const e of moodEntries) {
-      const key = formatDateShort(new Date(e.createdAt), i18n.language, { day: "2-digit", month: "2-digit", year: "numeric" });
+      const key = formatChartDate(new Date(e.createdAt), i18n.language, false);
       const existing = byDay.get(key);
-      if (existing) existing.mood = e.value;
+      if (existing) existing.mood.push(e.value);
     }
     return Array.from(byDay.entries())
-      .filter(([, v]) => v.mood !== undefined)
-      .map(([date, v]) => ({ date, gratitude: v.gratitude, mood: v.mood! }))
+      .filter(([, v]) => v.mood.length > 0)
+      .map(([date, v]) => ({
+        date,
+        gratitude: v.gratitude.reduce((s, x) => s + x, 0) / v.gratitude.length,
+        mood: v.mood.reduce((s, x) => s + x, 0) / v.mood.length,
+        _values: { gratitude: v.gratitude, mood: v.mood },
+      }))
       .slice(-limit);
   }, [entries, moodEntries, i18n.language, limit]);
 

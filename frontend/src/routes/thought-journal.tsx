@@ -8,8 +8,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { BookOpen, Flame, BarChart3, ClipboardList } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartTooltip } from "../lib/chart-tooltip";
+import PeriodSelector from "../components/ui/PeriodSelector";
 import EmptyState from "../components/ui/empty-state";
 import { LoadingCard } from "../components/ui/loading-card";
+import { formatChartDate } from "../lib/utils";
+import { isWithinLastDays } from "../lib/utils";
+
+const THOUGHT_JOURNAL_PERIODS = [
+  { key: "1m", label: "1m" },
+  { key: "3m", label: "3m" },
+  { key: "6m", label: "6m" },
+  { key: "all", label: "All" },
+] as const;
 
 const EMOJIS = ["😢", "😔", "😐", "🙂", "😊"];
 
@@ -44,6 +54,7 @@ export default function ThoughtJournalPage() {
   const [note, setNote] = useState("");
   const [saved, setSaved] = useState(false);
   const [streak, setStreak] = useState(0);
+  const [chartPeriod, setChartPeriod] = useState<string>("3m");
 
   useEffect(() => {
     if (creature) {
@@ -80,17 +91,25 @@ export default function ThoughtJournalPage() {
 
   const chartData = useMemo(() => {
     if (!entries) return [];
-    const sorted = [...entries].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-    );
-    return sorted.map((e) => ({
-      date: new Date(e.createdAt).toLocaleDateString(
-        i18n.language === "ru" ? "ru-RU" : "en-US",
-        { month: "short", day: "numeric" },
-      ),
-      Mood: e.value,
-    }));
-  }, [entries, i18n.language]);
+    const showYear = chartPeriod === "all";
+    const chartDays = chartPeriod === "all" ? Infinity : parseInt(chartPeriod) * 30;
+    const sorted = [...entries]
+      .filter((e) => (chartDays === Infinity ? true : isWithinLastDays(e.createdAt, chartDays)))
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    const grouped = new Map<string, Record<string, unknown>>();
+    for (const e of sorted) {
+      const day = formatChartDate(new Date(e.createdAt), i18n.language, showYear);
+      if (!grouped.has(day)) {
+        grouped.set(day, { date: day, _values: {} as Record<string, number[]> });
+      }
+      const row = grouped.get(day)!;
+      const values = (row._values as Record<string, number[]>);
+      if (!values.Mood) values.Mood = [];
+      values.Mood.push(e.value);
+      row.Mood = values.Mood.reduce((s, v) => s + v, 0) / values.Mood.length;
+    }
+    return Array.from(grouped.values());
+  }, [entries, i18n.language, chartPeriod]);
 
   const formatDate = (iso: string) => {
     const d = new Date(iso);
@@ -249,6 +268,14 @@ export default function ThoughtJournalPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-3">
+            <PeriodSelector
+              options={THOUGHT_JOURNAL_PERIODS.map((p) => ({ key: p.key, label: p.label }))}
+              value={chartPeriod}
+              onChange={setChartPeriod}
+              size="sm"
+            />
+          </div>
           {chartData.length > 1 ? (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={chartData}>
@@ -270,9 +297,13 @@ export default function ThoughtJournalPage() {
                 <Tooltip
                   content={
                     <ChartTooltip
-                      formatLabel={(name, value) =>
-                        `${EMOJIS[Math.round(value)] ?? "😐"} ${t("dashboard.mood")}: ${value}`
-                      }
+                      formatLabel={(name, value, row) => {
+                        const values = (row?._values as Record<string, number[]> | undefined)?.[name];
+                        if (values && values.length > 1) {
+                          return `${EMOJIS[Math.round(value as number)] ?? "😐"} ${t("dashboard.mood")}: ${(value as number).toFixed(1)} (${values.join(", ")})`;
+                        }
+                        return `${EMOJIS[Math.round(value as number)] ?? "😐"} ${t("dashboard.mood")}: ${value}`;
+                      }}
                     />
                   }
                 />

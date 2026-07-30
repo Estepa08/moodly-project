@@ -19,7 +19,7 @@ interface CorrelationLine {
 interface CorrelationChartProps {
   data: Record<string, unknown>[];
   lines: CorrelationLine[];
-  formatLabel?: (name: string) => string;
+  formatLabel?: (name: string, value: number, row?: Record<string, unknown>) => string;
   height?: number;
   className?: string;
 }
@@ -38,7 +38,20 @@ export function CorrelationChart({
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
           <XAxis dataKey="date" fontSize={9} stroke="hsl(var(--chart-tick))" />
           <YAxis domain={[0, 10]} fontSize={9} stroke="hsl(var(--chart-tick))" />
-          <Tooltip content={<ChartTooltip formatLabel={formatLabel} />} />
+          <Tooltip
+            content={
+              <ChartTooltip
+                formatLabel={(name, value, row) => {
+                  if (formatLabel) return formatLabel(name, value, row);
+                  const entryValues = (row?._values as Record<string, number[]> | undefined)?.[name];
+                  if (entryValues && entryValues.length > 1) {
+                    return `${name}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;
+                  }
+                  return `${name}: ${value}`;
+                }}
+              />
+            }
+          />
           {lines.map((line) => (
             <Line
               key={line.dataKey}

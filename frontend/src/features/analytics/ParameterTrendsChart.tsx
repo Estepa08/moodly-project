@@ -10,7 +10,7 @@ import EmptyState from "../../components/ui/empty-state";
 import { LoadingCard } from "../../components/ui/loading-card";
 
 interface ParameterTrendsChartProps {
-  trendData: Record<string, number | string>[];
+  trendData: Record<string, unknown>[];
   paramNames: string[];
   isLoading: boolean;
 }
@@ -48,7 +48,14 @@ export default function ParameterTrendsChart({ trendData, paramNames, isLoading 
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
                 <XAxis dataKey="date" fontSize={11} stroke="hsl(var(--chart-tick))" interval={Math.max(1, Math.floor(trendData.length / 6))} />
                 <YAxis domain={Y_DOMAIN} fontSize={11} stroke="hsl(var(--chart-tick))" />
-                <Tooltip content={<ChartTooltip formatLabel={(name) => t(PARAM_NAME_KEYS[name as ParameterName] ?? name)} />} />
+                <Tooltip content={<ChartTooltip formatLabel={(name, value, row) => {
+                  const entryValues = (row?.["_values"] as Record<string, number[]> | undefined)?.[name];
+                  const label = t(PARAM_NAME_KEYS[name as ParameterName] ?? name);
+                  if (entryValues && entryValues.length > 1) {
+                    return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;
+                  }
+                  return `${label}: ${value}`;
+                }} />} />
                 {paramNames.filter((name) => visibleParams.has(name)).map((name) => (
                   <Line key={name} type="monotone" dataKey={name} stroke={PARAM_COLORS[name as ParameterName] ?? "hsl(var(--primary))"} strokeWidth={2} dot={{ r: 3 }} connectNulls />
                 ))}

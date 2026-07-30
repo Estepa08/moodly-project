@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
 import { Wind, Heart, Moon, Brain, Scale, BookOpen, Activity, BarChart3 } from "lucide-react";
+import { DigestCharts } from "../features/analytics";
 
 const PRACTICE_ICONS: Record<string, typeof Wind> = {
   breathing: Wind,
@@ -90,6 +91,11 @@ export default function DigestPage() {
           </div>
         </CardContent>
       </Card>
+
+      <DigestCharts
+        averages={digest.averages}
+        practicesCompleted={digest.practicesCompleted}
+      />
 
       {Object.keys(digest.averages).length > 0 && (
         <Card className="shadow-neumorphic">

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
+import { TestResultsChart } from "../features/analytics";
 import { useTestResultText } from "../hooks/useTestResultText";
 import { MedicalDisclaimer } from "../widgets";
 import { cn } from "../lib/utils";
@@ -39,6 +40,10 @@ export default function TestResultsPage() {
         <h1 className="text-xl font-bold text-foreground font-serif">{t("testResults.title")}</h1>
 
         <MedicalDisclaimer />
+
+        {results && results.length > 0 && (
+          <TestResultsChart results={results as any} />
+        )}
 
         {results?.length === 0 && (
           <EmptyState

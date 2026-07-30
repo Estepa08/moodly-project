@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { DistortionQuiz } from "../features/mood-entry";
 import { ThoughtRelease } from "../features/journal";
 import { useParameters } from "../hooks/useParameters";
-import { useCreateEntry } from "../hooks/useEntries";
+import { useEntries, useCreateEntry } from "../hooks/useEntries";
+import { QuizScoreChart } from "../features/analytics";
 import { useRewardPractice, PracticeSource } from "../features/gamification";
 
 const TABS = [
@@ -29,6 +30,9 @@ export default function DistortionsPage() {
   const createEntry = useCreateEntry(() => {
     rewardPractice.mutate(PracticeSource.Distortions);
   });
+  const { data: quizEntries, isLoading: quizLoading } = useEntries(
+    quizParam ? { parameterId: quizParam.id } : undefined,
+  );
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -123,7 +127,12 @@ export default function DistortionsPage() {
         hidden={tab !== "quiz"}
       >
         {tab === "quiz" ? (
-          <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
+          <div className="space-y-4">
+            <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
+            {quizEntries && quizEntries.length > 0 && (
+              <QuizScoreChart entries={quizEntries} isLoading={quizLoading} />
+            )}
+          </div>
         ) : null}
       </div>
       <div

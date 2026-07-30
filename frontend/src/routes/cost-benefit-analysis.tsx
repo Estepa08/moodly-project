@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useCbaExamples, useCbaCommonItems, useCbaEntries, useCreateCbaEntry, useDeleteCbaEntry, CbaLibrary, CbaEntryForm, CbaHistory } from "../features/cost-benefit-analysis";
 import { useRewardPractice, PracticeSource } from "../features/gamification";
 import Spinner from "../components/ui/spinner";
+import { CbaTrendChart } from "../features/analytics";
 
 const TABS = [
   { key: "library", labelKey: "cba.tabLibrary" },
@@ -99,7 +100,10 @@ export default function CostBenefitAnalysisPage() {
           entriesLoading ? (
             <div className="flex justify-center py-8"><Spinner size={32} /></div>
           ) : (
-            <CbaHistory entries={entries ?? []} deleteEntry={deleteEntry} />
+            <div className="space-y-4">
+              {entries && entries.length > 0 && <CbaTrendChart entries={entries} />}
+              <CbaHistory entries={entries ?? []} deleteEntry={deleteEntry} />
+            </div>
           )
         ) : null}
       </div>

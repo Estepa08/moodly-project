@@ -19,3 +19,17 @@ export function formatDateShort(
   const locale = lang === "ru" ? "ru-RU" : "en-US";
   return d.toLocaleDateString(locale, options ?? { month: "short", day: "numeric" });
 }
+
+export function formatChartDate(
+  date: Date | string,
+  lang?: string,
+  showYear?: boolean,
+): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const locale = lang === "ru" ? "ru-RU" : "en-US";
+  return d.toLocaleDateString(locale, {
+    month: "short",
+    day: "numeric",
+    ...(showYear && { year: "numeric" }),
+  });
+}

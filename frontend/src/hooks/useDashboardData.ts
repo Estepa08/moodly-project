@@ -9,7 +9,7 @@ import type { DistortionEntry } from "../features/analytics";
 import { DistortionKey } from "../lib/distortionsQuiz";
 import { TEXT_PARAMS, Period, Trend } from "../lib/constants";
 import type { ParameterName } from "../lib/constants";
-import { isWithinLastDays } from "../lib/utils";
+import { isWithinLastDays, formatChartDate } from "../lib/utils";
 
 type Entry = components["schemas"]["Entry"];
 type TestResult = components["schemas"]["TestResult"];
@@ -85,25 +85,24 @@ export function useDashboardData(period: Period) {
 
   const trendData = useMemo(() => {
     if (!allEntries || allEntries.length === 0) return [];
-    const grouped = new Map<string, Record<string, number | string>>();
+    const grouped = new Map<string, Record<string, unknown>>();
     const sorted = [...allEntries].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
     for (const e of sorted) {
-      const day = new Date(e.createdAt).toLocaleDateString(
-        i18n.language === "ru" ? "ru-RU" : "en-US",
-        {
-          month: "short",
-          day: "numeric",
-        },
-      );
+      const day = formatChartDate(new Date(e.createdAt), i18n.language, period === Period.All);
       const name = paramMap.get(e.parameterId) ?? e.parameterId;
-      if (!grouped.has(day)) grouped.set(day, { date: day });
+      if (!grouped.has(day)) {
+        grouped.set(day, { date: day, _values: {} as Record<string, number[]> });
+      }
       const row = grouped.get(day)!;
-      row[name] = e.value;
+      const values = (row._values as Record<string, number[]>);
+      if (!values[name]) values[name] = [];
+      values[name].push(e.value);
+      row[name] = values[name].reduce((s, v) => s + v, 0) / values[name].length;
     }
     return Array.from(grouped.values());
-  }, [allEntries, paramMap, i18n.language]);
+  }, [allEntries, paramMap, i18n.language, period]);
 
   const { weeklyAverages, wellbeing } = useMemo(() => {
     if (!allEntries)
