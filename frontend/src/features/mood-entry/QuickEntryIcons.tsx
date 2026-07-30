@@ -14,13 +14,11 @@ import { Button } from "../../components/ui/button";
 interface QuickEntryIconsProps {
   createEntry: CreateEntryMutation;
   numericParams: components["schemas"]["Parameter"][] | undefined;
-  hasEntries: boolean;
 }
 
 export default function QuickEntryIcons({
   createEntry,
   numericParams,
-  hasEntries,
 }: QuickEntryIconsProps) {
   const { t } = useTranslation();
   const [selectedParam, setSelectedParam] = useState<string | null>(null);
@@ -70,19 +68,17 @@ export default function QuickEntryIcons({
   );
 
   return (
-    <Card className="shadow-neumorphic">
+    <Card className="shadow-neumorphic border-l-4 border-l-accent">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 font-serif">
-          <Sparkles aria-hidden="true" className="w-4 h-4 text-accent" />
-          {t("dashboard.quickEntry.title")}
+          <Sparkles aria-hidden="true" className="w-5 h-5 text-accent" />
+          <span>{t("dashboard.quickEntry.title")}</span>
         </CardTitle>
+        <p className="text-xs text-muted-foreground ml-7">
+          {t("dashboard.quickEntry.subtitle")}
+        </p>
       </CardHeader>
       <CardContent className="space-y-3">
-        {!hasEntries && (
-          <p className="text-xs text-muted-foreground text-center">
-            {t("dashboard.quickEntry.firstTimeHint")}
-          </p>
-        )}
         <div className="flex justify-center gap-3">
           {configs.map((cfg) => {
             const isActive = selectedParam === cfg.parameterName;
@@ -99,8 +95,8 @@ export default function QuickEntryIcons({
                 aria-label={t(cfg.labelKey)}
                 aria-pressed={isActive}
               >
-                <div className="w-12 h-12 flex items-center justify-center">
-                  {Icon && <Icon aria-hidden="true" className="w-8 h-8 text-primary" />}
+                <div className="w-14 h-14 flex items-center justify-center">
+                  {Icon && <Icon aria-hidden="true" className="w-9 h-9 text-primary" />}
                 </div>
                 <span className="text-xs font-medium leading-tight text-center">
                   {t(cfg.labelKey)}

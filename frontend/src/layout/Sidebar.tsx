@@ -10,12 +10,12 @@ import { User, LogOut, Sparkles, ChevronDown } from "lucide-react";
 import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS } from "./nav-config";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  "/thought-journal": PracticeSource.ThoughtJournal,
-  "/gratitude-journal": PracticeSource.Gratitude,
-  "/distortions": PracticeSource.Distortions,
-  "/sleep-hygiene": PracticeSource.SleepHygiene,
-  "/cost-benefit-analysis": PracticeSource.Cba,
-  "/breathing": PracticeSource.Breathing,
+  "/practices/thought-journal": PracticeSource.ThoughtJournal,
+  "/practices/gratitude": PracticeSource.Gratitude,
+  "/practices/distortions": PracticeSource.Distortions,
+  "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
+  "/practices/cost-benefit-analysis": PracticeSource.Cba,
+  "/practices/breathing": PracticeSource.Breathing,
 };
 
 export default function Sidebar() {
@@ -28,7 +28,7 @@ export default function Sidebar() {
   const highlights = useNavHighlights();
   const { isStale } = useStalePractices(3);
 
-  const isPracticeActive = PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
+  const isPracticeActive = location.pathname === "/practices" || PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      <Link to={DASHBOARD_ITEM.path} className={navButtonClass(location.pathname === "/")}>
+      <Link to={DASHBOARD_ITEM.path} className={navButtonClass(location.pathname === "/")} aria-current={location.pathname === "/" ? "page" : undefined}>
         <DASHBOARD_ITEM.icon
           aria-hidden="true"
           className={`w-5 h-5 shrink-0 ${highlights.dashboard ? "text-primary" : ""}`}
@@ -111,6 +111,7 @@ export default function Sidebar() {
                 key={item.path}
                 to={item.path}
                 className={navButtonClass(location.pathname.startsWith(item.path))}
+                aria-current={location.pathname === item.path ? "page" : undefined}
               >
                 <item.icon
                   aria-hidden="true"
@@ -128,6 +129,7 @@ export default function Sidebar() {
           key={item.path}
           to={item.path}
           className={navButtonClass(location.pathname.startsWith(item.path))}
+          aria-current={location.pathname === item.path ? "page" : undefined}
         >
           <item.icon
             aria-hidden="true"

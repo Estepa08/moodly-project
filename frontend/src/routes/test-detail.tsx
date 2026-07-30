@@ -96,7 +96,7 @@ export default function TestDetailPage() {
         <StickyBottomBar>
           <div className="flex flex-wrap gap-2 justify-center">
             <Button variant="secondary" size="sm" asChild>
-              <Link to="/breathing">{t("testResults.nextBreathing")}</Link>
+              <Link to="/practices/breathing">{t("testResults.nextBreathing")}</Link>
             </Button>
             <Button variant="secondary" size="sm" asChild>
               <Link to="/dashboard">{t("testResults.nextTrack")}</Link>

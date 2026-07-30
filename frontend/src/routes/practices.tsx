@@ -6,17 +6,17 @@ import { PracticeSource } from "../features/gamification/practice.enums";
 import { Wind, Heart, BrainCircuit, Moon, Scale, BookOpen, Clock } from "lucide-react";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  "/thought-journal": PracticeSource.ThoughtJournal,
-  "/gratitude-journal": PracticeSource.Gratitude,
-  "/distortions": PracticeSource.Distortions,
-  "/sleep-hygiene": PracticeSource.SleepHygiene,
-  "/cost-benefit-analysis": PracticeSource.Cba,
-  "/breathing": PracticeSource.Breathing,
+  "/practices/thought-journal": PracticeSource.ThoughtJournal,
+  "/practices/gratitude": PracticeSource.Gratitude,
+  "/practices/distortions": PracticeSource.Distortions,
+  "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
+  "/practices/cost-benefit-analysis": PracticeSource.Cba,
+  "/practices/breathing": PracticeSource.Breathing,
 };
 
 const PRACTICES = [
   {
-    path: "/thought-journal",
+    path: "/practices/thought-journal",
     icon: BookOpen,
     labelKey: "nav.thoughtJournal",
     descKey: "practices.descThoughtJournal",
@@ -24,7 +24,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/gratitude-journal",
+    path: "/practices/gratitude",
     icon: Heart,
     labelKey: "nav.gratitude",
     descKey: "practices.descGratitude",
@@ -32,7 +32,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/distortions",
+    path: "/practices/distortions",
     icon: BrainCircuit,
     labelKey: "nav.distortions",
     descKey: "practices.descDistortions",
@@ -40,7 +40,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/sleep-hygiene",
+    path: "/practices/sleep-hygiene",
     icon: Moon,
     labelKey: "nav.sleepHygiene",
     descKey: "practices.descSleepHygiene",
@@ -48,7 +48,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryBody",
   },
   {
-    path: "/cost-benefit-analysis",
+    path: "/practices/cost-benefit-analysis",
     icon: Scale,
     labelKey: "nav.cba",
     descKey: "practices.descCba",
@@ -56,7 +56,7 @@ const PRACTICES = [
     categoryKey: "practices.categoryMind",
   },
   {
-    path: "/breathing",
+    path: "/practices/breathing",
     icon: Wind,
     labelKey: "nav.breathing",
     descKey: "practices.descBreathing",

@@ -101,6 +101,26 @@ export default function ParameterTrendsChart({
                   ))}
               </LineChart>
             </ResponsiveContainer>
+            <table className="sr-only" aria-label={t("dashboard.parameterTrends")}>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  {[...visibleParams].map((name) => (
+                    <th key={name}>{t(PARAM_NAME_KEYS[name as ParameterName] ?? name)}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {trendData.map((row: Record<string, unknown>, i) => (
+                  <tr key={i}>
+                    <td>{row.date as string}</td>
+                    {[...visibleParams].map((name) => (
+                      <td key={name}>{row[name] != null ? String(row[name]) : "—"}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             {visibleParams.size > 0 && !visibleHasData && (
               <p className="text-xs text-muted-foreground text-center mt-2">
                 {t("dashboard.noEntries")}

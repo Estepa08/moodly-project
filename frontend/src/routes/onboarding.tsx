@@ -232,7 +232,7 @@ export default function OnboardingPage() {
                   </div>
                 </button>
                 <button
-                  onClick={() => handleFinish("/breathing")}
+                  onClick={() => handleFinish("/practices/breathing")}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Wind aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />

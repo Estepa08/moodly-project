@@ -38,7 +38,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
               {example.distortions.map((d) => (
                 <Link
                   key={d.id}
-                  to="/distortions"
+                  to="/practices/distortions"
                   className="rounded-full px-3 py-1 text-xs font-medium bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-primary transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {t(`cognitiveDistortions.${d.distortionKey}`)}

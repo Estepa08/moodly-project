@@ -21,12 +21,12 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
-  [PracticeSource.Breathing]: "/breathing",
-  [PracticeSource.Gratitude]: "/gratitude-journal",
-  [PracticeSource.SleepHygiene]: "/sleep-hygiene",
-  [PracticeSource.Distortions]: "/distortions",
-  [PracticeSource.Cba]: "/cost-benefit-analysis",
-  [PracticeSource.ThoughtJournal]: "/thought-journal",
+  [PracticeSource.Breathing]: "/practices/breathing",
+  [PracticeSource.Gratitude]: "/practices/gratitude",
+  [PracticeSource.SleepHygiene]: "/practices/sleep-hygiene",
+  [PracticeSource.Distortions]: "/practices/distortions",
+  [PracticeSource.Cba]: "/practices/cost-benefit-analysis",
+  [PracticeSource.ThoughtJournal]: "/practices/thought-journal",
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);

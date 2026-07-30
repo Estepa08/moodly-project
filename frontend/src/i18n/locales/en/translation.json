@@ -30,6 +30,10 @@
     "feedback": "Feedback",
     "settings": "Settings",
     "progress": "Progress",
+    "weeklyDigest": "Weekly Digest",
+    "onboarding": "Getting Started",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
     "more": "More"
   },
   "login": {
@@ -88,6 +92,7 @@
     "title": "Dashboard",
     "quickEntry": {
       "title": "Quick Entry",
+      "subtitle": "How are you feeling right now?",
       "firstTimeHint": "Tap an icon, then set today's level with the slider",
       "paramMood": "Mood",
       "paramAnxiety": "Anxiety",
@@ -242,10 +247,16 @@
     "placeholder": "Share your thoughts...",
     "send": "Send",
     "sent": "Feedback sent!",
-    "noFeedback": "No feedback yet."
+    "noFeedback": "No feedback yet.",
+    "unsavedTitle": "Unsaved changes",
+    "unsavedDesc": "You have unsaved feedback. Do you really want to leave?",
+    "unsavedStay": "Stay",
+    "unsavedLeave": "Leave"
   },
   "reports": {
     "title": "Reports",
+    "tabGenerate": "Generate Reports",
+    "tabWeekly": "Weekly Digest",
     "cardTitle": "Export your data",
     "format": "Format",
     "period": "Period",
@@ -667,6 +678,11 @@
   },
   "settings": {
     "title": "Settings",
+    "account": "Account",
+    "email": "Email",
+    "password": "Change Password",
+    "notifications": "Notifications",
+    "comingSoon": "Coming soon",
     "deleteAccount": "Delete Account",
     "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteButton": "Delete my account",

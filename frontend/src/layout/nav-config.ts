@@ -28,12 +28,12 @@ export const DASHBOARD_ITEM: NavItem = {
 };
 
 export const PRACTICE_ITEMS: NavItem[] = [
-  { labelKey: "nav.thoughtJournal", path: "/thought-journal", icon: BookOpen },
-  { labelKey: "nav.gratitude", path: "/gratitude-journal", icon: Heart },
-  { labelKey: "nav.distortions", path: "/distortions", icon: BrainCircuit },
-  { labelKey: "nav.sleepHygiene", path: "/sleep-hygiene", icon: Moon },
-  { labelKey: "nav.cba", path: "/cost-benefit-analysis", icon: Scale },
-  { labelKey: "nav.breathing", path: "/breathing", icon: Wind },
+  { labelKey: "nav.thoughtJournal", path: "/practices/thought-journal", icon: BookOpen },
+  { labelKey: "nav.gratitude", path: "/practices/gratitude", icon: Heart },
+  { labelKey: "nav.distortions", path: "/practices/distortions", icon: BrainCircuit },
+  { labelKey: "nav.sleepHygiene", path: "/practices/sleep-hygiene", icon: Moon },
+  { labelKey: "nav.cba", path: "/practices/cost-benefit-analysis", icon: Scale },
+  { labelKey: "nav.breathing", path: "/practices/breathing", icon: Wind },
 ];
 
 export const OTHER_ITEMS: NavItem[] = [

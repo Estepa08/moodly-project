@@ -12,6 +12,7 @@ import { CreatureStatus } from "../features/gamification";
 import Sidebar from "../layout/Sidebar";
 import LayoutModals from "../layout/LayoutModals";
 import BottomNav from "../layout/BottomNav";
+import Breadcrumbs from "../components/ui/breadcrumbs";
 import { PRACTICE_ITEMS, OTHER_ITEMS, ALL_MORE_ITEMS } from "../layout/nav-config";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -45,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isReducedMotion) return;
-    const CYCLE_MS = 5000;
+    const CYCLE_MS = 12000;
     const TRANSITION_MS = 1600;
     const id = setInterval(() => {
       setPrevWasCreature(showCreature);
@@ -165,6 +166,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
+
+        <Breadcrumbs />
 
         <main
           id="main-content"

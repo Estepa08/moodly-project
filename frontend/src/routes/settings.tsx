@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../components/ui/dialog";
-import { Trash2, AlertTriangle } from "lucide-react";
+import { Bell, Shield, Key, Trash2, AlertTriangle, ChevronRight } from "lucide-react";
 
 export default function SettingsPage() {
   const { t } = useTranslation();
@@ -39,6 +39,43 @@ export default function SettingsPage() {
   return (
     <div className="max-w-lg mx-auto space-y-4 pb-20">
       <h1 className="text-xl font-bold text-foreground font-serif">{t("settings.title")}</h1>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield aria-hidden="true" className="w-4 h-4" />
+            {t("settings.account")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium">{t("settings.email")}</p>
+              <p className="text-xs text-muted-foreground">{t("settings.comingSoon")}</p>
+            </div>
+            <ChevronRight aria-hidden="true" className="w-4 h-4 text-muted-foreground" />
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium">{t("settings.password")}</p>
+              <p className="text-xs text-muted-foreground">{t("settings.comingSoon")}</p>
+            </div>
+            <ChevronRight aria-hidden="true" className="w-4 h-4 text-muted-foreground" />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bell aria-hidden="true" className="w-4 h-4" />
+            {t("settings.notifications")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">{t("settings.comingSoon")}</p>
+        </CardContent>
+      </Card>
 
       <Card className="border-destructive/30">
         <CardHeader>

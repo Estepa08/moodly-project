@@ -4,7 +4,7 @@ import { cn } from "../lib/utils";
 import { useNavHighlights } from "../hooks/useNavHighlights";
 import {
   LayoutDashboard,
-  Wind,
+  BookHeart,
   ClipboardList,
   BarChart3,
   Trophy,
@@ -13,7 +13,7 @@ import {
 
 const NAV_ITEMS = [
   { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard },
-  { labelKey: "nav.practices", path: "/practices", icon: Wind },
+  { labelKey: "nav.thoughtJournal", path: "/practices/thought-journal", icon: BookHeart },
   { labelKey: "nav.progress", path: "/progress", icon: Trophy },
   { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
   { labelKey: "nav.results", path: "/results", icon: BarChart3 },
@@ -39,11 +39,9 @@ export default function BottomNav({ onMoreOpen, isMoreActive }: BottomNavProps) 
     const highlight =
       path === "/"
         ? highlights.dashboard
-        : path === "/practices"
-          ? highlights.practices
-          : path === "/tests"
-            ? highlights.tests
-            : false;
+        : path === "/tests"
+          ? highlights.tests
+          : false;
     return cn(base, highlight && "text-primary");
   };
 
