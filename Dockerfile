@@ -26,6 +26,7 @@ COPY backend/prisma ./prisma
 RUN npx prisma generate
 COPY backend/tsconfig.json ./
 COPY backend/src ./src
+COPY backend/docker-entrypoint.sh ./
 RUN npm run build
 
 # Stage 4: Runtime — Caddy serves frontend, proxies /api to backend
