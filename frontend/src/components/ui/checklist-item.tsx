@@ -66,7 +66,7 @@ export function ChecklistItem({
           checked ? `${c.border}` : "border-border",
         )}
       >
-        {checked && <Check className={cn(s.icon, c.icon)} />}
+        {checked && <Check aria-hidden="true" className={cn(s.icon, c.icon)} />}
       </span>
       {label}
     </button>

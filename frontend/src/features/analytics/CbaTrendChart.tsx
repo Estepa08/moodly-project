@@ -41,7 +41,7 @@ export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
     <Card className="shadow-neumorphic">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <Scale className="w-4 h-4 text-primary" />
+          <Scale aria-hidden="true" className="w-4 h-4 text-primary" />
           {t("cba.trendTitle")}
         </CardTitle>
       </CardHeader>

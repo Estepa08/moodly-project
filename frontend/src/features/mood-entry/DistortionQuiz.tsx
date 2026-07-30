@@ -56,7 +56,7 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
     return (
       <Card className="shadow-neumorphic">
         <CardContent className="pt-6 text-center space-y-3">
-          <Check className="w-10 h-10 text-accent mx-auto" />
+          <Check aria-hidden="true" className="w-10 h-10 text-accent mx-auto" />
           <p className="text-lg font-bold font-serif text-foreground">{t("distortions.quizDone")}</p>
           <p className="text-sm text-muted-foreground">{t("distortions.quizScore", { score, total: order.length, pct })}</p>
           <Button onClick={handleRestart}>{t("distortions.quizRestart")}</Button>
@@ -94,8 +94,8 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
                     )}
                   >
                     <span>{t(`cognitiveDistortions.${opt}`)}</span>
-                    {isAnswered && isCorrect && <Check className="w-4 h-4 shrink-0 text-accent" />}
-                    {isWrong && <X className="w-4 h-4 shrink-0 text-destructive" />}
+                    {isAnswered && isCorrect && <Check aria-hidden="true" className="w-4 h-4 shrink-0 text-accent" />}
+                    {isWrong && <X aria-hidden="true" className="w-4 h-4 shrink-0 text-destructive" />}
                   </button>
                 );
               })}

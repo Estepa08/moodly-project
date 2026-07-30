@@ -42,7 +42,7 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
         )}
       >
         {t("progress.noTitle")}
-        {!activeTitle && <Check className="w-3 h-3" />}
+        {!activeTitle && <Check aria-hidden="true" className="w-3 h-3" />}
       </button>
       {titles.map((title) => {
         const labelKey = TITLE_MAP[title] ?? title;
@@ -59,9 +59,9 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
                 : "bg-muted text-muted-foreground hover:bg-secondary cursor-pointer active:scale-[0.97]",
             )}
           >
-            <Award className="w-3 h-3" />
+            <Award aria-hidden="true" className="w-3 h-3" />
             {t(labelKey)}
-            {isActive && <Check className="w-3 h-3" />}
+            {isActive && <Check aria-hidden="true" className="w-3 h-3" />}
           </button>
         );
       })}

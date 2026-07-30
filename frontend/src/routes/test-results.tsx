@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ChevronRight, ClipboardList } from "lucide-react";
 import { useTestResults } from "../hooks/useTests";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
@@ -9,7 +9,7 @@ import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
 import { TestResultsChart } from "../features/analytics";
 import { useTestResultText } from "../hooks/useTestResultText";
-import { MedicalDisclaimer } from "../widgets";
+import { WellnessDisclaimer } from "../widgets";
 import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
@@ -39,7 +39,7 @@ export default function TestResultsPage() {
       <div className="space-y-4 pb-20">
         <h1 className="text-xl font-bold text-foreground font-serif">{t("testResults.title")}</h1>
 
-        <MedicalDisclaimer />
+        <WellnessDisclaimer />
 
         {results && results.length > 0 && (
           <TestResultsChart results={results as any} />
@@ -61,7 +61,6 @@ export default function TestResultsPage() {
             isCD,
             interpretationText,
             recommendationText,
-            isSevere,
             highKeys,
             moderateKeys,
           } = resolve(r);
@@ -70,7 +69,6 @@ export default function TestResultsPage() {
           return (
             <Card
               key={r.id}
-              className={cn(isSevere && "border-orange-300")}
             >
               <CardHeader className="pb-2">
                 <p className="text-xs text-muted-foreground">
@@ -92,12 +90,7 @@ export default function TestResultsPage() {
                     {showScore[r.id] ? t("testResults.hideScore") : t("testResults.showScore")}
                   </button>
                   {showScore[r.id] && (
-                    <div
-                      className={cn(
-                        "w-16 h-16 rounded-xl bg-card shadow-neumorphic-sm flex items-center justify-center",
-                        isSevere && "border-2 border-orange-300",
-                      )}
-                    >
+                    <div className="w-16 h-16 rounded-xl bg-card shadow-neumorphic-sm flex items-center justify-center">
                       <span className="text-2xl font-bold text-primary">
                         {r.score}
                       </span>
@@ -159,7 +152,7 @@ export default function TestResultsPage() {
                   className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() => setShowRec((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                 >
-                  <ChevronRight className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`} />
+                  <ChevronRight aria-hidden="true" className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`} />
                   {t("testDetail.recommendation")}
                 </button>
 
@@ -175,19 +168,19 @@ export default function TestResultsPage() {
       </div>
       <StickyBottomBar>
         <div className="flex flex-wrap gap-2 justify-center">
-          <Button variant="secondary" size="sm" onClick={() => navigate("/breathing")}>
-            {t("testResults.nextBreathing")}
+          <Button variant="secondary" size="sm" asChild>
+            <Link to="/breathing">{t("testResults.nextBreathing")}</Link>
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => navigate("/dashboard")}>
-            {t("testResults.nextTrack")}
+          <Button variant="secondary" size="sm" asChild>
+            <Link to="/dashboard">{t("testResults.nextTrack")}</Link>
           </Button>
           {hasCDResult && (
-            <Button variant="secondary" size="sm" onClick={() => navigate("/distortions")}>
-              {t("testResults.nextDistortions")}
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/distortions">{t("testResults.nextDistortions")}</Link>
             </Button>
           )}
-          <Button variant="secondary" size="sm" onClick={() => navigate("/tests")}>
-            {t("testResults.nextTests")}
+          <Button variant="secondary" size="sm" asChild>
+            <Link to="/tests">{t("testResults.nextTests")}</Link>
           </Button>
         </div>
       </StickyBottomBar>

@@ -114,7 +114,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                   onClick={() => setShowHintDetail((v) => !v)}
                   className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <ChevronRight className={cn("w-3.5 h-3.5 transition-transform", showHintDetail && "rotate-90")} />
+                  <ChevronRight aria-hidden="true" className={cn("w-3.5 h-3.5 transition-transform", showHintDetail && "rotate-90")} />
                   {showHintDetail ? t("distortions.hideExample") : t("distortions.showExample")}
                 </button>
                 {showHintDetail && (
@@ -168,6 +168,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
               aria-hidden="true"
             >
               <Trash2
+                aria-hidden="true"
                 className="w-5 h-5 text-muted-foreground transition-colors duration-150"
                 style={{ color: dragProgress > 0 ? `hsl(var(--destructive) / ${0.5 + dragProgress * 0.5})` : undefined }}
               />
@@ -178,7 +179,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
             </p>
 
             <Button variant="outline" disabled={!canRelease} onClick={finishRelease} className="flex items-center gap-2">
-              <Trash2 className="w-4 h-4" />
+              <Trash2 aria-hidden="true" className="w-4 h-4" />
               {t("distortions.letGo.releaseButton")}
             </Button>
           </div>

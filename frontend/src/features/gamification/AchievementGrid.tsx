@@ -68,13 +68,13 @@ export default function AchievementGrid() {
                 )}
               >
                 {a.unlocked ? (
-                  <Icon className={cn("w-3.5 h-3.5", colorClass)} />
+                  <Icon aria-hidden="true" className={cn("w-3.5 h-3.5", colorClass)} />
                 ) : (
-                  <Lock className="w-3 h-3 text-muted-foreground" />
+                  <Lock aria-hidden="true" className="w-3 h-3 text-muted-foreground" />
                 )}
               </div>
               {a.unlocked && (
-                <Check className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                <Check aria-hidden="true" className="w-3.5 h-3.5 text-green-500 shrink-0" />
               )}
             </div>
             <div className="min-w-0">

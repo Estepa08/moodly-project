@@ -13,6 +13,7 @@ tags:
   - name: OnboardingStories
   - name: Reports
   - name: Breathing
+  - name: Digest
   - name: Cba
 paths:
   /auth/forgot-password:
@@ -217,10 +218,33 @@ paths:
                 $ref: '#/components/schemas/CheckInResponse'
       tags:
         - Breathing
+  /creature/completions:
+    get:
+      operationId: Creature_getCompletions
+      description: История выполненных практик за последние N дней (по умолчанию 30)
+      parameters:
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PracticeCompletion'
+      tags:
+        - Breathing
   /creature/exercise/complete:
     post:
       operationId: Creature_completeExercise
-      description: Завершить дыхательное упражнение, обновить уровень спокойствия
+      description: Завершить дыхательное упражнение, обновить уровень спокойствия, начислить опыт
       parameters: []
       responses:
         '200':
@@ -228,7 +252,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreatureState'
+                $ref: '#/components/schemas/CheckInResponse'
       tags:
         - Breathing
       requestBody:
@@ -237,6 +261,40 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BreathingCompleteRequest'
+  /creature/reward:
+    post:
+      operationId: Creature_reward
+      description: Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba)
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RewardResponse'
+      tags:
+        - Breathing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RewardRequest'
+  /digest/weekly:
+    get:
+      operationId: Digest_getWeekly
+      description: Недельный дайджест активности пользователя
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyDigest'
+      tags:
+        - Digest
   /entries:
     get:
       operationId: Entries_list
@@ -542,7 +600,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Test'
+                  $ref: '#/components/schemas/TestDigest'
       tags:
         - Tests
   /tests/{id}:
@@ -626,6 +684,37 @@ paths:
           description: 'There is no content to send for this request, but the headers may be useful. '
       tags:
         - Users
+  /users/me/preferences:
+    get:
+      operationId: Users_getPreferences
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreference'
+      tags:
+        - Users
+    put:
+      operationId: Users_savePreferences
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreference'
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferenceUpdate'
 security:
   - BearerAuth: []
 components:
@@ -1023,6 +1112,22 @@ components:
         unit:
           type: string
       description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
+    PracticeCompletion:
+      type: object
+      required:
+        - source
+        - xpAwarded
+        - createdAt
+      properties:
+        source:
+          type: string
+        xpAwarded:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+      description: Запись о выполненной практике и полученном опыте
     RefreshResponse:
       type: object
       required:
@@ -1108,11 +1213,32 @@ components:
           type: string
         message:
           type: string
+    RewardRequest:
+      type: object
+      required:
+        - source
+      properties:
+        source:
+          type: string
+      description: Запрос на награду за практику
+    RewardResponse:
+      type: object
+      required:
+        - state
+        - leveledUp
+      properties:
+        state:
+          $ref: '#/components/schemas/CreatureState'
+        leveledUp:
+          type: boolean
+          description: Был ли достигнут новый уровень
+      description: Результат награды за практику
     Test:
       type: object
       required:
         - id
         - title
+        - active
         - questions
       properties:
         id:
@@ -1121,6 +1247,8 @@ components:
           type: string
         description:
           type: string
+        active:
+          type: boolean
         questions:
           type: array
           items:
@@ -1136,6 +1264,21 @@ components:
           type: string
         optionId:
           type: string
+    TestDigest:
+      type: object
+      required:
+        - id
+        - title
+        - active
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        active:
+          type: boolean
     TestQuestion:
       type: object
       required:
@@ -1195,6 +1338,23 @@ components:
           type: string
           format: date-time
       description: 'Конкретная попытка прохождения теста пользователем: ответы, посчитанный балл и рекомендация'
+    TestResultDigest:
+      type: object
+      required:
+        - testId
+        - title
+        - score
+        - interpretation
+      properties:
+        testId:
+          type: string
+        title:
+          type: string
+        score:
+          type: integer
+          format: int32
+        interpretation:
+          type: string
     TestResultSubmit:
       type: object
       required:
@@ -1233,11 +1393,85 @@ components:
           type: string
         name:
           type: string
+    UserPreference:
+      type: object
+      required:
+        - goals
+        - experienceLevel
+        - dailyReminder
+        - onboardingDone
+      properties:
+        goals:
+          type: array
+          items:
+            type: string
+        experienceLevel:
+          type: string
+        dailyReminder:
+          type: boolean
+        reminderTime:
+          type: string
+        onboardingDone:
+          type: boolean
+      description: Настройки и предпочтения пользователя
+    UserPreferenceUpdate:
+      type: object
+      properties:
+        goals:
+          type: array
+          items:
+            type: string
+        experienceLevel:
+          type: string
+        dailyReminder:
+          type: boolean
+        reminderTime:
+          type: string
+        onboardingDone:
+          type: boolean
     UserUpdate:
       type: object
       properties:
         name:
           type: string
+    WeeklyDigest:
+      type: object
+      required:
+        - startDate
+        - endDate
+        - totalEntries
+        - averages
+        - checkInDays
+        - testsTaken
+        - practicesCompleted
+        - creatureXpGained
+        - creatureLevel
+      properties:
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        totalEntries:
+          type: integer
+          format: int32
+        averages: {}
+        checkInDays:
+          type: integer
+          format: int32
+        testsTaken:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestResultDigest'
+        practicesCompleted: {}
+        creatureXpGained:
+          type: integer
+          format: int32
+        creatureLevel:
+          type: integer
+          format: int32
+      description: Результаты тестирования за неделю
   securitySchemes:
     BearerAuth:
       type: http

@@ -96,7 +96,7 @@ export default function DistortionsPage() {
                     className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))}
                   >
-                    <ChevronRight className={`w-4 h-4 ${expanded[key] ? "rotate-90" : ""}`} />
+                    <ChevronRight aria-hidden="true" className={`w-4 h-4 ${expanded[key] ? "rotate-90" : ""}`} />
                     {expanded[key] ? t("distortions.hideExample") : t("distortions.showExample")}
                   </button>
 

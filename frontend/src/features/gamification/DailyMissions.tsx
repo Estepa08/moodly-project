@@ -29,7 +29,7 @@ export default function DailyMissions() {
           >
             <div className="shrink-0">
               {mission.claimed ? (
-                <CheckCircle2 className="w-6 h-6 text-green-500" />
+                <CheckCircle2 aria-hidden="true" className="w-6 h-6 text-green-500" />
               ) : isComplete ? (
                 <button
                   onClick={() => claimMission.mutate(mission.id)}
@@ -37,10 +37,10 @@ export default function DailyMissions() {
                   className="w-6 h-6 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]"
                   aria-label={t("missions.claim")}
                 >
-                  <Gift className="w-3.5 h-3.5 text-primary-foreground" />
+                  <Gift aria-hidden="true" className="w-3.5 h-3.5 text-primary-foreground" />
                 </button>
               ) : (
-                <Circle className="w-6 h-6 text-muted-foreground/40" />
+                <Circle aria-hidden="true" className="w-6 h-6 text-muted-foreground/40" />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -69,7 +69,7 @@ export default function DailyMissions() {
       })}
       {allClaimed && missions && missions.length > 0 && (
         <div className="flex items-center justify-center gap-1.5 text-xs text-accent font-medium py-2">
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />
           {t("missions.allDone")}
         </div>
       )}

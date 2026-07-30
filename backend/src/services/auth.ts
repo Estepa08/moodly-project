@@ -47,7 +47,10 @@ export const authService = {
     const tokenHash = hashToken(rawToken);
     const expiresAt = new Date(Date.now() + RESET_TOKEN_HOURS * 3600 * 1000);
 
-    await prisma.resetToken.create({ data: { userId, tokenHash, expiresAt } });
+    await prisma.$transaction([
+      prisma.resetToken.deleteMany({ where: { userId } }),
+      prisma.resetToken.create({ data: { userId, tokenHash, expiresAt } }),
+    ]);
     return rawToken;
   },
 

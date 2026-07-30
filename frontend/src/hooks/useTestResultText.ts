@@ -19,7 +19,7 @@ export function isSevereInterpretation(
   flags?: ResultFlags,
 ): boolean {
   const key = flags?.bandKey || flags?.templateKey || "";
-  return ["severe", "extreme", "moderatelySevere"].includes(key);
+  return ["severe", "extreme", "high"].includes(key);
 }
 
 export function useTestResultText() {

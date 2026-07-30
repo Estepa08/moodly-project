@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { api } from "../lib/api";
 import { getErrorMessage } from "../lib/error-messages";
@@ -51,8 +51,8 @@ export default function ResetPasswordPage() {
             <h2 className="text-xl font-serif font-semibold text-foreground">
               {t("resetPassword.invalidLink")}
             </h2>
-            <Button variant="secondary" className="w-full" onClick={() => navigate("/login")}>
-              {t("forgotPassword.backToLogin")}
+            <Button variant="secondary" className="w-full" asChild>
+              <Link to="/login">{t("forgotPassword.backToLogin")}</Link>
             </Button>
           </CardContent>
         </Card>

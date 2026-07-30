@@ -22,6 +22,11 @@ model User {
   consentAcceptedAt DateTime?
   consentVersion    String?
 
+  // Email verification
+  emailVerified             Boolean   @default(false)
+  emailVerificationToken    String?   @unique
+  emailVerificationSentAt   DateTime?
+
   entries     Entry[]
   testResults TestResult[]
   feedback    Feedback[]
@@ -34,6 +39,8 @@ model User {
   userPreference UserPreference?
   pushSubscriptions PushSubscription[]
   userAchievements UserAchievement[]
+  creatureState CreatureState?
+  dailyMissions  DailyMission[]
 }
 
 model Parameter {
@@ -53,7 +60,7 @@ model Entry {
   note        String?
   createdAt   DateTime @default(now())
 
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parameter Parameter @relation(fields: [parameterId], references: [id])
 
   @@index([userId])
@@ -62,11 +69,12 @@ model Entry {
 }
 
 model Test {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
   description String?
-  type        String @default("standard")
+  type        String  @default("standard")
   questions   Json
+  active      Boolean @default(true)
 
   results    TestResult[]
   scoreBands TestScoreBand[]
@@ -96,7 +104,7 @@ model TestResult {
   completedAt    DateTime @default(now())
 
   test Test @relation(fields: [testId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([testId])
@@ -108,7 +116,7 @@ model Feedback {
   message   String
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -130,7 +138,7 @@ model Report {
   createdAt   DateTime @default(now())
   downloadUrl String?
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -159,7 +167,7 @@ model UserAchievement {
   unlockedAt    DateTime @default(now())
   notified      Boolean  @default(false)
 
-  user        User        @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   achievement Achievement @relation(fields: [achievementId], references: [id])
 
   @@unique([userId, achievementId])
@@ -182,6 +190,8 @@ model CreatureState {
   unlockedTitles   String[] @default([])
   petType          String   @default("puff")
   unlockedPetTypes String[] @default(["puff"])
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserPreference {
@@ -194,7 +204,7 @@ model UserPreference {
   onboardingDone       Boolean @default(false)
   showSupportResources Boolean @default(true)
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model PracticeCompletion {
@@ -204,7 +214,7 @@ model PracticeCompletion {
   xpAwarded Int
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([userId, createdAt])
@@ -217,7 +227,7 @@ model ResetToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -229,7 +239,7 @@ model RefreshToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -242,7 +252,7 @@ model BreathingSession {
   finalCalmness   Int
   completedAt     DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -294,7 +304,7 @@ model CbaEntry {
   consWeight  Int
   createdAt   DateTime @default(now())
 
-  user  User           @relation(fields: [userId], references: [id])
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   items CbaEntryItem[]
 
   @@index([userId])
@@ -311,6 +321,8 @@ model DailyMission {
   sortOrder  Int      @default(0)
   createdAt  DateTime @default(now())
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, date])
 }
 
@@ -321,7 +333,7 @@ model PushSubscription {
   keys      Json
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }

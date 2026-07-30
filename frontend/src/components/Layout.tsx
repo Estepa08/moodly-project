@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Navigate, useNavigate, useLocation } from "react-router-dom";
+import { Navigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { useCreatureState } from "../features/gamification";
@@ -16,7 +16,6 @@ import { PRACTICE_ITEMS, OTHER_ITEMS, ALL_MORE_ITEMS } from "../layout/nav-confi
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isBootstrapping } = useAuth();
   const isReducedMotion = useReducedMotion();
@@ -191,42 +190,38 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   {t("nav.practices")}
                 </p>
                 {PRACTICE_ITEMS.map((item) => (
-                  <button
+                  <Link
                     key={item.path}
-                    onClick={() => {
-                      navigate(item.path);
-                      setMobileMoreOpen(false);
-                    }}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    to={item.path}
+                    onClick={() => setMobileMoreOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       location.pathname.startsWith(item.path)
                         ? "text-primary font-medium bg-secondary/30"
                         : "text-foreground hover:bg-secondary/30"
                     }`}
                   >
-                    <item.icon className="w-5 h-5 shrink-0" />
+                    <item.icon aria-hidden="true" className="w-5 h-5 shrink-0" />
                     {t(item.labelKey)}
-                  </button>
+                  </Link>
                 ))}
                 <div className="h-px bg-border mx-3 my-1" />
                 <p className="text-xs font-medium text-muted-foreground px-3 pt-1 pb-1">
                   {t("nav.more")}
                 </p>
                 {OTHER_ITEMS.map((item) => (
-                  <button
+                  <Link
                     key={item.path}
-                    onClick={() => {
-                      navigate(item.path);
-                      setMobileMoreOpen(false);
-                    }}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    to={item.path}
+                    onClick={() => setMobileMoreOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       location.pathname.startsWith(item.path)
                         ? "text-primary font-medium bg-secondary/30"
                         : "text-foreground hover:bg-secondary/30"
                     }`}
                   >
-                    <item.icon className="w-5 h-5 shrink-0" />
+                    <item.icon aria-hidden="true" className="w-5 h-5 shrink-0" />
                     {t(item.labelKey)}
-                  </button>
+                  </Link>
                 ))}
               </div>
             </>

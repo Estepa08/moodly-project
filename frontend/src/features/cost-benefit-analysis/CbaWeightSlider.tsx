@@ -25,6 +25,7 @@ export default function CbaWeightSlider({ prosWeight, onChange }: CbaWeightSlide
         rounded={false}
       />
       <Slider
+        aria-label={t("cba.prosWeight")}
         min={0}
         max={100}
         step={1}

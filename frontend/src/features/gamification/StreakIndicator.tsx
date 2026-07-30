@@ -21,7 +21,7 @@ export default function StreakIndicator({ streak, className }: StreakIndicatorPr
       )}
       title={t("dailyCheckIn.streak", { count: streak })}
     >
-      <Flame className={cn("w-3.5 h-3.5", streak >= 7 && "text-accent")} />
+      <Flame aria-hidden="true" className={cn("w-3.5 h-3.5", streak >= 7 && "text-accent")} />
       <span>{streak}</span>
     </div>
   );

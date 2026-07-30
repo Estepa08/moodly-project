@@ -27,7 +27,7 @@ export default function EmptyState({
       )}
     >
       <div className="w-14 h-14 rounded-full bg-muted shadow-neumorphic-inset flex items-center justify-center mb-4">
-        <Icon className="w-6 h-6 text-muted-foreground" />
+        <Icon aria-hidden="true" className="w-6 h-6 text-muted-foreground" />
       </div>
       <p className="text-sm font-medium text-foreground mb-1">{title}</p>
       {description && <p className="text-xs text-muted-foreground max-w-xs">{description}</p>}

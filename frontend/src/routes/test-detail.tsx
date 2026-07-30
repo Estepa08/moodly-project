@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -8,7 +8,7 @@ import { useTestFlow } from "../hooks/useTestFlow";
 import { useTestResultText } from "../hooks/useTestResultText";
 import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
-import { MedicalDisclaimer } from "../widgets";
+import { WellnessDisclaimer } from "../widgets";
 import {
   Dialog,
   DialogContent,
@@ -84,30 +84,25 @@ export default function TestDetailPage() {
                 <p className="font-medium">{t("testDetail.recommendation")}</p>
                 <p className="text-muted-foreground">{recommendationText}</p>
               </div>
-              {isSevere && (
-                <Button variant="outline" className="w-full" onClick={() => navigate("/thinking-patterns")}>
-                  {t("testResults.nextDistortions")}
-                </Button>
-              )}
-              <Button className="w-full" onClick={() => navigate("/results")}>
-                {t("testDetail.viewAll")}
+              <Button className="w-full" asChild>
+                <Link to="/results">{t("testDetail.viewAll")}</Link>
               </Button>
             </CardContent>
           </Card>
           <div className="mt-4">
-            <MedicalDisclaimer />
+            <WellnessDisclaimer />
           </div>
         </div>
         <StickyBottomBar>
           <div className="flex flex-wrap gap-2 justify-center">
-            <Button variant="secondary" size="sm" onClick={() => navigate("/breathing")}>
-              {t("testResults.nextBreathing")}
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/breathing">{t("testResults.nextBreathing")}</Link>
             </Button>
-            <Button variant="secondary" size="sm" onClick={() => navigate("/dashboard")}>
-              {t("testResults.nextTrack")}
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/dashboard">{t("testResults.nextTrack")}</Link>
             </Button>
-            <Button variant="secondary" size="sm" onClick={() => navigate("/tests")}>
-              {t("testResults.nextTests")}
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/tests">{t("testResults.nextTests")}</Link>
             </Button>
           </div>
         </StickyBottomBar>
@@ -120,6 +115,16 @@ export default function TestDetailPage() {
     return (
       <div className="flex justify-center py-16">
         <Spinner size={32} />
+      </div>
+    );
+  }
+
+  if (!test.active) {
+    return (
+      <div className="max-w-lg mx-auto space-y-4 py-16 text-center">
+        <h1 className="text-lg font-semibold font-serif text-foreground">{t("testDetail.unavailable")}</h1>
+        <p className="text-sm text-muted-foreground">{t("testDetail.unavailableDesc")}</p>
+        <Button className="mt-4" asChild><Link to="/tests">{t("common.back")}</Link></Button>
       </div>
     );
   }
@@ -144,7 +149,7 @@ export default function TestDetailPage() {
                 onClick={() => handleGoToQuestion(i)}
               >
                 <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <Check className="w-3.5 h-3.5" />
+                  <Check aria-hidden="true" className="w-3.5 h-3.5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm truncate">{q.text}</p>
@@ -154,7 +159,7 @@ export default function TestDetailPage() {
                     </p>
                   )}
                 </div>
-                <ChevronLeft className="w-4 h-4 text-muted-foreground shrink-0 rotate-180" />
+                <ChevronLeft aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0 rotate-180" />
               </button>
             );
           })}
@@ -244,7 +249,7 @@ export default function TestDetailPage() {
                 {option.text}
                 {isSelected && (
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 animate-in fade-in zoom-in">
-                    <Check className="w-4 h-4" />
+                    <Check aria-hidden="true" className="w-4 h-4" />
                   </span>
                 )}
               </Button>
@@ -261,7 +266,7 @@ export default function TestDetailPage() {
             onClick={handleBack}
             className="flex items-center gap-1"
           >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft aria-hidden="true" className="w-4 h-4" />
             {t("testDetail.previous")}
           </Button>
         ) : (

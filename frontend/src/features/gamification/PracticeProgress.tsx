@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Wind, Heart, Moon, Brain, Scale, BookOpen, Sparkles } from "lucide-react";
 import { useCompletions } from "./useCreature";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -33,7 +33,6 @@ const ALL_SOURCES = Object.values(PracticeSource);
 
 export default function PracticeProgress({ breathingSessionCount }: PracticeProgressProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { data: completions, isLoading } = useCompletions(30);
 
   if (isLoading) {
@@ -68,33 +67,33 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
             const Icon = config.icon;
             if (!data) {
               return (
-                <button
+                <Link
                   key={source}
-                  onClick={() => navigate(SOURCE_PATH[source])}
-                  className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 opacity-50 w-full text-left cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  to={SOURCE_PATH[source]}
+                  className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 opacity-50 w-full text-left transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <Icon className="w-5 h-5 text-muted-foreground shrink-0" />
+                  <Icon aria-hidden="true" className="w-5 h-5 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs text-muted-foreground truncate">{t(config.labelKey)}</p>
                     <p className="text-sm font-semibold text-muted-foreground truncate">—</p>
                   </div>
-                </button>
+                </Link>
               );
             }
             return (
-              <button
+              <Link
                 key={source}
-                onClick={() => navigate(SOURCE_PATH[source])}
-                className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 w-full text-left cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                to={SOURCE_PATH[source]}
+                className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 w-full text-left transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <Icon className="w-5 h-5 text-primary shrink-0" />
+                <Icon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{t(config.labelKey)}</p>
                   <p className="text-sm font-semibold text-foreground truncate">
                     {t("progress.totalCompletions", { count: data.count })} · +{data.xp} XP
                   </p>
                 </div>
-              </button>
+              </Link>
             );
           })}
         </div>
@@ -124,7 +123,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                         className="flex items-center justify-between text-xs text-muted-foreground"
                       >
                         <span className="flex items-center gap-1.5">
-                          {config && <config.icon className="w-3 h-3" />}
+                          {config && <config.icon aria-hidden="true" className="w-3 h-3" />}
                           {config ? t(config.labelKey) : c.source}
                         </span>
                         <span className="tabular-nums">

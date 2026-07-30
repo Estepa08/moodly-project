@@ -75,7 +75,7 @@ function ItemChecklist({
                 aria-label={t("cba.removeItem")}
                 className="text-muted-foreground hover:text-destructive transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
               >
-                <X className="w-3.5 h-3.5" />
+                <X aria-hidden="true" className="w-3.5 h-3.5" />
               </button>
             </li>
           ))}
@@ -98,7 +98,7 @@ function ItemChecklist({
           }}
         />
         <Button type="button" variant="outline" size="sm" onClick={handleAdd}>
-          <Plus className="w-4 h-4" />
+          <Plus aria-hidden="true" className="w-4 h-4" />
         </Button>
       </div>
     </div>

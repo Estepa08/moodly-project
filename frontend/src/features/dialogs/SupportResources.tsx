@@ -18,7 +18,7 @@ export default function SupportResources({ open, onDismiss }: Props) {
         <DialogHeader>
           <div className="flex items-center gap-2 mb-2">
             <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-              <Heart className="w-5 h-5 text-primary" />
+              <Heart aria-hidden="true" className="w-5 h-5 text-primary" />
             </div>
             <DialogTitle className="text-lg text-foreground font-serif">
               {t("supportResources.title")}
@@ -31,7 +31,7 @@ export default function SupportResources({ open, onDismiss }: Props) {
 
         <div className="space-y-3 rounded-xl bg-secondary/50 p-4 border border-border">
           <p className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
-            <PhoneCall className="w-3.5 h-3.5" />
+            <PhoneCall aria-hidden="true" className="w-3.5 h-3.5" />
             {t("supportResources.helpline")}
           </p>
 

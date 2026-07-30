@@ -50,11 +50,12 @@ export default function CollapsibleSection({
         aria-expanded={open}
         className="flex items-center gap-2 w-full py-2 rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
       >
-        {Icon && <Icon className="w-4 h-4 text-muted-foreground shrink-0" />}
+        {Icon && <Icon aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0" />}
         <span className="text-sm font-semibold text-foreground font-serif flex-1 text-left">
           {title}
         </span>
         <ChevronDown
+          aria-hidden="true"
           className={cn(
             "w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0",
             open && "rotate-180",

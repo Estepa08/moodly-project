@@ -109,7 +109,7 @@ export default function DigestPage() {
                   key={key}
                   className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2"
                 >
-                  <Activity className="w-5 h-5 text-primary shrink-0" />
+                  <Activity aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground capitalize">{key}</p>
                     <p className="text-sm font-semibold text-foreground tabular-nums">{val}</p>
@@ -135,7 +135,7 @@ export default function DigestPage() {
                     key={source}
                     className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2"
                   >
-                    <Icon className="w-5 h-5 text-primary shrink-0" />
+                    <Icon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">
                         {t(PRACTICE_LABELS[source] || source)}

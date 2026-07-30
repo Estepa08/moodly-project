@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
 import { AppError, ConflictError, NotFoundError } from "../lib/errors.js";
@@ -21,9 +22,20 @@ function stripUser(user: {
   email: string;
   name: string | null;
   createdAt: Date;
+  emailVerified: boolean;
   password: string;
 }) {
-  return { id: user.id, email: user.email, name: user.name, createdAt: user.createdAt };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    createdAt: user.createdAt,
+    emailVerified: user.emailVerified,
+  };
+}
+
+function hashToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 export const userService = {
@@ -35,6 +47,9 @@ export const userService = {
     if (existing) throw new ConflictError("Email already registered");
 
     const hashed = await bcrypt.hash(input.password, 10);
+    const rawToken = crypto.randomUUID();
+    const tokenHash = hashToken(rawToken);
+
     const user = await prisma.user.create({
       data: {
         email: input.email,
@@ -43,9 +58,11 @@ export const userService = {
         ageConfirmed: true,
         consentAcceptedAt: new Date(),
         consentVersion: CONSENT_VERSION,
+        emailVerificationToken: tokenHash,
+        emailVerificationSentAt: new Date(),
       },
     });
-    return stripUser(user);
+    return { user: stripUser(user), verificationToken: rawToken };
   },
 
   async login(input: LoginInput) {
@@ -55,7 +72,44 @@ export const userService = {
     const valid = await bcrypt.compare(input.password, user.password);
     if (!valid) throw new AppError("INVALID_CREDENTIALS", 401, "Invalid email or password");
 
+    if (!user.emailVerified) {
+      throw new AppError("EMAIL_NOT_VERIFIED", 403, "Please verify your email before logging in");
+    }
+
     return stripUser(user);
+  },
+
+  async verifyEmail(token: string) {
+    const tokenHash = hashToken(token);
+    const user = await prisma.user.findUnique({ where: { emailVerificationToken: tokenHash } });
+    if (!user) throw new AppError("INVALID_VERIFICATION_TOKEN", 400, "Invalid or expired verification token");
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationSentAt: null,
+      },
+    });
+    return stripUser(user);
+  },
+
+  async createEmailVerificationToken(userId: string): Promise<string> {
+    const rawToken = crypto.randomUUID();
+    const tokenHash = hashToken(rawToken);
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: {
+          emailVerificationToken: tokenHash,
+          emailVerificationSentAt: new Date(),
+          emailVerified: false,
+        },
+      }),
+    ]);
+    return rawToken;
   },
 
   async findById(id: string) {
@@ -73,17 +127,7 @@ export const userService = {
   },
 
   async delete(id: string) {
-    await prisma.$transaction([
-      prisma.breathingSession.deleteMany({ where: { userId: id } }),
-      prisma.creatureState.deleteMany({ where: { userId: id } }),
-      prisma.refreshToken.deleteMany({ where: { userId: id } }),
-      prisma.resetToken.deleteMany({ where: { userId: id } }),
-      prisma.testResult.deleteMany({ where: { userId: id } }),
-      prisma.report.deleteMany({ where: { userId: id } }),
-      prisma.feedback.deleteMany({ where: { userId: id } }),
-      prisma.entry.deleteMany({ where: { userId: id } }),
-      prisma.user.delete({ where: { id } }),
-    ]);
+    await prisma.user.delete({ where: { id } });
   },
 
   async getPreferences(userId: string) {

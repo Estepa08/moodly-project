@@ -69,7 +69,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
     <Card className="shadow-neumorphic">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 font-serif">
-          <Sparkles className="w-4 h-4 text-accent" />
+          <Sparkles aria-hidden="true" className="w-4 h-4 text-accent" />
           {t("dashboard.quickEntry.title")}
         </CardTitle>
       </CardHeader>
@@ -94,7 +94,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                 aria-pressed={isActive}
               >
                 <div className="w-12 h-12 flex items-center justify-center">
-                  {Icon && <Icon className="w-8 h-8 text-primary" />}
+                  {Icon && <Icon aria-hidden="true" className="w-8 h-8 text-primary" />}
                 </div>
                 <span className="text-xs font-medium leading-tight text-center">{t(cfg.labelKey)}</span>
               </button>
@@ -135,7 +135,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
                         className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 min-h-[44px]"
                         aria-label={t("dashboard.quickEntry.addNote")}
                       >
-                        <Plus className="w-3 h-3" />
+                        <Plus aria-hidden="true" className="w-3 h-3" />
                         {t("dashboard.quickEntry.addNote")}
                       </button>
                     ) : (

@@ -91,7 +91,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
           aria-label={t("cba.prevExample")}
           className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-all duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft aria-hidden="true" className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-1.5">
           {examples.map((e, i) => (
@@ -110,7 +110,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
           aria-label={t("cba.nextExample")}
           className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-all duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight aria-hidden="true" className="w-5 h-5" />
         </button>
       </div>
     </div>

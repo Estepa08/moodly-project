@@ -36,12 +36,12 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
               return (
                 <div key={avg.name} className="rounded-xl bg-card shadow-neumorphic-sm p-3 max-sm:p-2">
                   <div className="flex items-center gap-2 mb-2">
-                    {Icon && <Icon className="w-4 h-4 text-primary" />}
+                    {Icon && <Icon aria-hidden="true" className="w-4 h-4 text-primary" />}
                     <span className="text-xs text-muted-foreground">{t(PARAM_NAME_KEYS[avg.name as ParameterName] ?? avg.name)}</span>
                   </div>
                   <div className="flex items-end gap-2">
                     <span className={`text-2xl font-bold font-serif ${colorClass}`}>{averageValue !== null ? averageValue.toFixed(1) : "—"}</span>
-                    {averageValue !== null && <TrendIcon className={`w-4 h-4 mb-1 ${trendColor}`} />}
+                    {averageValue !== null && <TrendIcon aria-hidden="true" className={`w-4 h-4 mb-1 ${trendColor}`} />}
                   </div>
                 </div>
               );

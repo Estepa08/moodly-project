@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { api } from "../lib/api";
 import { getErrorMessage } from "../lib/error-messages";
 import { Button } from "../components/ui/button";
@@ -10,7 +10,6 @@ import { Card, CardContent } from "../components/ui/card";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,8 +41,8 @@ export default function ForgotPasswordPage() {
               <p className="text-sm text-muted-foreground text-center">
                 {t("forgotPassword.sent")}
               </p>
-              <Button variant="secondary" className="w-full" onClick={() => navigate("/login")}>
-                {t("forgotPassword.backToLogin")}
+              <Button variant="secondary" className="w-full" asChild>
+                <Link to="/login">{t("forgotPassword.backToLogin")}</Link>
               </Button>
             </>
           ) : (
@@ -67,6 +66,7 @@ export default function ForgotPasswordPage() {
                     enterKeyHint="go"
                     required
                     autoFocus
+                    spellCheck={false}
                   />
                 </div>
                 {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
@@ -74,13 +74,12 @@ export default function ForgotPasswordPage() {
                   {loading ? t("forgotPassword.sending") : t("forgotPassword.send")}
                 </Button>
                 <p className="text-center text-sm text-muted-foreground">
-                  <button
-                    type="button"
-                    className="text-primary hover:underline cursor-pointer"
-                    onClick={() => navigate("/login")}
+                  <Link
+                    to="/login"
+                    className="text-primary hover:underline"
                   >
                     {t("forgotPassword.backToLogin")}
-                  </button>
+                  </Link>
                 </p>
               </form>
             </>

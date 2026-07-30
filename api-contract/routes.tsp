@@ -90,7 +90,7 @@ interface Entries {
 @route("/tests")
 interface Tests {
   @get
-  list(): Test[];
+  list(): TestDigest[];
 
   @get
   @route("/{id}")

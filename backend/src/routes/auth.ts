@@ -8,44 +8,50 @@ import {
   clearRefreshCookie,
   REFRESH_COOKIE_NAME,
 } from "../lib/refresh-cookie.js";
-import { UnauthorizedError } from "../lib/errors.js";
-
-interface RegisterBody {
-  email: string;
-  password: string;
-  name?: string;
-  ageConfirmed: boolean;
-}
-
-interface LoginBody {
-  email: string;
-  password: string;
-}
-
-interface ForgotPasswordBody {
-  email: string;
-}
-
-interface ResetPasswordBody {
-  token: string;
-  password: string;
-}
+import { AppError, UnauthorizedError } from "../lib/errors.js";
+import { sendEmail } from "../lib/email.js";
+import { resetPasswordEmailHtml } from "../emails/reset-password-email.js";
+import { verifyEmailHtml } from "../emails/verify-email.js";
+import {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from "../lib/validation.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
-  fastify.post<{ Body: RegisterBody }>("/auth/register", async (request, reply) => {
-    const { email, password, name, ageConfirmed } = request.body;
-    const user = await userService.register({ email, password, name, ageConfirmed });
-    const accessToken = await reply.jwtSign(
-      { userId: user.id },
-      { expiresIn: authService.accessTokenExpiry },
-    );
-    const refreshToken = await authService.createRefreshToken(user.id);
-    setRefreshCookie(reply, refreshToken);
-    return { accessToken, user };
+  fastify.post("/auth/register", async (request, reply) => {
+    const parsed = registerSchema.safeParse(request.body);
+    if (!parsed.success) {
+      throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+    }
+    const { email, password, name, ageConfirmed } = parsed.data;
+    const { user, verificationToken } = await userService.register({
+      email,
+      password,
+      name,
+      ageConfirmed,
+    });
+    await sendEmail({
+      to: user.email,
+      subject: "Welcome to Moodly — Verify your email",
+      html: verifyEmailHtml({ token: verificationToken }),
+    });
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const isDev = process.env.NODE_ENV !== "production";
+    return {
+      user,
+      message: "Registration successful. Please check your email to verify your account.",
+      ...(isDev && { devVerificationLink: `${frontendUrl}/verify-email?token=${verificationToken}` }),
+    };
   });
 
-  fastify.post<{ Body: LoginBody }>("/auth/login", async (request, reply) => {
-    const { email, password } = request.body;
+  fastify.post("/auth/login", async (request, reply) => {
+    const parsed = loginSchema.safeParse(request.body);
+    if (!parsed.success) {
+      throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+    }
+    const { email, password } = parsed.data;
     const user = await userService.login({ email, password });
     const accessToken = await reply.jwtSign(
       { userId: user.id },
@@ -74,27 +80,30 @@ export default async function authRoutes(fastify: FastifyInstance) {
     clearRefreshCookie(reply);
   });
 
-  fastify.post<{ Body: ForgotPasswordBody }>("/auth/forgot-password", async (request) => {
-    const { email } = request.body;
+  fastify.post("/auth/forgot-password", async (request) => {
+    const parsed = forgotPasswordSchema.safeParse(request.body);
+    if (!parsed.success) {
+      throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+    }
+    const { email } = parsed.data;
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
       const token = await authService.createResetToken(user.id);
-      // In production, send email — never log the token or email together.
-      // For local/dev testing only, log the token (keyed by userId, not
-      // email) so the reset link can be exercised without an email backend.
-      if (process.env.NODE_ENV !== "production") {
-        request.log.debug(
-          { userId: user.id },
-          `Password reset link: /reset-password?token=${token}`,
-        );
-      }
+      await sendEmail({
+        to: user.email,
+        subject: "Password Reset",
+        html: resetPasswordEmailHtml({ token }),
+      });
     }
-    // Always return success to prevent email enumeration
     return { message: "If this email is registered, a reset link has been sent." };
   });
 
-  fastify.post<{ Body: ResetPasswordBody }>("/auth/reset-password", async (request, reply) => {
-    const { token, password } = request.body;
+  fastify.post("/auth/reset-password", async (request, reply) => {
+    const parsed = resetPasswordSchema.safeParse(request.body);
+    if (!parsed.success) {
+      throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+    }
+    const { token, password } = parsed.data;
     const userId = await authService.consumeResetToken(token);
     const hashed = await bcrypt.hash(password, 10);
     await prisma.user.update({ where: { id: userId }, data: { password: hashed } });
@@ -108,4 +117,25 @@ export default async function authRoutes(fastify: FastifyInstance) {
     return { accessToken, message: "Password reset successfully" };
   });
 
+  fastify.get("/auth/verify-email", async (request) => {
+    const { token } = request.query as { token: string };
+    if (!token) throw new AppError("VALIDATION_ERROR", 400, "Verification token is required");
+    await userService.verifyEmail(token);
+    return { message: "Email verified successfully" };
+  });
+
+  fastify.post("/auth/send-verification-email", async (request) => {
+    const { email } = request.body as { email: string };
+    if (!email) throw new AppError("VALIDATION_ERROR", 400, "Email is required");
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user && !user.emailVerified) {
+      const token = await userService.createEmailVerificationToken(user.id);
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Moodly — Verify your email",
+        html: verifyEmailHtml({ token }),
+      });
+    }
+    return { message: "If this email is registered, a verification link has been sent." };
+  });
 }

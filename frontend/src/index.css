@@ -45,6 +45,7 @@
   body {
     @apply antialiased;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-family:
@@ -65,11 +66,19 @@
   h5,
   h6 {
     font-family: "Lora", Georgia, serif;
+    text-wrap: balance;
+  }
+
+  [id]:target,
+  h2[id],
+  h3[id] {
+    scroll-margin-top: 6rem;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    color-scheme: dark;
     --background: 267 30% 10%;
     --foreground: 270 20% 90%;
     --card: 267 25% 14%;
@@ -153,24 +162,19 @@
 
 @keyframes header-creature-drift {
   0% {
-    left: 0;
-    transform: scaleX(1);
+    transform: translateX(0) scaleX(1);
   }
   45% {
-    left: calc(100% - 36px);
-    transform: scaleX(1);
+    transform: translateX(calc(100% - 36px)) scaleX(1);
   }
   50% {
-    left: calc(100% - 36px);
-    transform: scaleX(-1);
+    transform: translateX(calc(100% - 36px)) scaleX(-1);
   }
   95% {
-    left: 0;
-    transform: scaleX(-1);
+    transform: translateX(0) scaleX(-1);
   }
   100% {
-    left: 0;
-    transform: scaleX(1);
+    transform: translateX(0) scaleX(1);
   }
 }
 
