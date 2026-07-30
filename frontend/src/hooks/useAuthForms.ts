@@ -5,7 +5,7 @@ import { useAuth } from "./useAuth";
 import { api } from "../lib/api";
 import { ApiError } from "../lib/api-error";
 
-const DEMO_MODE = typeof import.meta !== "undefined" && import.meta.env.VITE_DEMO_MODE === "true";
+const DEMO_MODE = import.meta.env.DEV;
 
 const ERROR_I18N_KEYS: Record<string, string> = {
   EMAIL_NOT_VERIFIED: "auth.emailNotVerified",
@@ -85,6 +85,7 @@ export function useAuthForms() {
   };
 
   const handleDemo = useCallback(async () => {
+    if (!import.meta.env.DEV) return;
     setDemoLoading(true);
     setLoginError("");
     try {

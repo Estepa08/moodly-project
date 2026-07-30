@@ -2,7 +2,7 @@ import { ApiError } from "./api-error";
 import type { components } from "./api-types";
 
 type AuthResponse = components["schemas"]["AuthResponse"];
-type RegisterResponse = { user: components["schemas"]["User"]; message: string };
+type RegisterResponse = { user: components["schemas"]["User"]; message: string; devVerificationLink?: string };
 type RefreshResponse = components["schemas"]["RefreshResponse"];
 type ResetPasswordResponse = components["schemas"]["ResetPasswordResponse"];
 type Entry = components["schemas"]["Entry"];

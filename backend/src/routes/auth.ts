@@ -37,7 +37,13 @@ export default async function authRoutes(fastify: FastifyInstance) {
       subject: "Welcome to Moodly — Verify your email",
       html: verifyEmailHtml({ token: verificationToken }),
     });
-    return { user, message: "Registration successful. Please check your email to verify your account." };
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const isDev = process.env.NODE_ENV !== "production";
+    return {
+      user,
+      message: "Registration successful. Please check your email to verify your account.",
+      ...(isDev && { devVerificationLink: `${frontendUrl}/verify-email?token=${verificationToken}` }),
+    };
   });
 
   fastify.post("/auth/login", async (request, reply) => {
@@ -111,12 +117,11 @@ export default async function authRoutes(fastify: FastifyInstance) {
     return { accessToken, message: "Password reset successfully" };
   });
 
-  fastify.get("/auth/verify-email", async (request, reply) => {
+  fastify.get("/auth/verify-email", async (request) => {
     const { token } = request.query as { token: string };
     if (!token) throw new AppError("VALIDATION_ERROR", 400, "Verification token is required");
     await userService.verifyEmail(token);
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-    return reply.redirect(`${frontendUrl}/login?verified=true`);
+    return { message: "Email verified successfully" };
   });
 
   fastify.post("/auth/send-verification-email", async (request) => {
