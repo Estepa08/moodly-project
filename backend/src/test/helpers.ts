@@ -40,3 +40,25 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.ready();
   return fastify;
 }
+
+export async function registerAndLogin(
+  app: FastifyInstance,
+  email: string,
+  password = "secret123",
+  name?: string,
+): Promise<{ token: string; userId: string }> {
+  const reg = await app.inject({
+    method: "POST",
+    url: "/auth/register",
+    payload: { email, password, name, ageConfirmed: true },
+  });
+  const link = reg.json().devVerificationLink;
+  const tokenParam = new URL(link).searchParams.get("token")!;
+  await app.inject({ method: "GET", url: `/auth/verify-email?token=${tokenParam}` });
+  const login = await app.inject({
+    method: "POST",
+    url: "/auth/login",
+    payload: { email, password },
+  });
+  return { token: login.json().accessToken, userId: login.json().user.id };
+}

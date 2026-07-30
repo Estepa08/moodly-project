@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp } from "../../test/helpers.js";
+import { buildApp, registerAndLogin } from "../../test/helpers.js";
 import { PrismaClient } from "@prisma/client";
 import type { FastifyInstance } from "fastify";
 
@@ -14,13 +14,9 @@ beforeAll(async () => {
 
   const param = await prisma.parameter.create({ data: { name: "Mood", unit: "/10" } });
 
-  const reg = await app.inject({
-    method: "POST",
-    url: "/auth/register",
-    payload: { email: "reports-test@example.com", password: "secret123", ageConfirmed: true },
-  });
-  token = reg.json().accessToken;
-  userId = reg.json().user.id;
+  const result = await registerAndLogin(app, "reports-test@example.com", "secret123");
+  token = result.token;
+  userId = result.userId;
 
   await prisma.entry.create({
     data: { userId, parameterId: param.id, value: 8, createdAt: new Date("2026-01-15") },

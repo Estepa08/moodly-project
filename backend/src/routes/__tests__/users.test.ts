@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp } from "../../test/helpers.js";
+import { buildApp, registerAndLogin } from "../../test/helpers.js";
 import type { FastifyInstance } from "fastify";
 
 let app: FastifyInstance;
@@ -7,13 +7,8 @@ let token: string;
 
 beforeAll(async () => {
   app = await buildApp();
-
-  const res = await app.inject({
-    method: "POST",
-    url: "/auth/register",
-    payload: { email: "user-test@example.com", password: "secret123", name: "Original", ageConfirmed: true },
-  });
-  token = res.json().accessToken;
+  const result = await registerAndLogin(app, "user-test@example.com", "secret123", "Original");
+  token = result.token;
 });
 
 afterAll(async () => {
@@ -43,13 +38,7 @@ describe("Users", () => {
   });
 
   it("DELETE /users/me — deletes user", async () => {
-    const reg = await app.inject({
-      method: "POST",
-      url: "/auth/register",
-      payload: { email: "delete-me@example.com", password: "secret123", ageConfirmed: true },
-    });
-    const token2 = reg.json().accessToken;
-
+    const { token: token2 } = await registerAndLogin(app, "delete-me@example.com", "secret123");
     const res = await app.inject({
       method: "DELETE",
       url: "/users/me",
