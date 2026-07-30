@@ -48,6 +48,8 @@ fastify.addHook("onRoute", (routeOptions) => {
   }
 });
 
+fastify.get("/health", async () => ({ status: "ok", timestamp: new Date().toISOString() }));
+
 await fastify.register(authPlugin);
 
 await fastify.register(authRoutes);

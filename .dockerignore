@@ -1,0 +1,15 @@
+node_modules
+.git
+.env
+.env.*
+*.md
+docs
+.opencode
+*.log
+dist
+coverage
+node_modules/**
+.git/**
+*.tsbuildinfo
+.prisma
+.next

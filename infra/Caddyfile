@@ -1,4 +1,4 @@
-{$SITE_ADDRESS} {
+:{$PORT} {
     root * /srv
     encode gzip
 
