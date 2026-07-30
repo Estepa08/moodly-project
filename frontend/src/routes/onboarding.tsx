@@ -4,7 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import {
-  Wind, LayoutDashboard, ClipboardList, Brain, Moon, Heart, Sparkles, Bell,
+  Wind,
+  LayoutDashboard,
+  ClipboardList,
+  Brain,
+  Moon,
+  Heart,
+  Sparkles,
+  Bell,
 } from "lucide-react";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { ExpLevel } from "../lib/constants";
@@ -48,9 +55,7 @@ export default function OnboardingPage() {
   }
 
   const toggleGoal = (key: string) => {
-    setGoals((prev) =>
-      prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key],
-    );
+    setGoals((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]));
   };
 
   const handleFinish = async (destination = "/") => {

@@ -1,6 +1,15 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import { Scale } from "lucide-react";
 import { ChartTooltip } from "../../lib/chart-tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -58,7 +67,8 @@ export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
                     <ChartTooltip
                       formatLabel={(name, value, row) => {
                         const thought = (row?.thought as string) ?? "";
-                        const truncated = thought.length > 40 ? thought.slice(0, 40) + "..." : thought;
+                        const truncated =
+                          thought.length > 40 ? thought.slice(0, 40) + "..." : thought;
                         return `${name}: ${value}${name === "Pros" ? " 👍" : " 👎"} ${truncated ? `— ${truncated}` : ""}`;
                       }}
                     />

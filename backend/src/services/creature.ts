@@ -15,8 +15,6 @@ const PRACTICE_XP: Record<string, number> = {
   thoughtJournal: 5,
 };
 
-const ALL_PET_TYPES = ["puff", "ember", "dewdrop", "sprout", "comet", "aurora"];
-
 const MISSION_DEFINITIONS = [
   { key: "checkin", labelKey: "missions.checkin", xpReward: 10 },
   { key: "practice_breathing", labelKey: "missions.practiceBreathing", xpReward: 10 },
@@ -72,9 +70,8 @@ export const creatureService = {
     const totalCheckins = await prisma.practiceCompletion.count({
       where: { userId, source: "checkin" },
     });
-    const firstActivity = completions.length > 0
-      ? completions[completions.length - 1].createdAt
-      : null;
+    const firstActivity =
+      completions.length > 0 ? completions[completions.length - 1].createdAt : null;
     const daysSinceFirst = firstActivity
       ? Math.max(1, Math.floor((Date.now() - firstActivity.getTime()) / MS_PER_DAY))
       : 0;
@@ -180,14 +177,17 @@ export const creatureService = {
             xpReward: m.xpReward,
             sortOrder: i,
           },
-        })
+        }),
       ),
     );
 
     return this._evaluateMissions(userId, created);
   },
 
-  async _evaluateMissions(userId: string, missions: Awaited<ReturnType<typeof prisma.dailyMission.findMany>>) {
+  async _evaluateMissions(
+    userId: string,
+    missions: Awaited<ReturnType<typeof prisma.dailyMission.findMany>>,
+  ) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayEnd = new Date(today);
@@ -305,9 +305,7 @@ export const creatureService = {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const lastCheckIn = state.lastCheckInAt
-      ? new Date(state.lastCheckInAt)
-      : null;
+    const lastCheckIn = state.lastCheckInAt ? new Date(state.lastCheckInAt) : null;
 
     if (lastCheckIn) {
       const lastDate = new Date(lastCheckIn);
@@ -323,9 +321,7 @@ export const creatureService = {
       yesterday.setDate(yesterday.getDate() - 1);
       const lastDate = new Date(lastCheckIn);
       lastDate.setHours(0, 0, 0, 0);
-      newStreak = lastDate.getTime() === yesterday.getTime()
-        ? state.streak + 1
-        : 1;
+      newStreak = lastDate.getTime() === yesterday.getTime() ? state.streak + 1 : 1;
     }
 
     const { experience, level, leveledUp } = applyLevelUp(state, CHECKIN_EXP);

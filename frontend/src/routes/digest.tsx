@@ -41,18 +41,18 @@ export default function DigestPage() {
   }
 
   const startStr = new Date(digest.startDate).toLocaleDateString(undefined, {
-    month: "long", day: "numeric",
+    month: "long",
+    day: "numeric",
   });
   const endStr = new Date(digest.endDate).toLocaleDateString(undefined, {
-    month: "long", day: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h1 className="text-xl font-bold text-foreground font-serif">
-          {t("digest.title")}
-        </h1>
+        <h1 className="text-xl font-bold text-foreground font-serif">{t("digest.title")}</h1>
         <p className="text-sm text-muted-foreground">
           {startStr} — {endStr}
         </p>
@@ -92,10 +92,7 @@ export default function DigestPage() {
         </CardContent>
       </Card>
 
-      <DigestCharts
-        averages={digest.averages}
-        practicesCompleted={digest.practicesCompleted}
-      />
+      <DigestCharts averages={digest.averages} practicesCompleted={digest.practicesCompleted} />
 
       {Object.keys(digest.averages).length > 0 && (
         <Card className="shadow-neumorphic">
@@ -140,9 +137,7 @@ export default function DigestPage() {
                       <p className="text-xs text-muted-foreground">
                         {t(PRACTICE_LABELS[source] || source)}
                       </p>
-                      <p className="text-sm font-semibold text-foreground tabular-nums">
-                        {count}
-                      </p>
+                      <p className="text-sm font-semibold text-foreground tabular-nums">{count}</p>
                     </div>
                   </div>
                 );

@@ -12,6 +12,7 @@ function isSessionShown(): boolean {
   try {
     return sessionStorage.getItem(SESSION_KEY) === "1";
   } catch {
+    /* sessionStorage may throw in private browsing */
     return false;
   }
 }
@@ -20,6 +21,7 @@ function markSessionShown() {
   try {
     sessionStorage.setItem(SESSION_KEY, "1");
   } catch {
+    /* sessionStorage may throw in private browsing */
   }
 }
 

@@ -48,7 +48,7 @@ export default {
       },
       boxShadow: {
         "neumorphic-sm": "var(--elevation-1)",
-        "neumorphic": "var(--elevation-2)",
+        neumorphic: "var(--elevation-2)",
         "neumorphic-lg": "var(--elevation-3)",
         "neumorphic-xl": "var(--elevation-4)",
         "neumorphic-inset": "var(--elevation-inset)",

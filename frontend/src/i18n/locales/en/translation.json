@@ -354,7 +354,7 @@
     "showExample": "Show example",
     "hideExample": "Hide example",
     "exampleThought": "Example thought",
-      "reframe": "Reframe",
+    "reframe": "Reframe",
     "quizTitle": "Distortion Quiz",
     "quizProgress": "Question {{current}} of {{total}}",
     "quizDone": "Great job!",

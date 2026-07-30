@@ -63,7 +63,9 @@ export default function LoginPage({ defaultRegister }: Props) {
     if (reducedMotion) return {};
     const base = "transition-[opacity,transform] duration-300";
     return {
-      className: entering ? `${base} ease-out opacity-100 translate-x-0` : `${base} ease-out opacity-0 translate-x-4`,
+      className: entering
+        ? `${base} ease-out opacity-100 translate-x-0`
+        : `${base} ease-out opacity-0 translate-x-4`,
       style: entering ? staggerEnter(i) : undefined,
     };
   };
@@ -79,7 +81,9 @@ export default function LoginPage({ defaultRegister }: Props) {
               </div>
             </div>
             <h2 className="text-2xl font-serif font-semibold">{t("register.checkEmailTitle")}</h2>
-            <p className="text-muted-foreground">{t("register.checkEmailMessage", { email: registeredEmail })}</p>
+            <p className="text-muted-foreground">
+              {t("register.checkEmailMessage", { email: registeredEmail })}
+            </p>
             {devVerificationLink && (
               <p>
                 <a href={devVerificationLink} className="text-primary hover:underline text-sm">
@@ -94,7 +98,10 @@ export default function LoginPage({ defaultRegister }: Props) {
               <button
                 type="button"
                 className="text-primary hover:underline cursor-pointer"
-                onClick={() => { setRegisteredEmail(null); setIsLogin(true); }}
+                onClick={() => {
+                  setRegisteredEmail(null);
+                  setIsLogin(true);
+                }}
               >
                 {t("register.backToLogin")}
               </button>
@@ -115,7 +122,9 @@ export default function LoginPage({ defaultRegister }: Props) {
                 <MailCheck aria-hidden="true" className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            <h2 className="text-2xl font-serif font-semibold">{t("register.emailVerifiedTitle")}</h2>
+            <h2 className="text-2xl font-serif font-semibold">
+              {t("register.emailVerifiedTitle")}
+            </h2>
             <p className="text-muted-foreground">{t("register.emailVerifiedMessage")}</p>
             <Button onClick={() => setIsLogin(true)}>{t("login.signIn")}</Button>
           </CardContent>
@@ -165,10 +174,8 @@ export default function LoginPage({ defaultRegister }: Props) {
               <p className="text-xs text-muted-foreground">{t("login.privacyNotice")}</p>
             </div>
 
-          <div
-            className={cn(
-              reducedMotion ? "" : "flex transition-transform duration-300 ease-out",
-            )}
+            <div
+              className={cn(reducedMotion ? "" : "flex transition-transform duration-300 ease-out")}
               style={{
                 transform: reducedMotion || isLogin ? "translateX(0)" : "translateX(-100%)",
               }}
@@ -317,9 +324,13 @@ export default function LoginPage({ defaultRegister }: Props) {
                       />
                       <span>
                         {t("register.consentText")}{" "}
-                        <Link to="/terms" className="text-primary hover:underline">{t("register.termsLink")}</Link>
-                        {" "}{t("register.and")}{" "}
-                        <Link to="/privacy" className="text-primary hover:underline">{t("register.privacyLink")}</Link>
+                        <Link to="/terms" className="text-primary hover:underline">
+                          {t("register.termsLink")}
+                        </Link>{" "}
+                        {t("register.and")}{" "}
+                        <Link to="/privacy" className="text-primary hover:underline">
+                          {t("register.privacyLink")}
+                        </Link>
                       </span>
                     </Label>
                   </div>
@@ -328,7 +339,12 @@ export default function LoginPage({ defaultRegister }: Props) {
                       {regError}
                     </p>
                   )}
-                  <Button type="submit" className="w-full" disabled={!regAgeConfirmed} {...a(5, !isLogin)}>
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!regAgeConfirmed}
+                    {...a(5, !isLogin)}
+                  >
                     {t("register.signUp")}
                   </Button>
                   <p className="text-center text-sm text-muted-foreground" {...a(5, !isLogin)}>
@@ -361,8 +377,12 @@ export default function LoginPage({ defaultRegister }: Props) {
                 <div className="mt-2 space-y-2 text-xs text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-top-1">
                   <p>{t("login.disclaimer")}</p>
                   <div className="flex gap-3 pt-1">
-                    <Link to="/privacy" className="text-primary hover:underline">{t("login.privacyPolicy")}</Link>
-                    <Link to="/terms" className="text-primary hover:underline">{t("login.termsOfService")}</Link>
+                    <Link to="/privacy" className="text-primary hover:underline">
+                      {t("login.privacyPolicy")}
+                    </Link>
+                    <Link to="/terms" className="text-primary hover:underline">
+                      {t("login.termsOfService")}
+                    </Link>
                   </div>
                 </div>
               )}

@@ -10,11 +10,7 @@ interface CreatureStatusProps {
 
 const EXP_PER_LEVEL = 100;
 
-export default function CreatureStatus({
-  level,
-  experience,
-  className,
-}: CreatureStatusProps) {
+export default function CreatureStatus({ level, experience, className }: CreatureStatusProps) {
   const { t } = useTranslation();
   const nextLevelExp = level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((experience / nextLevelExp) * 100));
@@ -26,7 +22,13 @@ export default function CreatureStatus({
       </div>
       <div className="flex items-center gap-1.5 min-w-[120px]">
         <ProgressBar
-          segments={[{ value: expPercent, className: "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300" }]}
+          segments={[
+            {
+              value: expPercent,
+              className:
+                "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300",
+            },
+          ]}
           height={2.5}
           trackClassName="bg-muted"
           className="flex-1"

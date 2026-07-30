@@ -24,7 +24,14 @@ export const achievementsService = {
 
     return all.map((a) => {
       const criteria = a.criteria as Record<string, unknown>;
-      const progress = calculateProgress(criteria, creature, completions.length, breathingCount, totalXp, uniquePractices);
+      const progress = calculateProgress(
+        criteria,
+        creature,
+        completions.length,
+        breathingCount,
+        totalXp,
+        uniquePractices,
+      );
       const isUnlocked = unlockedMap.has(a.id);
       return {
         id: a.id,
@@ -67,7 +74,14 @@ export const achievementsService = {
     for (const a of all) {
       if (unlockedIds.has(a.id)) continue;
       const criteria = a.criteria as Record<string, unknown>;
-      const progress = calculateProgress(criteria, creature, completions.length, breathingCount, totalXp, uniquePractices);
+      const progress = calculateProgress(
+        criteria,
+        creature,
+        completions.length,
+        breathingCount,
+        totalXp,
+        uniquePractices,
+      );
       if (progress >= 100) {
         newlyUnlocked.push(a);
       }

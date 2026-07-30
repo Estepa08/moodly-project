@@ -43,7 +43,9 @@ export function CorrelationChart({
               <ChartTooltip
                 formatLabel={(name, value, row) => {
                   if (formatLabel) return formatLabel(name, value, row);
-                  const entryValues = (row?._values as Record<string, number[]> | undefined)?.[name];
+                  const entryValues = (row?._values as Record<string, number[]> | undefined)?.[
+                    name
+                  ];
                   if (entryValues && entryValues.length > 1) {
                     return `${name}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;
                   }
@@ -71,10 +73,7 @@ export function CorrelationChart({
             key={line.dataKey}
             className="flex items-center gap-1.5 text-xs text-muted-foreground"
           >
-            <span
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: line.stroke }}
-            />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: line.stroke }} />
             {line.label}
           </span>
         ))}

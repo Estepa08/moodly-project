@@ -48,7 +48,7 @@ export default function TestDetailPage() {
   // ── Result view ──
   if (result && test) {
     const maxScore = test.questions.length * 3;
-    const { interpretationText, recommendationText, isSevere } = resolve(result);
+    const { interpretationText, recommendationText } = resolve(result);
     const cdDistortions = result.flags?.distortions;
     const cdKeys = cdDistortions ? Object.keys(cdDistortions) : [];
 
@@ -122,9 +122,13 @@ export default function TestDetailPage() {
   if (!test.active) {
     return (
       <div className="max-w-lg mx-auto space-y-4 py-16 text-center">
-        <h1 className="text-lg font-semibold font-serif text-foreground">{t("testDetail.unavailable")}</h1>
+        <h1 className="text-lg font-semibold font-serif text-foreground">
+          {t("testDetail.unavailable")}
+        </h1>
         <p className="text-sm text-muted-foreground">{t("testDetail.unavailableDesc")}</p>
-        <Button className="mt-4" asChild><Link to="/tests">{t("common.back")}</Link></Button>
+        <Button className="mt-4" asChild>
+          <Link to="/tests">{t("common.back")}</Link>
+        </Button>
       </div>
     );
   }
@@ -154,12 +158,13 @@ export default function TestDetailPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm truncate">{q.text}</p>
                   {opt && (
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                      {opt.text}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{opt.text}</p>
                   )}
                 </div>
-                <ChevronLeft aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0 rotate-180" />
+                <ChevronLeft
+                  aria-hidden="true"
+                  className="w-4 h-4 text-muted-foreground shrink-0 rotate-180"
+                />
               </button>
             );
           })}
@@ -187,9 +192,7 @@ export default function TestDetailPage() {
 
       <header className="flex items-center justify-between">
         <div className="w-20" />
-        <h1 className="text-lg font-semibold text-foreground font-serif">
-          {test.title}
-        </h1>
+        <h1 className="text-lg font-semibold text-foreground font-serif">{test.title}</h1>
         <Button variant="ghost" size="sm" onClick={() => setShowExitConfirm(true)}>
           {t("testDetail.exit")}
         </Button>
@@ -225,9 +228,7 @@ export default function TestDetailPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base font-medium">
-            {question.text}
-          </CardTitle>
+          <CardTitle className="text-base font-medium">{question.text}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {question.options.map((option) => {

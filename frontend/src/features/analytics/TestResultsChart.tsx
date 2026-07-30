@@ -1,6 +1,15 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import { BarChart3 } from "lucide-react";
 import { ChartTooltip } from "../../lib/chart-tooltip";
 import PeriodSelector from "../../components/ui/PeriodSelector";
@@ -45,12 +54,12 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
       .filter((r) => new Date(r.completedAt).getTime() >= cutoff)
       .sort((a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime());
 
-    const testNames = [...new Set(filtered.map((r) => (r as any).testTitle ?? r.testId))];
+    const testNames = [...new Set(filtered.map((r) => r.testTitle ?? r.testId))];
     const grouped = new Map<string, Record<string, unknown>>();
 
     for (const r of filtered) {
       const day = formatChartDate(new Date(r.completedAt), i18n.language, showYear);
-      const testName = (r as any).testTitle ?? r.testId;
+      const testName = r.testTitle ?? r.testId;
       if (!grouped.has(day)) {
         const base: Record<string, unknown> = { date: day };
         for (const n of testNames) base[n] = null;
@@ -64,7 +73,7 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
 
   const testNames = useMemo(() => {
     if (!results) return [];
-    return [...new Set(results.map((r) => (r as any).testTitle ?? r.testId))];
+    return [...new Set(results.map((r) => r.testTitle ?? r.testId))];
   }, [results]);
 
   if (isLoading) return null;
@@ -79,12 +88,7 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
       </CardHeader>
       <CardContent>
         <div className="mb-3">
-          <PeriodSelector
-            options={PERIOD_OPTIONS}
-            value={period}
-            onChange={setPeriod}
-            size="sm"
-          />
+          <PeriodSelector options={PERIOD_OPTIONS} value={period} onChange={setPeriod} size="sm" />
         </div>
         {chartData.length > 1 && testNames.length > 0 ? (
           <ResponsiveContainer width="100%" height={220}>
@@ -93,15 +97,9 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
               <XAxis dataKey="date" fontSize={11} stroke="hsl(var(--chart-tick))" />
               <YAxis fontSize={11} stroke="hsl(var(--chart-tick))" />
               <Tooltip
-                content={
-                  <ChartTooltip
-                    formatLabel={(name, value) => `${name}: ${value}`}
-                  />
-                }
+                content={<ChartTooltip formatLabel={(name, value) => `${name}: ${value}`} />}
               />
-              <Legend
-                wrapperStyle={{ fontSize: 11, color: "hsl(var(--muted-foreground))" }}
-              />
+              <Legend wrapperStyle={{ fontSize: 11, color: "hsl(var(--muted-foreground))" }} />
               {testNames.map((name, i) => (
                 <Line
                   key={name}

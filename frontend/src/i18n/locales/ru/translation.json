@@ -358,7 +358,7 @@
     "showExample": "Показать пример",
     "hideExample": "Скрыть пример",
     "exampleThought": "Пример мысли",
-      "reframe": "Как переформулировать",
+    "reframe": "Как переформулировать",
     "quizTitle": "Квиз искажений",
     "quizProgress": "Вопрос {{current}} из {{total}}",
     "quizDone": "Отлично!",

@@ -1,6 +1,14 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { BarChart3 } from "lucide-react";
 import { ChartTooltip } from "../../lib/chart-tooltip";
 import PeriodSelector from "../../components/ui/PeriodSelector";
@@ -101,7 +109,8 @@ export default function QuizScoreChart({ entries, isLoading }: QuizScoreChartPro
                       formatLabel={(name, value, row) => {
                         const total = (row?.total as number) ?? 10;
                         const count = (row?.count as number) ?? 1;
-                        const label = count > 1 ? `Score: ${value} (avg of ${count})` : `Score: ${value}`;
+                        const label =
+                          count > 1 ? `Score: ${value} (avg of ${count})` : `Score: ${value}`;
                         return `${label} / ${total}`;
                       }}
                     />

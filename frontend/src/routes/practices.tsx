@@ -72,9 +72,7 @@ export default function PracticesPage() {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground font-serif">
-          {t("nav.practices")}
-        </h2>
+        <h2 className="text-xl font-semibold text-foreground font-serif">{t("nav.practices")}</h2>
         <p className="text-sm text-muted-foreground mt-1">{t("practices.subtitle")}</p>
       </div>
 
@@ -85,27 +83,31 @@ export default function PracticesPage() {
           const stale = source ? isStale(source) : false;
           return (
             <Link key={p.path} to={p.path} className="block">
-            <Card className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? 'border-l-2 border-primary' : ''}`}>
-              <CardContent className="flex items-start gap-4 p-5">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? 'bg-primary/20' : 'bg-primary/10'}`}>
-                  <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <span className="inline-block px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">
-                    {t(p.categoryKey)}
-                  </span>
-                  <p className="text-sm font-semibold text-foreground">{t(p.labelKey)}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t(p.descKey)}</p>
-                  <p className="flex items-center gap-1 text-xs text-muted-foreground/70 mt-1.5">
-                    <Clock aria-hidden="true" className="w-3 h-3" />
-                    {t(p.timeKey)}
-                  </p>
-                  {stale && (
-                    <p className="text-xs text-primary mt-1">{t("practices.staleLabel")}</p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+              <Card
+                className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? "border-l-2 border-primary" : ""}`}
+              >
+                <CardContent className="flex items-start gap-4 p-5">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? "bg-primary/20" : "bg-primary/10"}`}
+                  >
+                    <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <span className="inline-block px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground mb-1.5 uppercase tracking-wide">
+                      {t(p.categoryKey)}
+                    </span>
+                    <p className="text-sm font-semibold text-foreground">{t(p.labelKey)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t(p.descKey)}</p>
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground/70 mt-1.5">
+                      <Clock aria-hidden="true" className="w-3 h-3" />
+                      {t(p.timeKey)}
+                    </p>
+                    {stale && (
+                      <p className="text-xs text-primary mt-1">{t("practices.staleLabel")}</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </Link>
           );
         })}

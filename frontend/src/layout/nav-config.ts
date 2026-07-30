@@ -1,4 +1,19 @@
-import { LayoutDashboard, Wind, Heart, BrainCircuit, Moon, Scale, ClipboardList, BarChart3, FileText, MessageSquare, Settings, BookOpen, Trophy, type LucideIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  Wind,
+  Heart,
+  BrainCircuit,
+  Moon,
+  Scale,
+  ClipboardList,
+  BarChart3,
+  FileText,
+  MessageSquare,
+  Settings,
+  BookOpen,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
 
 export interface NavItem {
   labelKey: string;
@@ -6,7 +21,11 @@ export interface NavItem {
   icon: LucideIcon;
 }
 
-export const DASHBOARD_ITEM: NavItem = { labelKey: "nav.dashboard", path: "/", icon: LayoutDashboard };
+export const DASHBOARD_ITEM: NavItem = {
+  labelKey: "nav.dashboard",
+  path: "/",
+  icon: LayoutDashboard,
+};
 
 export const PRACTICE_ITEMS: NavItem[] = [
   { labelKey: "nav.thoughtJournal", path: "/thought-journal", icon: BookOpen },

@@ -16,7 +16,10 @@ function getWebPush() {
 }
 
 export const notificationService = {
-  async subscribe(userId: string, subscription: { endpoint: string; keys: Record<string, string> }) {
+  async subscribe(
+    userId: string,
+    subscription: { endpoint: string; keys: Record<string, string> },
+  ) {
     const existing = await prisma.pushSubscription.findUnique({
       where: { endpoint: subscription.endpoint },
     });

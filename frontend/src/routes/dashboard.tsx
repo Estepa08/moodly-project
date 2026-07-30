@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams } from "react-router-dom";
 import { TrendingUp, Sparkles, Radar, ArrowRight } from "lucide-react";
@@ -18,7 +18,9 @@ import EmptyState from "../components/ui/empty-state";
 export default function Dashboard() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPeriod = (Object.values(Period) as string[]).includes(searchParams.get("period") ?? "")
+  const initialPeriod = (Object.values(Period) as string[]).includes(
+    searchParams.get("period") ?? "",
+  )
     ? (searchParams.get("period") as Period)
     : Period.TwoWeeks;
   const [period, setPeriod] = useState<Period>(initialPeriod);
@@ -72,7 +74,7 @@ export default function Dashboard() {
         storageKey="moodly_collapse_practices"
       >
         <PracticeProgress breathingSessionCount={creatureState?.sessionCount} />
-            <div className="mt-2 flex justify-end">
+        <div className="mt-2 flex justify-end">
           <Link
             to="/practices"
             className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"

@@ -26,7 +26,7 @@ export default function Sidebar() {
   const { data: userData } = useCurrentUser();
 
   const highlights = useNavHighlights();
-  const { staleCount, isStale } = useStalePractices(3);
+  const { isStale } = useStalePractices(3);
 
   const isPracticeActive = PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
@@ -52,7 +52,10 @@ export default function Sidebar() {
       aria-label={t("nav.dashboard")}
       className="hidden md:flex flex-col w-56 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
     >
-      <div className="text-lg font-serif font-bold text-primary mb-4 px-3 text-balance" translate="no">
+      <div
+        className="text-lg font-serif font-bold text-primary mb-4 px-3 text-balance"
+        translate="no"
+      >
         {t("common.moodly")}
       </div>
 
@@ -75,11 +78,11 @@ export default function Sidebar() {
         </button>
       </div>
 
-      <Link
-        to={DASHBOARD_ITEM.path}
-        className={navButtonClass(location.pathname === "/")}
-      >
-        <DASHBOARD_ITEM.icon aria-hidden="true" className={`w-5 h-5 shrink-0 ${highlights.dashboard ? 'text-primary' : ''}`} />
+      <Link to={DASHBOARD_ITEM.path} className={navButtonClass(location.pathname === "/")}>
+        <DASHBOARD_ITEM.icon
+          aria-hidden="true"
+          className={`w-5 h-5 shrink-0 ${highlights.dashboard ? "text-primary" : ""}`}
+        />
         <span className="text-sm font-medium truncate">{t(DASHBOARD_ITEM.labelKey)}</span>
       </Link>
 
@@ -88,7 +91,10 @@ export default function Sidebar() {
         aria-expanded={practicesOpen}
         className={navButtonClass(isPracticeActive)}
       >
-        <Sparkles aria-hidden="true" className={`w-5 h-5 shrink-0 ${highlights.practices ? 'text-primary' : ''}`} />
+        <Sparkles
+          aria-hidden="true"
+          className={`w-5 h-5 shrink-0 ${highlights.practices ? "text-primary" : ""}`}
+        />
         <span className="text-sm font-medium truncate flex-1 text-left">{t("nav.practices")}</span>
         <ChevronDown
           aria-hidden="true"
@@ -106,7 +112,10 @@ export default function Sidebar() {
                 to={item.path}
                 className={navButtonClass(location.pathname.startsWith(item.path))}
               >
-                <item.icon aria-hidden="true" className={`w-4 h-4 shrink-0 ${source && isStale(source) ? 'text-primary' : ''}`} />
+                <item.icon
+                  aria-hidden="true"
+                  className={`w-4 h-4 shrink-0 ${source && isStale(source) ? "text-primary" : ""}`}
+                />
                 <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
               </Link>
             );
@@ -120,7 +129,10 @@ export default function Sidebar() {
           to={item.path}
           className={navButtonClass(location.pathname.startsWith(item.path))}
         >
-          <item.icon aria-hidden="true" className={`w-5 h-5 shrink-0 ${item.path === '/tests' && highlights.tests ? 'text-primary' : ''}`} />
+          <item.icon
+            aria-hidden="true"
+            className={`w-5 h-5 shrink-0 ${item.path === "/tests" && highlights.tests ? "text-primary" : ""}`}
+          />
           <span className="text-sm font-medium truncate">{t(item.labelKey)}</span>
         </Link>
       ))}

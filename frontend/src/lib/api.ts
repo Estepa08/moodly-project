@@ -2,7 +2,11 @@ import { ApiError } from "./api-error";
 import type { components } from "./api-types";
 
 type AuthResponse = components["schemas"]["AuthResponse"];
-type RegisterResponse = { user: components["schemas"]["User"]; message: string; devVerificationLink?: string };
+type RegisterResponse = {
+  user: components["schemas"]["User"];
+  message: string;
+  devVerificationLink?: string;
+};
 type RefreshResponse = components["schemas"]["RefreshResponse"];
 type ResetPasswordResponse = components["schemas"]["ResetPasswordResponse"];
 type Entry = components["schemas"]["Entry"];
@@ -210,7 +214,8 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    verifyEmail: (token: string) => request<{ message?: string }>(`/auth/verify-email?token=${token}`, { method: "GET" }),
+    verifyEmail: (token: string) =>
+      request<{ message?: string }>(`/auth/verify-email?token=${token}`, { method: "GET" }),
     sendVerificationEmail: (email: string) =>
       request<{ message: string }>("/auth/send-verification-email", {
         method: "POST",
@@ -302,8 +307,7 @@ export const api = {
         method: "PATCH",
         body: JSON.stringify({ petType }),
       }),
-    getHeatmap: (days = 90) =>
-      request<HeatmapEntry[]>(`/creature/heatmap?days=${days}`),
+    getHeatmap: (days = 90) => request<HeatmapEntry[]>(`/creature/heatmap?days=${days}`),
     getMissions: () => request<Mission[]>("/creature/missions"),
     claimMission: (id: string) =>
       request<ClaimMissionResponse>(`/creature/missions/${id}/claim`, { method: "POST" }),

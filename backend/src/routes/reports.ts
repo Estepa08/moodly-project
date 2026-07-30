@@ -25,13 +25,16 @@ function drawTableCell(
   h: number,
   align: "left" | "center" | "right" = "left",
 ) {
-  doc.fillColor("#1a1a2e").fontSize(8).text(text, x + 4, y + 4, {
-    width: w - 8,
-    height: h,
-    align,
-    ellipsis: true,
-    lineBreak: false,
-  });
+  doc
+    .fillColor("#1a1a2e")
+    .fontSize(8)
+    .text(text, x + 4, y + 4, {
+      width: w - 8,
+      height: h,
+      align,
+      ellipsis: true,
+      lineBreak: false,
+    });
 }
 
 function drawTableRow(
@@ -44,16 +47,14 @@ function drawTableRow(
 ) {
   const totalW = cols.reduce((s, c) => s + c.w, 0);
   const firstX = cols[0].x;
-  doc
-    .rect(firstX, y, totalW, h)
-    .fillAndStroke(fillColor, "#d0c8e0");
+  doc.rect(firstX, y, totalW, h).fillAndStroke(fillColor, "#d0c8e0");
 }
 
 export default async function reportRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: ReportCreateBody }>(
     "/reports",
     { preHandler: [fastify.authenticate] },
-    async (request, reply) => {
+    async (request, _reply) => {
       const report = await reportService.create({
         userId: request.userId,
         ...request.body,
@@ -217,10 +218,7 @@ export default async function reportRoutes(fastify: FastifyInstance) {
       doc.y = tableStart + headerH + entries.length * rowH + 20;
 
       // ── Test Results ──
-      const latestByTest = new Map<
-        string,
-        (typeof testResults)[number]
-      >();
+      const latestByTest = new Map<string, (typeof testResults)[number]>();
       for (const tr of testResults) {
         if (!latestByTest.has(tr.testId)) {
           latestByTest.set(tr.testId, tr);
@@ -234,10 +232,7 @@ export default async function reportRoutes(fastify: FastifyInstance) {
         doc.fontSize(9).font("Helvetica").fillColor("#1a1a2e");
         for (const tr of latestByTest.values()) {
           const testDate = formatDate(tr.completedAt, locale);
-          doc
-            .fillColor("#1a1a2e")
-            .font("Helvetica-Bold")
-            .text(`${tr.test.title} — ${testDate}`);
+          doc.fillColor("#1a1a2e").font("Helvetica-Bold").text(`${tr.test.title} — ${testDate}`);
           doc
             .font("Helvetica")
             .fillColor("#64748b")

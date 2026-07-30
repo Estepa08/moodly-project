@@ -36,11 +36,22 @@ export default function SleepHygieneChart({ data }: SleepHygieneChartProps) {
           <CorrelationChart
             data={data as unknown as Record<string, unknown>[]}
             lines={[
-              { dataKey: "habits", stroke: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
-              { dataKey: "sleep", stroke: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
+              {
+                dataKey: "habits",
+                stroke: "hsl(var(--accent))",
+                label: t("sleepHygiene.comparisonHabits"),
+              },
+              {
+                dataKey: "sleep",
+                stroke: "hsl(var(--param-sleep))",
+                label: t("sleepHygiene.comparisonSleep"),
+              },
             ]}
             formatLabel={(name, value, row) => {
-              const label = name === "habits" ? t("sleepHygiene.comparisonHabits") : t("sleepHygiene.comparisonSleep");
+              const label =
+                name === "habits"
+                  ? t("sleepHygiene.comparisonHabits")
+                  : t("sleepHygiene.comparisonSleep");
               const entryValues = (row?._values as Record<string, number[]> | undefined)?.[name];
               if (entryValues && entryValues.length > 1) {
                 return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;

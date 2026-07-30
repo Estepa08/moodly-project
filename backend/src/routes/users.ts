@@ -32,13 +32,9 @@ export default async function userRoutes(fastify: FastifyInstance) {
     reply.status(204);
   });
 
-  fastify.get(
-    "/users/me/preferences",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return userService.getPreferences(request.userId);
-    },
-  );
+  fastify.get("/users/me/preferences", { preHandler: [fastify.authenticate] }, async (request) => {
+    return userService.getPreferences(request.userId);
+  });
 
   fastify.put<{ Body: PreferencesBody }>(
     "/users/me/preferences",

@@ -1,22 +1,12 @@
 import { useTranslation } from "react-i18next";
-import {
-  useCreatureState,
-  useCreatureStats,
-} from "./index";
+import { useCreatureState, useCreatureStats } from "./index";
 import ProgressHero from "./ProgressHero";
 import CreatureStatsBlock from "./CreatureStatsBlock";
 import PetCollection from "./PetCollection";
 import AchievementGrid from "./AchievementGrid";
 import DailyMissions from "./DailyMissions";
 import ActivityHeatmap from "./ActivityHeatmap";
-import {
-  Trophy,
-  Target,
-  PawPrint,
-  ListChecks,
-  Activity,
-  Medal,
-} from "lucide-react";
+import { Trophy, Target, PawPrint, ListChecks, Activity, Medal } from "lucide-react";
 import CollapsibleSection from "../../components/ui/collapsible-section";
 import TitleSelector from "./TitleSelector";
 import { api } from "../../lib/api";

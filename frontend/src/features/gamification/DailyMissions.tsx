@@ -22,9 +22,7 @@ export default function DailyMissions() {
             key={mission.id}
             className={cn(
               "rounded-xl p-3 flex items-center gap-3 transition-[background-color,opacity] duration-150",
-              mission.claimed
-                ? "bg-muted/30 opacity-60"
-                : "bg-card shadow-neumorphic-sm",
+              mission.claimed ? "bg-muted/30 opacity-60" : "bg-card shadow-neumorphic-sm",
             )}
           >
             <div className="shrink-0">
@@ -44,22 +42,24 @@ export default function DailyMissions() {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className={cn(
-                "text-sm font-medium",
-                mission.claimed ? "text-muted-foreground line-through" : "text-foreground",
-              )}>
+              <p
+                className={cn(
+                  "text-sm font-medium",
+                  mission.claimed ? "text-muted-foreground line-through" : "text-foreground",
+                )}
+              >
                 {t(mission.labelKey)}
               </p>
-              <p className="text-xs text-muted-foreground">
-                +{mission.xpReward} XP
-              </p>
+              <p className="text-xs text-muted-foreground">+{mission.xpReward} XP</p>
             </div>
             {!mission.claimed && (
               <div className="shrink-0">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
-                  isComplete ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground",
-                )}>
+                <div
+                  className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold",
+                    isComplete ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground",
+                  )}
+                >
                   {Math.round(mission.progress * 100)}%
                 </div>
               </div>

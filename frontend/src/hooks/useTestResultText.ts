@@ -1,5 +1,3 @@
-import { Trend } from "../lib/constants";
-
 interface ResultFlags {
   templateKey?: string;
   recommendationKey?: string;
@@ -14,10 +12,7 @@ interface ResultLike {
   flags?: unknown;
 }
 
-export function isSevereInterpretation(
-  _interpretation: string,
-  flags?: ResultFlags,
-): boolean {
+export function isSevereInterpretation(_interpretation: string, flags?: ResultFlags): boolean {
   const key = flags?.bandKey || flags?.templateKey || "";
   return ["severe", "extreme", "high"].includes(key);
 }

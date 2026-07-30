@@ -45,10 +45,7 @@ export function useDashboardData(period: Period) {
   const { data: params } = useParameters();
   const dateRange = useMemo(() => getDateRange(period), [period]);
   const { data: allEntries, isLoading: entriesLoading } = useEntries(dateRange);
-  const gratitudeParam = useMemo(
-    () => params?.find((p) => p.name === "Gratitude"),
-    [params],
-  );
+  const gratitudeParam = useMemo(() => params?.find((p) => p.name === "Gratitude"), [params]);
   const { data: gratitudeAllEntries } = useEntries(
     gratitudeParam ? { parameterId: gratitudeParam.id } : undefined,
   );
@@ -57,7 +54,10 @@ export function useDashboardData(period: Period) {
   const { data: creatureState } = useCreatureState();
   const createEntry = useCreateEntry();
 
-  const numericParams = useMemo(() => params?.filter((p) => !TEXT_PARAMS.has(p.name as ParameterName)), [params]);
+  const numericParams = useMemo(
+    () => params?.filter((p) => !TEXT_PARAMS.has(p.name as ParameterName)),
+    [params],
+  );
 
   const paramNames = useMemo(() => {
     if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy"];
@@ -96,7 +96,7 @@ export function useDashboardData(period: Period) {
         grouped.set(day, { date: day, _values: {} as Record<string, number[]> });
       }
       const row = grouped.get(day)!;
-      const values = (row._values as Record<string, number[]>);
+      const values = row._values as Record<string, number[]>;
       if (!values[name]) values[name] = [];
       values[name].push(e.value);
       row[name] = values[name].reduce((s, v) => s + v, 0) / values[name].length;
@@ -105,8 +105,7 @@ export function useDashboardData(period: Period) {
   }, [allEntries, paramMap, i18n.language, period]);
 
   const { weeklyAverages, wellbeing } = useMemo(() => {
-    if (!allEntries)
-      return { weeklyAverages: [], wellbeing: { average: null, trend: Trend.Flat } };
+    if (!allEntries) return { weeklyAverages: [], wellbeing: { average: null, trend: Trend.Flat } };
     const range = getDateRange(period);
     const currentStart = range.from ? new Date(range.from).getTime() : 0;
     const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
@@ -167,7 +166,7 @@ export function useDashboardData(period: Period) {
       })),
       wellbeing: { average: wellbeingCurrent, trend: wellbeingTrend },
     };
-  }, [allEntries, period, paramNames, paramMap, entriesByParam]);
+  }, [allEntries, period, paramNames, entriesByParam]);
 
   const gratitudeStats = useMemo(() => {
     const weekCount = (gratitudeAllEntries ?? []).filter((e) =>
@@ -216,7 +215,10 @@ export function useDashboardData(period: Period) {
       cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined
     )?.distortions;
     return cdDistortions
-      ? Object.entries(cdDistortions).map(([key, val]) => ({ key: key as DistortionKey, score: val.score }))
+      ? Object.entries(cdDistortions).map(([key, val]) => ({
+          key: key as DistortionKey,
+          score: val.score,
+        }))
       : [];
   }, [testResults]);
 

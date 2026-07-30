@@ -15,7 +15,12 @@ export interface CbaEntryCreateInput {
 }
 
 function validateEntryInput(input: CbaEntryCreateInput) {
-  if (input.prosWeight < 0 || input.prosWeight > 100 || input.consWeight < 0 || input.consWeight > 100) {
+  if (
+    input.prosWeight < 0 ||
+    input.prosWeight > 100 ||
+    input.consWeight < 0 ||
+    input.consWeight > 100
+  ) {
     throw new AppError("VALIDATION_ERROR", 400, "Weights must be between 0 and 100");
   }
   if (input.prosWeight + input.consWeight !== 100) {
@@ -24,7 +29,11 @@ function validateEntryInput(input: CbaEntryCreateInput) {
   const hasAdvantage = input.items.some((i) => i.itemType === "advantage");
   const hasDisadvantage = input.items.some((i) => i.itemType === "disadvantage");
   if (!hasAdvantage || !hasDisadvantage) {
-    throw new AppError("VALIDATION_ERROR", 400, "At least one advantage and one disadvantage are required");
+    throw new AppError(
+      "VALIDATION_ERROR",
+      400,
+      "At least one advantage and one disadvantage are required",
+    );
   }
 }
 

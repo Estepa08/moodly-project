@@ -1,7 +1,6 @@
 import crypto from "crypto";
-import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
-import { AppError, NotFoundError } from "../lib/errors.js";
+import { AppError } from "../lib/errors.js";
 
 function hashToken(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");

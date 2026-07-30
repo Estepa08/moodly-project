@@ -47,7 +47,10 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
   }
 
   if (breathingSessionCount !== undefined && bySource[PracticeSource.Breathing]) {
-    bySource[PracticeSource.Breathing].count = Math.max(bySource[PracticeSource.Breathing].count, breathingSessionCount);
+    bySource[PracticeSource.Breathing].count = Math.max(
+      bySource[PracticeSource.Breathing].count,
+      breathingSessionCount,
+    );
   }
 
   const totalXp = Object.values(bySource).reduce((sum, s) => sum + s.xp, 0);
@@ -138,9 +141,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
           </>
         )}
 
-        {!hasAnyData && (
-          <EmptyState icon={Sparkles} title={t("progress.noData")} />
-        )}
+        {!hasAnyData && <EmptyState icon={Sparkles} title={t("progress.noData")} />}
       </CardContent>
     </Card>
   );

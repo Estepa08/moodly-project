@@ -29,13 +29,13 @@ export function parseCheckedNote(note: string | undefined | null): Set<HygieneIt
   if (!note) return new Set();
   const keys = note.split(",").filter(Boolean);
   return new Set(
-    keys.filter((k): k is HygieneItem => (Object.values(HygieneItem) as string[]).includes(k)) as HygieneItem[],
+    keys.filter((k): k is HygieneItem =>
+      (Object.values(HygieneItem) as string[]).includes(k),
+    ) as HygieneItem[],
   );
 }
 
-export function findTodayEntry<T extends { createdAt: string }>(
-  entries: T[],
-): T | undefined {
+export function findTodayEntry<T extends { createdAt: string }>(entries: T[]): T | undefined {
   const today = dayKey(new Date());
   return entries.find((e) => dayKey(new Date(e.createdAt)) === today);
 }

@@ -41,9 +41,7 @@ export default function TestResultsPage() {
 
         <WellnessDisclaimer />
 
-        {results && results.length > 0 && (
-          <TestResultsChart results={results as any} />
-        )}
+        {results && results.length > 0 && <TestResultsChart results={results} />}
 
         {results?.length === 0 && (
           <EmptyState
@@ -57,22 +55,15 @@ export default function TestResultsPage() {
         )}
 
         {results?.map((r) => {
-          const {
-            isCD,
-            interpretationText,
-            recommendationText,
-            highKeys,
-            moderateKeys,
-          } = resolve(r);
+          const { isCD, interpretationText, recommendationText, highKeys, moderateKeys } =
+            resolve(r);
           const isLongText = isCD || interpretationText.length > 100;
 
           return (
-            <Card
-              key={r.id}
-            >
+            <Card key={r.id}>
               <CardHeader className="pb-2">
                 <p className="text-xs text-muted-foreground">
-                  {(r as any).testTitle} &middot;{" "}
+                  {(r as { testTitle?: string }).testTitle} &middot;{" "}
                   {new Date(r.completedAt).toLocaleDateString(
                     i18n.language === "ru" ? "ru-RU" : "en-US",
                   )}
@@ -91,9 +82,7 @@ export default function TestResultsPage() {
                   </button>
                   {showScore[r.id] && (
                     <div className="w-16 h-16 rounded-xl bg-card shadow-neumorphic-sm flex items-center justify-center">
-                      <span className="text-2xl font-bold text-primary">
-                        {r.score}
-                      </span>
+                      <span className="text-2xl font-bold text-primary">{r.score}</span>
                     </div>
                   )}
                 </div>
@@ -152,14 +141,15 @@ export default function TestResultsPage() {
                   className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() => setShowRec((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                 >
-                  <ChevronRight aria-hidden="true" className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`} />
+                  <ChevronRight
+                    aria-hidden="true"
+                    className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`}
+                  />
                   {t("testDetail.recommendation")}
                 </button>
 
                 {showRec[r.id] && (
-                  <p className="text-sm mt-2 text-muted-foreground">
-                    {recommendationText}
-                  </p>
+                  <p className="text-sm mt-2 text-muted-foreground">{recommendationText}</p>
                 )}
               </CardContent>
             </Card>

@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Trophy, Lock, Check, Star, Target, Zap, Brain, Heart, Moon, Flame } from "lucide-react";
+import { Trophy, Lock, Check, Star, Target, Brain, Heart, Moon, Flame } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAchievements } from "./useCreature";
 
@@ -78,10 +78,20 @@ export default function AchievementGrid() {
               )}
             </div>
             <div className="min-w-0">
-              <p className={cn("text-xs font-semibold truncate", a.unlocked ? "text-foreground" : "text-muted-foreground")}>
+              <p
+                className={cn(
+                  "text-xs font-semibold truncate",
+                  a.unlocked ? "text-foreground" : "text-muted-foreground",
+                )}
+              >
                 {t(a.titleKey)}
               </p>
-              <p className={cn("text-[10px] leading-tight mt-0.5", a.unlocked ? "text-muted-foreground" : "text-muted-foreground/60")}>
+              <p
+                className={cn(
+                  "text-[10px] leading-tight mt-0.5",
+                  a.unlocked ? "text-muted-foreground" : "text-muted-foreground/60",
+                )}
+              >
                 {t(a.descKey)}
               </p>
             </div>
@@ -93,9 +103,7 @@ export default function AchievementGrid() {
                     style={{ width: `${a.progress}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5">
-                  {a.progress}%
-                </p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{a.progress}%</p>
               </div>
             )}
           </div>

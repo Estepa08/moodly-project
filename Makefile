@@ -1,6 +1,6 @@
 .PHONY: install setup generate dev dev-backend dev-frontend build build-backend build-frontend
 .PHONY: test test-backend test-frontend test-watch test-coverage
-.PHONY: db-generate db-push db-seed db-setup db-reset clean
+.PHONY: db-generate db-push db-seed db-setup db-reset db-studio admin clean
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
 .PHONY: start-feature
 
@@ -77,6 +77,8 @@ db-seed:
 	cd backend && npm run db:seed
 
 db-setup: db-generate db-push db-seed
+
+admin: db-studio
 
 db-studio:
 	cd backend && npx prisma studio

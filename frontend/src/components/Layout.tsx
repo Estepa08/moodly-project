@@ -26,9 +26,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [animKey, setAnimKey] = useState(0);
   const [prevWasCreature, setPrevWasCreature] = useState(true);
 
-  if (isBootstrapping) return null;
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-
   const puddleCircles = useMemo(() => {
     const circles: { id: number; tx: number; ty: number; delay: number; size: number }[] = [];
     for (let i = 0; i < 10; i++) {
@@ -46,8 +43,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return circles;
   }, []);
 
-  const isMoreActive = ALL_MORE_ITEMS.some((item) => location.pathname.startsWith(item.path));
-
   useEffect(() => {
     if (isReducedMotion) return;
     const CYCLE_MS = 5000;
@@ -61,6 +56,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }, CYCLE_MS);
     return () => clearInterval(id);
   }, [isReducedMotion, showCreature]);
+
+  if (isBootstrapping) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
+  const isMoreActive = ALL_MORE_ITEMS.some((item) => location.pathname.startsWith(item.path));
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -145,10 +145,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {creature && (
               <>
                 <StreakIndicator streak={creature.streak} />
-                <CreatureStatus
-                  level={creature.level}
-                  experience={creature.experience}
-                />
+                <CreatureStatus level={creature.level} experience={creature.experience} />
               </>
             )}
             <div className="flex items-center gap-1 text-xs">

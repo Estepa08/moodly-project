@@ -65,9 +65,7 @@ function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
   if (isBootstrapping) return <BootstrapSpinner />;
   if (isAuthenticated) return <Navigate to="/" replace />;
-  return (
-    <Outlet />
-  );
+  return <Outlet />;
 }
 
 export default function App() {

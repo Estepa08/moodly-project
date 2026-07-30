@@ -10,29 +10,17 @@ interface TitleBody {
 }
 
 export default async function achievementRoutes(fastify: FastifyInstance) {
-  fastify.get(
-    "/achievements",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return achievementsService.getAll(request.userId);
-    },
-  );
+  fastify.get("/achievements", { preHandler: [fastify.authenticate] }, async (request) => {
+    return achievementsService.getAll(request.userId);
+  });
 
-  fastify.post(
-    "/achievements/check",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return achievementsService.check(request.userId);
-    },
-  );
+  fastify.post("/achievements/check", { preHandler: [fastify.authenticate] }, async (request) => {
+    return achievementsService.check(request.userId);
+  });
 
-  fastify.get(
-    "/creature/skins",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return achievementsService.getSkins(request.userId);
-    },
-  );
+  fastify.get("/creature/skins", { preHandler: [fastify.authenticate] }, async (request) => {
+    return achievementsService.getSkins(request.userId);
+  });
 
   fastify.patch<{ Body: SkinBody }>(
     "/creature/skin",

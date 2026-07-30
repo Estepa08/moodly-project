@@ -43,7 +43,9 @@ function cognitiveDistortionInterpretation(
   return "Когнитивных искажений не выявлено. Ваши мыслительные паттерны выглядят сбалансированными.";
 }
 
-function cognitiveDistortionRecommendation(recommendationKey: "severe" | "moderate" | "minimal"): string {
+function cognitiveDistortionRecommendation(
+  recommendationKey: "severe" | "moderate" | "minimal",
+): string {
   if (recommendationKey === "severe") {
     return "Ваши результаты указывают на несколько сильно выраженных когнитивных искажений. Когнитивно-поведенческая терапия (КПТ) эффективна для проработки этих паттернов. Рекомендуется вести дневник мыслей и оспаривать искажённое мышление с помощью фактов.";
   }
@@ -89,7 +91,11 @@ export async function getInterpretation(
   }
 
   const band = bands.find((b) => score <= b.maxScore) ?? bands[bands.length - 1];
-  return { interpretation: band.interpretation, recommendation: band.recommendation, flags: { bandKey: band.key } };
+  return {
+    interpretation: band.interpretation,
+    recommendation: band.recommendation,
+    flags: { bandKey: band.key },
+  };
 }
 
 function computeCognitiveDistortionInterpretation(answers: TestAnswer[]): Interpretation {
@@ -111,8 +117,7 @@ function computeCognitiveDistortionInterpretation(answers: TestAnswer[]): Interp
   const distortions: Record<string, { score: number; level: string }> = {};
   for (let i = 0; i < 10; i++) {
     const ratio = ratioFor(i);
-    const level =
-      ratio > RATIO_MODERATE_MAX ? "high" : ratio > RATIO_LOW_MAX ? "moderate" : "low";
+    const level = ratio > RATIO_MODERATE_MAX ? "high" : ratio > RATIO_LOW_MAX ? "moderate" : "low";
     distortions[DISTORTIONS[i].key] = { score: distortionScores[i], level };
   }
 

@@ -187,7 +187,9 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
             onToggle={(id) => toggle(checkedAdvantages, setCheckedAdvantages, id)}
             custom={customAdvantages}
             onAddCustom={(text) => setCustomAdvantages((prev) => [...prev, text])}
-            onRemoveCustom={(i) => setCustomAdvantages((prev) => prev.filter((_, idx) => idx !== i))}
+            onRemoveCustom={(i) =>
+              setCustomAdvantages((prev) => prev.filter((_, idx) => idx !== i))
+            }
             accentClassName="text-accent"
           />
           <ItemChecklist

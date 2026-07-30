@@ -20,7 +20,7 @@ import {
 } from "../lib/validation.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
-  fastify.post("/auth/register", async (request, reply) => {
+  fastify.post("/auth/register", async (request, _reply) => {
     const parsed = registerSchema.safeParse(request.body);
     if (!parsed.success) {
       throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
@@ -42,7 +42,9 @@ export default async function authRoutes(fastify: FastifyInstance) {
     return {
       user,
       message: "Registration successful. Please check your email to verify your account.",
-      ...(isDev && { devVerificationLink: `${frontendUrl}/verify-email?token=${verificationToken}` }),
+      ...(isDev && {
+        devVerificationLink: `${frontendUrl}/verify-email?token=${verificationToken}`,
+      }),
     };
   });
 

@@ -2,9 +2,16 @@ import { ResponsiveRadar } from "@nivo/radar";
 import { useTranslation } from "react-i18next";
 import { DistortionKey } from "../../lib/distortionsQuiz";
 
-export interface DistortionEntry { key: DistortionKey; score: number; }
+export interface DistortionEntry {
+  key: DistortionKey;
+  score: number;
+}
 
-interface Props { data: DistortionEntry[]; maxValue?: number; className?: string; }
+interface Props {
+  data: DistortionEntry[];
+  maxValue?: number;
+  className?: string;
+}
 
 export default function RadarChart({ data, maxValue, className }: Props) {
   const { t } = useTranslation();
@@ -33,7 +40,11 @@ export default function RadarChart({ data, maxValue, className }: Props) {
         motionConfig="gentle"
         theme={{
           background: "transparent",
-          text: { fill: "hsl(var(--muted-foreground))", fontSize: 11, fontFamily: "Raleway, system-ui, sans-serif" },
+          text: {
+            fill: "hsl(var(--muted-foreground))",
+            fontSize: 11,
+            fontFamily: "Raleway, system-ui, sans-serif",
+          },
           grid: { line: { stroke: "hsl(var(--border))", strokeWidth: 1 } },
           dots: { text: { fill: "hsl(var(--foreground))", fontSize: 10 } },
         }}

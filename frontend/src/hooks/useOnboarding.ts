@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { api, type UserPreference } from "../lib/api";
 import { ONBOARDING_DONE_KEY } from "../lib/constants";
@@ -26,7 +26,7 @@ export function useOnboarding() {
 
   const localDone = localStorage.getItem(ONBOARDING_DONE_KEY) === "true";
 
-  const needsOnboarding = !isLoading && !localDone && !(prefs?.onboardingDone);
+  const needsOnboarding = !isLoading && !localDone && !prefs?.onboardingDone;
 
   const complete = useCallback(
     async (data: Partial<UserPreference>) => {

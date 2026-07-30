@@ -30,13 +30,9 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     return creatureService.getState(request.userId);
   });
 
-  fastify.post(
-    "/creature/check-in",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return creatureService.checkIn(request.userId);
-    },
-  );
+  fastify.post("/creature/check-in", { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.checkIn(request.userId);
+  });
 
   fastify.post<{ Body: ExerciseCompleteBody }>(
     "/creature/exercise/complete",
@@ -63,21 +59,13 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get(
-    "/creature/stats",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return creatureService.getStats(request.userId);
-    },
-  );
+  fastify.get("/creature/stats", { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.getStats(request.userId);
+  });
 
-  fastify.get(
-    "/creature/pets",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return creatureService.getPets(request.userId);
-    },
-  );
+  fastify.get("/creature/pets", { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.getPets(request.userId);
+  });
 
   fastify.patch<{ Body: PetBody }>(
     "/creature/pet",
@@ -100,13 +88,9 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get(
-    "/creature/missions",
-    { preHandler: [fastify.authenticate] },
-    async (request) => {
-      return creatureService.getMissions(request.userId);
-    },
-  );
+  fastify.get("/creature/missions", { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.getMissions(request.userId);
+  });
 
   fastify.post<{ Params: ClaimMissionParams }>(
     "/creature/missions/:id/claim",

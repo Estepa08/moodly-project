@@ -13,9 +13,7 @@ export default function CelebrationToast({ title, description }: CelebrationToas
       </div>
       <div className="min-w-0">
         <p className="text-sm font-semibold text-foreground">{title}</p>
-        {description && (
-          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
       </div>
     </div>
   );

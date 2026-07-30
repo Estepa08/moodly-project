@@ -54,7 +54,9 @@ export default function BreathingGuide({
 }: BreathingGuideProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
-  const [technique, setTechnique] = useState<BreathingTechnique>(initialTechnique ?? BreathingTechnique.Box);
+  const [technique, setTechnique] = useState<BreathingTechnique>(
+    initialTechnique ?? BreathingTechnique.Box,
+  );
   const [cycle, setCycle] = useState(1);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
@@ -102,7 +104,7 @@ export default function BreathingGuide({
     }
 
     rafRef.current = requestAnimationFrame(tick);
-  }, [phase.duration, phaseIdx, cycle, phase, phases.length]);
+  }, [phaseIdx, cycle, phase, phases.length]);
 
   useEffect(() => {
     if (running) {
@@ -146,8 +148,11 @@ export default function BreathingGuide({
           style={{
             width: `${40 + circleScale * 80}px`,
             height: `${40 + circleScale * 80}px`,
-            backgroundColor: isInhale || isHold ? "hsl(var(--primary) / 0.3)" : "hsl(var(--accent) / 0.3)",
-            boxShadow: isExhale ? "0 0 40px hsl(var(--accent) / 0.2)" : "0 0 40px hsl(var(--primary) / 0.2)",
+            backgroundColor:
+              isInhale || isHold ? "hsl(var(--primary) / 0.3)" : "hsl(var(--accent) / 0.3)",
+            boxShadow: isExhale
+              ? "0 0 40px hsl(var(--accent) / 0.2)"
+              : "0 0 40px hsl(var(--primary) / 0.2)",
             transition: reducedMotion ? "none" : "background-color 0.4s ease, box-shadow 0.4s ease",
           }}
         />
@@ -167,29 +172,60 @@ export default function BreathingGuide({
           <div
             key={i}
             className={`w-2.5 h-2.5 rounded-full transition-[background-color,box-shadow] duration-300 ${
-              i + 1 < cycle ? "bg-accent" : i + 1 === cycle ? "bg-primary shadow-neumorphic-sm" : "bg-secondary"
+              i + 1 < cycle
+                ? "bg-accent"
+                : i + 1 === cycle
+                  ? "bg-primary shadow-neumorphic-sm"
+                  : "bg-secondary"
             }`}
           />
         ))}
       </div>
 
       <div className="text-center">
-        <p className="text-lg font-semibold text-primary font-serif">{t(`breathing.${phase.key}`)}</p>
-        <p className="text-sm text-muted-foreground mt-1">{t("breathing.cycle")} {cycle}/{TOTAL_CYCLES}</p>
+        <p className="text-lg font-semibold text-primary font-serif">
+          {t(`breathing.${phase.key}`)}
+        </p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t("breathing.cycle")} {cycle}/{TOTAL_CYCLES}
+        </p>
       </div>
 
       <div className="flex gap-3">
         {!running ? (
           <>
             <SegmentGroup>
-              <SegmentButton active={technique === BreathingTechnique.Box} onClick={() => setTechnique(BreathingTechnique.Box)}>{t("breathing.techniqueBox")}</SegmentButton>
-              <SegmentButton active={technique === BreathingTechnique.FourSevenEight} onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}>{t("breathing.technique478")}</SegmentButton>
-              <SegmentButton active={technique === BreathingTechnique.Quick} onClick={() => setTechnique(BreathingTechnique.Quick)}>{t("breathing.techniqueQuick")}</SegmentButton>
+              <SegmentButton
+                active={technique === BreathingTechnique.Box}
+                onClick={() => setTechnique(BreathingTechnique.Box)}
+              >
+                {t("breathing.techniqueBox")}
+              </SegmentButton>
+              <SegmentButton
+                active={technique === BreathingTechnique.FourSevenEight}
+                onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}
+              >
+                {t("breathing.technique478")}
+              </SegmentButton>
+              <SegmentButton
+                active={technique === BreathingTechnique.Quick}
+                onClick={() => setTechnique(BreathingTechnique.Quick)}
+              >
+                {t("breathing.techniqueQuick")}
+              </SegmentButton>
             </SegmentGroup>
             <Button onClick={() => setRunning(true)}>{t("breathing.start")}</Button>
           </>
         ) : (
-          <Button variant="destructive" onClick={() => { completedRef.current = true; cancelAnimationFrame(rafRef.current); setRunning(false); onCancel(); }}>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              completedRef.current = true;
+              cancelAnimationFrame(rafRef.current);
+              setRunning(false);
+              onCancel();
+            }}
+          >
             {t("breathing.cancel")}
           </Button>
         )}

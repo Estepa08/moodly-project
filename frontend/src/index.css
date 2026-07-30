@@ -31,8 +31,10 @@
     --elevation-1: 3px 3px 6px rgba(160, 140, 180, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.9);
     --elevation-2: 6px 6px 12px rgba(160, 140, 180, 0.35), -6px -6px 12px rgba(255, 255, 255, 0.9);
     --elevation-3: 8px 8px 20px rgba(160, 140, 180, 0.4), -8px -8px 20px rgba(255, 255, 255, 0.9);
-    --elevation-4: 12px 12px 28px rgba(160, 140, 180, 0.45), -12px -12px 28px rgba(255, 255, 255, 0.85);
-    --elevation-inset: inset 2px 2px 5px rgba(160, 140, 180, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+    --elevation-4:
+      12px 12px 28px rgba(160, 140, 180, 0.45), -12px -12px 28px rgba(255, 255, 255, 0.85);
+    --elevation-inset:
+      inset 2px 2px 5px rgba(160, 140, 180, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
 
     --param-sleep: 199 89% 48%;
     --param-energy: 38 92% 50%;

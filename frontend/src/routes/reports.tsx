@@ -203,9 +203,7 @@ export default function ReportsPage() {
         </Card>
       ))}
 
-      {reports?.length === 0 && (
-        <EmptyState icon={FileText} title={t("reports.noReports")} />
-      )}
+      {reports?.length === 0 && <EmptyState icon={FileText} title={t("reports.noReports")} />}
     </div>
   );
 }

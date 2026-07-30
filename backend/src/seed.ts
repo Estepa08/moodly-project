@@ -35,7 +35,6 @@ const bdcOptions = [
 ];
 
 const tests = [
-
   {
     title: "Оценка эмоционального состояния",
     description:
@@ -51,7 +50,11 @@ const tests = [
       { id: "bai-3", text: "Ощущение отстранённости от всего или части тела", options: baiOptions },
       { id: "bai-4", text: "Внезапные неожиданные приступы паники", options: baiOptions },
       { id: "bai-5", text: "Опасение или чувство неминуемой беды", options: baiOptions },
-      { id: "bai-6", text: "Чувство напряжённости, стресса или взвинченности", options: baiOptions },
+      {
+        id: "bai-6",
+        text: "Чувство напряжённости, стресса или взвинченности",
+        options: baiOptions,
+      },
       { id: "bai-7", text: "Трудности с концентрацией внимания", options: baiOptions },
       {
         id: "bai-8",
@@ -110,7 +113,11 @@ const tests = [
       },
       { id: "bai-31", text: "Головные боли или боли в шее и спине", options: baiOptions },
       { id: "bai-32", text: "Приливы жара или озноб", options: baiOptions },
-      { id: "bai-33", text: "Чувство усталости, слабости или быстрой истощаемости", options: baiOptions },
+      {
+        id: "bai-33",
+        text: "Чувство усталости, слабости или быстрой истощаемости",
+        options: baiOptions,
+      },
     ],
   },
   {
@@ -139,7 +146,11 @@ const tests = [
       { id: "bdc-14", text: "Потеря мотивации", options: bdcOptions },
       { id: "bdc-15", text: "Потеря интереса к работе или другим занятиям", options: bdcOptions },
       { id: "bdc-16", text: "Избегание работы или других занятий", options: bdcOptions },
-      { id: "bdc-17", text: "Потеря удовольствия или удовлетворения от жизни", options: bdcOptions },
+      {
+        id: "bdc-17",
+        text: "Потеря удовольствия или удовлетворения от жизни",
+        options: bdcOptions,
+      },
       { id: "bdc-18", text: "Чувство усталости", options: bdcOptions },
       { id: "bdc-19", text: "Проблемы со сном или сонливость", options: bdcOptions },
       { id: "bdc-20", text: "Снижение или повышение аппетита", options: bdcOptions },
@@ -312,18 +323,72 @@ const scoreBandsByTitle: Record<
   { maxScore: number; key: string; interpretation: string; recommendation: string }[]
 > = {
   "Оценка эмоционального состояния": [
-    { maxScore: 4, key: "low", interpretation: "Спокойное состояние", recommendation: "Продолжайте наблюдение. Дневник настроения поможет замечать закономерности." },
-    { maxScore: 10, key: "mild", interpretation: "Небольшое напряжение", recommendation: "Попробуйте дыхательные упражнения или короткую прогулку." },
-    { maxScore: 20, key: "moderate", interpretation: "Повышенный уровень напряжения", recommendation: "Попробуйте технику тройной колонки или дневник мыслей." },
-    { maxScore: 30, key: "elevated", interpretation: "Значительное напряжение", recommendation: "Рекомендуем практики релаксации. Если состояние сохраняется — обратитесь к близким или специалисту." },
-    { maxScore: 999, key: "high", interpretation: "Высокий уровень напряжения", recommendation: "Рекомендуется обратиться за поддержкой к близким или профессиональному консультанту." },
+    {
+      maxScore: 4,
+      key: "low",
+      interpretation: "Спокойное состояние",
+      recommendation: "Продолжайте наблюдение. Дневник настроения поможет замечать закономерности.",
+    },
+    {
+      maxScore: 10,
+      key: "mild",
+      interpretation: "Небольшое напряжение",
+      recommendation: "Попробуйте дыхательные упражнения или короткую прогулку.",
+    },
+    {
+      maxScore: 20,
+      key: "moderate",
+      interpretation: "Повышенный уровень напряжения",
+      recommendation: "Попробуйте технику тройной колонки или дневник мыслей.",
+    },
+    {
+      maxScore: 30,
+      key: "elevated",
+      interpretation: "Значительное напряжение",
+      recommendation:
+        "Рекомендуем практики релаксации. Если состояние сохраняется — обратитесь к близким или специалисту.",
+    },
+    {
+      maxScore: 999,
+      key: "high",
+      interpretation: "Высокий уровень напряжения",
+      recommendation:
+        "Рекомендуется обратиться за поддержкой к близким или профессиональному консультанту.",
+    },
   ],
   "Оценка самочувствия": [
-    { maxScore: 5, key: "good", interpretation: "Хорошее самочувствие", recommendation: "Продолжайте заботиться о себе. Дневник благодарности помогает укрепить позитивный настрой." },
-    { maxScore: 10, key: "mild", interpretation: "Небольшой спад настроения", recommendation: "Попробуйте поведенческую активацию — запланируйте приятное занятие." },
-    { maxScore: 25, key: "moderate", interpretation: "Заметный спад настроения", recommendation: "Практикуйте технику тройной колонки. При сохранении — обратитесь за поддержкой." },
-    { maxScore: 50, key: "elevated", interpretation: "Значительный спад настроения", recommendation: "Рекомендуется профессиональная поддержка. Вы не одни." },
-    { maxScore: 999, key: "high", interpretation: "Сильный спад настроения", recommendation: "Рекомендуется обратиться к консультанту или психотерапевту." },
+    {
+      maxScore: 5,
+      key: "good",
+      interpretation: "Хорошее самочувствие",
+      recommendation:
+        "Продолжайте заботиться о себе. Дневник благодарности помогает укрепить позитивный настрой.",
+    },
+    {
+      maxScore: 10,
+      key: "mild",
+      interpretation: "Небольшой спад настроения",
+      recommendation: "Попробуйте поведенческую активацию — запланируйте приятное занятие.",
+    },
+    {
+      maxScore: 25,
+      key: "moderate",
+      interpretation: "Заметный спад настроения",
+      recommendation:
+        "Практикуйте технику тройной колонки. При сохранении — обратитесь за поддержкой.",
+    },
+    {
+      maxScore: 50,
+      key: "elevated",
+      interpretation: "Значительный спад настроения",
+      recommendation: "Рекомендуется профессиональная поддержка. Вы не одни.",
+    },
+    {
+      maxScore: 999,
+      key: "high",
+      interpretation: "Сильный спад настроения",
+      recommendation: "Рекомендуется обратиться к консультанту или психотерапевту.",
+    },
   ],
 };
 
@@ -342,7 +407,8 @@ const onboardingStories = [
   },
   {
     title: "Создавайте отчёты",
-    content: "Экспортируйте данные в PDF или CSV, чтобы проанализировать динамику или поделиться с теми, кому доверяете.",
+    content:
+      "Экспортируйте данные в PDF или CSV, чтобы проанализировать динамику или поделиться с теми, кому доверяете.",
     order: 3,
   },
 ];

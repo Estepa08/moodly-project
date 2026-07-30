@@ -71,14 +71,18 @@ export default function ForgotPasswordPage() {
                     spellCheck={false}
                   />
                 </div>
-                {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
+                {error && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {error}
+                  </p>
+                )}
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? t("forgotPassword.sending") : t("forgotPassword.send")}
                 </Button>
                 <p className="text-center text-sm text-muted-foreground">
                   <Link
                     to="/login"
-                    className="text-primary hover:underline"
+                    className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   >
                     {t("forgotPassword.backToLogin")}
                   </Link>

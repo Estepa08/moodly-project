@@ -48,32 +48,31 @@ export default function SettingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            {t("settings.deleteDesc")}
-          </p>
+          <p className="text-sm text-muted-foreground">{t("settings.deleteDesc")}</p>
           {deleteError && (
-            <p className="text-sm text-destructive" role="alert">{deleteError}</p>
+            <p className="text-sm text-destructive" role="alert">
+              {deleteError}
+            </p>
           )}
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => setShowDeleteConfirm(true)}
-          >
+          <Button variant="destructive" size="sm" onClick={() => setShowDeleteConfirm(true)}>
             {t("settings.deleteButton")}
           </Button>
         </CardContent>
       </Card>
 
-      <Dialog open={showDeleteConfirm} onOpenChange={(v) => { if (!v) setShowDeleteConfirm(false); }}>
+      <Dialog
+        open={showDeleteConfirm}
+        onOpenChange={(v) => {
+          if (!v) setShowDeleteConfirm(false);
+        }}
+      >
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <div className="flex items-center gap-2 mb-2">
               <AlertTriangle aria-hidden="true" className="w-5 h-5 text-destructive" />
               <DialogTitle className="text-lg">{t("settings.confirmTitle")}</DialogTitle>
             </div>
-            <DialogDescription className="text-sm">
-              {t("settings.confirmDesc")}
-            </DialogDescription>
+            <DialogDescription className="text-sm">{t("settings.confirmDesc")}</DialogDescription>
           </DialogHeader>
           <div className="flex gap-2 pt-2">
             <Button
