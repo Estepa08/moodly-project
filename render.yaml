@@ -6,6 +6,7 @@ services:
     name: moodly
     runtime: docker
     repo: https://github.com/Estepa08/moodly-project
+    branch: main
     plan: free
     envVars:
       - key: DATABASE_URL
