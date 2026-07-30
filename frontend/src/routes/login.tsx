@@ -36,10 +36,8 @@ export default function LoginPage({ defaultRegister }: Props) {
     regPassword,
     setRegPassword,
     regError,
-    demoLoading,
     handleLoginSubmit,
     handleRegisterSubmit,
-    handleDemo,
   } = useAuthForms();
 
   const toggle = useCallback(() => {
@@ -173,16 +171,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                     <span className="text-xs text-muted-foreground">{t("login.or")}</span>
                     <span className="flex-1 h-px bg-border" />
                   </div>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="w-full"
-                    onClick={handleDemo}
-                    disabled={demoLoading}
-                    {...a(5, isLogin)}
-                  >
-                    {demoLoading ? t("login.starting") : t("login.quickDemo")}
-                  </Button>
+
                   <p className="text-center text-sm text-muted-foreground" {...a(6, isLogin)}>
                     {t("login.noAccount")}{" "}
                     <button

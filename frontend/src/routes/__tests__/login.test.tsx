@@ -9,7 +9,6 @@ vi.mock("../../lib/api", () => ({
       login: vi.fn(),
       register: vi.fn(),
       logout: vi.fn(),
-      demo: vi.fn(),
       refresh: vi.fn().mockRejectedValue(new Error("no session")),
     },
   },
@@ -76,19 +75,4 @@ describe("LoginPage", () => {
     expect(screen.getByLabelText("Name (optional)")).toBeInTheDocument();
   });
 
-  it("demo button logs in via demo endpoint", async () => {
-    (api.auth.demo as Mock).mockResolvedValueOnce({
-      accessToken: "demo-token",
-      user: { id: "demo" },
-    });
-
-    const user = userEvent.setup();
-    renderWithProviders(<LoginPage />);
-
-    await user.click(screen.getByText("Quick Demo"));
-
-    await waitFor(() => {
-      expect(api.auth.demo).toHaveBeenCalled();
-    });
-  });
 });
