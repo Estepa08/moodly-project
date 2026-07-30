@@ -7,7 +7,6 @@ import {
   Scale,
   ClipboardList,
   BarChart3,
-  FileText,
   MessageSquare,
   Settings,
   BookOpen,
@@ -40,7 +39,6 @@ export const OTHER_ITEMS: NavItem[] = [
   { labelKey: "nav.progress", path: "/progress", icon: Trophy },
   { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
   { labelKey: "nav.results", path: "/results", icon: BarChart3 },
-  { labelKey: "nav.reports", path: "/reports", icon: FileText },
   { labelKey: "nav.feedback", path: "/feedback", icon: MessageSquare },
   { labelKey: "nav.settings", path: "/settings", icon: Settings },
 ];

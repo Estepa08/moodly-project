@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Heart, Smile } from "lucide-react";
 import type { CreateEntryMutation } from "../../lib/app-types";
 import { isWithinLastDays, cn, formatDateShort, formatChartDate } from "../../lib/utils";
-import { CorrelationChart } from "../analytics";
+import { Chart } from "../analytics";
 import { GratitudeCategory } from "../../lib/gratitudePrompts";
 import { Button } from "../../components/ui/button";
 import { Textarea } from "../../components/ui/textarea";
@@ -133,12 +133,19 @@ export default function GratitudeJournal({
       </Card>
 
       {showChart && correlationData.length > 0 && (
-        <CorrelationChart
+        <Chart
+          type="line"
           data={correlationData}
-          lines={[
-            { dataKey: "gratitude", stroke: "hsl(var(--accent))", label: t("dashboard.gratitude") },
-            { dataKey: "mood", stroke: "hsl(var(--primary))", label: t("dashboard.mood") },
+          series={[
+            { dataKey: "gratitude", color: "hsl(var(--accent))", label: t("dashboard.gratitude") },
+            { dataKey: "mood", color: "hsl(var(--primary))", label: t("dashboard.mood") },
           ]}
+          xKey="date"
+          title={t("dashboard.gratitudeCorrelation")}
+          icon={<Smile aria-hidden="true" className="w-4 h-4 text-primary" />}
+          showLegend
+          height={160}
+          showDots={false}
         />
       )}
 

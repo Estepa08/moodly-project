@@ -17,8 +17,6 @@ type TestResult = components["schemas"]["TestResult"];
 type Feedback = components["schemas"]["Feedback"];
 type FeedbackCreate = components["schemas"]["FeedbackCreate"];
 type OnboardingStory = components["schemas"]["OnboardingStory"];
-type Report = components["schemas"]["Report"];
-type ReportCreate = components["schemas"]["ReportCreate"];
 type User = components["schemas"]["User"];
 type UserUpdate = components["schemas"]["UserUpdate"];
 type CbaExample = components["schemas"]["CbaExample"];
@@ -276,14 +274,6 @@ export const api = {
   },
   onboarding: {
     list: () => request<OnboardingStory[]>("/onboarding-stories"),
-  },
-  reports: {
-    create: (body: ReportCreate) =>
-      request<Report>("/reports", { method: "POST", body: JSON.stringify(body) }),
-    list: () => request<Report[]>("/reports"),
-    get: (id: string) => request<Report>(`/reports/${id}`),
-    download: (id: string) => `${BASE_URL}/reports/${id}/download`,
-    delete: (id: string) => request<void>(`/reports/${id}`, { method: "DELETE" }),
   },
   creature: {
     getState: () => request<CreatureState>("/creature"),

@@ -10,7 +10,6 @@ import testRoutes from "../routes/tests.js";
 import testResultRoutes from "../routes/test-results.js";
 import feedbackRoutes from "../routes/feedback.js";
 import onboardingRoutes from "../routes/onboarding-stories.js";
-import reportRoutes from "../routes/reports.js";
 import creatureRoutes from "../routes/creature.js";
 import cbaRoutes from "../routes/cba.js";
 import digestRoutes from "../routes/digest.js";
@@ -30,7 +29,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(testResultRoutes);
   await fastify.register(feedbackRoutes);
   await fastify.register(onboardingRoutes);
-  await fastify.register(reportRoutes);
   await fastify.register(creatureRoutes);
   await fastify.register(cbaRoutes);
   await fastify.register(digestRoutes);

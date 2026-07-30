@@ -4,7 +4,6 @@ import { PRACTICE_ITEMS, OTHER_ITEMS, DASHBOARD_ITEM } from "../../layout/nav-co
 import { ChevronRight } from "lucide-react";
 
 const STATIC_LABELS: Record<string, string> = {
-  "/reports/weekly": "nav.weeklyDigest",
   "/practices": "nav.practices",
   "/onboarding": "nav.onboarding",
   "/privacy": "nav.privacy",

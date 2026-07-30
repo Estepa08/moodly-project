@@ -9,6 +9,7 @@ export enum ParameterName {
   SleepHygiene = "Sleep Hygiene",
   DistortionQuiz = "Distortion Quiz",
   ThoughtRelease = "Thought Release",
+  ThoughtJournalMood = "Thought Journal Mood",
   Wellbeing = "Wellbeing",
 }
 
@@ -21,6 +22,7 @@ export const PARAM_NAME_KEYS: Record<ParameterName, string> = {
   [ParameterName.SleepHygiene]: "dashboard.sleepHygiene",
   [ParameterName.DistortionQuiz]: "dashboard.distortionQuiz",
   [ParameterName.ThoughtRelease]: "distortions.tabLetGo",
+  [ParameterName.ThoughtJournalMood]: "dashboard.thoughtJournalMood",
   [ParameterName.Wellbeing]: "dashboard.wellbeing",
 };
 

@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { Heart, TrendingUp, TrendingDown, Minus, ArrowRight } from "lucide-react";
+import { Heart, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
 import { Trend } from "../lib/constants";
 
@@ -30,16 +29,14 @@ export default function WellbeingCard({ average, trend, isLoading }: WellbeingCa
         : "text-muted-foreground";
 
   return (
-    <Link to="/reports" className="block">
-      <Card className="shadow-neumorphic transition-[box-shadow,transform] duration-150 active:scale-[0.97]">
-        <CardContent className="flex items-center justify-between py-6">
-          <div className="flex items-center gap-3">
-            <Heart aria-hidden="true" className="w-7 h-7 text-primary" />
-            <span className="text-base font-medium text-foreground">
-              {t("dashboard.wellbeing")}
-            </span>
-            <ArrowRight aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />
-          </div>
+    <Card className="shadow-neumorphic transition-[box-shadow,transform] duration-150 active:scale-[0.97]">
+      <CardContent className="flex items-center justify-between py-6">
+        <div className="flex items-center gap-3">
+          <Heart aria-hidden="true" className="w-7 h-7 text-primary" />
+          <span className="text-base font-medium text-foreground">
+            {t("dashboard.wellbeing")}
+          </span>
+        </div>
           {isLoading ? (
             <span className="text-sm text-muted-foreground">{t("dashboard.practicesLoading")}</span>
           ) : (
@@ -50,8 +47,7 @@ export default function WellbeingCard({ average, trend, isLoading }: WellbeingCa
               <TrendIcon aria-hidden="true" className={`w-5 h-5 mb-2 ${trendColor}`} />
             </div>
           )}
-        </CardContent>
-      </Card>
-    </Link>
+      </CardContent>
+    </Card>
   );
 }

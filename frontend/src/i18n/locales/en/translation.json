@@ -13,7 +13,8 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "cancel": "Cancel",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "date": "Date"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -26,11 +27,9 @@
     "thoughtJournal": "Thought Journal",
     "tests": "Tests",
     "results": "Results",
-    "reports": "Reports",
     "feedback": "Feedback",
     "settings": "Settings",
     "progress": "Progress",
-    "weeklyDigest": "Weekly Digest",
     "onboarding": "Getting Started",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
@@ -146,9 +145,9 @@
     "gratitudeHideChart": "Hide chart",
     "sleepHygiene": "Sleep Hygiene",
     "distortionQuiz": "Distortion Quiz",
+    "thoughtJournalMood": "Thought Journal Mood",
     "practicesSummary": "Practices",
     "allPractices": "All practices",
-    "allReports": "All reports",
     "gratitudePrompt": "What are you grateful for today?",
     "saveGratitude": "Add",
     "noGratitudeYet": "No gratitude entries yet",
@@ -252,32 +251,6 @@
     "unsavedDesc": "You have unsaved feedback. Do you really want to leave?",
     "unsavedStay": "Stay",
     "unsavedLeave": "Leave"
-  },
-  "reports": {
-    "title": "Reports",
-    "tabGenerate": "Generate Reports",
-    "tabWeekly": "Weekly Digest",
-    "cardTitle": "Export your data",
-    "format": "Format",
-    "period": "Period",
-    "custom": "Custom",
-    "sixMonths": "6 months",
-    "pdf": "PDF",
-    "csv": "CSV",
-    "from": "From",
-    "to": "To",
-    "submit": "Generate",
-    "download": "Download",
-    "created": "Report generated!",
-    "noReports": "No exports yet...",
-    "statusPending": "Generating...",
-    "statusReady": "Ready",
-    "statusFailed": "Failed",
-    "retry": "Retry",
-    "summary": "Summary",
-    "totalEntries": "Total entries",
-    "average": "Average",
-    "testResultsSection": "Test Results"
   },
   "breathing": {
     "title": "Breathing Exercise",
@@ -643,7 +616,9 @@
     "creatureLevel": "Pet level",
     "averagesTitle": "Average values",
     "practicesTitle": "Practices completed",
-    "testsTitle": "Tests taken"
+    "testsTitle": "Tests taken",
+    "averagesChartTitle": "Average Values",
+    "practicesChartTitle": "Practices Completed"
   },
   "privacy": {
     "title": "Privacy Policy",

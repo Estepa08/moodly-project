@@ -32,7 +32,7 @@ const SOURCE_PATH: Record<PracticeSource, string> = {
 const ALL_SOURCES = Object.values(PracticeSource);
 
 export default function PracticeProgress({ breathingSessionCount }: PracticeProgressProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: completions, isLoading } = useCompletions(30);
 
   if (isLoading) {
@@ -116,7 +116,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                   {recent.map((c, idx) => {
                     const config = SOURCE_CONFIG[c.source as PracticeSource];
                     const date = new Date(c.createdAt);
-                    const dateStr = date.toLocaleDateString(undefined, {
+                    const dateStr = date.toLocaleDateString(i18n.language, {
                       month: "short",
                       day: "numeric",
                     });

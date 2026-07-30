@@ -13,7 +13,8 @@
     "showPassword": "Показать пароль",
     "hidePassword": "Скрыть пароль",
     "cancel": "Отмена",
-    "somethingWentWrong": "Что-то пошло не так"
+    "somethingWentWrong": "Что-то пошло не так",
+    "date": "Дата"
   },
   "nav": {
     "dashboard": "Дашборд",
@@ -26,11 +27,9 @@
     "thoughtJournal": "Дневник",
     "tests": "Тесты",
     "results": "Результаты",
-    "reports": "Отчёты",
     "feedback": "Обратная связь",
     "settings": "Настройки",
     "progress": "Прогресс",
-    "weeklyDigest": "Еженедельный дайджест",
     "onboarding": "Знакомство",
     "privacy": "Конфиденциальность",
     "terms": "Условия использования",
@@ -147,9 +146,9 @@
     "gratitudeHideChart": "Скрыть график",
     "sleepHygiene": "Гигиена сна",
     "distortionQuiz": "Квиз искажений",
+    "thoughtJournalMood": "Настроение дневника мыслей",
     "practicesSummary": "Практики",
     "allPractices": "Все практики",
-    "allReports": "Все отчёты",
     "gratitudePrompt": "За что вы сегодня благодарны?",
     "saveGratitude": "Добавить",
     "noGratitudeYet": "Записей благодарности пока нет",
@@ -256,32 +255,6 @@
     "unsavedDesc": "У вас есть несохранённый отзыв. Вы уверены, что хотите уйти?",
     "unsavedStay": "Остаться",
     "unsavedLeave": "Уйти"
-  },
-  "reports": {
-    "title": "Отчёты",
-    "tabGenerate": "Сгенерировать отчёт",
-    "tabWeekly": "Еженедельный дайджест",
-    "cardTitle": "Экспортировать данные",
-    "format": "Формат",
-    "period": "Период",
-    "custom": "Свой",
-    "sixMonths": "6 месяцев",
-    "pdf": "PDF",
-    "csv": "CSV",
-    "from": "От",
-    "to": "До",
-    "submit": "Сгенерировать",
-    "download": "Скачать",
-    "created": "Отчёт сгенерирован!",
-    "noReports": "Экспортов пока нет...",
-    "statusPending": "Генерируется...",
-    "statusReady": "Готов",
-    "statusFailed": "Ошибка",
-    "retry": "Повторить",
-    "summary": "Сводка",
-    "totalEntries": "Всего записей",
-    "average": "Среднее",
-    "testResultsSection": "Результаты тестов"
   },
   "breathing": {
     "title": "Дыхательное упражнение",
@@ -647,7 +620,9 @@
     "creatureLevel": "Уровень питомца",
     "averagesTitle": "Средние значения",
     "practicesTitle": "Выполнено практик",
-    "testsTitle": "Пройдено тестов"
+    "testsTitle": "Пройдено тестов",
+    "averagesChartTitle": "Средние значения",
+    "practicesChartTitle": "Выполнено практик"
   },
   "privacy": {
     "title": "Политика обработки персональных данных",

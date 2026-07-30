@@ -576,7 +576,6 @@ async function seed() {
   await prisma.dailyMission.deleteMany();
   await prisma.testScoreBand.deleteMany();
   await prisma.testResult.deleteMany();
-  await prisma.report.deleteMany();
   await prisma.feedback.deleteMany();
   await prisma.entry.deleteMany();
   await prisma.breathingSession.deleteMany();

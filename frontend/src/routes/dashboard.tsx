@@ -1,15 +1,11 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router-dom";
-import { TrendingUp, Sparkles, ArrowRight } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Period } from "../lib/constants";
 import PeriodSelector from "../components/ui/PeriodSelector";
-import { QuickEntryIcons } from "../features/mood-entry";
 import { ParameterTrendsChart } from "../features/analytics";
-import { PracticeProgress } from "../features/gamification";
-import { WellbeingCard } from "../widgets";
-import CollapsibleSection from "../components/ui/collapsible-section";
+import { WellbeingCard, WeeklyDigest } from "../widgets";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -27,12 +23,9 @@ export default function Dashboard() {
   );
 
   const {
-    numericParams,
     trendData,
     paramNames,
     wellbeing,
-    creatureState,
-    createEntry,
     isDataLoading,
   } = useDashboardData(period);
 
@@ -52,58 +45,27 @@ export default function Dashboard() {
         />
       </div>
 
-      <CollapsibleSection
-        title={t("dashboard.practicesSummary")}
-        icon={Sparkles}
-        defaultOpen
-        storageKey="moodly_collapse_practices"
-      >
-        <PracticeProgress breathingSessionCount={creatureState?.sessionCount} />
-        <div className="mt-2 flex justify-end">
-          <Link
-            to="/practices"
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
-          >
-            {t("dashboard.allPractices")}
-            <ArrowRight aria-hidden="true" className="w-3 h-3" />
-          </Link>
-        </div>
-      </CollapsibleSection>
-
-      <QuickEntryIcons
-        numericParams={numericParams}
-        createEntry={createEntry}
+      <WellbeingCard
+        average={wellbeing.average}
+        trend={wellbeing.trend}
+        isLoading={isDataLoading}
       />
 
-      <CollapsibleSection
-        title={t("dashboard.parameterTrends")}
-        icon={TrendingUp}
-        defaultOpen
-        storageKey="moodly_collapse_trends"
-      >
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-4 h-4 rounded bg-primary/30" />
+          <h3 className="text-base font-semibold text-foreground">
+            {t("dashboard.parameterTrends")}
+          </h3>
+        </div>
         <ParameterTrendsChart
           trendData={trendData}
           paramNames={paramNames}
           isLoading={isDataLoading}
         />
+      </div>
 
-        <div className="mt-3">
-          <WellbeingCard
-            average={wellbeing.average}
-            trend={wellbeing.trend}
-            isLoading={isDataLoading}
-          />
-        </div>
-        <div className="mt-2 flex justify-end">
-          <Link
-            to="/reports"
-            className="flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 py-1"
-          >
-            {t("dashboard.allReports")}
-            <ArrowRight aria-hidden="true" className="w-3 h-3" />
-          </Link>
-        </div>
-      </CollapsibleSection>
+      <WeeklyDigest />
     </div>
   );
 }

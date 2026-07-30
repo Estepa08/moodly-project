@@ -16,7 +16,6 @@ const TestsPage = lazy(() => import("./routes/tests"));
 const TestDetailPage = lazy(() => import("./routes/test-detail"));
 const TestResultsPage = lazy(() => import("./routes/test-results"));
 const FeedbackPage = lazy(() => import("./routes/feedback"));
-const ReportsPage = lazy(() => import("./routes/reports"));
 const BreathingPage = lazy(() => import("./routes/breathing"));
 const PracticesPage = lazy(() => import("./routes/practices"));
 const GratitudeJournalPage = lazy(() => import("./routes/gratitude-journal"));
@@ -87,14 +86,12 @@ export default function App() {
         <Route path="/tests/:testId" element={<TestDetailPage />} />
         <Route path="/results" element={<TestResultsPage />} />
         <Route path="/feedback" element={<FeedbackPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
         <Route path="/practices/breathing" element={<BreathingPage />} />
         <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
         <Route path="/practices/distortions" element={<DistortionsPage />} />
         <Route path="/practices/sleep-hygiene" element={<SleepHygienePage />} />
         <Route path="/practices/thought-journal" element={<ThoughtJournalPage />} />
         <Route path="/practices/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
-        <Route path="/reports/weekly" element={<Navigate to="/reports?tab=weekly" replace />} />
 
         {/* Old practice route redirects */}
         <Route path="/breathing" element={<Navigate to="/practices/breathing" replace />} />
@@ -103,7 +100,6 @@ export default function App() {
         <Route path="/sleep-hygiene" element={<Navigate to="/practices/sleep-hygiene" replace />} />
         <Route path="/thought-journal" element={<Navigate to="/practices/thought-journal" replace />} />
         <Route path="/cost-benefit-analysis" element={<Navigate to="/practices/cost-benefit-analysis" replace />} />
-        <Route path="/digest" element={<Navigate to="/reports?tab=weekly" replace />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
