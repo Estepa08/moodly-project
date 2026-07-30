@@ -70,7 +70,7 @@ export default function ParameterTrendsChart({ trendData, paramNames, isLoading 
                   key={name}
                   aria-pressed={visibleParams.has(name)}
                   onClick={() => toggleVisible(name)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     visibleParams.has(name) ? "bg-primary/10 text-primary shadow-neumorphic-sm ring-2 ring-primary/60" : "bg-muted text-muted-foreground shadow-neumorphic-inset"
                   }`}
                 >

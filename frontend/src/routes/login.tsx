@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useIsMobile } from "../hooks/useIsMobile";
 import { useAuthForms } from "../hooks/useAuthForms";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -18,6 +19,7 @@ interface Props {
 export default function LoginPage({ defaultRegister }: Props) {
   const { t, i18n } = useTranslation();
   const reducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   const [isLogin, setIsLogin] = useState(() => !defaultRegister);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
@@ -59,7 +61,7 @@ export default function LoginPage({ defaultRegister }: Props) {
 
   const a = (i: number, entering: boolean) => {
     if (reducedMotion) return {};
-    const base = "transition-all duration-300";
+    const base = "transition-[opacity,transform] duration-300";
     return {
       className: entering ? `${base} ease-out opacity-100 translate-x-0` : `${base} ease-out opacity-0 translate-x-4`,
       style: entering ? staggerEnter(i) : undefined,
@@ -127,7 +129,7 @@ export default function LoginPage({ defaultRegister }: Props) {
       <div className="absolute top-4 right-4 flex items-center gap-2 text-xs z-10">
         <button
           className={cn(
-            "px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "px-1.5 py-0.5 rounded cursor-pointer transition-[color,transform] duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground",
           )}
           onClick={() => i18n.changeLanguage("en")}
@@ -137,7 +139,7 @@ export default function LoginPage({ defaultRegister }: Props) {
         <span className="text-muted-foreground">|</span>
         <button
           className={cn(
-            "px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "px-1.5 py-0.5 rounded cursor-pointer transition-[color,transform] duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground",
           )}
           onClick={() => i18n.changeLanguage("ru")}
@@ -187,7 +189,8 @@ export default function LoginPage({ defaultRegister }: Props) {
                       inputMode="email"
                       enterKeyHint="next"
                       required
-                      autoFocus
+                      autoFocus={!isMobile}
+                      spellCheck={false}
                     />
                   </div>
                   <div className="space-y-2" {...a(2, isLogin)}>
@@ -248,7 +251,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                     {t("login.noAccount")}{" "}
                     <button
                       type="button"
-                      className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       onClick={toggle}
                     >
                       {t("login.signUp")}
@@ -273,7 +276,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                       onChange={(e) => setRegName(e.target.value)}
                       autoComplete="name"
                       enterKeyHint="next"
-                      autoFocus
+                      autoFocus={!isMobile}
                     />
                   </div>
                   <div className="space-y-2" {...a(2, !isLogin)}>
@@ -287,6 +290,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                       inputMode="email"
                       enterKeyHint="next"
                       required
+                      spellCheck={false}
                     />
                   </div>
                   <div className="space-y-2" {...a(3, !isLogin)}>
@@ -331,7 +335,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                     {t("register.hasAccount")}{" "}
                     <button
                       type="button"
-                      className="text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       onClick={toggle}
                     >
                       {t("register.signIn")}
@@ -344,7 +348,7 @@ export default function LoginPage({ defaultRegister }: Props) {
             <div className="border-t border-border pt-3">
               <button
                 onClick={() => setShowDisclaimer(!showDisclaimer)}
-                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary cursor-pointer transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary cursor-pointer transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Info aria-hidden="true" className="w-3.5 h-3.5" />
                 <span>{t("login.disclaimerTitle")}</span>

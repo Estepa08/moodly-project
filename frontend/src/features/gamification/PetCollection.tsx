@@ -31,7 +31,7 @@ export default function PetCollection() {
             onClick={() => isUnlocked && !isActive && setPet.mutate(pet.type)}
             disabled={!isUnlocked || isActive}
             className={cn(
-              "rounded-xl p-3 flex flex-col items-center gap-1.5 transition-all duration-150",
+              "rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               isActive
                 ? "bg-primary/10 shadow-neumorphic-sm ring-2 ring-primary"

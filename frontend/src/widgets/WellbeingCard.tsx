@@ -15,7 +15,7 @@ export default function WellbeingCard({ average, trend, isLoading }: WellbeingCa
 
   return (
     <Link to="/reports" className="block">
-      <Card className="shadow-neumorphic transition-all duration-150 active:scale-[0.97]">
+      <Card className="shadow-neumorphic transition-[box-shadow,transform] duration-150 active:scale-[0.97]">
         <CardContent className="flex items-center justify-between py-6">
           <div className="flex items-center gap-3">
             <Heart aria-hidden="true" className="w-7 h-7 text-primary" />

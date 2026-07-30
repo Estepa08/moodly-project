@@ -83,7 +83,7 @@ export default function TestResultsPage() {
                   <button
                     onClick={() => setShowScore((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                     className={cn(
-                      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium cursor-pointer transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       showScore[r.id] ? "text-primary" : "text-muted-foreground",
                     )}
                   >
@@ -140,7 +140,7 @@ export default function TestResultsPage() {
                 {isLongText && (
                   <button
                     aria-expanded={!!showFull[r.id]}
-                    className="text-xs text-primary hover:underline mt-1 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="text-xs text-primary hover:underline mt-1 cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                   >
                     {showFull[r.id] ? t("testResults.showLess") : t("testResults.showFull")}
@@ -149,7 +149,7 @@ export default function TestResultsPage() {
 
                 <button
                   aria-expanded={!!showRec[r.id]}
-                  className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() => setShowRec((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                 >
                   <ChevronRight aria-hidden="true" className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`} />

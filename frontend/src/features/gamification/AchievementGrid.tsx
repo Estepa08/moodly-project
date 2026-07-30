@@ -52,7 +52,7 @@ export default function AchievementGrid() {
           <div
             key={a.id}
             className={cn(
-              "rounded-xl p-3 flex flex-col gap-1.5 transition-all duration-150",
+              "rounded-xl p-3 flex flex-col gap-1.5 transition-[background-color,box-shadow] duration-150",
               a.unlocked
                 ? "bg-card shadow-neumorphic-sm"
                 : a.progress > 0
@@ -89,7 +89,7 @@ export default function AchievementGrid() {
               <div className="mt-1">
                 <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-primary transition-all duration-300"
+                    className="h-full rounded-full bg-primary transition-[width] duration-300"
                     style={{ width: `${a.progress}%` }}
                   />
                 </div>

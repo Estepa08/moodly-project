@@ -86,7 +86,7 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
                     onClick={() => handleSelect(opt)}
                     disabled={isAnswered}
                     className={cn(
-                      "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-left font-medium transition-all duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-left font-medium transition-[color,background-color,box-shadow,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       isAnswered && isCorrect && "bg-accent/10 text-accent shadow-neumorphic-inset ring-2 ring-accent/60",
                       isWrong && "bg-destructive/10 text-destructive shadow-neumorphic-inset ring-2 ring-destructive/60",
                       !isAnswered && "bg-muted text-muted-foreground hover:text-foreground shadow-neumorphic-sm",

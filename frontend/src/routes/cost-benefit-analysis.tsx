@@ -50,7 +50,7 @@ export default function CostBenefitAnalysisPage() {
               aria-selected={tab === item.key}
               aria-controls={`cba-panel-${item.key}`}
               onClick={() => setTab(item.key)}
-              className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 tab === item.key
                   ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                   : "text-muted-foreground hover:text-primary"

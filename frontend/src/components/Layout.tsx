@@ -101,7 +101,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <h1
-              className={`absolute inset-0 flex items-center text-lg font-semibold text-primary font-serif ${
+              className={`absolute inset-0 flex items-center text-lg font-semibold text-primary font-serif text-balance ${
                 transitioning
                   ? prevWasCreature
                     ? "animate-text-rise"
@@ -111,6 +111,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     : "opacity-0 pointer-events-none"
               }`}
               aria-hidden={showCreature && !transitioning}
+              translate="no"
             >
               {t("common.moodly")}
             </h1>
@@ -152,14 +153,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
             <div className="flex items-center gap-1 text-xs">
               <button
-                className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "en" ? "text-primary font-semibold" : "text-muted-foreground"}`}
                 onClick={() => i18n.changeLanguage("en")}
               >
                 {t("common.languageEn")}
               </button>
               <span className="text-muted-foreground">|</span>
               <button
-                className={`px-1.5 py-0.5 rounded cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
+                className={`px-1.5 py-0.5 rounded cursor-pointer transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${i18n.language === "ru" ? "text-primary font-semibold" : "text-muted-foreground"}`}
                 onClick={() => i18n.changeLanguage("ru")}
               >
                 {t("common.languageRu")}
@@ -194,7 +195,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMoreOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       location.pathname.startsWith(item.path)
                         ? "text-primary font-medium bg-secondary/30"
                         : "text-foreground hover:bg-secondary/30"
@@ -213,7 +214,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMoreOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       location.pathname.startsWith(item.path)
                         ? "text-primary font-medium bg-secondary/30"
                         : "text-foreground hover:bg-secondary/30"

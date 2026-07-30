@@ -85,7 +85,7 @@ export default function PracticesPage() {
           const stale = source ? isStale(source) : false;
           return (
             <Link key={p.path} to={p.path} className="block">
-            <Card className={`shadow-elevation-2 hover:shadow-elevation-3 transition-all duration-150 ${stale ? 'border-l-2 border-primary' : ''}`}>
+            <Card className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? 'border-l-2 border-primary' : ''}`}>
               <CardContent className="flex items-start gap-4 p-5">
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? 'bg-primary/20' : 'bg-primary/10'}`}>
                   <Icon aria-hidden="true" className="w-6 h-6 text-primary" />

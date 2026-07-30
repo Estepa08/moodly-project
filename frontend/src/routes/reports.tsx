@@ -96,7 +96,7 @@ export default function ReportsPage() {
                 <button
                   key={p.key}
                   onClick={() => applyPreset(p.key)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     datePreset === p.key
                       ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                       : "bg-card text-muted-foreground hover:text-primary shadow-neumorphic-sm"
@@ -107,7 +107,7 @@ export default function ReportsPage() {
               ))}
               <button
                 onClick={handleManualDate}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   !datePreset
                     ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                     : "bg-card text-muted-foreground hover:text-primary shadow-neumorphic-sm"

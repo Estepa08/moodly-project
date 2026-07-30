@@ -96,7 +96,7 @@ export default function GratitudeJournal({
                 key={cat}
                 onClick={() => handlePromptSelect(cat)}
                 className={cn(
-                  "px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "px-3 py-1.5 text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   activePrompt === cat ? "bg-primary/10 text-primary shadow-neumorphic-sm" : "bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-foreground",
                 )}
               >

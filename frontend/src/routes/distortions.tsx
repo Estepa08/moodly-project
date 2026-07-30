@@ -61,7 +61,7 @@ export default function DistortionsPage() {
               aria-selected={tab === item.key}
               aria-controls={`distortion-panel-${item.key}`}
               onClick={() => setTab(item.key)}
-              className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 tab === item.key
                   ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                   : "text-muted-foreground hover:text-primary"
@@ -93,7 +93,7 @@ export default function DistortionsPage() {
 
                   <button
                     aria-expanded={!!expanded[key]}
-                    className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))}
                   >
                     <ChevronRight aria-hidden="true" className={`w-4 h-4 ${expanded[key] ? "rotate-90" : ""}`} />

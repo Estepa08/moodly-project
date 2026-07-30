@@ -34,7 +34,7 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
       <button
         onClick={() => onSelect(null)}
         className={cn(
-          "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150",
+          "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-[color,background-color,transform] duration-150",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           !activeTitle
             ? "bg-primary/10 text-primary ring-1 ring-primary"
@@ -52,7 +52,7 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
             key={title}
             onClick={() => onSelect(title)}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150",
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-[color,background-color,transform] duration-150",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               isActive
                 ? "bg-primary/10 text-primary ring-1 ring-primary"

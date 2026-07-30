@@ -35,7 +35,7 @@ export default function BulletStat({
       </div>
       <div className="relative h-2 rounded-full bg-muted overflow-hidden">
         <div
-          className="h-full rounded-full transition-all duration-500"
+          className="h-full rounded-full transition-[width] duration-500"
           style={{ width: `${progress}%`, backgroundColor: color }}
         />
       </div>

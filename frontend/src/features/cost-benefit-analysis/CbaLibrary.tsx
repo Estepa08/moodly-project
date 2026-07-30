@@ -39,7 +39,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
                 <Link
                   key={d.id}
                   to="/distortions"
-                  className="rounded-full px-3 py-1 text-xs font-medium bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-primary transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-full px-3 py-1 text-xs font-medium bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-primary transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {t(`cognitiveDistortions.${d.distortionKey}`)}
                 </Link>
@@ -89,7 +89,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
           aria-label={t("cba.prevExample")}
-          className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-all duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-[color,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ChevronLeft aria-hidden="true" className="w-5 h-5" />
         </button>
@@ -98,7 +98,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
             <span
               key={e.id}
               className={cn(
-                "h-1.5 rounded-full transition-all duration-150",
+                "h-1.5 rounded-full transition-[width,background-color] duration-150",
                 i === index ? "w-6 bg-primary" : "w-1.5 bg-muted",
               )}
             />
@@ -108,7 +108,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
           onClick={() => setIndex((i) => Math.min(examples.length - 1, i + 1))}
           disabled={index === examples.length - 1}
           aria-label={t("cba.nextExample")}
-          className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-all duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-[color,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ChevronRight aria-hidden="true" className="w-5 h-5" />
         </button>

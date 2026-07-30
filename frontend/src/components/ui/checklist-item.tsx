@@ -50,7 +50,7 @@ export function ChecklistItem({
       disabled={disabled}
       aria-pressed={checked}
       className={cn(
-        "w-full flex items-center rounded-xl text-left transition-all duration-150 cursor-pointer active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "w-full flex items-center rounded-xl text-left transition-[color,background-color,box-shadow,opacity,transform] duration-150 cursor-pointer active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         s.button,
         checked
           ? `${c.bg} shadow-neumorphic-inset`

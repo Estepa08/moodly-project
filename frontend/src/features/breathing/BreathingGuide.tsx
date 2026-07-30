@@ -142,7 +142,7 @@ export default function BreathingGuide({
     <div className="flex flex-col items-center gap-4">
       <div className="relative flex items-center justify-center w-40 h-40">
         <div
-          className={`rounded-full ${reducedMotion ? "" : "transition-all duration-100"}`}
+          className={`rounded-full ${reducedMotion ? "" : "transition-[width,height] duration-100"}`}
           style={{
             width: `${40 + circleScale * 80}px`,
             height: `${40 + circleScale * 80}px`,
@@ -166,7 +166,7 @@ export default function BreathingGuide({
         {Array.from({ length: TOTAL_CYCLES }, (_, i) => (
           <div
             key={i}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+            className={`w-2.5 h-2.5 rounded-full transition-[background-color,box-shadow] duration-300 ${
               i + 1 < cycle ? "bg-accent" : i + 1 === cycle ? "bg-primary shadow-neumorphic-sm" : "bg-secondary"
             }`}
           />

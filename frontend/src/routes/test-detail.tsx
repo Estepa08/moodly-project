@@ -145,7 +145,7 @@ export default function TestDetailPage() {
             return (
               <button
                 key={q.id}
-                className="w-full flex items-center gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm text-left cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="w-full flex items-center gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm text-left cursor-pointer transition-[transform,box-shadow] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => handleGoToQuestion(i)}
               >
                 <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -237,7 +237,7 @@ export default function TestDetailPage() {
                 key={option.id}
                 variant={isSelected ? "default" : "outline"}
                 className={cn(
-                  "w-full justify-start h-auto py-3 px-4 relative transition-all duration-150",
+                  "w-full justify-start h-auto py-3 px-4 relative transition-[box-shadow] duration-150",
                   isSelected && "shadow-neumorphic-inset",
                 )}
                 onClick={() => {
@@ -303,7 +303,7 @@ function ScoreBlock({ score, maxScore }: { score: number; maxScore: number }) {
     <div className="text-center">
       <button
         onClick={() => setShowScore(!showScore)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium text-muted-foreground cursor-pointer hover:text-primary transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium text-muted-foreground cursor-pointer hover:text-primary transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {showScore ? t("testResults.hideScore") : t("testResults.showScore")}
       </button>

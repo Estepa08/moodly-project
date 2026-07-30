@@ -30,6 +30,8 @@ export default function CollapsibleSection({
     return defaultOpen;
   });
 
+  const id = `collapsible-${title.replace(/\s+/g, "-").toLowerCase()}`;
+
   const toggle = useCallback(() => {
     setOpen((prev) => {
       const next = !prev;
@@ -48,7 +50,8 @@ export default function CollapsibleSection({
       <button
         onClick={toggle}
         aria-expanded={open}
-        className="flex items-center gap-2 w-full py-2 rounded-lg transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+        aria-controls={id}
+        className="flex items-center gap-2 w-full py-2 rounded-lg transition-[color,opacity,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
       >
         {Icon && <Icon aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0" />}
         <span className="text-sm font-semibold text-foreground font-serif flex-1 text-left">
@@ -63,8 +66,9 @@ export default function CollapsibleSection({
         />
       </button>
       <div
+        id={id}
         className={cn(
-          "overflow-hidden transition-all duration-200",
+          "overflow-hidden transition-[max-height,opacity] duration-200",
           open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
         )}
       >

@@ -34,7 +34,7 @@ export function ProgressBar({
       {segments.map((seg, i) => (
         <div
           key={i}
-          className={cn("h-full transition-all duration-150", seg.className)}
+          className={cn("h-full transition-[width] duration-150", seg.className)}
           style={{ width: `${seg.value}%`, ...seg.style }}
         />
       ))}

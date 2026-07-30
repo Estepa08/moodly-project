@@ -85,7 +85,7 @@ export default function QuickEntryIcons({ createEntry, numericParams, hasEntries
               <button
                 key={cfg.parameterName}
                 onClick={() => handleParamTap(cfg.parameterName)}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-[color,background-color,box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
                     ? "bg-primary/10 text-primary shadow-neumorphic-sm scale-105"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-neumorphic-sm"

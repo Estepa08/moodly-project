@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { TrendingUp, Sparkles, Radar, ArrowRight } from "lucide-react";
 import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Period } from "../lib/constants";
@@ -17,7 +17,11 @@ import EmptyState from "../components/ui/empty-state";
 
 export default function Dashboard() {
   const { t } = useTranslation();
-  const [period, setPeriod] = useState<Period>(Period.TwoWeeks);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPeriod = (Object.values(Period) as string[]).includes(searchParams.get("period") ?? "")
+    ? (searchParams.get("period") as Period)
+    : Period.TwoWeeks;
+  const [period, setPeriod] = useState<Period>(initialPeriod);
 
   const periodOptions = useMemo(
     () => PERIODS.map((p) => ({ key: p.key, label: t(p.labelKey) })),
@@ -46,7 +50,10 @@ export default function Dashboard() {
         <PeriodSelector
           options={periodOptions}
           value={period}
-          onChange={(key) => setPeriod(key as Period)}
+          onChange={(key) => {
+            setPeriod(key as Period);
+            setSearchParams({ period: key }, { replace: true });
+          }}
         />
       </div>
 
