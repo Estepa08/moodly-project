@@ -14,7 +14,6 @@ Moodly — дневник настроения. Полный стек: API-ко�
 - `backend/` — Fastify + TypeScript + Prisma (PostgreSQL)
 - `frontend/` — Vite + React + Tailwind + shadcn/ui + TanStack Query
 - `infra/` — DevOps: Docker Compose, Dockerfile, Caddy reverse proxy, CI workflow
-- `docs/` — документация: дизайн-система, ADR, архитектурные заметки
 - `.opencode/` — AI-агенты, скиллы, AGENTS.md, конфиги OpenCode/Claude
 
 ## Commands
