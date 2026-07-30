@@ -182,7 +182,7 @@ export default function SleepHygieneChecklist({
 
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {t(showDetails ? "sleepHygiene.hideHistory" : "sleepHygiene.showHistory")}
         <ChevronDown aria-hidden="true" className={cn("w-4 h-4 transition-transform", showDetails && "rotate-180")} />

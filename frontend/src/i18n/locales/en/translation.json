@@ -678,16 +678,16 @@
     "deleting": "Deleting..."
   },
   "errors": {
-    "notFound": "Not found",
-    "unauthorized": "Unauthorized",
-    "invalidCredentials": "Invalid email or password",
-    "conflict": "Email already registered",
+    "notFound": "We couldn't find what you're looking for",
+    "unauthorized": "Please log in to continue",
+    "invalidCredentials": "Check your email and password and try again",
+    "conflict": "This email is already registered. Try logging in instead.",
     "consentRequired": "You must confirm your age and consent to continue",
     "sessionExpired": "Session expired, please log in again",
-    "invalidResetToken": "Invalid or expired reset link",
-    "alreadyCheckedIn": "Already checked in today",
-    "dailyLimit": "Daily entry limit reached",
-    "validationError": "Data validation error"
+    "invalidResetToken": "This reset link has expired. Request a new one.",
+    "alreadyCheckedIn": "You've already checked in today. Come back tomorrow!",
+    "dailyLimit": "You've reached the daily entry limit",
+    "validationError": "Please check the data you entered"
   },
   "achievements": {
     "firstCheckin": "First Step",

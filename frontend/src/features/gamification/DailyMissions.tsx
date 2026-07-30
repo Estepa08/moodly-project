@@ -21,7 +21,7 @@ export default function DailyMissions() {
           <div
             key={mission.id}
             className={cn(
-              "rounded-xl p-3 flex items-center gap-3 transition-all duration-150",
+              "rounded-xl p-3 flex items-center gap-3 transition-[background-color,opacity] duration-150",
               mission.claimed
                 ? "bg-muted/30 opacity-60"
                 : "bg-card shadow-neumorphic-sm",

@@ -17,7 +17,7 @@ const Slider = React.forwardRef<
         style={{ background: "var(--slider-fill, hsl(var(--primary)))" }}
       />
     </SliderPrimitive.Track>
-    <SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-primary bg-card shadow-neumorphic-sm transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] cursor-pointer" />
+    <SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-primary bg-card shadow-neumorphic-sm transition-[color,opacity,transform,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.97] cursor-pointer" />
   </SliderPrimitive.Root>
 ));
 Slider.displayName = SliderPrimitive.Root.displayName;

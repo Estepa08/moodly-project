@@ -34,7 +34,7 @@ export default function PeriodSelector({
             role="tab"
             aria-selected={value === opt.key}
             onClick={() => onChange(opt.key)}
-            className={`rounded-lg font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            className={`rounded-lg font-medium transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               value === opt.key
                 ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
                 : "text-muted-foreground hover:text-primary"

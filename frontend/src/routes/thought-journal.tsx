@@ -179,7 +179,7 @@ export default function ThoughtJournalPage() {
                     onClick={() => setSelected(mood.value)}
                     className={`
                       w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center
-                      text-2xl sm:text-3xl transition-all duration-150
+                      text-2xl sm:text-3xl transition-[background-color,box-shadow,transform] duration-150
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
                       ${selected === mood.value
                         ? "bg-primary/20 shadow-elevation-2 scale-110 ring-2 ring-primary"
@@ -203,7 +203,7 @@ export default function ThoughtJournalPage() {
                 onChange={(e) => setNote(e.target.value)}
                 placeholder={t("thoughtJournal.notePlaceholder")}
                 rows={3}
-                className="w-full rounded-xl bg-muted/50 border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-all duration-150"
+                className="w-full rounded-xl bg-muted/50 border border-border px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-[background-color,border-color] duration-150"
               />
             </div>
 

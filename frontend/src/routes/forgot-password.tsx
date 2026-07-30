@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useIsMobile } from "../hooks/useIsMobile";
 import { api } from "../lib/api";
 import { getErrorMessage } from "../lib/error-messages";
 import { Button } from "../components/ui/button";
@@ -10,6 +11,7 @@ import { Card, CardContent } from "../components/ui/card";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
+  const isMobile = useIsMobile();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -65,7 +67,7 @@ export default function ForgotPasswordPage() {
                     inputMode="email"
                     enterKeyHint="go"
                     required
-                    autoFocus
+                    autoFocus={!isMobile}
                     spellCheck={false}
                   />
                 </div>

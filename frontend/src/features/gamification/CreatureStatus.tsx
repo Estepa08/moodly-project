@@ -26,7 +26,7 @@ export default function CreatureStatus({
       </div>
       <div className="flex items-center gap-1.5 min-w-[120px]">
         <ProgressBar
-          segments={[{ value: expPercent, className: "rounded-full bg-primary shadow-neumorphic-sm transition-all duration-300" }]}
+          segments={[{ value: expPercent, className: "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300" }]}
           height={2.5}
           trackClassName="bg-muted"
           className="flex-1"

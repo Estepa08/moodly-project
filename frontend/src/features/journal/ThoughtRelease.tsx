@@ -112,7 +112,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                   type="button"
                   aria-expanded={showHintDetail}
                   onClick={() => setShowHintDetail((v) => !v)}
-                  className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <ChevronRight aria-hidden="true" className={cn("w-3.5 h-3.5 transition-transform", showHintDetail && "rotate-90")} />
                   {showHintDetail ? t("distortions.hideExample") : t("distortions.showExample")}
@@ -160,7 +160,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
             </div>
 
             <div
-              className="flex items-center justify-center w-12 h-12 rounded-full transition-all duration-150"
+              className="flex items-center justify-center w-12 h-12 rounded-full transition-[background-color,transform] duration-150"
               style={{
                 backgroundColor: `hsl(var(--destructive) / ${0.08 + dragProgress * 0.22})`,
                 transform: `scale(${1 + dragProgress * 0.2})`,

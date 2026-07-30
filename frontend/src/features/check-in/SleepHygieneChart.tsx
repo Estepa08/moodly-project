@@ -28,7 +28,7 @@ export default function SleepHygieneChart({ data }: SleepHygieneChartProps) {
       <CardContent className="space-y-3">
         <button
           onClick={() => setShowChart(!showChart)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium text-muted-foreground cursor-pointer hover:text-primary transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium text-muted-foreground cursor-pointer hover:text-primary transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {showChart ? t("sleepHygiene.hideChart") : t("sleepHygiene.showChart")}
         </button>

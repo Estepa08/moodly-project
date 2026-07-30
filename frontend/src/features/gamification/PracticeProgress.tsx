@@ -70,7 +70,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                 <Link
                   key={source}
                   to={SOURCE_PATH[source]}
-                  className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 opacity-50 w-full text-left transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 opacity-50 w-full text-left transition-[opacity,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Icon aria-hidden="true" className="w-5 h-5 text-muted-foreground shrink-0" />
                   <div className="min-w-0">
@@ -84,7 +84,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
               <Link
                 key={source}
                 to={SOURCE_PATH[source]}
-                className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 w-full text-left transition-all duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="rounded-xl bg-muted/50 p-3 flex items-center gap-3 max-sm:p-2 w-full text-left transition-[opacity,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Icon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                 <div className="min-w-0">

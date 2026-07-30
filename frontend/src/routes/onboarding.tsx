@@ -106,7 +106,7 @@ export default function OnboardingPage() {
                   <button
                     key={key}
                     onClick={() => toggleGoal(key)}
-                    className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       goals.includes(key)
                         ? "border-primary bg-primary/5 shadow-neumorphic-sm"
                         : "border-border bg-card shadow-neumorphic-sm"
@@ -139,7 +139,7 @@ export default function OnboardingPage() {
                   <button
                     key={level}
                     onClick={() => setExpLevel(level)}
-                    className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-all duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       expLevel === level
                         ? "border-primary bg-primary/5 shadow-neumorphic-sm"
                         : "border-border bg-card shadow-neumorphic-sm"
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
                     onChange={(e) => setDailyReminder(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-card after:rounded-full after:h-5 after:w-5 after:shadow-neumorphic-sm after:transition-all peer-checked:after:translate-x-full" />
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-card after:rounded-full after:h-5 after:w-5 after:shadow-neumorphic-sm after:transition-[transform] peer-checked:after:translate-x-full" />
                 </label>
               </div>
               {dailyReminder && (
@@ -214,7 +214,7 @@ export default function OnboardingPage() {
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => handleFinish("/")}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <LayoutDashboard aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
@@ -228,7 +228,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => handleFinish("/breathing")}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Wind aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
@@ -240,7 +240,7 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   onClick={() => handleFinish("/tests")}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-all active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <ClipboardList aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>

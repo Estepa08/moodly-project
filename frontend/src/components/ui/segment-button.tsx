@@ -17,7 +17,7 @@ export function SegmentButton({
   return (
     <button
       className={cn(
-        "px-3 min-h-[44px] rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "px-3 min-h-[44px] rounded-lg text-xs font-medium transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
           ? "bg-card text-foreground shadow-neumorphic-sm"
           : "text-muted-foreground hover:text-foreground",

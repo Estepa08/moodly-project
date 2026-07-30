@@ -41,7 +41,7 @@ export default function Sidebar() {
   };
 
   const navButtonClass = (isActive: boolean) =>
-    `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+    `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-[color,background-color,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
       isActive
         ? "text-foreground font-semibold bg-secondary/50"
         : "text-muted-foreground hover:text-primary hover:bg-secondary/50"
@@ -52,7 +52,7 @@ export default function Sidebar() {
       aria-label={t("nav.dashboard")}
       className="hidden md:flex flex-col w-56 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
     >
-      <div className="text-lg font-serif font-bold text-primary mb-4 px-3">
+      <div className="text-lg font-serif font-bold text-primary mb-4 px-3 text-balance" translate="no">
         {t("common.moodly")}
       </div>
 
@@ -68,7 +68,7 @@ export default function Sidebar() {
         </div>
         <button
           onClick={handleLogout}
-          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-[color,background-color,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={t("common.logout")}
         >
           <LogOut aria-hidden="true" className="w-4 h-4" />

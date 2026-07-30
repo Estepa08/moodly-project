@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp } from "../../test/helpers.js";
+import { buildApp, registerAndLogin } from "../../test/helpers.js";
 import type { FastifyInstance } from "fastify";
 
 let app: FastifyInstance;
@@ -7,13 +7,8 @@ let token: string;
 
 beforeAll(async () => {
   app = await buildApp();
-
-  const reg = await app.inject({
-    method: "POST",
-    url: "/auth/register",
-    payload: { email: "feedback-test@example.com", password: "secret123", ageConfirmed: true },
-  });
-  token = reg.json().accessToken;
+  const result = await registerAndLogin(app, "feedback-test@example.com", "secret123");
+  token = result.token;
 });
 
 afterAll(async () => {

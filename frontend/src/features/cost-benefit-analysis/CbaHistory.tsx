@@ -40,7 +40,7 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
               <button
                 onClick={() => deleteEntry.mutate(entry.id)}
                 aria-label={t("cba.deleteEntry")}
-                className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive transition-all duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive transition-[color,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Trash2 aria-hidden="true" className="w-4 h-4" />
               </button>

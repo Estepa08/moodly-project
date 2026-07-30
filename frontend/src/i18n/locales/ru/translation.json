@@ -682,16 +682,16 @@
     "deleting": "Удаление..."
   },
   "errors": {
-    "notFound": "Не найдено",
-    "unauthorized": "Не авторизован",
-    "invalidCredentials": "Неверный email или пароль",
-    "conflict": "Email уже зарегистрирован",
+    "notFound": "То, что вы ищете, не найдено",
+    "unauthorized": "Пожалуйста, войдите, чтобы продолжить",
+    "invalidCredentials": "Проверьте email и пароль и попробуйте снова",
+    "conflict": "Этот email уже зарегистрирован. Попробуйте войти.",
     "consentRequired": "Необходимо подтвердить возраст и согласие на обработку данных",
     "sessionExpired": "Сессия истекла, войдите снова",
-    "invalidResetToken": "Недействительная или истёкшая ссылка",
-    "alreadyCheckedIn": "Вы уже отмечались сегодня",
+    "invalidResetToken": "Ссылка для сброса устарела. Запросите новую.",
+    "alreadyCheckedIn": "Вы уже сегодня отмечались. Возвращайтесь завтра!",
     "dailyLimit": "Достигнут дневной лимит записей",
-    "validationError": "Ошибка валидации данных"
+    "validationError": "Пожалуйста, проверьте введённые данные"
   },
   "achievements": {
     "firstCheckin": "Первый шаг",
