@@ -27,7 +27,7 @@ interface Interpretation {
   flags?: Record<string, unknown>;
 }
 
-function cdInterpretation(
+function cognitiveDistortionInterpretation(
   templateKey: "severe" | "moderate" | "minimal",
   highNames: string[],
   moderateNames: string[],
@@ -43,7 +43,7 @@ function cdInterpretation(
   return "Когнитивных искажений не выявлено. Ваши мыслительные паттерны выглядят сбалансированными.";
 }
 
-function cdRecommendation(recommendationKey: "severe" | "moderate" | "minimal"): string {
+function cognitiveDistortionRecommendation(recommendationKey: "severe" | "moderate" | "minimal"): string {
   if (recommendationKey === "severe") {
     return "Ваши результаты указывают на несколько сильно выраженных когнитивных искажений. Когнитивно-поведенческая терапия (КПТ) эффективна для проработки этих паттернов. Рекомендуется вести дневник мыслей и оспаривать искажённое мышление с помощью фактов.";
   }
@@ -62,7 +62,7 @@ export async function getInterpretation(
   answers: TestAnswer[],
 ): Promise<Interpretation> {
   if (testType === "computed") {
-    return computeCDInterpretation(answers);
+    return computeCognitiveDistortionInterpretation(answers);
   }
 
   const bands = await prisma.testScoreBand.findMany({
@@ -92,7 +92,7 @@ export async function getInterpretation(
   return { interpretation: band.interpretation, recommendation: band.recommendation, flags: { bandKey: band.key } };
 }
 
-function computeCDInterpretation(answers: TestAnswer[]): Interpretation {
+function computeCognitiveDistortionInterpretation(answers: TestAnswer[]): Interpretation {
   const distortionScores = Array(10).fill(0);
   const questionCount = Array(10).fill(0);
 
@@ -130,8 +130,8 @@ function computeCDInterpretation(answers: TestAnswer[]): Interpretation {
   const moderateNames = moderateKeys.map((k) => DISTORTIONS.find((d) => d.key === k)!.name);
 
   return {
-    interpretation: cdInterpretation(templateKey, highNames, moderateNames),
-    recommendation: cdRecommendation(templateKey),
+    interpretation: cognitiveDistortionInterpretation(templateKey, highNames, moderateNames),
+    recommendation: cognitiveDistortionRecommendation(templateKey),
     flags: { distortions, templateKey, recommendationKey: templateKey, highKeys, moderateKeys },
   };
 }

@@ -100,6 +100,9 @@ export enum ComponentSize {
   Md = "md",
 }
 
+export const EXP_PER_LEVEL = 100;
+export const MS_PER_DAY = 86400000;
+
 export enum Period {
   OneWeek = "1w",
   TwoWeeks = "2w",

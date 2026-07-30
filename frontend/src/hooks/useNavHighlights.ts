@@ -1,6 +1,7 @@
 import { useCreatureState } from "../features/gamification/useCreature";
 import { useTestResults } from "./useTests";
 import { useStalePractices } from "./useStalePractices";
+import { MS_PER_DAY } from "../lib/constants";
 
 export function useNavHighlights() {
   const { data: creature } = useCreatureState();
@@ -11,8 +12,8 @@ export function useNavHighlights() {
   today.setHours(0, 0, 0, 0);
 
   const lastCheckIn = creature?.lastCheckInAt ? new Date(creature.lastCheckInAt) : null;
-  const checkedInToday = lastCheckIn && lastCheckIn >= today;
-  const dashboard = !checkedInToday;
+  const isCheckedInToday = lastCheckIn && lastCheckIn >= today;
+  const dashboard = !isCheckedInToday;
 
   const practices = staleCount > 0;
 
@@ -20,7 +21,7 @@ export function useNavHighlights() {
     ? new Date(testResults[0].completedAt)
     : null;
   const daysSinceTest = lastTest
-    ? Math.floor((Date.now() - lastTest.getTime()) / 86400000)
+    ? Math.floor((Date.now() - lastTest.getTime()) / MS_PER_DAY)
     : 999;
   const tests = daysSinceTest >= 14;
 

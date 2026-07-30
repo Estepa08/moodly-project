@@ -22,13 +22,13 @@ const PIE_COLORS = [
   "hsl(var(--destructive))",
 ];
 
-const PRACTICE_LABELS: Record<string, string> = {
-  breathing: "Breathing",
-  gratitude: "Gratitude",
-  sleepHygiene: "Sleep Hygiene",
-  distortions: "Distortions",
-  cba: "CBA",
-  thoughtJournal: "Thought Journal",
+const PRACTICE_LABEL_KEYS: Record<string, string> = {
+  breathing: "progress.activityBreathing",
+  gratitude: "progress.activityGratitude",
+  sleepHygiene: "progress.activitySleepHygiene",
+  distortions: "progress.activityDistortions",
+  cba: "progress.activityCba",
+  thoughtJournal: "progress.activityThoughtJournal",
 };
 
 export default function DigestCharts({ averages, practicesCompleted }: DigestChartsProps) {
@@ -43,10 +43,10 @@ export default function DigestCharts({ averages, practicesCompleted }: DigestCha
 
   const practiceChartData = useMemo(() => {
     return Object.entries(practicesCompleted).map(([key, val]) => ({
-      name: PRACTICE_LABELS[key] ?? key,
+      name: t(PRACTICE_LABEL_KEYS[key] ?? key),
       value: val,
     }));
-  }, [practicesCompleted]);
+  }, [practicesCompleted, t]);
 
   const hasAverages = avgChartData.length > 0;
   const hasPractices = practiceChartData.length > 0;
@@ -58,7 +58,7 @@ export default function DigestCharts({ averages, practicesCompleted }: DigestCha
       {hasAverages && (
         <Card className="shadow-neumorphic">
           <CardHeader>
-            <CardTitle className="text-base">{t("digest.averagesChartTitle") ?? "Parameter Averages"}</CardTitle>
+            <CardTitle className="text-base">{t("digest.averagesChartTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={180}>
@@ -77,7 +77,7 @@ export default function DigestCharts({ averages, practicesCompleted }: DigestCha
       {hasPractices && (
         <Card className="shadow-neumorphic">
           <CardHeader>
-            <CardTitle className="text-base">{t("digest.practicesChartTitle") ?? "Practice Distribution"}</CardTitle>
+            <CardTitle className="text-base">{t("digest.practicesChartTitle")}</CardTitle>
           </CardHeader>
           <CardContent>
             {practiceChartData.length > 1 ? (

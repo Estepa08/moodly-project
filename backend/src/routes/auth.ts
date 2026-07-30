@@ -108,15 +108,4 @@ export default async function authRoutes(fastify: FastifyInstance) {
     return { accessToken, message: "Password reset successfully" };
   });
 
-  // DEMO-ONLY: remove before production
-  fastify.post("/auth/demo", async (request, reply) => {
-    const user = await userService.createDemo();
-    const accessToken = await reply.jwtSign(
-      { userId: user.id },
-      { expiresIn: authService.accessTokenExpiry },
-    );
-    const refreshToken = await authService.createRefreshToken(user.id);
-    setRefreshCookie(reply, refreshToken);
-    return { accessToken, user };
-  });
 }

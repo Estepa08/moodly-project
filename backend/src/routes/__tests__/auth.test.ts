@@ -74,14 +74,4 @@ describe("Auth", () => {
     expect(res.statusCode).toBe(401);
   });
 
-  // DEMO-ONLY: remove before production
-  it("POST /auth/demo — creates user and returns token", async () => {
-    const res = await app.inject({
-      method: "POST",
-      url: "/auth/demo",
-    });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty("accessToken");
-    expect(res.json().user.name).toBe("Demo User");
-  });
 });

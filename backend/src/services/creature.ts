@@ -1,8 +1,7 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../lib/errors.js";
+import { EXP_PER_LEVEL, MS_PER_DAY } from "../lib/constants.js";
 import { achievementsService } from "./achievements.js";
-
-const EXP_PER_LEVEL = 100;
 const CHECKIN_EXP = 20;
 const EXERCISE_EXP = 10;
 const MAX_ENERGY = 100;
@@ -77,7 +76,7 @@ export const creatureService = {
       ? completions[completions.length - 1].createdAt
       : null;
     const daysSinceFirst = firstActivity
-      ? Math.max(1, Math.floor((Date.now() - firstActivity.getTime()) / 86400000))
+      ? Math.max(1, Math.floor((Date.now() - firstActivity.getTime()) / MS_PER_DAY))
       : 0;
 
     const sourceBreakdown: Record<string, number> = {};
@@ -134,16 +133,16 @@ export const creatureService = {
     });
 
     const completionsByDate = new Map<string, number>();
-    for (const c of completions) {
-      const d = c.createdAt.toISOString().slice(0, 10);
-      completionsByDate.set(d, (completionsByDate.get(d) ?? 0) + 1);
+    for (const completion of completions) {
+      const dateKey = completion.createdAt.toISOString().slice(0, 10);
+      completionsByDate.set(dateKey, (completionsByDate.get(dateKey) ?? 0) + 1);
     }
 
     const result: { date: string; count: number }[] = [];
     for (let i = 0; i < days; i++) {
-      const d = new Date(since);
-      d.setDate(d.getDate() + i);
-      const key = d.toISOString().slice(0, 10);
+      const date = new Date(since);
+      date.setDate(date.getDate() + i);
+      const key = date.toISOString().slice(0, 10);
       result.push({ date: key, count: completionsByDate.get(key) ?? 0 });
     }
 
@@ -194,7 +193,6 @@ export const creatureService = {
     const todayEnd = new Date(today);
     todayEnd.setDate(todayEnd.getDate() + 1);
 
-    const creature = await prisma.creatureState.findUnique({ where: { userId } });
     const todayCompletions = await prisma.practiceCompletion.findMany({
       where: { userId, createdAt: { gte: today, lt: todayEnd } },
       select: { source: true },
@@ -205,38 +203,26 @@ export const creatureService = {
 
     const completedSources = new Set(todayCompletions.map((c) => c.source));
 
+    const MISSION_SOURCE: Record<string, string> = {
+      checkin: "checkin",
+      practice_breathing: "breathing",
+      practice_gratitude: "gratitude",
+      practice_sleepHygiene: "sleepHygiene",
+      practice_distortions: "distortions",
+      practice_cba: "cba",
+      practice_thoughtJournal: "thoughtJournal",
+    };
+
     return missions.map((m) => {
       let progress = 0;
-      const maxProgress = m.missionKey.startsWith("complete_") ? 1 : 1;
 
-      switch (m.missionKey) {
-        case "checkin":
-          progress = completedSources.has("checkin") ? 1 : 0;
-          break;
-        case "practice_breathing":
-          progress = completedSources.has("breathing") ? 1 : 0;
-          break;
-        case "practice_gratitude":
-          progress = completedSources.has("gratitude") ? 1 : 0;
-          break;
-        case "practice_sleepHygiene":
-          progress = completedSources.has("sleepHygiene") ? 1 : 0;
-          break;
-        case "practice_distortions":
-          progress = completedSources.has("distortions") ? 1 : 0;
-          break;
-        case "practice_cba":
-          progress = completedSources.has("cba") ? 1 : 0;
-          break;
-        case "practice_thoughtJournal":
-          progress = completedSources.has("thoughtJournal") ? 1 : 0;
-          break;
-        case "complete_3_practices":
-          progress = Math.min(3, todayCompletions.length) / 3;
-          break;
-        case "log_mood_entry":
-          progress = todayEntries > 0 ? 1 : 0;
-          break;
+      if (m.missionKey === "complete_3_practices") {
+        progress = Math.min(3, todayCompletions.length) / 3;
+      } else if (m.missionKey === "log_mood_entry") {
+        progress = todayEntries > 0 ? 1 : 0;
+      } else {
+        const source = MISSION_SOURCE[m.missionKey];
+        progress = source && completedSources.has(source) ? 1 : 0;
       }
 
       return {

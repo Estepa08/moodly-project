@@ -3,13 +3,12 @@ import Lottie from "lottie-react";
 import creatureAnimation from "../../assets/lottie/breathing-creature.json";
 import { StreakIndicator } from "./index";
 import { ProgressBar } from "../../components/ui/progress-bar";
+import { EXP_PER_LEVEL } from "../../lib/constants";
 import type { CreatureState } from "../../lib/api";
 
 interface ProgressHeroProps {
   creature: CreatureState;
 }
-
-const EXP_PER_LEVEL = 100;
 
 export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();

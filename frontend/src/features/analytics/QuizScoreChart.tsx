@@ -71,7 +71,7 @@ export default function QuizScoreChart({ entries, isLoading }: QuizScoreChartPro
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />
-          {t("distortions.quizHistory") ?? "Quiz Score History"}
+          {t("distortions.quizHistory")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -124,7 +124,7 @@ export default function QuizScoreChart({ entries, isLoading }: QuizScoreChartPro
             )}
           </>
         ) : (
-          <EmptyState icon={BarChart3} title={t("distortions.noQuizHistory") ?? "Complete the quiz to see history"} />
+          <EmptyState icon={BarChart3} title={t("distortions.noQuizHistory")} />
         )}
       </CardContent>
     </Card>

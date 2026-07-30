@@ -176,6 +176,10 @@ export const achievementsService = {
   },
 };
 
+function percentOf(current: number, target: number): number {
+  return Math.min(100, Math.round((current / Math.max(target, 1)) * 100));
+}
+
 function calculateProgress(
   criteria: Record<string, unknown>,
   creature: { level: number; experience: number; streak: number } | null,
@@ -191,15 +195,15 @@ function calculateProgress(
 
   switch (type) {
     case "streak":
-      return Math.min(100, Math.round(((creature?.streak ?? 0) / value) * 100));
+      return percentOf(creature?.streak ?? 0, value);
     case "level":
-      return Math.min(100, Math.round(((creature?.level ?? 0) / value) * 100));
+      return percentOf(creature?.level ?? 0, value);
     case "breathing_count":
-      return Math.min(100, Math.round((breathingCount / value) * 100));
+      return percentOf(breathingCount, value);
     case "total_completions":
-      return Math.min(100, Math.round((totalCompletions / value) * 100));
+      return percentOf(totalCompletions, value);
     case "total_xp":
-      return Math.min(100, Math.round((totalXp / value) * 100));
+      return percentOf(totalXp, value);
     case "all_practices":
       return (uniquePractices?.size ?? 0) >= 6 ? 100 : 0;
     default:

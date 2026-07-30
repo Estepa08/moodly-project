@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { prisma } from "./lib/prisma.js";
+import { MS_PER_DAY } from "./lib/constants.js";
 
 const parameters = [
   { name: "Anxiety", description: "Общий уровень тревоги", unit: "/10" },
@@ -744,7 +745,7 @@ async function seed() {
   const paramMap = new Map(allParams.map((p) => [p.name, p.id]));
 
   const now = new Date();
-  const DAY = 24 * 60 * 60 * 1000;
+  const DAY = MS_PER_DAY;
 
   const dailyValues: Record<string, number[]> = {
     Anxiety: [7, 6, 8, 5, 4, 6, 3, 5, 7, 6, 4, 3, 5, 4],

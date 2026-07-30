@@ -74,7 +74,7 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-primary" />
-          {t("testResults.scoreHistory") ?? "Score History"}
+          {t("testResults.scoreHistory")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -116,7 +116,7 @@ export default function TestResultsChart({ results, isLoading }: TestResultsChar
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <EmptyState icon={BarChart3} title={t("testResults.noHistory") ?? "Not enough data for chart"} />
+          <EmptyState icon={BarChart3} title={t("testResults.noHistory")} />
         )}
       </CardContent>
     </Card>

@@ -42,7 +42,7 @@ export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <Scale className="w-4 h-4 text-primary" />
-          {t("cba.trendTitle") ?? "Pros vs Cons Trend"}
+          {t("cba.trendTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -71,12 +71,12 @@ export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
             </ResponsiveContainer>
             {overallBalance !== null && (
               <p className="text-xs text-muted-foreground text-center mt-2">
-                {t("cba.overallBalance") ?? "Overall balance"}: {overallBalance}% Pros / {100 - overallBalance}% Cons
+                {t("cba.overallBalance")}: {overallBalance}% Pros / {100 - overallBalance}% Cons
               </p>
             )}
           </>
         ) : (
-          <EmptyState icon={Scale} title={t("cba.addMoreEntries") ?? "Add more entries to see the trend"} />
+          <EmptyState icon={Scale} title={t("cba.addMoreEntries")} />
         )}
       </CardContent>
     </Card>
