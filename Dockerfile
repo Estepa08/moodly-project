@@ -30,8 +30,8 @@ COPY backend/docker-entrypoint.sh ./
 RUN npm run build
 
 # Stage 4: Runtime — Caddy serves frontend, proxies /api to backend
-FROM caddy:2-alpine
-RUN apk add --no-cache nodejs
+FROM node:22-alpine
+RUN apk add --no-cache caddy openssl
 
 COPY --from=frontend-build /workspace/frontend/dist /srv
 COPY --from=backend-build /workspace/backend/dist /app/dist
