@@ -293,3 +293,18 @@
   animation: puddle-drop 1.4s ease-out forwards;
   animation-delay: var(--delay);
 }
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-enter {
+  animation: card-enter 0.4s ease-out both;
+}
