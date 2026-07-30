@@ -1,3 +1,8 @@
+if (process.env.NODE_ENV === "production") {
+  console.error("Seed script cannot run in production");
+  process.exit(1);
+}
+
 import bcrypt from "bcrypt";
 import { prisma } from "./lib/prisma.js";
 import { MS_PER_DAY } from "./lib/constants.js";

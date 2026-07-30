@@ -19,8 +19,6 @@ export function useAuthForms() {
   const [regPassword, setRegPassword] = useState("");
   const [regError, setRegError] = useState("");
 
-  const [demoLoading, setDemoLoading] = useState(false);
-
   const acceptDisclaimer = () => localStorage.setItem(DISCLAIMER_ACCEPTED_KEY, "true");
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -54,21 +52,6 @@ export function useAuthForms() {
     }
   };
 
-  const handleDemo = async () => {
-    setDemoLoading(true);
-    setLoginError("");
-    acceptDisclaimer();
-    try {
-      const res = await api.auth.demo();
-      login(res.accessToken);
-      navigate("/");
-    } catch (err) {
-      setLoginError(err instanceof Error ? err.message : t("login.demoFailed"));
-    } finally {
-      setDemoLoading(false);
-    }
-  };
-
   return {
     loginEmail,
     setLoginEmail,
@@ -82,9 +65,7 @@ export function useAuthForms() {
     regPassword,
     setRegPassword,
     regError,
-    demoLoading,
     handleLoginSubmit,
     handleRegisterSubmit,
-    handleDemo,
   };
 }
