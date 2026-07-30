@@ -103,11 +103,16 @@ Parameter, Test, OnboardingStory, Achievement, CbaExample, CbaCommonItem не и
 
 ## Conventions
 
-### Коммиты и пуши
+### Git workflow (develop/main)
 
-- Не коммитить и не пушить без явной команды пользователя.
+**Ветки:**
+- `develop` — основная ветка для ежедневной работы. Все коммиты и пуши — сюда.
+- `main` — прод. Защищён на GitHub (push запрещён, только через PR).
+
+**Работа:**
+- Все коммиты идут в `develop` (по команде пользователя).
+- Релиз в prod — только по команде «сделай PR в прод»: создаётся PR `develop → main` на GitHub.
 - Conventional Commits (`feat:`, `fix:`, `chore:`).
-- Commit только по команде "сохрани" или "готово".
 
 ### Нейминг
 
