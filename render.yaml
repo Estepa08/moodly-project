@@ -16,7 +16,9 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: FRONTEND_URL
-        value: https://moodly.onrender.com
+        value: https://moodly-oyew.onrender.com
+      - key: AUTO_VERIFY_EMAIL
+        value: "1"
       - key: COOKIE_SAMESITE
         value: lax
       - key: NODE_ENV

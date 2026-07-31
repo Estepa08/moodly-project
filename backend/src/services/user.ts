@@ -53,8 +53,9 @@ export const userService = {
     if (existing) throw new ConflictError("Email already registered");
 
     const hashed = await bcrypt.hash(input.password, 10);
-    const rawToken = crypto.randomUUID();
-    const tokenHash = hashToken(rawToken);
+    const autoVerify = process.env.AUTO_VERIFY_EMAIL === "1";
+    const rawToken = autoVerify ? null : crypto.randomUUID();
+    const tokenHash = autoVerify ? null : hashToken(rawToken as string);
 
     const user = await prisma.user.create({
       data: {
@@ -64,8 +65,9 @@ export const userService = {
         ageConfirmed: true,
         consentAcceptedAt: new Date(),
         consentVersion: CONSENT_VERSION,
+        emailVerified: autoVerify,
         emailVerificationToken: tokenHash,
-        emailVerificationSentAt: new Date(),
+        emailVerificationSentAt: autoVerify ? null : new Date(),
       },
     });
     return { user: stripUser(user), verificationToken: rawToken };
