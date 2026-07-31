@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 import Layout from "./components/Layout";
 import Spinner from "./components/ui/spinner";
 import LoginPage from "./routes/login";
@@ -25,6 +26,7 @@ const ThoughtJournalPage = lazy(() => import("./routes/thought-journal"));
 const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysis"));
 const SettingsPage = lazy(() => import("./routes/settings"));
 const ProgressPage = lazy(() => import("./routes/progress"));
+const AdminPanelPage = lazy(() => import("./routes/admin-panel"));
 
 function SuspenseFallback() {
   return (
@@ -57,6 +59,13 @@ function ProtectedRoute() {
       </ProtectedSuspense>
     </Layout>
   );
+}
+
+function AdminRoute() {
+  const { data: user, isLoading } = useCurrentUser();
+  if (isLoading) return <BootstrapSpinner />;
+  if (user?.role !== "admin") return <Navigate to="/" replace />;
+  return <Outlet />;
 }
 
 function PublicRoute() {
@@ -102,6 +111,9 @@ export default function App() {
         <Route path="/cost-benefit-analysis" element={<Navigate to="/practices/cost-benefit-analysis" replace />} />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminPanelPage />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -1,6 +1,7 @@
 import fp from "fastify-plugin";
 import fastifyJwt from "@fastify/jwt";
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { prisma } from "../lib/prisma.js";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -8,6 +9,7 @@ declare module "fastify" {
   }
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    requireAdmin: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }
 
@@ -35,6 +37,17 @@ export default fp(async function authPlugin(fastify: FastifyInstance) {
       request.userId = request.user.userId;
     } catch {
       return reply.status(401).send({ code: "UNAUTHORIZED", message: "Invalid or expired token" });
+    }
+  });
+
+  fastify.decorate("requireAdmin", async function (request: FastifyRequest, reply: FastifyReply) {
+    await fastify.authenticate(request, reply);
+    const user = await prisma.user.findUnique({
+      where: { id: request.userId },
+      select: { role: true },
+    });
+    if (!user || user.role !== "admin") {
+      return reply.status(403).send({ code: "FORBIDDEN", message: "Admin access required" });
     }
   });
 });

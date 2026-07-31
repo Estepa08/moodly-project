@@ -7,7 +7,23 @@ model User {
   id: string;
   email: string;
   name?: string;
+  role: string;
   createdAt: utcDateTime;
+}
+
+@doc("Запись списка пользователей для админ-панели")
+model AdminUser {
+  id: string;
+  email: string;
+  name?: string;
+  role: string;
+  createdAt: utcDateTime;
+  emailVerified: boolean;
+  ageConfirmed: boolean;
+  entriesCount: int32;
+  testResultsCount: int32;
+  breathingSessionsCount: int32;
+  cbaEntriesCount: int32;
 }
 
 model UserCreate {

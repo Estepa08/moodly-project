@@ -11,6 +11,7 @@ import {
   Settings,
   BookOpen,
   Trophy,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -44,3 +45,9 @@ export const OTHER_ITEMS: NavItem[] = [
 ];
 
 export const ALL_MORE_ITEMS = [...PRACTICE_ITEMS, ...OTHER_ITEMS];
+
+export const ADMIN_ITEM: NavItem = {
+  labelKey: "nav.admin",
+  path: "/admin",
+  icon: ShieldCheck,
+};

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { useCreatureState } from "../features/gamification";
 import Lottie from "lottie-react";
@@ -13,12 +14,13 @@ import Sidebar from "../layout/Sidebar";
 import LayoutModals from "../layout/LayoutModals";
 import BottomNav from "../layout/BottomNav";
 import Breadcrumbs from "../components/ui/breadcrumbs";
-import { PRACTICE_ITEMS, OTHER_ITEMS, ALL_MORE_ITEMS } from "../layout/nav-config";
+import { PRACTICE_ITEMS, OTHER_ITEMS, ALL_MORE_ITEMS, ADMIN_ITEM } from "../layout/nav-config";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { t, i18n } = useTranslation();
   const location = useLocation();
   const { isAuthenticated, isBootstrapping } = useAuth();
+  const { data: userData } = useCurrentUser();
   const isReducedMotion = useReducedMotion();
   const { data: creature } = useCreatureState();
   const [showCreature, setShowCreature] = useState(true);
@@ -224,6 +226,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     {t(item.labelKey)}
                   </Link>
                 ))}
+                {userData?.role === "admin" && (
+                  <Link
+                    to={ADMIN_ITEM.path}
+                    onClick={() => setMobileMoreOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      location.pathname.startsWith(ADMIN_ITEM.path)
+                        ? "text-primary font-medium bg-secondary/30"
+                        : "text-foreground hover:bg-secondary/30"
+                    }`}
+                  >
+                    <ADMIN_ITEM.icon aria-hidden="true" className="w-5 h-5 shrink-0" />
+                    {t(ADMIN_ITEM.labelKey)}
+                  </Link>
+                )}
               </div>
             </>
           )}

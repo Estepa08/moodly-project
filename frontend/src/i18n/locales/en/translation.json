@@ -33,7 +33,8 @@
     "onboarding": "Getting Started",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "more": "More"
+    "more": "More",
+    "admin": "Admin"
   },
   "login": {
     "title": "Moodly",
@@ -778,5 +779,34 @@
     "comet": "Comet",
     "aurora": "Aurora",
     "active": "Active"
+  },
+  "admin": {
+    "title": "Administration",
+    "subtitle": "Registered users",
+    "total": "Total",
+    "user": "User",
+    "role": "Role",
+    "roleUser": "user",
+    "roleAdmin": "admin",
+    "registered": "Registered",
+    "emailVerified": "Email verified",
+    "yes": "yes",
+    "no": "no",
+    "activity": "Activity",
+    "entriesCount": "entries",
+    "testsCount": "tests",
+    "delete": "Delete",
+    "deleteWarning": "Deletion is irreversible: all user data will be removed.",
+    "deleteConfirmTitle": "Delete user?",
+    "deleteConfirmDesc": "Data for {{email}} will be deleted permanently.",
+    "confirmEmailLabel": "Type the email to confirm",
+    "deleteButton": "Delete",
+    "cancel": "Cancel",
+    "emailMismatch": "Email does not match. The Delete button enables once it matches.",
+    "deleteFailed": "Failed to delete user",
+    "loadFailed": "Failed to load users",
+    "empty": "No registered users yet",
+    "forbidden": "Admins only",
+    "deleting": "Deleting..."
   }
 }

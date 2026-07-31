@@ -1,6 +1,8 @@
 .PHONY: install setup generate dev dev-backend dev-frontend build build-backend build-frontend
 .PHONY: test test-backend test-frontend test-watch test-coverage
-.PHONY: db-generate db-push db-seed db-setup db-reset db-studio admin clean
+.PHONY: db-generate db-push db-seed db-setup db-reset db-studio admin prod clean
+.PHONY: db-prod-users db-prod-user-delete db-prod-studio db-prod-admin
+.PHONY: db-create-user db-prod-create-user
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
 .PHONY: start-feature
 
@@ -25,9 +27,9 @@ dev-backend:
 dev-frontend:
 	cd frontend && npm run dev
 
+# «make admin dev» передаёт «dev» как аргумент — в этом случае запуск проекта не выполняется.
 dev:
-	cd backend && npm run dev &
-	cd frontend && npm run dev
+	@$(if $(filter admin,$(MAKECMDGOALS)),:,cd backend && npm run dev & cd frontend && npm run dev)
 
 # ─── Build ──────────────────────────────────────────────
 
@@ -78,7 +80,17 @@ db-seed:
 
 db-setup: db-generate db-push db-seed
 
-admin: db-studio
+# Prisma Studio: «make admin dev» — dev-БД; «make admin prod» — прод-БД (backend/.env.prod).
+# Заглушки dev/prod нужны, чтобы make не выполнял их как отдельные таргеты при вызове admin.
+admin:
+	@case "$(filter-out $@,$(MAKECMDGOALS))" in \
+	  dev) cd backend && npx prisma studio ;; \
+	  prod) cd backend && set -a && . ./.env.prod && set +a && npx prisma studio ;; \
+	  *) echo "Usage: make admin dev|prod"; exit 1 ;; \
+	esac
+
+prod:
+	@:
 
 db-studio:
 	cd backend && npx prisma studio
@@ -86,6 +98,33 @@ db-studio:
 db-reset:
 	cd backend && npx prisma db push --force-reset
 	cd backend && npm run db:seed
+
+# Прод-БД (Render). DATABASE_URL берётся из backend/.env.prod.
+# Пример: make db-prod-users
+# Пример: make db-prod-user-delete ARGS="--email=user@example.com --yes"
+# Пример: make db-prod-admin ARGS="--email=user@example.com"
+
+db-prod-users:
+	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-prod-users.ts
+
+db-prod-user-delete:
+	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-prod-user-delete.ts $(ARGS)
+
+db-prod-studio:
+	cd backend && set -a && . ./.env.prod && set +a && npx prisma studio
+
+db-prod-admin:
+	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-prod-admin.ts $(ARGS)
+
+# Создание/обновление пользователя (создание админа для входа в админку).
+# Пример: make db-create-user ARGS="--email=step.evgeny@gmail.com --password=<пароль> --admin"
+# Пример: make db-prod-create-user ARGS="--email=step.evgeny@gmail.com --password=<пароль> --admin"
+
+db-create-user:
+	cd backend && node --env-file=.env --import tsx src/scripts/db-create-user.ts $(ARGS)
+
+db-prod-create-user:
+	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-create-user.ts $(ARGS)
 
 # ─── Dev/Prod Workflow ──────────────────────────────────
 

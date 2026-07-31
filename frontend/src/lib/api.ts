@@ -19,6 +19,7 @@ type FeedbackCreate = components["schemas"]["FeedbackCreate"];
 type OnboardingStory = components["schemas"]["OnboardingStory"];
 type User = components["schemas"]["User"];
 type UserUpdate = components["schemas"]["UserUpdate"];
+export type AdminUser = components["schemas"]["AdminUser"];
 type CbaExample = components["schemas"]["CbaExample"];
 type CbaCommonItem = components["schemas"]["CbaCommonItem"];
 type CbaEntry = components["schemas"]["CbaEntry"];
@@ -332,5 +333,9 @@ export const api = {
         request<CbaEntry>("/cba/entries", { method: "POST", body: JSON.stringify(body) }),
       delete: (id: string) => request<void>(`/cba/entries/${id}`, { method: "DELETE" }),
     },
+  },
+  admin: {
+    listUsers: () => request<AdminUser[]>("/admin/users"),
+    deleteUser: (id: string) => request<void>(`/admin/users/${id}`, { method: "DELETE" }),
   },
 };

@@ -21,6 +21,7 @@ function stripUser(user: {
   id: string;
   email: string;
   name: string | null;
+  role: string;
   createdAt: Date;
   emailVerified: boolean;
   password: string;
@@ -29,6 +30,7 @@ function stripUser(user: {
     id: user.id,
     email: user.email,
     name: user.name,
+    role: user.role,
     createdAt: user.createdAt,
     emailVerified: user.emailVerified,
   };

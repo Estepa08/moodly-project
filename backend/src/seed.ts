@@ -622,6 +622,8 @@ async function seed() {
       email: "demo@moodly.app",
       password: hashed,
       name: "Demo User",
+      emailVerified: true,
+      ageConfirmed: true,
     },
   });
 
