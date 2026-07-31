@@ -8,6 +8,7 @@ services:
     repo: https://github.com/Estepa08/moodly-project
     branch: main
     plan: free
+    healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
         fromDatabase:
