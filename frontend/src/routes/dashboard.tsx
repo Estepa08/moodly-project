@@ -5,7 +5,7 @@ import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
 import { Period } from "../lib/constants";
 import PeriodSelector from "../components/ui/PeriodSelector";
 import { ParameterTrendsChart } from "../features/analytics";
-import { WellbeingCard, WeeklyDigest } from "../widgets";
+import { WellbeingCard, WeeklyDigest, PendingEntryBanner } from "../widgets";
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -27,6 +27,8 @@ export default function Dashboard() {
     paramNames,
     wellbeing,
     isDataLoading,
+    numericParams,
+    createEntry,
   } = useDashboardData(period);
 
   return (
@@ -44,6 +46,11 @@ export default function Dashboard() {
           }}
         />
       </div>
+
+      <PendingEntryBanner
+        numericParams={numericParams}
+        createEntry={createEntry}
+      />
 
       <WellbeingCard
         average={wellbeing.average}

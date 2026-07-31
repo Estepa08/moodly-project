@@ -89,6 +89,12 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "pendingEntry": {
+      "title": "Today's check-in pending",
+      "subtitle": "Tap to record your mood, energy, sleep, and anxiety",
+      "cta": "Fill in",
+      "collapse": "Collapse"
+    },
     "quickEntry": {
       "title": "Quick Entry",
       "subtitle": "How are you feeling right now?",
