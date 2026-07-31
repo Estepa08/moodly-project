@@ -10,14 +10,13 @@ vi.mock("../../lib/api", () => ({
       register: vi.fn(),
       logout: vi.fn(),
       refresh: vi.fn().mockRejectedValue(new Error("no session")),
-      sendVerificationEmail: vi.fn(),
     },
   },
   setToken: vi.fn(),
   getToken: vi.fn(() => null),
 }));
 
-import { api } from "../../lib/api";
+import { api, setToken } from "../../lib/api";
 
 describe("RegisterPage", () => {
   beforeEach(() => {
@@ -51,9 +50,10 @@ describe("RegisterPage", () => {
     expect(submitButton).toBeEnabled();
   });
 
-  it("registers and shows the check-email screen", async () => {
+  it("registers and logs the user in", async () => {
     (api.auth.register as Mock).mockResolvedValueOnce({
-      devVerificationLink: "http://dev/verify?token=abc",
+      accessToken: "access-token",
+      user: { id: "u1", email: "test@example.com" },
     });
 
     const user = userEvent.setup();
@@ -73,7 +73,7 @@ describe("RegisterPage", () => {
         ageConfirmed: true,
       });
     });
-    expect(screen.getByText("Check your email")).toBeInTheDocument();
+    expect(setToken).toHaveBeenCalledWith("access-token");
   });
 
   it("shows error message on failure", async () => {

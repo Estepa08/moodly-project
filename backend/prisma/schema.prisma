@@ -24,9 +24,7 @@ model User {
   consentVersion    String?
 
   // Email verification
-  emailVerified             Boolean   @default(false)
-  emailVerificationToken    String?   @unique
-  emailVerificationSentAt   DateTime?
+  emailVerified Boolean @default(false)
 
   entries     Entry[]
   testResults TestResult[]

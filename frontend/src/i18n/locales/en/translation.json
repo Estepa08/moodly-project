@@ -70,23 +70,10 @@
     "signIn": "Sign In",
     "registrationFailed": "Registration failed",
     "consentRequired": "You must confirm your age and consent to continue",
-    "checkEmailTitle": "Check your email",
-    "checkEmailMessage": "We sent a verification link to {{email}}. Please click the link to activate your account.",
-    "resendEmail": "Resend verification email",
-    "backToLogin": "Back to login",
-    "emailVerifiedTitle": "Email verified!",
-    "emailVerifiedMessage": "Your email has been confirmed. You can now log in.",
-    "verifyingEmail": "Verifying your email...",
-    "verificationFailed": "Verification failed",
-    "verificationFailedMessage": "This link is invalid or expired. Please try registering again.",
-    "devVerifyLink": "Dev mode: Click here to verify your email",
     "consentText": "I confirm that I am 18 years or older and agree to the",
     "termsLink": "Terms of Service",
     "and": "and",
     "privacyLink": "Privacy Policy"
-  },
-  "auth": {
-    "emailNotVerified": "Please verify your email before logging in. Check your inbox for the verification link."
   },
   "dashboard": {
     "title": "Statistics",

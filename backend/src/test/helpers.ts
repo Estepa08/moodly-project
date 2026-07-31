@@ -52,13 +52,6 @@ export async function registerAndLogin(
     url: "/auth/register",
     payload: { email, password, name, ageConfirmed: true },
   });
-  const link = reg.json().devVerificationLink;
-  const tokenParam = new URL(link).searchParams.get("token")!;
-  await app.inject({ method: "GET", url: `/auth/verify-email?token=${tokenParam}` });
-  const login = await app.inject({
-    method: "POST",
-    url: "/auth/login",
-    payload: { email, password },
-  });
-  return { token: login.json().accessToken, userId: login.json().user.id };
+  const body = reg.json();
+  return { token: body.accessToken, userId: body.user.id };
 }

@@ -8,7 +8,6 @@ import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
 import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
-import VerifyEmailPage from "./routes/verify-email";
 import PrivacyPage from "./routes/privacy";
 import TermsPage from "./routes/terms";
 import Dashboard from "./routes/dashboard";
@@ -84,7 +83,6 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
       </Route>

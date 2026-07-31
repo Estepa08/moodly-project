@@ -11,7 +11,6 @@ import {
 import { AppError, UnauthorizedError } from "../lib/errors.js";
 import { sendEmail } from "../lib/email.js";
 import { resetPasswordEmailHtml } from "../emails/reset-password-email.js";
-import { verifyEmailHtml } from "../emails/verify-email.js";
 import {
   registerSchema,
   loginSchema,
@@ -20,36 +19,25 @@ import {
 } from "../lib/validation.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
-  fastify.post("/auth/register", async (request, _reply) => {
+  fastify.post("/auth/register", async (request, reply) => {
     const parsed = registerSchema.safeParse(request.body);
     if (!parsed.success) {
       throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
     }
     const { email, password, name, ageConfirmed } = parsed.data;
-    const { user, verificationToken } = await userService.register({
+    const { user } = await userService.register({
       email,
       password,
       name,
       ageConfirmed,
     });
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
-    const isDev = process.env.NODE_ENV !== "production";
-    if (verificationToken) {
-      await sendEmail({
-        to: user.email,
-        subject: "Welcome to Moodly — Verify your email",
-        html: verifyEmailHtml({ token: verificationToken }),
-      });
-    }
-    return {
-      user,
-      message: user.emailVerified
-        ? "Registration successful."
-        : "Registration successful. Please check your email to verify your account.",
-      ...(isDev && verificationToken && {
-        devVerificationLink: `${frontendUrl}/verify-email?token=${verificationToken}`,
-      }),
-    };
+    const accessToken = await reply.jwtSign(
+      { userId: user.id },
+      { expiresIn: authService.accessTokenExpiry },
+    );
+    const refreshToken = await authService.createRefreshToken(user.id);
+    setRefreshCookie(reply, refreshToken);
+    return { accessToken, user };
   });
 
   fastify.post("/auth/login", async (request, reply) => {
@@ -121,27 +109,5 @@ export default async function authRoutes(fastify: FastifyInstance) {
     const refreshToken = await authService.createRefreshToken(userId);
     setRefreshCookie(reply, refreshToken);
     return { accessToken, message: "Password reset successfully" };
-  });
-
-  fastify.get("/auth/verify-email", async (request) => {
-    const { token } = request.query as { token: string };
-    if (!token) throw new AppError("VALIDATION_ERROR", 400, "Verification token is required");
-    await userService.verifyEmail(token);
-    return { message: "Email verified successfully" };
-  });
-
-  fastify.post("/auth/send-verification-email", async (request) => {
-    const { email } = request.body as { email: string };
-    if (!email) throw new AppError("VALIDATION_ERROR", 400, "Email is required");
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (user && !user.emailVerified) {
-      const token = await userService.createEmailVerificationToken(user.id);
-      await sendEmail({
-        to: user.email,
-        subject: "Welcome to Moodly — Verify your email",
-        html: verifyEmailHtml({ token }),
-      });
-    }
-    return { message: "If this email is registered, a verification link has been sent." };
   });
 }
