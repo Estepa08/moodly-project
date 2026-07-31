@@ -62,7 +62,6 @@
   "register": {
     "title": "Create Account",
     "subtitle": "Start your mood journal",
-    "name": "Name (optional)",
     "email": "Email",
     "password": "Password",
     "signUp": "Sign Up",
@@ -95,6 +94,7 @@
       "addNote": "Add note",
       "notePlaceholder": "How are you?",
       "entrySaved": "Saved",
+      "savedIndicator": "saved today",
       "saveError": "Failed to save entry"
     },
     "saveError": "Failed to save entry",

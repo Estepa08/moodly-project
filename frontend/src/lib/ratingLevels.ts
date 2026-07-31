@@ -5,7 +5,7 @@ import {
   BatteryLow,
   BatteryMedium,
   BatteryWarning,
-  Brain,
+  CloudLightning,
   CloudMoon,
   CloudMoonRain,
   CloudRain,
@@ -23,7 +23,6 @@ export interface RatingLevel {
   value: number;
   labelKey: string;
   Icon: LucideIcon;
-  bolts?: number;
 }
 
 export const RATING_LEVELS: Partial<Record<ParameterName, RatingLevel[]>> = {
@@ -49,11 +48,11 @@ export const RATING_LEVELS: Partial<Record<ParameterName, RatingLevel[]>> = {
     { value: 10, labelKey: "rating.energy.10", Icon: BatteryCharging },
   ],
   [ParameterName.Anxiety]: [
-    { value: 0, labelKey: "rating.anxiety.0", Icon: Brain, bolts: 0 },
-    { value: 2.5, labelKey: "rating.anxiety.25", Icon: Brain, bolts: 1 },
-    { value: 5, labelKey: "rating.anxiety.5", Icon: Brain, bolts: 2 },
-    { value: 7.5, labelKey: "rating.anxiety.75", Icon: Brain, bolts: 3 },
-    { value: 10, labelKey: "rating.anxiety.10", Icon: Brain, bolts: 4 },
+    { value: 0, labelKey: "rating.anxiety.0", Icon: CloudLightning },
+    { value: 2.5, labelKey: "rating.anxiety.25", Icon: CloudLightning },
+    { value: 5, labelKey: "rating.anxiety.5", Icon: CloudLightning },
+    { value: 7.5, labelKey: "rating.anxiety.75", Icon: CloudLightning },
+    { value: 10, labelKey: "rating.anxiety.10", Icon: CloudLightning },
   ],
 };
 

@@ -1,4 +1,4 @@
-import { Moon, Sun, Zap, Heart, Activity, type LucideIcon } from "lucide-react";
+import { Moon, Sun, Zap, Heart, CloudLightning, type LucideIcon } from "lucide-react";
 
 export enum ParameterName {
   Anxiety = "Anxiety",
@@ -44,7 +44,7 @@ export const PARAM_ICONS: Partial<Record<ParameterName, LucideIcon>> = {
   [ParameterName.Sleep]: Moon,
   [ParameterName.Mood]: Sun,
   [ParameterName.Energy]: Zap,
-  [ParameterName.Anxiety]: Activity,
+  [ParameterName.Anxiety]: CloudLightning,
   [ParameterName.Wellbeing]: Heart,
 };
 

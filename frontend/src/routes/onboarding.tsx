@@ -20,8 +20,6 @@ import { useSetPet } from "../features/gamification";
 import { PET_DEFINITIONS, STARTER_PET_TYPES } from "../features/gamification/pets";
 import { cn } from "../lib/utils";
 
-const DEV_ALL_PETS = import.meta.env.DEV;
-
 const GOALS = [
   { key: "stress", icon: Wind },
   { key: "anxiety", icon: Brain },
@@ -267,8 +265,8 @@ export default function OnboardingPage() {
                   {t("onboarding2.petChooseTitle")}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {PET_DEFINITIONS.filter(
-                    (p) => DEV_ALL_PETS || STARTER_PET_TYPES.includes(p.type as never),
+                  {PET_DEFINITIONS.filter((p) =>
+                    STARTER_PET_TYPES.includes(p.type as never),
                   ).map((pet) => {
                     const isActive = petType === pet.type;
                     return (
