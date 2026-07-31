@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../lib/prisma.js";
 import { AppError, ConflictError, NotFoundError } from "../lib/errors.js";
@@ -36,10 +35,6 @@ function stripUser(user: {
   };
 }
 
-function hashToken(token: string): string {
-  return crypto.createHash("sha256").update(token).digest("hex");
-}
-
 export const userService = {
   async register(input: RegisterInput) {
     if (!input.ageConfirmed) {
@@ -53,9 +48,6 @@ export const userService = {
     if (existing) throw new ConflictError("Email already registered");
 
     const hashed = await bcrypt.hash(input.password, 10);
-    const autoVerify = process.env.AUTO_VERIFY_EMAIL === "1";
-    const rawToken = autoVerify ? null : crypto.randomUUID();
-    const tokenHash = autoVerify ? null : hashToken(rawToken as string);
 
     const user = await prisma.user.create({
       data: {
@@ -65,12 +57,10 @@ export const userService = {
         ageConfirmed: true,
         consentAcceptedAt: new Date(),
         consentVersion: CONSENT_VERSION,
-        emailVerified: autoVerify,
-        emailVerificationToken: tokenHash,
-        emailVerificationSentAt: autoVerify ? null : new Date(),
+        emailVerified: true,
       },
     });
-    return { user: stripUser(user), verificationToken: rawToken };
+    return { user: stripUser(user) };
   },
 
   async login(input: LoginInput) {
@@ -80,49 +70,7 @@ export const userService = {
     const valid = await bcrypt.compare(input.password, user.password);
     if (!valid) throw new AppError("INVALID_CREDENTIALS", 401, "Invalid email or password");
 
-    if (!user.emailVerified) {
-      throw new AppError("EMAIL_NOT_VERIFIED", 403, "Please verify your email before logging in");
-    }
-
     return stripUser(user);
-  },
-
-  async verifyEmail(token: string) {
-    const tokenHash = hashToken(token);
-    const user = await prisma.user.findUnique({ where: { emailVerificationToken: tokenHash } });
-    if (!user)
-      throw new AppError(
-        "INVALID_VERIFICATION_TOKEN",
-        400,
-        "Invalid or expired verification token",
-      );
-
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        emailVerified: true,
-        emailVerificationToken: null,
-        emailVerificationSentAt: null,
-      },
-    });
-    return stripUser(user);
-  },
-
-  async createEmailVerificationToken(userId: string): Promise<string> {
-    const rawToken = crypto.randomUUID();
-    const tokenHash = hashToken(rawToken);
-
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { id: userId },
-        data: {
-          emailVerificationToken: tokenHash,
-          emailVerificationSentAt: new Date(),
-          emailVerified: false,
-        },
-      }),
-    ]);
-    return rawToken;
   },
 
   async findById(id: string) {

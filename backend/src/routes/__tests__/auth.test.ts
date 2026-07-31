@@ -13,7 +13,7 @@ afterAll(async () => {
 });
 
 describe("Auth", () => {
-  it("POST /auth/register — creates user and returns verification link", async () => {
+  it("POST /auth/register — creates user and returns accessToken", async () => {
     const res = await app.inject({
       method: "POST",
       url: "/auth/register",
@@ -26,7 +26,7 @@ describe("Auth", () => {
     });
     expect(res.statusCode).toBe(200);
     const body = res.json();
-    expect(body).toHaveProperty("devVerificationLink");
+    expect(body).toHaveProperty("accessToken");
     expect(body.user.email).toBe("test@example.com");
   });
 

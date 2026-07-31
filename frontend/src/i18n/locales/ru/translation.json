@@ -70,23 +70,10 @@
     "signIn": "Войти",
     "registrationFailed": "Ошибка регистрации",
     "consentRequired": "Необходимо подтвердить возраст и согласие на обработку данных",
-    "checkEmailTitle": "Проверьте почту",
-    "checkEmailMessage": "Мы отправили ссылку для подтверждения на {{email}}. Перейдите по ней, чтобы активировать аккаунт.",
-    "resendEmail": "Отправить письмо повторно",
-    "backToLogin": "Вернуться ко входу",
-    "emailVerifiedTitle": "Email подтверждён!",
-    "emailVerifiedMessage": "Ваш email подтверждён. Теперь вы можете войти.",
-    "verifyingEmail": "Проверяем email...",
-    "verificationFailed": "Ошибка подтверждения",
-    "verificationFailedMessage": "Ссылка недействительна или истекла. Попробуйте зарегистрироваться снова.",
-    "devVerifyLink": "Dev: нажмите, чтобы подтвердить email",
     "consentText": "Я подтверждаю, что мне есть 18 лет, и я принимаю",
     "termsLink": "Условия использования",
     "and": "и",
     "privacyLink": "Политику конфиденциальности"
-  },
-  "auth": {
-    "emailNotVerified": "Пожалуйста, подтвердите email перед входом. Проверьте почту — мы отправили ссылку."
   },
   "dashboard": {
     "title": "Статистика",

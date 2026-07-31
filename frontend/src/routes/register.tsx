@@ -6,7 +6,6 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
-import { MailCheck } from "lucide-react";
 import { AuthPage, AuthHeader, AuthDisclaimer } from "../features/auth";
 
 export default function RegisterPage() {
@@ -23,49 +22,8 @@ export default function RegisterPage() {
     ageConfirmed,
     setAgeConfirmed,
     error,
-    registeredEmail,
-    setRegisteredEmail,
-    devVerificationLink,
     handleSubmit,
-    handleResendVerification,
   } = useRegisterForm();
-
-  if (registeredEmail) {
-    return (
-      <AuthPage>
-        <div className="space-y-5 text-center">
-          <div className="flex justify-center">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <MailCheck aria-hidden="true" className="w-6 h-6 text-primary" />
-            </div>
-          </div>
-          <h2 className="text-2xl font-serif font-semibold">{t("register.checkEmailTitle")}</h2>
-          <p className="text-muted-foreground">
-            {t("register.checkEmailMessage", { email: registeredEmail })}
-          </p>
-          {devVerificationLink && (
-            <p>
-              <a href={devVerificationLink} className="text-primary hover:underline text-sm">
-                {t("register.devVerifyLink")}
-              </a>
-            </p>
-          )}
-          <Button variant="outline" className="w-full" onClick={handleResendVerification}>
-            {t("register.resendEmail")}
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            <button
-              type="button"
-              className="text-primary hover:underline cursor-pointer"
-              onClick={() => setRegisteredEmail(null)}
-            >
-              {t("register.backToLogin")}
-            </button>
-          </p>
-        </div>
-      </AuthPage>
-    );
-  }
 
   return (
     <AuthPage>

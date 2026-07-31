@@ -5,7 +5,6 @@ const ERROR_CODE_MAP: Record<string, string> = {
   NOT_FOUND: "errors.notFound",
   UNAUTHORIZED: "errors.unauthorized",
   INVALID_CREDENTIALS: "errors.invalidCredentials",
-  EMAIL_NOT_VERIFIED: "auth.emailNotVerified",
   CONFLICT: "errors.conflict",
   CONSENT_REQUIRED: "errors.consentRequired",
   INVALID_REFRESH_TOKEN: "errors.sessionExpired",
