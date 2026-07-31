@@ -16,7 +16,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
   return (
-    <div className="rounded-2xl bg-card shadow-neumorphic p-5">
+    <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
           <Lottie

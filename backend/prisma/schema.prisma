@@ -191,6 +191,7 @@ model CreatureState {
   unlockedTitles   String[] @default([])
   petType          String   @default("puff")
   unlockedPetTypes String[] @default(["puff"])
+  petName          String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

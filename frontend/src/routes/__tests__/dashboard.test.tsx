@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { renderWithProviders, screen } from "../../test/test-utils";
+import { renderWithProviders, screen, fireEvent } from "../../test/test-utils";
 import Dashboard from "../dashboard";
 import { api } from "../../lib/api";
 
@@ -32,34 +32,57 @@ vi.mock("../../lib/api", () => ({
   getToken: vi.fn(() => null),
 }));
 
+function mockDashboardApi() {
+  (api.parameters.list as Mock).mockResolvedValue([
+    { id: "1", name: "Mood", unit: "/10" },
+    { id: "2", name: "Anxiety", unit: "/10" },
+  ]);
+  (api.entries.list as Mock).mockResolvedValue([]);
+  (api.testResults.list as Mock).mockResolvedValue([]);
+  (api.tests.list as Mock).mockResolvedValue([]);
+}
+
 describe("Dashboard", () => {
   beforeEach(() => {
+    localStorage.clear();
     vi.clearAllMocks();
   });
 
-  it("renders all dashboard sections", async () => {
-    (api.parameters.list as Mock).mockResolvedValue([
-      { id: "1", name: "Mood", unit: "/10" },
-      { id: "2", name: "Anxiety", unit: "/10" },
-    ]);
-    (api.entries.list as Mock).mockResolvedValue([]);
-    (api.testResults.list as Mock).mockResolvedValue([]);
-    (api.tests.list as Mock).mockResolvedValue([]);
+  it("renders statistics page sections", async () => {
+    mockDashboardApi();
     renderWithProviders(<Dashboard />);
 
     // Period selector
     expect(screen.getByText("Period")).toBeInTheDocument();
     expect(screen.getByText("2 Weeks")).toBeInTheDocument();
 
-    // Quick Entry card
-    expect(screen.getByText("Quick Entry")).toBeInTheDocument();
-
-    // Section titles appear in collapsible buttons
-    expect(screen.getAllByText("How You've Been Feeling").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Weekly Averages").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Practices").length).toBeGreaterThanOrEqual(1);
-
-    // Wellbeing card
+    // Wellbeing accordion header
     expect(screen.getByText("Wellbeing")).toBeInTheDocument();
+
+    // Tests taken card (empty state)
+    expect(await screen.findByText("Tests Taken")).toBeInTheDocument();
+
+    // Legacy digest sections removed
+    expect(screen.queryByText("Weekly Averages")).not.toBeInTheDocument();
+    expect(screen.queryByText("Weekly Digest")).not.toBeInTheDocument();
+    expect(screen.queryByText("Today's check-in pending")).not.toBeInTheDocument();
+  });
+
+  it("shows quick entry by default and toggles the wellbeing panel", async () => {
+    mockDashboardApi();
+    renderWithProviders(<Dashboard />);
+
+    // Panel is expanded by default
+    expect(await screen.findByText("Quick Entry")).toBeInTheDocument();
+
+    // Clicking Wellbeing collapses the panel and persists the choice
+    fireEvent.click(screen.getByText("Wellbeing"));
+    expect(screen.queryByText("Quick Entry")).not.toBeInTheDocument();
+    expect(localStorage.getItem("moodly_wellbeing_open")).toBe("0");
+
+    // Clicking again reopens it
+    fireEvent.click(screen.getByText("Wellbeing"));
+    expect(await screen.findByText("Quick Entry")).toBeInTheDocument();
+    expect(localStorage.getItem("moodly_wellbeing_open")).toBe("1");
   });
 });

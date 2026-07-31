@@ -178,6 +178,16 @@ interface Creature {
   @route("/completions")
   @doc("История выполненных практик за последние N дней (по умолчанию 30)")
   getCompletions(@query days?: int32): PracticeCompletion[];
+
+  @get
+  @route("/pets")
+  @doc("Получить коллекцию питомцев пользователя")
+  getPets(): PetCollection;
+
+  @patch
+  @route("/pet")
+  @doc("Активировать питомца и/или задать имя")
+  setPet(@body body: PetUpdateRequest): PetCollection;
 }
 
 @tag("Digest")

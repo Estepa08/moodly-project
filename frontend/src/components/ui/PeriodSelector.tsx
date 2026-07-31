@@ -1,3 +1,5 @@
+import { SegmentControl, SegmentControlItem } from "./segment-control";
+
 interface PeriodOption {
   key: string;
   label: string;
@@ -21,29 +23,20 @@ export default function PeriodSelector({
   return (
     <div className="flex items-center gap-2">
       {label && <span className="text-xs font-medium text-muted-foreground shrink-0">{label}</span>}
-      <div
-        className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
-        role="tablist"
-        aria-label={label ?? "period"}
-      >
+      <SegmentControl role="tablist" aria-label={label ?? "period"}>
         {options.map((opt) => (
-          <button
+          <SegmentControlItem
             key={opt.key}
             role="tab"
-            aria-selected={value === opt.key}
+            active={value === opt.key}
             onClick={() => onChange(opt.key)}
-            className={`rounded-lg font-medium transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-              value === opt.key
-                ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
-                : "text-muted-foreground hover:text-primary"
-            } ${
-              size === "sm" ? "px-2 py-1 text-[10px] min-h-[32px]" : "px-3 min-h-[44px] text-xs"
-            }`}
+            size={size}
+            aria-selected={value === opt.key}
           >
             {opt.label}
-          </button>
+          </SegmentControlItem>
         ))}
-      </div>
+      </SegmentControl>
     </div>
   );
 }

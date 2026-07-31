@@ -6,6 +6,7 @@ import { PARAM_COLORS, PARAM_NAME_KEYS } from "../../lib/constants";
 import type { ParameterName } from "../../lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { LoadingCard } from "../../components/ui/loading-card";
+import { Chip } from "../../components/ui/chip";
 
 interface ParameterTrendsChartProps {
   trendData: Record<string, unknown>[];
@@ -122,15 +123,11 @@ export default function ParameterTrendsChart({
           {paramNames.map((name) => {
             const isVisible = visibleParams.has(name);
             return (
-              <button
+              <Chip
                 key={name}
                 aria-pressed={isVisible}
+                variant={isVisible ? "active" : "default"}
                 onClick={() => toggleVisible(name)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                  isVisible
-                    ? "bg-primary/10 text-primary shadow-neumorphic-sm ring-2 ring-primary/60"
-                    : "bg-muted text-muted-foreground shadow-neumorphic-inset"
-                }`}
               >
                 <span
                   className="w-2 h-2 rounded-full"
@@ -139,7 +136,7 @@ export default function ParameterTrendsChart({
                   }}
                 />
                 {t(PARAM_NAME_KEYS[name as ParameterName] ?? name)}
-              </button>
+              </Chip>
             );
           })}
         </div>

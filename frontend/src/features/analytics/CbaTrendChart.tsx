@@ -6,9 +6,10 @@ import type { CbaEntry } from "../cost-benefit-analysis/cba.types";
 
 interface CbaTrendChartProps {
   entries: CbaEntry[];
+  noCard?: boolean;
 }
 
-export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
+export default function CbaTrendChart({ entries, noCard }: CbaTrendChartProps) {
   const { t } = useTranslation();
 
   const chartData = useMemo(() => {
@@ -39,6 +40,7 @@ export default function CbaTrendChart({ entries }: CbaTrendChartProps) {
   return (
     <Chart
       type="bar"
+      noCard={noCard}
       data={needsTwoPoints ? chartData : []}
       series={[
         { dataKey: "Pros", color: "hsl(var(--accent))", label: "Pros" },

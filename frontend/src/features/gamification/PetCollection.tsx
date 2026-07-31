@@ -2,15 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Lock, Check } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { usePets, useSetPet } from "./useCreature";
-
-const PET_DEFINITIONS = [
-  { type: "puff", labelKey: "pets.puff", color: "bg-purple-500", emoji: "🫧" },
-  { type: "ember", labelKey: "pets.ember", color: "bg-red-500", emoji: "🔥" },
-  { type: "dewdrop", labelKey: "pets.dewdrop", color: "bg-cyan-500", emoji: "💧" },
-  { type: "sprout", labelKey: "pets.sprout", color: "bg-green-500", emoji: "🌱" },
-  { type: "comet", labelKey: "pets.comet", color: "bg-indigo-500", emoji: "✨" },
-  { type: "aurora", labelKey: "pets.aurora", color: "bg-pink-500", emoji: "🌈" },
-];
+import { PET_DEFINITIONS } from "./pets";
 
 export default function PetCollection() {
   const { t } = useTranslation();

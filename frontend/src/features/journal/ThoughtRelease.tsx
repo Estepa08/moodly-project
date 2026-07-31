@@ -110,21 +110,20 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                     distortion: t(`cognitiveDistortions.${hintKey}`),
                   })}
                 </p>
-                <button
+                <Button
                   type="button"
+                  variant="link"
+                  size="sm"
+                  className="h-auto px-0 gap-1"
                   aria-expanded={showHintDetail}
                   onClick={() => setShowHintDetail((v) => !v)}
-                  className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <ChevronRight
                     aria-hidden="true"
-                    className={cn(
-                      "w-3.5 h-3.5 transition-transform",
-                      showHintDetail && "rotate-90",
-                    )}
+                    className={cn("transition-transform", showHintDetail && "rotate-90")}
                   />
                   {showHintDetail ? t("distortions.hideExample") : t("distortions.showExample")}
-                </button>
+                </Button>
                 {showHintDetail && (
                   <p className="text-xs text-muted-foreground">
                     {t(`distortionsLibrary.${hintKey}.reframe`)}

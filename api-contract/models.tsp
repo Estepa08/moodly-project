@@ -283,6 +283,35 @@ model CreatureState {
   lastCheckInAt?: utcDateTime;
   @doc("Дата последнего дыхательного упражнения")
   lastExerciseAt?: utcDateTime;
+  @doc("Текущий выбранный тип питомца")
+  petType?: string;
+  @doc("Открытые типы питомцев")
+  unlockedPetTypes?: string[];
+  @doc("Имя питомца, заданное пользователем")
+  petName?: string;
+  @doc("Активный титул")
+  activeTitle?: string;
+  @doc("Открытые титулы")
+  unlockedTitles?: string[];
+  @doc("Активный скин")
+  activeSkin?: string;
+  @doc("Открытые скины")
+  unlockedSkins?: string[];
+}
+
+@doc("Коллекция питомцев пользователя")
+model PetCollection {
+  unlockedPetTypes: string[];
+  activePetType: string;
+  petName: string;
+}
+
+@doc("Тело обновления питомца")
+model PetUpdateRequest {
+  @doc("Тип питомца для активации")
+  petType?: string;
+  @doc("Новое имя питомца (пустая строка очищает)")
+  petName?: string;
 }
 
 @doc("Результат ежедневного чекина")

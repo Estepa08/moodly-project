@@ -6,9 +6,10 @@ import type { CreateEntryMutation } from "../../lib/app-types";
 import type { components } from "../../lib/api-types";
 import { PARAM_ICON_CONFIGS } from "../../lib/quickEntryIcons";
 import { PARAM_ICONS } from "../../lib/constants";
-import type { ParameterName } from "../../lib/constants";
+import { ParameterName } from "../../lib/constants";
+import { RATING_LEVELS, levelForValue } from "../../lib/ratingLevels";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Slider } from "../../components/ui/slider";
+import { RatingScaleSelector } from "./RatingScaleSelector";
 import { Button } from "../../components/ui/button";
 
 interface QuickEntryIconsProps {
@@ -114,52 +115,55 @@ export default function QuickEntryIcons({
 
               return (
                 <div className="space-y-3">
-                  <div className="px-2 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold font-serif text-primary">
-                        {sliderValue}
-                      </span>
-                    </div>
-                    <Slider
-                      min={0}
-                      max={10}
-                      step={1}
-                      value={[sliderValue]}
-                      onValueChange={([v]) => setSliderValue(v)}
-                      disabled={createEntry.isPending}
-                      aria-label={t(cfg.labelKey)}
-                    />
-                    <div className="flex justify-between px-0.5">
-                      {Array.from({ length: 11 }, (_, i) => (
-                        <span key={i} className="text-[11px] text-muted-foreground w-3 text-center">
-                          {i}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  {(() => {
+                    const levels =
+                      RATING_LEVELS[cfg.parameterName as ParameterName] ??
+                      RATING_LEVELS[ParameterName.Mood]!;
+                    const level = levelForValue(levels, sliderValue);
+                    return (
+                      <>
+                        <div className="px-1 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-lg font-bold font-serif text-primary">
+                              {t(level.labelKey)}
+                            </span>
+                          </div>
+                          <RatingScaleSelector
+                            levels={levels}
+                            value={sliderValue}
+                            onChange={setSliderValue}
+                            disabled={createEntry.isPending}
+                            ariaLabel={t(cfg.labelKey)}
+                          />
+                        </div>
 
-                  <div className="flex justify-center">
-                    <Button
-                      onClick={() => handleSave(cfg.parameterName, sliderValue)}
-                      disabled={createEntry.isPending}
-                    >
-                      {t("dashboard.quickEntry.save")}
-                    </Button>
-                  </div>
+                        <div className="flex justify-center">
+                          <Button
+                            onClick={() => handleSave(cfg.parameterName, sliderValue)}
+                            disabled={createEntry.isPending}
+                          >
+                            {t("dashboard.quickEntry.save")}
+                          </Button>
+                        </div>
+                      </>
+                    );
+                  })()}
 
                   <div className="flex items-center justify-center gap-2">
                     {!showNote ? (
-                      <button
+                      <Button
+                        variant="link"
+                        size="sm"
                         onClick={() => {
                           setShowNote(true);
                           setTimeout(() => noteInputRef.current?.focus(), 100);
                         }}
-                        className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg px-2 min-h-[44px]"
+                        className="h-auto px-2 min-h-[44px] text-[11px] text-muted-foreground hover:text-primary"
                         aria-label={t("dashboard.quickEntry.addNote")}
                       >
                         <Plus aria-hidden="true" className="w-3 h-3" />
                         {t("dashboard.quickEntry.addNote")}
-                      </button>
+                      </Button>
                     ) : (
                       <div className="flex items-center gap-2">
                         <label className="sr-only" htmlFor="quick-entry-note">

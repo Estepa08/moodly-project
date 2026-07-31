@@ -18,7 +18,8 @@ interface HeatmapQuery {
 }
 
 interface PetBody {
-  petType: string;
+  petType?: string;
+  petName?: string | null;
 }
 
 interface ClaimMissionParams {
@@ -70,12 +71,8 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
   fastify.patch<{ Body: PetBody }>(
     "/creature/pet",
     { preHandler: [fastify.authenticate] },
-    async (request, reply) => {
-      try {
-        return await creatureService.setPet(request.userId, request.body.petType);
-      } catch (e) {
-        return reply.status(400).send({ error: (e as Error).message });
-      }
+    async (request) => {
+      return creatureService.setPet(request.userId, request.body.petType, request.body.petName);
     },
   );
 

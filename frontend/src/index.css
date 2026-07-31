@@ -22,6 +22,12 @@
     --muted-foreground: 215 16% 32%;
     --destructive: 0 84% 50%;
     --destructive-foreground: 0 0% 100%;
+    --success: 152 60% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
     --border: 261 55% 80%;
     --input: 261 75% 90%;
     --ring: 261 90% 66%;
@@ -38,10 +44,22 @@
 
     --param-sleep: 199 89% 48%;
     --param-energy: 38 92% 50%;
+    --param-mood: 261 90% 66%;
     --severity-mild: 46 93% 47%;
     --severity-moderate: 25 95% 53%;
     --chart-grid: 240 6% 90%;
     --chart-tick: 240 5% 65%;
+    --chart-1: 261 90% 66%;
+    --chart-2: 161 94% 30%;
+    --chart-3: 199 89% 48%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 330 70% 58%;
+    --pet-1: 270 91% 65%;
+    --pet-2: 0 84% 60%;
+    --pet-3: 187 94% 41%;
+    --pet-4: 142 71% 45%;
+    --pet-5: 239 84% 67%;
+    --pet-6: 330 81% 60%;
   }
 
   body {
@@ -95,6 +113,12 @@
     --muted-foreground: 267 15% 65%;
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
+    --success: 152 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 90% 55%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 80% 55%;
+    --info-foreground: 0 0% 100%;
     --border: 267 20% 24%;
     --input: 267 20% 24%;
     --ring: 261 70% 60%;
@@ -107,10 +131,17 @@
 
     --chart-grid: 267 15% 22%;
     --chart-tick: 267 15% 55%;
-  }
-
-  .animate-header-drift {
-    animation: none;
+    --chart-1: 261 70% 68%;
+    --chart-2: 161 60% 45%;
+    --chart-3: 199 80% 55%;
+    --chart-4: 38 90% 55%;
+    --chart-5: 330 72% 68%;
+    --pet-1: 270 75% 72%;
+    --pet-2: 0 84% 70%;
+    --pet-3: 187 92% 52%;
+    --pet-4: 142 69% 58%;
+    --pet-5: 239 84% 75%;
+    --pet-6: 330 81% 70%;
   }
 }
 
@@ -160,138 +191,6 @@
 
 .animate-bubble-up {
   animation: bubble-up 3.2s ease-out forwards;
-}
-
-@keyframes header-creature-drift {
-  0% {
-    transform: translateX(0) scaleX(1);
-  }
-  45% {
-    transform: translateX(calc(100% - 36px)) scaleX(1);
-  }
-  50% {
-    transform: translateX(calc(100% - 36px)) scaleX(-1);
-  }
-  95% {
-    transform: translateX(0) scaleX(-1);
-  }
-  100% {
-    transform: translateX(0) scaleX(1);
-  }
-}
-
-.animate-header-drift {
-  animation: header-creature-drift 14s ease-in-out infinite;
-}
-
-@keyframes creature-melt {
-  0% {
-    filter: blur(0px);
-    transform: scale(1) scaleY(1);
-    opacity: 1;
-  }
-  100% {
-    filter: blur(6px);
-    transform: scale(1.6) scaleY(0.15);
-    opacity: 0;
-  }
-}
-
-.animate-creature-melt {
-  animation: creature-melt 700ms ease-in forwards;
-}
-
-@keyframes creature-rise {
-  0% {
-    transform: translateY(10px) scale(0.4);
-    opacity: 0;
-    filter: blur(5px);
-  }
-  50% {
-    transform: translateY(2px) scale(0.85);
-    opacity: 0.7;
-    filter: blur(2px);
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    filter: blur(0px);
-  }
-}
-
-.animate-creature-rise {
-  animation: creature-rise 700ms ease-out forwards;
-}
-
-@keyframes text-melt {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-    filter: blur(0px);
-  }
-  100% {
-    transform: translateY(10px);
-    opacity: 0;
-    filter: blur(5px);
-  }
-}
-
-.animate-text-melt {
-  animation: text-melt 700ms ease-in forwards;
-}
-
-@keyframes text-rise {
-  0% {
-    transform: translateY(10px);
-    opacity: 0;
-    filter: blur(4px);
-  }
-  70% {
-    transform: translateY(0);
-    opacity: 1;
-    filter: blur(0px);
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-    filter: blur(0px);
-  }
-}
-
-.animate-text-rise {
-  animation: text-rise 700ms ease-out forwards;
-}
-
-@keyframes puddle-drop {
-  0% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-  10% {
-    transform: translate(0, 0);
-    opacity: 0.5;
-  }
-  25% {
-    transform: translate(var(--tx), var(--ty));
-    opacity: 0.9;
-  }
-  55% {
-    transform: translate(var(--tx), var(--ty));
-    opacity: 0.8;
-  }
-  80% {
-    transform: translate(calc(var(--tx) * 0.25), calc(var(--ty) * 0.25));
-    opacity: 0.2;
-  }
-  100% {
-    transform: translate(0, 0);
-    opacity: 0;
-  }
-}
-
-.animate-puddle-drop {
-  animation: puddle-drop 1.4s ease-out forwards;
-  animation-delay: var(--delay);
 }
 
 @keyframes card-enter {

@@ -7,4 +7,4 @@ export type { DistortionEntry } from "./RadarChart";
 export { default as TestResultsChart } from "./TestResultsChart";
 export { default as QuizScoreChart } from "./QuizScoreChart";
 export { default as CbaTrendChart } from "./CbaTrendChart";
-export { default as DigestCharts } from "./DigestCharts";
+export { default as TrendPreview } from "./TrendPreview";

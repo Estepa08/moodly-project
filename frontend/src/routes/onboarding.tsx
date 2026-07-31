@@ -16,6 +16,9 @@ import {
 import { useOnboarding } from "../hooks/useOnboarding";
 import { ExpLevel } from "../lib/constants";
 import Spinner from "../components/ui/spinner";
+import { useSetPet } from "../features/gamification";
+import { PET_DEFINITIONS, STARTER_PET_TYPES } from "../features/gamification/pets";
+import { cn } from "../lib/utils";
 
 const GOALS = [
   { key: "stress", icon: Wind },
@@ -27,18 +30,21 @@ const GOALS = [
 
 const EXP_LEVELS = [ExpLevel.Beginner, ExpLevel.Intermediate, ExpLevel.Advanced];
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { needsOnboarding, isLoading, complete } = useOnboarding();
+  const setPet = useSetPet();
 
   const [step, setStep] = useState(0);
   const [goals, setGoals] = useState<string[]>([]);
   const [expLevel, setExpLevel] = useState<ExpLevel>(ExpLevel.Beginner);
   const [dailyReminder, setDailyReminder] = useState(false);
   const [reminderTime, setReminderTime] = useState("09:00");
+  const [petType, setPetType] = useState<string>("puff");
+  const [petName, setPetName] = useState("");
   const [saving, setSaving] = useState(false);
 
   if (isLoading) {
@@ -60,8 +66,15 @@ export default function OnboardingPage() {
 
   const handleFinish = async (destination = "/") => {
     setSaving(true);
-    await complete({ goals, experienceLevel: expLevel, dailyReminder, reminderTime });
-    navigate(destination, { replace: true });
+    try {
+      await complete({ goals, experienceLevel: expLevel, dailyReminder, reminderTime });
+      if (petName.trim() || petType !== "puff") {
+        await setPet.mutateAsync({ petType, petName: petName.trim() || null });
+      }
+      navigate(destination, { replace: true });
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSkip = async () => {
@@ -213,6 +226,93 @@ export default function OnboardingPage() {
           {step === 4 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
+                {t("onboarding2.petTitle")}
+              </h2>
+              <p className="text-muted-foreground text-sm">{t("onboarding2.petDesc")}</p>
+
+              <div className="flex justify-center py-2">
+                <div className="relative w-24 h-24 rounded-full bg-secondary flex items-center justify-center">
+                  <span aria-hidden="true" className="text-5xl">
+                    {PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? "🫧"}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary animate-pulse"
+                  />
+                </div>
+              </div>
+
+              <div className="text-left">
+                <label
+                  htmlFor="pet-name"
+                  className="block text-xs font-medium text-muted-foreground mb-1.5"
+                >
+                  {t("onboarding2.petNameLabel")}
+                </label>
+                <input
+                  id="pet-name"
+                  type="text"
+                  value={petName}
+                  onChange={(e) => setPetName(e.target.value)}
+                  placeholder={t("onboarding2.petNamePlaceholder")}
+                  maxLength={24}
+                  className="w-full px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm placeholder:text-muted-foreground/70 border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+              </div>
+
+              <div className="text-left">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                  {t("onboarding2.petChooseTitle")}
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {STARTER_PET_TYPES.map((type) => {
+                    const pet = PET_DEFINITIONS.find((p) => p.type === type);
+                    if (!pet) return null;
+                    const isActive = petType === type;
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setPetType(type)}
+                        aria-pressed={isActive}
+                        className={cn(
+                          "flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          isActive
+                            ? "border-primary bg-primary/5 shadow-neumorphic-sm"
+                            : "border-border bg-card shadow-neumorphic-sm",
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
+                            pet.color,
+                          )}
+                        >
+                          <span aria-hidden="true">{pet.emoji}</span>
+                        </span>
+                        <span className="text-[11px] font-medium text-foreground leading-tight">
+                          {t(pet.labelKey)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground">{t("onboarding2.petMoreHint")}</p>
+
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={() => setStep(3)}>
+                  {t("common.back")}
+                </Button>
+                <Button onClick={() => setStep(5)}>{t("onboarding.next")}</Button>
+              </div>
+            </>
+          )}
+
+          {step === 5 && (
+            <>
+              <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t("onboarding2.actionTitle")}
               </h2>
               <p className="text-muted-foreground text-sm">{t("onboarding2.actionDesc")}</p>
@@ -257,7 +357,7 @@ export default function OnboardingPage() {
                 </button>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" onClick={() => setStep(3)}>
+                <Button variant="ghost" onClick={() => setStep(4)}>
                   {t("common.back")}
                 </Button>
                 <Button onClick={() => handleFinish("/")} disabled={saving}>

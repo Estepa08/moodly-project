@@ -40,8 +40,8 @@ export default function VerifyEmailPage() {
           {status === "success" && (
             <>
               <div className="flex justify-center">
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                  <MailCheck className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
+                  <MailCheck className="w-6 h-6 text-success" />
                 </div>
               </div>
               <h2 className="text-xl font-semibold">{t("register.emailVerifiedTitle")}</h2>
@@ -51,8 +51,8 @@ export default function VerifyEmailPage() {
           {status === "error" && (
             <>
               <div className="flex justify-center">
-                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                  <XCircle className="w-6 h-6 text-red-600" />
+                <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <XCircle className="w-6 h-6 text-destructive" />
                 </div>
               </div>
               <h2 className="text-xl font-semibold">{t("register.verificationFailed")}</h2>

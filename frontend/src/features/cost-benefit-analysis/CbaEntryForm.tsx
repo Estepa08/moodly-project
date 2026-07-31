@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Plus, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
+import { IconButton } from "../../components/ui/icon-button";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import { ChecklistItem } from "../../components/ui/checklist-item";
@@ -69,14 +70,16 @@ function ItemChecklist({
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm bg-primary/10 text-primary shadow-neumorphic-inset"
             >
               <span className="flex-1">{text}</span>
-              <button
+              <IconButton
                 type="button"
+                variant="ghost"
+                size="icon-sm"
+                label={t("cba.removeItem")}
                 onClick={() => onRemoveCustom(i)}
-                aria-label={t("cba.removeItem")}
-                className="text-muted-foreground hover:text-destructive transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                className="text-muted-foreground hover:text-destructive"
               >
                 <X aria-hidden="true" className="w-3.5 h-3.5" />
-              </button>
+              </IconButton>
             </li>
           ))}
         </ul>

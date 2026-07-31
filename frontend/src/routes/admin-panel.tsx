@@ -32,10 +32,10 @@ function initials(u: AdminUser): string {
 
 const AVATAR_COLORS = [
   "bg-primary/10 text-primary",
-  "bg-amber-100 text-amber-700",
-  "bg-emerald-100 text-emerald-700",
-  "bg-rose-100 text-rose-700",
-  "bg-sky-100 text-sky-700",
+  "bg-warning/10 text-warning",
+  "bg-success/10 text-success",
+  "bg-destructive/10 text-destructive",
+  "bg-info/10 text-info",
 ];
 
 function formatDate(iso: string, locale: string): string {

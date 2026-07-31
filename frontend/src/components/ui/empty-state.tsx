@@ -1,8 +1,12 @@
 import { type LucideIcon, Inbox } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { Button } from "./button";
+import PetAvatar from "../../features/gamification/PetAvatar";
 
 interface EmptyStateProps {
   icon?: LucideIcon;
+  pet?: boolean;
+  petType?: string;
   title: string;
   description?: string;
   action?: {
@@ -14,6 +18,8 @@ interface EmptyStateProps {
 
 export default function EmptyState({
   icon: Icon = Inbox,
+  pet = false,
+  petType,
   title,
   description,
   action,
@@ -26,18 +32,22 @@ export default function EmptyState({
         className,
       )}
     >
-      <div className="w-14 h-14 rounded-full bg-muted shadow-neumorphic-inset flex items-center justify-center mb-4">
-        <Icon aria-hidden="true" className="w-6 h-6 text-muted-foreground" />
-      </div>
+      {pet ? (
+        <div className="mb-4">
+          <PetAvatar petType={petType} size="lg" interactive ariaLabel={title} />
+          <div className="mx-auto mt-2 w-16 h-2 rounded-full bg-foreground/10" aria-hidden="true" />
+        </div>
+      ) : (
+        <div className="w-14 h-14 rounded-full bg-muted shadow-neumorphic-inset flex items-center justify-center mb-4">
+          <Icon aria-hidden="true" className="w-6 h-6 text-muted-foreground" />
+        </div>
+      )}
       <p className="text-sm font-medium text-foreground mb-1">{title}</p>
       {description && <p className="text-xs text-muted-foreground max-w-xs">{description}</p>}
       {action && (
-        <button
-          onClick={action.onClick}
-          className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium shadow-neumorphic-sm hover:shadow-neumorphic transition-[box-shadow,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
+        <Button onClick={action.onClick} className="mt-4">
           {action.label}
-        </button>
+        </Button>
       )}
     </div>
   );

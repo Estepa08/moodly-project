@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "../components/ui/button";
+import { Chip } from "../components/ui/chip";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
 import { useTestFlow } from "../hooks/useTestFlow";
@@ -302,12 +303,13 @@ function ScoreBlock({ score, maxScore }: { score: number; maxScore: number }) {
   const [showScore, setShowScore] = useState(false);
   return (
     <div className="text-center">
-      <button
+      <Chip
+        variant="default"
         onClick={() => setShowScore(!showScore)}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium text-muted-foreground cursor-pointer hover:text-primary transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="text-muted-foreground hover:text-primary"
       >
         {showScore ? t("testResults.hideScore") : t("testResults.showScore")}
-      </button>
+      </Chip>
       {showScore && (
         <div className="mt-3 animate-in fade-in slide-in-from-top-1">
           <div className="text-3xl font-bold text-primary">

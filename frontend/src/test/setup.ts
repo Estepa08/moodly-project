@@ -56,3 +56,7 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: vi.fn(),
   })),
 });
+
+vi.mock("lottie-react", () => ({
+  default: () => "lottie-mock",
+}));

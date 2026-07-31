@@ -1,6 +1,7 @@
 import { forwardRef, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "./input";
+import { IconButton } from "./icon-button";
 
 interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   showLabel?: string;
@@ -17,14 +18,15 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     return (
       <div className="relative">
         <Input ref={ref} type={visible ? "text" : "password"} className="pr-12" {...props} />
-        <button
-          type="button"
+        <IconButton
+          size="icon-sm"
+          variant="ghost"
+          label={visible ? hideLabel : showLabel}
           onClick={() => setVisible((v) => !v)}
-          aria-label={visible ? hideLabel : showLabel}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
         >
           {visible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-        </button>
+        </IconButton>
       </div>
     );
   },

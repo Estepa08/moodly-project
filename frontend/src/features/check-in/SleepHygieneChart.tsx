@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Chart } from "../analytics";
@@ -15,7 +14,6 @@ interface SleepHygieneChartProps {
 
 export default function SleepHygieneChart({ data }: SleepHygieneChartProps) {
   const { t } = useTranslation();
-  const [showChart, setShowChart] = useState(false);
 
   if (data.length < 2) return null;
 
@@ -25,39 +23,31 @@ export default function SleepHygieneChart({ data }: SleepHygieneChartProps) {
         <CardTitle className="text-base">{t("sleepHygiene.comparisonTitle")}</CardTitle>
         <p className="text-xs text-muted-foreground pt-1">{t("sleepHygiene.comparisonHint")}</p>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <button
-          onClick={() => setShowChart(!showChart)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium text-muted-foreground cursor-pointer hover:text-primary transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {showChart ? t("sleepHygiene.hideChart") : t("sleepHygiene.showChart")}
-        </button>
-        {showChart && (
-          <Chart
-            type="line"
-            noCard
-            data={data as unknown as Record<string, unknown>[]}
-            series={[
-              { dataKey: "habits", color: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
-              { dataKey: "sleep", color: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
-            ]}
-            xKey="date"
-            formatTooltip={(name, value, row) => {
-              const label =
-                name === "habits"
-                  ? t("sleepHygiene.comparisonHabits")
-                  : t("sleepHygiene.comparisonSleep");
-              const entryValues = (row?._values as Record<string, number[]> | undefined)?.[name];
-              if (entryValues && entryValues.length > 1) {
-                return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;
-              }
-              return `${label}: ${value}`;
-            }}
-            height={160}
-            showLegend
-            showDots={false}
-          />
-        )}
+      <CardContent>
+        <Chart
+          type="line"
+          noCard
+          data={data as unknown as Record<string, unknown>[]}
+          series={[
+            { dataKey: "habits", color: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
+            { dataKey: "sleep", color: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
+          ]}
+          xKey="date"
+          formatTooltip={(name, value, row) => {
+            const label =
+              name === "habits"
+                ? t("sleepHygiene.comparisonHabits")
+                : t("sleepHygiene.comparisonSleep");
+            const entryValues = (row?._values as Record<string, number[]> | undefined)?.[name];
+            if (entryValues && entryValues.length > 1) {
+              return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;
+            }
+            return `${label}: ${value}`;
+          }}
+          height={160}
+          showLegend
+          showDots={false}
+        />
       </CardContent>
     </Card>
   );

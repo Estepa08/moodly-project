@@ -8,6 +8,7 @@ import { useStalePractices } from "../hooks/useStalePractices";
 import { PracticeSource } from "../features/gamification/practice.enums";
 import { User, LogOut, Sparkles, ChevronDown } from "lucide-react";
 import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS, ADMIN_ITEM } from "./nav-config";
+import { IconButton } from "../components/ui/icon-button";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
   "/practices/thought-journal": PracticeSource.ThoughtJournal,
@@ -69,13 +70,15 @@ export default function Sidebar() {
           </p>
           <p className="text-xs text-muted-foreground truncate">{userData?.email ?? ""}</p>
         </div>
-        <button
+        <IconButton
+          variant="ghost"
+          size="icon-sm"
+          label={t("common.logout")}
           onClick={handleLogout}
-          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-[color,background-color,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={t("common.logout")}
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
         >
           <LogOut aria-hidden="true" className="w-4 h-4" />
-        </button>
+        </IconButton>
       </div>
 
       <Link to={DASHBOARD_ITEM.path} className={navButtonClass(location.pathname === "/")} aria-current={location.pathname === "/" ? "page" : undefined}>

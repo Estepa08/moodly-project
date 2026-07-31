@@ -59,6 +59,7 @@ export interface CreatureState {
   sessionCount: number;
   petType?: string;
   unlockedPetTypes?: string[];
+  petName?: string | null;
   activeTitle?: string | null;
   unlockedTitles?: string[];
   activeSkin?: string;
@@ -92,6 +93,7 @@ export interface CreatureStats {
 export interface PetCollection {
   unlockedPetTypes: string[];
   activePetType: string;
+  petName: string | null;
 }
 
 export interface HeatmapEntry {
@@ -293,10 +295,10 @@ export const api = {
       request<PracticeCompletion[]>(`/creature/completions?days=${days}`),
     getStats: () => request<CreatureStats>("/creature/stats"),
     getPets: () => request<PetCollection>("/creature/pets"),
-    setPet: (petType: string) =>
-      request<{ petType: string }>("/creature/pet", {
+    setPet: (petType?: string, petName?: string | null) =>
+      request<PetCollection>("/creature/pet", {
         method: "PATCH",
-        body: JSON.stringify({ petType }),
+        body: JSON.stringify({ petType, petName }),
       }),
     getHeatmap: (days = 90) => request<HeatmapEntry[]>(`/creature/heatmap?days=${days}`),
     getMissions: () => request<Mission[]>("/creature/missions"),

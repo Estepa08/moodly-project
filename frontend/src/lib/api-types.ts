@@ -269,6 +269,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/creature/pet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Активировать питомца и/или задать имя */
+        patch: operations["Creature_setPet"];
+        trace?: never;
+    };
+    "/creature/pets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Получить коллекцию питомцев пользователя */
+        get: operations["Creature_getPets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/creature/reward": {
         parameters: {
             query?: never;
@@ -727,6 +761,20 @@ export interface components {
              * @description Дата последнего дыхательного упражнения
              */
             lastExerciseAt?: string;
+            /** @description Текущий выбранный тип питомца */
+            petType?: string;
+            /** @description Открытые типы питомцев */
+            unlockedPetTypes?: string[];
+            /** @description Имя питомца, заданное пользователем */
+            petName?: string;
+            /** @description Активный титул */
+            activeTitle?: string;
+            /** @description Открытые титулы */
+            unlockedTitles?: string[];
+            /** @description Активный скин */
+            activeSkin?: string;
+            /** @description Открытые скины */
+            unlockedSkins?: string[];
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -786,6 +834,19 @@ export interface components {
             name: string;
             description?: string;
             unit?: string;
+        };
+        /** @description Коллекция питомцев пользователя */
+        PetCollection: {
+            unlockedPetTypes: string[];
+            activePetType: string;
+            petName: string;
+        };
+        /** @description Тело обновления питомца */
+        PetUpdateRequest: {
+            /** @description Тип питомца для активации */
+            petType?: string;
+            /** @description Новое имя питомца (пустая строка очищает) */
+            petName?: string;
         };
         /** @description Запись о выполненной практике и полученном опыте */
         PracticeCompletion: {
@@ -1314,6 +1375,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CheckInResponse"];
+                };
+            };
+        };
+    };
+    Creature_setPet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetCollection"];
+                };
+            };
+        };
+    };
+    Creature_getPets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetCollection"];
                 };
             };
         };

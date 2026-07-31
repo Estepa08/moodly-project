@@ -1,27 +1,36 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, Link } from "react-router-dom";
-import { ChevronRight, ClipboardList } from "lucide-react";
+import { ChevronRight, BrainCircuit } from "lucide-react";
 import { useTestResults } from "../hooks/useTests";
-import { Card, CardContent, CardHeader } from "../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+import { Chip } from "../components/ui/chip";
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
-import { TestResultsChart } from "../features/analytics";
+import { TestResultsChart, RadarChart } from "../features/analytics";
+import { usePets } from "../features/gamification";
+import { buildRadarComparison } from "../lib/radarDelta";
 import { useTestResultText } from "../hooks/useTestResultText";
 import { WellnessDisclaimer } from "../widgets";
-import { cn } from "../lib/utils";
 import StickyBottomBar from "../components/ui/sticky-bottom-bar";
 
 export default function TestResultsPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { resolve } = useTestResultText();
+  const { data: pets } = usePets();
+  const petName = pets?.petName?.trim() || t("testResults.defaultPetName");
   const [showFull, setShowFull] = useState<Record<string, boolean>>({});
   const [showScore, setShowScore] = useState<Record<string, boolean>>({});
   const [showRec, setShowRec] = useState<Record<string, boolean>>({});
 
   const { data: results, isLoading } = useTestResults();
+
+  const comparison = useMemo(() => buildRadarComparison(results), [results]);
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US");
 
   if (isLoading) {
     return (
@@ -45,13 +54,62 @@ export default function TestResultsPage() {
 
         {results?.length === 0 && (
           <EmptyState
-            icon={ClipboardList}
+            pet
+            petType={pets?.activePetType}
             title={t("testResults.noResults")}
+            description={t("testResults.noResultsPet", { name: petName })}
             action={{
               label: t("testResults.takeTest"),
               onClick: () => navigate("/tests"),
             }}
           />
+        )}
+
+        {comparison && (
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <BrainCircuit aria-hidden="true" className="w-4 h-4 text-primary" />
+                {t("testResults.thinkingPatternsTitle")}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                {comparison.previous
+                  ? t("testResults.thinkingPatternsCompare")
+                  : t("testResults.thinkingPatternsSingle")}
+              </p>
+              {comparison.previous && comparison.previousDate && (
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground mt-1">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded-[3px] bg-primary/60" aria-hidden="true" />
+                    {t("testResults.thinkingPatternsLast", {
+                      date: formatDate(comparison.currentDate),
+                    })}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span
+                      className="w-3 h-1.5 border-t-2 border-dashed border-muted-foreground"
+                      aria-hidden="true"
+                    />
+                    {t("testResults.thinkingPatternsPrevious", {
+                      date: formatDate(comparison.previousDate),
+                    })}
+                  </span>
+                </div>
+              )}
+            </CardHeader>
+            <CardContent>
+              <RadarChart data={comparison.current} previousData={comparison.previous} />
+              {comparison.previous && (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {t("testResults.thinkingPatternsBetter")} ·{" "}
+                  {t("testResults.thinkingPatternsWorse")} · {t("testResults.thinkingPatternsSame")}
+                </p>
+              )}
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("testResults.thinkingPatternsLibraryHint")}
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {results?.map((r) => {
@@ -71,15 +129,12 @@ export default function TestResultsPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col items-center gap-3 mb-4">
-                  <button
+                  <Chip
+                    variant={showScore[r.id] ? "active" : "default"}
                     onClick={() => setShowScore((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card shadow-neumorphic-sm text-xs font-medium cursor-pointer transition-[color,background-color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                      showScore[r.id] ? "text-primary" : "text-muted-foreground",
-                    )}
                   >
                     {showScore[r.id] ? t("testResults.hideScore") : t("testResults.showScore")}
-                  </button>
+                  </Chip>
                   {showScore[r.id] && (
                     <div className="w-16 h-16 rounded-xl bg-card shadow-neumorphic-sm flex items-center justify-center">
                       <span className="text-2xl font-bold text-primary">{r.score}</span>
@@ -127,18 +182,22 @@ export default function TestResultsPage() {
                 </div>
 
                 {isLongText && (
-                  <button
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto px-0 text-xs"
                     aria-expanded={!!showFull[r.id]}
-                    className="text-xs text-primary hover:underline mt-1 cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                   >
                     {showFull[r.id] ? t("testResults.showLess") : t("testResults.showFull")}
-                  </button>
+                  </Button>
                 )}
 
-                <button
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="h-auto px-0 gap-1 mt-3"
                   aria-expanded={!!showRec[r.id]}
-                  className="flex items-center gap-1 text-sm text-primary hover:underline mt-3 cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   onClick={() => setShowRec((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
                 >
                   <ChevronRight
@@ -146,7 +205,7 @@ export default function TestResultsPage() {
                     className={`w-4 h-4 ${showRec[r.id] ? "rotate-90" : ""}`}
                   />
                   {t("testDetail.recommendation")}
-                </button>
+                </Button>
 
                 {showRec[r.id] && (
                   <p className="text-sm mt-2 text-muted-foreground">{recommendationText}</p>

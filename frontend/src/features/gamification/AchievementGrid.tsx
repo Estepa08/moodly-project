@@ -14,11 +14,11 @@ const CATEGORY_ICONS: Record<string, typeof Trophy> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   general: "text-accent",
-  streak: "text-orange-500",
+  streak: "text-warning",
   practices: "text-primary",
-  level: "text-green-500",
-  breathing: "text-blue-500",
-  mindfulness: "text-purple-500",
+  level: "text-success",
+  breathing: "text-info",
+  mindfulness: "text-primary",
 };
 
 export default function AchievementGrid() {
@@ -74,7 +74,7 @@ export default function AchievementGrid() {
                 )}
               </div>
               {a.unlocked && (
-                <Check aria-hidden="true" className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                <Check aria-hidden="true" className="w-3.5 h-3.5 text-success shrink-0" />
               )}
             </div>
             <div className="min-w-0">

@@ -118,8 +118,8 @@ export default function LoginPage({ defaultRegister }: Props) {
         <Card>
           <CardContent className="p-6 space-y-5 text-center max-w-md">
             <div className="flex justify-center">
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                <MailCheck aria-hidden="true" className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center">
+                <MailCheck aria-hidden="true" className="w-6 h-6 text-success" />
               </div>
             </div>
             <h2 className="text-2xl font-serif font-semibold">
@@ -256,13 +256,15 @@ export default function LoginPage({ defaultRegister }: Props) {
 
                   <p className="text-center text-sm text-muted-foreground" {...a(6, isLogin)}>
                     {t("login.noAccount")}{" "}
-                    <button
+                    <Button
                       type="button"
-                      className="text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      variant="link"
+                      size="sm"
+                      className="h-auto px-0 py-0 text-sm"
                       onClick={toggle}
                     >
                       {t("login.signUp")}
-                    </button>
+                    </Button>
                   </p>
                 </form>
               </div>
@@ -349,22 +351,26 @@ export default function LoginPage({ defaultRegister }: Props) {
                   </Button>
                   <p className="text-center text-sm text-muted-foreground" {...a(5, !isLogin)}>
                     {t("register.hasAccount")}{" "}
-                    <button
+                    <Button
                       type="button"
-                      className="text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      variant="link"
+                      size="sm"
+                      className="h-auto px-0 py-0 text-sm"
                       onClick={toggle}
                     >
                       {t("register.signIn")}
-                    </button>
+                    </Button>
                   </p>
                 </form>
               </div>
             </div>
 
             <div className="border-t border-border pt-3">
-              <button
+              <Button
+                variant="link"
+                size="sm"
                 onClick={() => setShowDisclaimer(!showDisclaimer)}
-                className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary cursor-pointer transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="h-auto px-0 gap-1 text-xs text-muted-foreground hover:text-primary"
               >
                 <Info aria-hidden="true" className="w-3.5 h-3.5" />
                 <span>{t("login.disclaimerTitle")}</span>
@@ -372,7 +378,7 @@ export default function LoginPage({ defaultRegister }: Props) {
                   aria-hidden="true"
                   className={`w-3.5 h-3.5 transition-transform duration-200 ${showDisclaimer ? "rotate-180" : ""}`}
                 />
-              </button>
+              </Button>
               {showDisclaimer && (
                 <div className="mt-2 space-y-2 text-xs text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-top-1">
                   <p>{t("login.disclaimer")}</p>

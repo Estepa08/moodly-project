@@ -27,7 +27,7 @@ export default function DailyMissions() {
           >
             <div className="shrink-0">
               {mission.claimed ? (
-                <CheckCircle2 aria-hidden="true" className="w-6 h-6 text-green-500" />
+                <CheckCircle2 aria-hidden="true" className="w-6 h-6 text-success" />
               ) : isComplete ? (
                 <button
                   onClick={() => claimMission.mutate(mission.id)}

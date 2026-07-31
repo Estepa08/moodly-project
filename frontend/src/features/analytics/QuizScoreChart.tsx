@@ -10,6 +10,7 @@ type Entry = components["schemas"]["Entry"];
 interface QuizScoreChartProps {
   entries: Entry[];
   isLoading?: boolean;
+  noCard?: boolean;
 }
 
 const PERIOD_OPTIONS = [
@@ -18,7 +19,7 @@ const PERIOD_OPTIONS = [
   { key: "all", label: "All" },
 ];
 
-export default function QuizScoreChart({ entries, isLoading }: QuizScoreChartProps) {
+export default function QuizScoreChart({ entries, isLoading, noCard }: QuizScoreChartProps) {
   const { t, i18n } = useTranslation();
   const [limit, setLimit] = useState("10");
 
@@ -71,6 +72,7 @@ export default function QuizScoreChart({ entries, isLoading }: QuizScoreChartPro
   return (
     <Chart
       type="line"
+      noCard={noCard}
       data={needsTwoPoints ? chartData : []}
       series={[{ dataKey: "Score", color: "hsl(var(--primary))", label: "Score" }]}
       xKey="date"
