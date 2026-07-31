@@ -32,17 +32,21 @@ export default async function authRoutes(fastify: FastifyInstance) {
       name,
       ageConfirmed,
     });
-    await sendEmail({
-      to: user.email,
-      subject: "Welcome to Moodly — Verify your email",
-      html: verifyEmailHtml({ token: verificationToken }),
-    });
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
     const isDev = process.env.NODE_ENV !== "production";
+    if (verificationToken) {
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Moodly — Verify your email",
+        html: verifyEmailHtml({ token: verificationToken }),
+      });
+    }
     return {
       user,
-      message: "Registration successful. Please check your email to verify your account.",
-      ...(isDev && {
+      message: user.emailVerified
+        ? "Registration successful."
+        : "Registration successful. Please check your email to verify your account.",
+      ...(isDev && verificationToken && {
         devVerificationLink: `${frontendUrl}/verify-email?token=${verificationToken}`,
       }),
     };

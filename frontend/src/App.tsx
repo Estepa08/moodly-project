@@ -5,6 +5,7 @@ import { useCurrentUser } from "./hooks/useCurrentUser";
 import Layout from "./components/Layout";
 import Spinner from "./components/ui/spinner";
 import LoginPage from "./routes/login";
+import RegisterPage from "./routes/register";
 import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
 import VerifyEmailPage from "./routes/verify-email";
@@ -80,7 +81,7 @@ export default function App() {
     <Routes>
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<LoginPage defaultRegister />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Lottie from "lottie-react";
-import creatureAnimation from "../../assets/lottie/breathing-creature.json";
+import { usePetAnimation } from "./usePetAnimation";
+import { usePets } from "./useCreature";
 import { StreakIndicator } from "./index";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import { EXP_PER_LEVEL } from "../../lib/constants";
@@ -12,6 +13,8 @@ interface ProgressHeroProps {
 
 export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();
+  const { data: pets } = usePets();
+  const animationData = usePetAnimation(pets?.activePetType ?? "puff");
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
@@ -19,12 +22,14 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
     <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-          <Lottie
-            animationData={creatureAnimation}
-            loop
-            autoplay
-            style={{ width: "100%", height: "100%" }}
-          />
+          {animationData ? (
+            <Lottie
+              animationData={animationData}
+              loop
+              autoplay
+              style={{ width: "100%", height: "100%" }}
+            />
+          ) : null}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">

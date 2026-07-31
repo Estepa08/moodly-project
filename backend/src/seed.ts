@@ -1,5 +1,5 @@
-if (process.env.NODE_ENV === "production") {
-  console.error("Seed script cannot run in production");
+if (process.env.NODE_ENV === "production" && process.env.PROD_SEED !== "1") {
+  console.error("Seed script cannot run in production (set PROD_SEED=1 to override)");
   process.exit(1);
 }
 
@@ -452,8 +452,8 @@ const achievements = [
     descKey: "achievements.level5Desc",
     iconName: "target",
     xpReward: 50,
-    petTypeReward: "ember",
-    skinReward: "ember_skin",
+    petTypeReward: "kitty",
+    skinReward: "kitty_skin",
     criteria: { type: "level", value: 5 },
     sortOrder: 20,
   },
@@ -570,30 +570,47 @@ const achievements = [
 ];
 
 async function seed() {
-  await prisma.userAchievement.deleteMany();
-  await prisma.achievement.deleteMany();
-  await prisma.dailyMission.deleteMany();
-  await prisma.testScoreBand.deleteMany();
-  await prisma.testResult.deleteMany();
-  await prisma.feedback.deleteMany();
-  await prisma.entry.deleteMany();
-  await prisma.breathingSession.deleteMany();
-  await prisma.creatureState.deleteMany();
-  await prisma.cbaEntryItem.deleteMany();
-  await prisma.cbaEntry.deleteMany();
-  await prisma.refreshToken.deleteMany();
-  await prisma.resetToken.deleteMany();
-  await prisma.pushSubscription.deleteMany();
-  await prisma.practiceCompletion.deleteMany();
-  await prisma.userPreference.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.test.deleteMany();
-  await prisma.parameter.deleteMany();
-  await prisma.onboardingStory.deleteMany();
-  await prisma.cbaExampleDistortion.deleteMany();
-  await prisma.cbaExampleItem.deleteMany();
-  await prisma.cbaExample.deleteMany();
-  await prisma.cbaCommonItem.deleteMany();
+  // SEED_CONTENT_ONLY=1: наполняет только справочники (тесты, параметры,
+  // онбординг, достижения, КПТ-библиотеку) и НЕ трогает пользовательские
+  // данные. Используется для прод-БД, где удалять пользователей нельзя.
+  const contentOnly = process.env.SEED_CONTENT_ONLY === "1";
+
+  if (contentOnly) {
+    await prisma.achievement.deleteMany();
+    await prisma.testScoreBand.deleteMany();
+    await prisma.test.deleteMany();
+    await prisma.parameter.deleteMany();
+    await prisma.onboardingStory.deleteMany();
+    await prisma.cbaExampleDistortion.deleteMany();
+    await prisma.cbaExampleItem.deleteMany();
+    await prisma.cbaExample.deleteMany();
+    await prisma.cbaCommonItem.deleteMany();
+  } else {
+    await prisma.userAchievement.deleteMany();
+    await prisma.achievement.deleteMany();
+    await prisma.dailyMission.deleteMany();
+    await prisma.testScoreBand.deleteMany();
+    await prisma.testResult.deleteMany();
+    await prisma.feedback.deleteMany();
+    await prisma.entry.deleteMany();
+    await prisma.breathingSession.deleteMany();
+    await prisma.creatureState.deleteMany();
+    await prisma.cbaEntryItem.deleteMany();
+    await prisma.cbaEntry.deleteMany();
+    await prisma.refreshToken.deleteMany();
+    await prisma.resetToken.deleteMany();
+    await prisma.pushSubscription.deleteMany();
+    await prisma.practiceCompletion.deleteMany();
+    await prisma.userPreference.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.test.deleteMany();
+    await prisma.parameter.deleteMany();
+    await prisma.onboardingStory.deleteMany();
+    await prisma.cbaExampleDistortion.deleteMany();
+    await prisma.cbaExampleItem.deleteMany();
+    await prisma.cbaExample.deleteMany();
+    await prisma.cbaCommonItem.deleteMany();
+  }
 
   for (const p of parameters) {
     await prisma.parameter.create({ data: p });
@@ -615,8 +632,19 @@ async function seed() {
 
   await prisma.achievement.createMany({ data: achievements as never });
 
+  const now = new Date();
+  const DAY = MS_PER_DAY;
+  const daysAgo = (n: number, hour = 10, min = 0) => {
+    const d = new Date(now.getTime() - n * DAY);
+    d.setHours(hour, min, 0, 0);
+    return d;
+  };
+
+  let demoUser!: { id: string };
+
+  if (!contentOnly) {
   const hashed = await bcrypt.hash("demo123", 10);
-  const demoUser = await prisma.user.create({
+  demoUser = await prisma.user.create({
     data: {
       email: "demo@moodly.app",
       password: hashed,
@@ -626,6 +654,24 @@ async function seed() {
     },
   });
 
+  // Опциональный админ: создаётся из env-переменных, чтобы его не терять
+  // при перезапуске сида. Пример: ADMIN_EMAIL=step.evgeny@gmail.com ADMIN_PASSWORD=...
+  if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
+    const adminHashed = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+    await prisma.user.upsert({
+      where: { email: process.env.ADMIN_EMAIL.toLowerCase() },
+      update: { role: "admin", emailVerified: true },
+      create: {
+        email: process.env.ADMIN_EMAIL.toLowerCase(),
+        password: adminHashed,
+        name: "Admin",
+        role: "admin",
+        emailVerified: true,
+        ageConfirmed: true,
+      },
+    });
+  }
+
   const allTests = await prisma.test.findMany();
   const allParams = await prisma.parameter.findMany();
 
@@ -634,14 +680,6 @@ async function seed() {
   const cd = allTests.find((t) => t.title === "Определение когнитивных искажений")!;
 
   const paramMap = new Map(allParams.map((p) => [p.name, p.id]));
-
-  const now = new Date();
-  const DAY = MS_PER_DAY;
-  const daysAgo = (n: number, hour = 10, min = 0) => {
-    const d = new Date(now.getTime() - n * DAY);
-    d.setHours(hour, min, 0, 0);
-    return d;
-  };
 
   const dailyNumeric: Record<string, number[]> = {
     Anxiety: [
@@ -859,11 +897,11 @@ async function seed() {
       lastCheckInAt: daysAgo(1, 9),
       lastExerciseAt: daysAgo(2, 13),
       activeSkin: "calm_skin",
-      unlockedSkins: ["default", "calm_skin", "ember_skin"],
+      unlockedSkins: ["default", "calm_skin", "kitty_skin"],
       activeTitle: "serenity_keeper",
       unlockedTitles: ["serenity_keeper", "spark"],
-      petType: "ember",
-      unlockedPetTypes: ["puff", "ember"],
+      petType: "kitty",
+      unlockedPetTypes: ["puff", "kitty", "dewdrop", "sprout", "comet", "aurora"],
     },
   });
 
@@ -1015,6 +1053,7 @@ async function seed() {
       },
     ],
   });
+  }
 
   const cbaExamples: {
     persona: string;
@@ -1157,6 +1196,7 @@ async function seed() {
     ],
   });
 
+  if (!contentOnly) {
   const allAchievements = await prisma.achievement.findMany();
   const achievementByKey = new Map(allAchievements.map((a) => [a.key, a.id]));
   const unlockedKeys: [string, number][] = [
@@ -1346,6 +1386,7 @@ async function seed() {
       },
     ],
   });
+  }
 
   console.log("Seed completed");
 }

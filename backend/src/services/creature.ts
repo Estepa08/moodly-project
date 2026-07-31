@@ -6,6 +6,8 @@ const CHECKIN_EXP = 20;
 const EXERCISE_EXP = 10;
 const MAX_ENERGY = 100;
 
+const DEV_ALL_PETS = () => process.env.NODE_ENV === "development" || !process.env.NODE_ENV;
+
 const STARTER_PET_TYPES = ["puff", "dewdrop", "sprout"];
 
 const PRACTICE_XP: Record<string, number> = {
@@ -120,7 +122,7 @@ export const creatureService = {
     if (petType !== undefined) {
       const unlocked = creature.unlockedPetTypes ?? ["puff"];
       if (!unlocked.includes(petType)) {
-        if (STARTER_PET_TYPES.includes(petType)) {
+        if (STARTER_PET_TYPES.includes(petType) || DEV_ALL_PETS()) {
           data.unlockedPetTypes = [...unlocked, petType];
         } else {
           throw new AppError("LOCKED", 403, "Pet type not unlocked");

@@ -66,7 +66,7 @@ describe("Creature pets", () => {
       method: "PATCH",
       url: "/creature/pet",
       headers: { authorization: `Bearer ${token}` },
-      payload: { petType: "ember" },
+      payload: { petType: "kitty" },
     });
     expect(res.statusCode).toBe(403);
   });
