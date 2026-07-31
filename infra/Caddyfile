@@ -4,7 +4,11 @@
 
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy {$BACKEND_UPSTREAM}
+        reverse_proxy {$BACKEND_UPSTREAM} {
+            health_uri /health
+            health_interval 5s
+            health_timeout 2s
+        }
     }
 
     handle {

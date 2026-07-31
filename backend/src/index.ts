@@ -69,5 +69,14 @@ await fastify.register(adminRoutes);
 
 setErrorHandler(fastify);
 
+// Логируем необработанные отказы/исключения, чтобы тихое падение процесса
+// было видно в логах Render вместо внезапного 502 без причин.
+process.on("unhandledRejection", (reason) => {
+  fastify.log.error({ err: reason }, "unhandled rejection");
+});
+process.on("uncaughtException", (error) => {
+  fastify.log.error(error, "uncaught exception");
+});
+
 const port = parseInt(process.env.PORT || "3001", 10);
 await fastify.listen({ port, host: "0.0.0.0" });
