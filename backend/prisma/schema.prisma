@@ -13,6 +13,7 @@ model User {
   email     String   @unique
   password  String
   name      String?
+  role      String   @default("user")
   createdAt DateTime @default(now())
 
   // 18+ confirmation and personal-data processing consent, recorded at
@@ -190,6 +191,7 @@ model CreatureState {
   unlockedTitles   String[] @default([])
   petType          String   @default("puff")
   unlockedPetTypes String[] @default(["puff"])
+  petName          String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "prisma migrate deploy && prisma generate",
-    "dev": "tsx watch src/index.ts",
+    "predev": "prisma generate",
+    "dev": "node --env-file=.env --import tsx --watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "db:generate": "prisma generate",

@@ -7,7 +7,23 @@ model User {
   id: string;
   email: string;
   name?: string;
+  role: string;
   createdAt: utcDateTime;
+}
+
+@doc("Запись списка пользователей для админ-панели")
+model AdminUser {
+  id: string;
+  email: string;
+  name?: string;
+  role: string;
+  createdAt: utcDateTime;
+  emailVerified: boolean;
+  ageConfirmed: boolean;
+  entriesCount: int32;
+  testResultsCount: int32;
+  breathingSessionsCount: int32;
+  cbaEntriesCount: int32;
 }
 
 model UserCreate {
@@ -267,6 +283,35 @@ model CreatureState {
   lastCheckInAt?: utcDateTime;
   @doc("Дата последнего дыхательного упражнения")
   lastExerciseAt?: utcDateTime;
+  @doc("Текущий выбранный тип питомца")
+  petType?: string;
+  @doc("Открытые типы питомцев")
+  unlockedPetTypes?: string[];
+  @doc("Имя питомца, заданное пользователем")
+  petName?: string;
+  @doc("Активный титул")
+  activeTitle?: string;
+  @doc("Открытые титулы")
+  unlockedTitles?: string[];
+  @doc("Активный скин")
+  activeSkin?: string;
+  @doc("Открытые скины")
+  unlockedSkins?: string[];
+}
+
+@doc("Коллекция питомцев пользователя")
+model PetCollection {
+  unlockedPetTypes: string[];
+  activePetType: string;
+  petName: string;
+}
+
+@doc("Тело обновления питомца")
+model PetUpdateRequest {
+  @doc("Тип питомца для активации")
+  petType?: string;
+  @doc("Новое имя питомца (пустая строка очищает)")
+  petName?: string;
 }
 
 @doc("Результат ежедневного чекина")

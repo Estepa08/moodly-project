@@ -1,30 +1,5 @@
-import type { ReactNode } from "react";
-import { cn } from "../../lib/utils";
+import { SegmentControl, SegmentControlItem } from "./segment-control";
 
-export function SegmentGroup({ children }: { children: ReactNode }) {
-  return <div className="flex rounded-xl bg-muted p-1 shadow-neumorphic-inset">{children}</div>;
-}
-
-export function SegmentButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <button
-      className={cn(
-        "px-3 min-h-[44px] rounded-lg text-xs font-medium transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        active
-          ? "bg-card text-foreground shadow-neumorphic-sm"
-          : "text-muted-foreground hover:text-foreground",
-      )}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
+export { SegmentControl };
+export const SegmentGroup = SegmentControl;
+export const SegmentButton = SegmentControlItem;

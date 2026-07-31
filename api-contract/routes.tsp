@@ -178,6 +178,16 @@ interface Creature {
   @route("/completions")
   @doc("История выполненных практик за последние N дней (по умолчанию 30)")
   getCompletions(@query days?: int32): PracticeCompletion[];
+
+  @get
+  @route("/pets")
+  @doc("Получить коллекцию питомцев пользователя")
+  getPets(): PetCollection;
+
+  @patch
+  @route("/pet")
+  @doc("Активировать питомца и/или задать имя")
+  setPet(@body body: PetUpdateRequest): PetCollection;
 }
 
 @tag("Digest")
@@ -214,4 +224,18 @@ interface Cba {
   @delete
   @route("/entries/{id}")
   deleteEntry(@path id: string): void;
+}
+
+@tag("Admin")
+@route("/admin")
+interface AdminUsers {
+  @get
+  @route("/users")
+  @doc("Список всех пользователей (только для администратора)")
+  listUsers(): AdminUser[];
+
+  @delete
+  @route("/users/{id}")
+  @doc("Удалить пользователя вместе со всеми данными (только для администратора)")
+  deleteUser(@path id: string): void;
 }

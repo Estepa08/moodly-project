@@ -15,7 +15,39 @@ tags:
   - name: Breathing
   - name: Digest
   - name: Cba
+  - name: Admin
 paths:
+  /admin/users:
+    get:
+      operationId: AdminUsers_listUsers
+      description: Список всех пользователей (только для администратора)
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminUser'
+      tags:
+        - Admin
+  /admin/users/{id}:
+    delete:
+      operationId: AdminUsers_deleteUser
+      description: Удалить пользователя вместе со всеми данными (только для администратора)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Admin
   /auth/forgot-password:
     post:
       operationId: Auth_forgotPassword
@@ -261,6 +293,40 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BreathingCompleteRequest'
+  /creature/pet:
+    patch:
+      operationId: Creature_setPet
+      description: Активировать питомца и/или задать имя
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetCollection'
+      tags:
+        - Breathing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetUpdateRequest'
+  /creature/pets:
+    get:
+      operationId: Creature_getPets
+      description: Получить коллекцию питомцев пользователя
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetCollection'
+      tags:
+        - Breathing
   /creature/reward:
     post:
       operationId: Creature_reward
@@ -719,6 +785,48 @@ security:
   - BearerAuth: []
 components:
   schemas:
+    AdminUser:
+      type: object
+      required:
+        - id
+        - email
+        - role
+        - createdAt
+        - emailVerified
+        - ageConfirmed
+        - entriesCount
+        - testResultsCount
+        - breathingSessionsCount
+        - cbaEntriesCount
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        emailVerified:
+          type: boolean
+        ageConfirmed:
+          type: boolean
+        entriesCount:
+          type: integer
+          format: int32
+        testResultsCount:
+          type: integer
+          format: int32
+        breathingSessionsCount:
+          type: integer
+          format: int32
+        cbaEntriesCount:
+          type: integer
+          format: int32
+      description: Запись списка пользователей для админ-панели
     AuthResponse:
       type: object
       required:
@@ -981,6 +1089,33 @@ components:
           type: string
           format: date-time
           description: Дата последнего дыхательного упражнения
+        petType:
+          type: string
+          description: Текущий выбранный тип питомца
+        unlockedPetTypes:
+          type: array
+          items:
+            type: string
+          description: Открытые типы питомцев
+        petName:
+          type: string
+          description: Имя питомца, заданное пользователем
+        activeTitle:
+          type: string
+          description: Активный титул
+        unlockedTitles:
+          type: array
+          items:
+            type: string
+          description: Открытые титулы
+        activeSkin:
+          type: string
+          description: Активный скин
+        unlockedSkins:
+          type: array
+          items:
+            type: string
+          description: Открытые скины
       description: Текущее состояние существа пользователя
     Entry:
       type: object
@@ -1112,6 +1247,32 @@ components:
         unit:
           type: string
       description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
+    PetCollection:
+      type: object
+      required:
+        - unlockedPetTypes
+        - activePetType
+        - petName
+      properties:
+        unlockedPetTypes:
+          type: array
+          items:
+            type: string
+        activePetType:
+          type: string
+        petName:
+          type: string
+      description: Коллекция питомцев пользователя
+    PetUpdateRequest:
+      type: object
+      properties:
+        petType:
+          type: string
+          description: Тип питомца для активации
+        petName:
+          type: string
+          description: Новое имя питомца (пустая строка очищает)
+      description: Тело обновления питомца
     PracticeCompletion:
       type: object
       required:
@@ -1369,6 +1530,7 @@ components:
       required:
         - id
         - email
+        - role
         - createdAt
       properties:
         id:
@@ -1376,6 +1538,8 @@ components:
         email:
           type: string
         name:
+          type: string
+        role:
           type: string
         createdAt:
           type: string

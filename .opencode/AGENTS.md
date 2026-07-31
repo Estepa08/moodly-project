@@ -35,7 +35,7 @@ npx prisma generate    # Prisma Client из schema.prisma
 npx prisma db push     # создать/синхронизировать таблицы в БД
 npm run db:seed        # наполнить справочники: параметры, тесты, онбординг
 npm run db:studio      # Prisma Studio → localhost:5555 (UI для просмотра/правки данных)
-npm run dev            # tsx watch → localhost:3001
+npm run dev            # node --env-file=.env + tsx watch → localhost:3002
 ```
 
 Перед первым запуском: создать БД `moodly` в PostgreSQL, настроить `.env`.
@@ -46,7 +46,7 @@ npm run dev            # tsx watch → localhost:3001
 cd frontend
 npm install
 npm run generate:api   # openapi-typescript → src/lib/api-types.ts
-npm run dev            # Vite → localhost:5173, прокси на /api → :3001
+npm run dev            # Vite → localhost:5173, прокси на /api → :3002
 npm run build          # tsc + vite build → dist/
 ```
 
@@ -208,7 +208,7 @@ i18n/       →  i18next setup + locales (en/ru)
 - Сложные hooks комбинируют `useState` + `useCallback` + `useMemo`.
 
 **API client** (`lib/api.ts`):
-- Custom fetch-based (без axios), base URL `/api` (Vite proxy → :3001).
+- Custom fetch-based (без axios), base URL `/api` (Vite proxy → :3002).
 - In-memory `accessToken: string | null = null`.
 - Центральная `request<T>(path, options)` — headers, 401 handle, error → `ApiError`.
 - `ApiError(code, message)` — выбрасывается из `request()` при `!res.ok`.

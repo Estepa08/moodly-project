@@ -1,21 +1,22 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { components } from "../../lib/api-types";
 import { toast } from "sonner";
-import { Heart, Smile } from "lucide-react";
+import { Heart, ChevronDown, ChevronUp } from "lucide-react";
 import type { CreateEntryMutation } from "../../lib/app-types";
-import { isWithinLastDays, cn, formatDateShort, formatChartDate } from "../../lib/utils";
-import { Chart } from "../analytics";
+import { formatDateShort } from "../../lib/utils";
 import { GratitudeCategory } from "../../lib/gratitudePrompts";
 import { Button } from "../../components/ui/button";
+import { Chip } from "../../components/ui/chip";
 import { Textarea } from "../../components/ui/textarea";
 import { Card, CardContent } from "../../components/ui/card";
 import EmptyState from "../../components/ui/empty-state";
+import { usePets } from "../gamification";
+import { PET_DEFINITIONS } from "../gamification/pets";
 
 interface GratitudeJournalProps {
   parameterId: string | undefined;
   entries: components["schemas"]["Entry"][];
-  moodEntries: components["schemas"]["Entry"][];
   createEntry: CreateEntryMutation;
   limit?: number;
   hideTitle?: boolean;
@@ -26,45 +27,18 @@ const ALL_CATEGORIES = Object.values(GratitudeCategory);
 export default function GratitudeJournal({
   parameterId,
   entries,
-  moodEntries,
   createEntry,
   limit = 5,
   hideTitle = false,
 }: GratitudeJournalProps) {
   const { t, i18n } = useTranslation();
+  const { data: pets } = usePets();
+  const petName = pets?.petName?.trim() || t(PET_DEFINITIONS[0].labelKey);
   const [note, setNote] = useState("");
   const [activePrompt, setActivePrompt] = useState<GratitudeCategory | null>(null);
-  const [showChart, setShowChart] = useState(false);
+  const [showAllHistory, setShowAllHistory] = useState(false);
 
-  const correlationData = useMemo(() => {
-    const byDay = new Map<string, { gratitude: number[]; mood: number[] }>();
-    for (const e of entries) {
-      const key = formatChartDate(new Date(e.createdAt), i18n.language, false);
-      if (!byDay.has(key)) byDay.set(key, { gratitude: [], mood: [] });
-      byDay.get(key)!.gratitude.push(e.value);
-    }
-    for (const e of moodEntries) {
-      const key = formatChartDate(new Date(e.createdAt), i18n.language, false);
-      const existing = byDay.get(key);
-      if (existing) existing.mood.push(e.value);
-    }
-    return Array.from(byDay.entries())
-      .filter(([, v]) => v.mood.length > 0)
-      .map(([date, v]) => ({
-        date,
-        gratitude: v.gratitude.reduce((s, x) => s + x, 0) / v.gratitude.length,
-        mood: v.mood.reduce((s, x) => s + x, 0) / v.mood.length,
-        _values: { gratitude: v.gratitude, mood: v.mood },
-      }))
-      .slice(-limit);
-  }, [entries, moodEntries, i18n.language, limit]);
-
-  const recentEntries = useMemo(() => entries.slice(-limit).reverse(), [entries, limit]);
-
-  const weekCount = useMemo(
-    () => entries.filter((e) => isWithinLastDays(e.createdAt, 7)).length,
-    [entries],
-  );
+  const recentEntries = entries.slice(-limit).reverse();
 
   const handlePromptSelect = (category: GratitudeCategory) => {
     setActivePrompt(activePrompt === category ? null : category);
@@ -95,18 +69,13 @@ export default function GratitudeJournal({
           <p className="text-xs text-muted-foreground">{t("dashboard.gratitudePrompt")}</p>
           <div className="flex flex-wrap gap-2">
             {ALL_CATEGORIES.map((cat) => (
-              <button
+              <Chip
                 key={cat}
+                variant={activePrompt === cat ? "active" : "default"}
                 onClick={() => handlePromptSelect(cat)}
-                className={cn(
-                  "px-3 py-1.5 text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  activePrompt === cat
-                    ? "bg-primary/10 text-primary shadow-neumorphic-sm"
-                    : "bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-foreground",
-                )}
               >
                 {t(`gratitudePrompts.${cat}`)}
-              </button>
+              </Chip>
             ))}
           </div>
           {activePrompt && (
@@ -119,50 +88,25 @@ export default function GratitudeJournal({
             onChange={(e) => setNote(e.target.value)}
             placeholder={t("dashboard.gratitudePlaceholder")}
           />
-          <div className="flex gap-2">
-            <Button onClick={handleSave} disabled={!note.trim() || createEntry.isPending}>
-              <Heart aria-hidden="true" className="w-4 h-4 mr-1.5" />
-              {t("dashboard.saveGratitude")}
-            </Button>
-            <Button variant="ghost" onClick={() => setShowChart(!showChart)}>
-              <Smile aria-hidden="true" className="w-4 h-4 mr-1.5" />
-              {t(showChart ? "dashboard.hideCorrelation" : "dashboard.showCorrelation")}
-            </Button>
-          </div>
+          <Button
+            onClick={handleSave}
+            disabled={!note.trim() || createEntry.isPending}
+            className="w-full"
+          >
+            <Heart aria-hidden="true" className="w-4 h-4 mr-1.5" />
+            {t("dashboard.gratitudeSave")}
+          </Button>
         </CardContent>
       </Card>
 
-      {showChart && correlationData.length > 0 && (
-        <Chart
-          type="line"
-          data={correlationData}
-          series={[
-            { dataKey: "gratitude", color: "hsl(var(--accent))", label: t("dashboard.gratitude") },
-            { dataKey: "mood", color: "hsl(var(--primary))", label: t("dashboard.mood") },
-          ]}
-          xKey="date"
-          title={t("dashboard.gratitudeCorrelation")}
-          icon={<Smile aria-hidden="true" className="w-4 h-4 text-primary" />}
-          showLegend
-          height={160}
-          showDots={false}
-        />
-      )}
-
-      {weekCount > 0 && (
-        <p className="text-xs text-muted-foreground text-center">
-          {t("dashboard.thisWeekGratitude", { count: weekCount })}
-        </p>
-      )}
-
       {recentEntries.length > 0 && (
         <div className="space-y-2">
-          {recentEntries.map((entry) => (
+          {(showAllHistory ? recentEntries : recentEntries.slice(0, 3)).map((entry) => (
             <div
               key={entry.id}
-              className="flex items-start gap-2 p-3 rounded-xl bg-card shadow-neumorphic-sm"
+              className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm"
             >
-              <Heart aria-hidden="true" className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+              <Heart aria-hidden="true" className="w-5 h-5 text-accent shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-sm text-foreground break-words">{entry.note || entry.value}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -175,7 +119,30 @@ export default function GratitudeJournal({
       )}
 
       {recentEntries.length === 0 && (
-        <EmptyState icon={Heart} title={t("dashboard.noGratitudeYet")} />
+        <EmptyState
+          pet
+          petType={pets?.activePetType}
+          title={t("dashboard.gratitudeEmpty")}
+          description={t("dashboard.gratitudeEmptyPet", { name: petName })}
+        />
+      )}
+
+      {recentEntries.length > 3 && (
+        <button
+          type="button"
+          onClick={() => setShowAllHistory((s) => !s)}
+          aria-expanded={showAllHistory}
+          className="flex items-center justify-center gap-1 w-full py-2 rounded-lg bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {showAllHistory
+            ? t("dashboard.hideAllGratitude")
+            : t("dashboard.showAllGratitude", { count: recentEntries.length })}
+          {showAllHistory ? (
+            <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
+          ) : (
+            <ChevronDown aria-hidden="true" className="w-3.5 h-3.5" />
+          )}
+        </button>
       )}
     </div>
   );

@@ -16,7 +16,6 @@ const parameters = [
   { name: "Sleep Hygiene", description: "Ночной чек-лист гигиены сна", unit: null },
   { name: "Distortion Quiz", description: "Баллы теста когнитивных искажений", unit: null },
   { name: "Thought Release", description: "Журнал ритуала отпускания мыслей", unit: null },
-  { name: "Thought Journal Mood", description: "Mood from daily thought journal", unit: null },
 ];
 
 const baiOptions = [
@@ -622,6 +621,8 @@ async function seed() {
       email: "demo@moodly.app",
       password: hashed,
       name: "Demo User",
+      emailVerified: true,
+      ageConfirmed: true,
     },
   });
 
@@ -636,36 +637,234 @@ async function seed() {
 
   const now = new Date();
   const DAY = MS_PER_DAY;
-
-  const dailyValues: Record<string, number[]> = {
-    Anxiety: [7, 6, 8, 5, 4, 6, 3, 5, 7, 6, 4, 3, 5, 4],
-    Sleep: [4, 5, 3, 6, 7, 5, 8, 6, 4, 5, 7, 8, 6, 7],
-    Mood: [5, 4, 3, 6, 5, 7, 8, 6, 4, 5, 7, 8, 6, 7],
-    Energy: [3, 4, 2, 5, 6, 4, 7, 5, 3, 4, 6, 7, 5, 6],
+  const daysAgo = (n: number, hour = 10, min = 0) => {
+    const d = new Date(now.getTime() - n * DAY);
+    d.setHours(hour, min, 0, 0);
+    return d;
   };
 
-  const entryData: { userId: string; parameterId: string; value: number; createdAt: Date }[] = [];
-  for (let day = 0; day < 14; day++) {
-    const date = new Date(now.getTime() - (13 - day) * DAY);
-    date.setHours(10 + (day % 12), 0, 0, 0);
-    for (const [name, values] of Object.entries(dailyValues)) {
+  const dailyNumeric: Record<string, number[]> = {
+    Anxiety: [
+      7, 7, 6, 7, 6, 5, 6, 6, 5, 5, 6, 5, 4, 5, 5, 4, 4, 5, 4, 4, 5, 4, 3, 4, 4, 3, 3, 4, 3, 3,
+    ],
+    Sleep: [
+      4, 5, 4, 5, 5, 6, 5, 5, 6, 6, 5, 6, 7, 6, 6, 7, 7, 6, 7, 7, 6, 7, 7, 8, 7, 7, 8, 8, 7, 8,
+    ],
+    Mood: [
+      4, 4, 5, 4, 5, 5, 6, 5, 5, 6, 6, 6, 5, 6, 6, 7, 6, 6, 7, 7, 6, 7, 7, 7, 8, 7, 7, 8, 7, 8,
+    ],
+    Energy: [
+      3, 3, 4, 3, 4, 4, 5, 4, 4, 5, 5, 5, 4, 5, 5, 6, 5, 5, 6, 6, 5, 6, 6, 6, 7, 6, 6, 7, 6, 7,
+    ],
+  };
+
+  const entryData: {
+    userId: string;
+    parameterId: string;
+    value: number;
+    note?: string;
+    createdAt: Date;
+  }[] = [];
+
+  for (let i = 0; i < 30; i++) {
+    const date = daysAgo(30 - i, 10 + (i % 8), 0);
+    for (const [name, values] of Object.entries(dailyNumeric)) {
       const paramId = paramMap.get(name);
       if (paramId) {
         entryData.push({
           userId: demoUser.id,
           parameterId: paramId,
-          value: values[day],
+          value: values[i],
           createdAt: date,
         });
       }
     }
   }
+
+  const gratitudeNotes = [
+    "Тёплый вечер с семьёй",
+    "Удачная прогулка в парке",
+    "Поддержка близкого друга",
+    "Кофе на балконе утром",
+    "Наконец-то выспался",
+    "Помог коллеге с задачей",
+    "Солнечное утро за окном",
+    "Вкусный ужин дома",
+    "Чувствую себя лучше с каждым днём",
+  ];
+  const gratitudeOffsets = [27, 24, 20, 16, 13, 9, 6, 3, 1];
+  const gratitudeParamId = paramMap.get("Gratitude");
+  for (let i = 0; i < gratitudeOffsets.length; i++) {
+    if (gratitudeParamId) {
+      entryData.push({
+        userId: demoUser.id,
+        parameterId: gratitudeParamId,
+        value: 1,
+        note: gratitudeNotes[i],
+        createdAt: daysAgo(gratitudeOffsets[i], 19 + (i % 3), 10),
+      });
+    }
+  }
+
+  const hygieneItems = [
+    "noCaffeine",
+    "noScreens",
+    "consistentBedtime",
+    "darkQuietCool",
+    "noAlcohol",
+    "dayActivity",
+    "noLateMeal",
+  ];
+  const hygieneOffsets = Array.from({ length: 30 }, (_, i) => 30 - i).filter(
+    (d) => d !== 5 && d !== 19,
+  );
+  const hygieneParamId = paramMap.get("Sleep Hygiene");
+  for (const d of hygieneOffsets) {
+    if (hygieneParamId) {
+      const count = 4 + (d % 4);
+      const picked = [...hygieneItems].sort(() => Math.random() - 0.5).slice(0, count);
+      entryData.push({
+        userId: demoUser.id,
+        parameterId: hygieneParamId,
+        value: count,
+        note: picked.join(","),
+        createdAt: daysAgo(d, 22, 15),
+      });
+    }
+  }
+
+  const quizParamId = paramMap.get("Distortion Quiz");
+  const quizAttempts = [
+    { days: 26, score: 3 },
+    { days: 18, score: 4 },
+    { days: 9, score: 5 },
+    { days: 3, score: 6 },
+  ];
+  for (const attempt of quizAttempts) {
+    if (quizParamId) {
+      entryData.push({
+        userId: demoUser.id,
+        parameterId: quizParamId,
+        value: attempt.score,
+        note: `${attempt.score}/7`,
+        createdAt: daysAgo(attempt.days, 12),
+      });
+    }
+  }
+
+  const thoughtReleases = [
+    { days: 25, key: "allOrNothing" },
+    { days: 20, key: "jumpingToConclusions" },
+    { days: 15, key: "shouldStatements" },
+    { days: 10, key: "overgeneralization" },
+    { days: 5, key: "personalization" },
+    { days: 2, key: "labeling" },
+  ];
+  const thoughtReleaseParamId = paramMap.get("Thought Release");
+  for (const t of thoughtReleases) {
+    if (thoughtReleaseParamId) {
+      entryData.push({
+        userId: demoUser.id,
+        parameterId: thoughtReleaseParamId,
+        value: 1,
+        note: t.key,
+        createdAt: daysAgo(t.days, 21),
+      });
+    }
+  }
+
   await prisma.entry.createMany({ data: entryData });
 
-  await prisma.creatureState.upsert({
-    where: { userId: demoUser.id },
-    create: { userId: demoUser.id, calmness: 45, lastExerciseAt: null },
-    update: {},
+  const completionXp: Record<string, number> = {
+    breathing: 10,
+    gratitude: 5,
+    sleepHygiene: 5,
+    distortions: 10,
+    cba: 10,
+    thoughtJournal: 5,
+  };
+  const CHECKIN_XP = 20;
+
+  const schedule: { source: string; days: number[] }[] = [
+    { source: "checkin", days: Array.from({ length: 30 }, (_, i) => i + 1) },
+    { source: "breathing", days: [0, 2, 5, 8, 11, 14, 17, 20, 23, 26, 28, 29] },
+    { source: "gratitude", days: [0, 1, 4, 7, 10, 13, 16, 19, 22, 25] },
+    { source: "sleepHygiene", days: hygieneOffsets },
+    { source: "distortions", days: [3, 9, 18, 26, 30] },
+    { source: "cba", days: [2, 6, 10, 14, 18, 22, 25, 26, 29, 30] },
+    { source: "thoughtJournal", days: [1, 5, 9, 13, 17, 21, 24, 27] },
+  ];
+
+  const sourceHour: Record<string, number> = {
+    checkin: 8,
+    breathing: 13,
+    gratitude: 20,
+    sleepHygiene: 22,
+    distortions: 12,
+    cba: 16,
+    thoughtJournal: 21,
+  };
+
+  const completionData: {
+    userId: string;
+    source: string;
+    xpAwarded: number;
+    createdAt: Date;
+  }[] = [];
+  for (const { source, days } of schedule) {
+    for (const d of days) {
+      completionData.push({
+        userId: demoUser.id,
+        source,
+        xpAwarded: source === "checkin" ? CHECKIN_XP : completionXp[source],
+        createdAt: daysAgo(d, sourceHour[source] ?? 12, (d * 7) % 60),
+      });
+    }
+  }
+
+  const breathingDays = [0, 2, 5, 8, 11, 14, 17, 20, 23, 26, 28, 29];
+  const sessionDurations = [180, 240, 300, 120, 360, 180, 420, 240, 300, 480, 180, 300];
+  const sessionData: {
+    userId: string;
+    duration: number;
+    initialCalmness: number;
+    finalCalmness: number;
+    completedAt: Date;
+  }[] = [];
+  let initialCalmness = 40;
+  for (let i = 0; i < breathingDays.length; i++) {
+    const duration = sessionDurations[i];
+    const gain = Math.floor(duration / 6);
+    sessionData.push({
+      userId: demoUser.id,
+      duration,
+      initialCalmness,
+      finalCalmness: Math.min(100, initialCalmness + gain),
+      completedAt: daysAgo(breathingDays[i], 13, (i * 11) % 60),
+    });
+    initialCalmness = Math.min(58, initialCalmness + 1);
+  }
+
+  await prisma.practiceCompletion.createMany({ data: completionData });
+  await prisma.breathingSession.createMany({ data: sessionData });
+
+  await prisma.creatureState.create({
+    data: {
+      userId: demoUser.id,
+      calmness: 64,
+      energy: 85,
+      level: 8,
+      experience: 700,
+      streak: 21,
+      lastCheckInAt: daysAgo(1, 9),
+      lastExerciseAt: daysAgo(2, 13),
+      activeSkin: "calm_skin",
+      unlockedSkins: ["default", "calm_skin", "ember_skin"],
+      activeTitle: "serenity_keeper",
+      unlockedTitles: ["serenity_keeper", "spark"],
+      petType: "ember",
+      unlockedPetTypes: ["puff", "ember"],
+    },
   });
 
   await prisma.testResult.createMany({
@@ -676,7 +875,7 @@ async function seed() {
         score: 26,
         interpretation: "Повышенный уровень напряжения",
         recommendation: "Попробуйте техники самопомощи.",
-        completedAt: new Date(now.getTime() - 12 * DAY),
+        completedAt: daysAgo(12),
       },
       {
         testId: moodTest.id,
@@ -685,7 +884,7 @@ async function seed() {
         interpretation: "Повышенный уровень напряжения",
         recommendation:
           "Практикуйте технику тройной колонки: запишите беспокойную мысль, назовите искажение, сформулируйте рациональный ответ. Дыхательные упражнения помогут в моменте.",
-        completedAt: new Date(now.getTime() - 7 * DAY),
+        completedAt: daysAgo(7),
       },
       {
         testId: moodTest.id,
@@ -693,7 +892,7 @@ async function seed() {
         score: 18,
         interpretation: "Небольшое напряжение",
         recommendation: "Продолжайте практики самопомощи.",
-        completedAt: new Date(now.getTime() - 2 * DAY),
+        completedAt: daysAgo(2),
       },
 
       {
@@ -702,7 +901,7 @@ async function seed() {
         score: 36,
         interpretation: "Значительный спад настроения",
         recommendation: "Рекомендуется профессиональная поддержка.",
-        completedAt: new Date(now.getTime() - 13 * DAY),
+        completedAt: daysAgo(13),
       },
       {
         testId: wellbeingTest.id,
@@ -710,7 +909,7 @@ async function seed() {
         score: 32,
         interpretation: "Значительный спад настроения",
         recommendation: "Рекомендуется профессиональная поддержка.",
-        completedAt: new Date(now.getTime() - 8 * DAY),
+        completedAt: daysAgo(8),
       },
       {
         testId: wellbeingTest.id,
@@ -719,7 +918,7 @@ async function seed() {
         interpretation: "Заметный спад настроения",
         recommendation:
           "Используйте технику тройной колонки и метод двойного стандарта: сказали бы вы это другу? При сохранении — обратитесь за поддержкой.",
-        completedAt: new Date(now.getTime() - 3 * DAY),
+        completedAt: daysAgo(3),
       },
 
       {
@@ -746,19 +945,19 @@ async function seed() {
           templateKey: "severe",
           recommendationKey: "severe",
         },
-        completedAt: new Date(now.getTime() - 14 * DAY),
+        completedAt: daysAgo(14),
       },
       {
         testId: cd.id,
         userId: demoUser.id,
-        score: 45,
+        score: 50,
         interpretation:
-          "Значительные искажения: «Всё или ничего», «Обесценивание хорошего», «Долженствование». Умеренные: «Сверхобобщение», «Мысленный фильтр», «Чтение мыслей», «Персонализация».",
+          "Значительные искажения: «Долженствование» и «Обесценивание хорошего». Наблюдается небольшая положительная динамика.",
         recommendation:
-          "Ваши результаты указывают на несколько сильно выраженных когнитивных искажений. КПТ может быть эффективна.",
+          "Продолжайте работать с дневником мыслей и техникой тройной колонки. Умеренный прогресс уже заметен.",
         flags: {
           distortions: {
-            allOrNothing: { score: 7, level: "high" },
+            allOrNothing: { score: 6, level: "high" },
             overgeneralization: { score: 4, level: "moderate" },
             mentalFilter: { score: 4, level: "moderate" },
             discountingPositive: { score: 7, level: "high" },
@@ -779,7 +978,40 @@ async function seed() {
             "personalization",
           ],
         },
-        completedAt: new Date(now.getTime() - 1 * DAY),
+        completedAt: daysAgo(5),
+      },
+      {
+        testId: cd.id,
+        userId: demoUser.id,
+        score: 45,
+        interpretation:
+          "Значительные искажения: «Всё или ничего», «Обесценивание хорошего», «Долженствование». Умеренные: «Сверхобобщение», «Мысленный фильтр», «Чтение мыслей», «Персонализация».",
+        recommendation:
+          "Ваши результаты указывают на несколько сильно выраженных когнитивных искажений. КПТ может быть эффективна.",
+        flags: {
+          distortions: {
+            allOrNothing: { score: 5, level: "high" },
+            overgeneralization: { score: 3, level: "moderate" },
+            mentalFilter: { score: 3, level: "moderate" },
+            discountingPositive: { score: 6, level: "high" },
+            jumpingToConclusions: { score: 4, level: "moderate" },
+            magnification: { score: 2, level: "low" },
+            emotionalReasoning: { score: 1, level: "low" },
+            shouldStatements: { score: 8, level: "high" },
+            labeling: { score: 1, level: "low" },
+            personalization: { score: 4, level: "moderate" },
+          },
+          templateKey: "severe",
+          recommendationKey: "severe",
+          highKeys: ["allOrNothing", "discountingPositive", "shouldStatements"],
+          moderateKeys: [
+            "overgeneralization",
+            "mentalFilter",
+            "jumpingToConclusions",
+            "personalization",
+          ],
+        },
+        completedAt: daysAgo(1),
       },
     ],
   });
@@ -922,6 +1154,196 @@ async function seed() {
       { itemType: "disadvantage", itemText: "Мешает отношениям с близкими" },
       { itemType: "disadvantage", itemText: "Усиливает тревогу вместо того, чтобы её снизить" },
       { itemType: "disadvantage", itemText: "Не даёт двигаться к цели" },
+    ],
+  });
+
+  const allAchievements = await prisma.achievement.findMany();
+  const achievementByKey = new Map(allAchievements.map((a) => [a.key, a.id]));
+  const unlockedKeys: [string, number][] = [
+    ["first_checkin", 30],
+    ["streak_7", 22],
+    ["breathing_10", 15],
+    ["all_practices", 12],
+    ["xp_500", 10],
+    ["level_5", 8],
+    ["xp_1000", 5],
+    ["completions_100", 2],
+  ];
+  await prisma.userAchievement.createMany({
+    data: unlockedKeys
+      .filter(([key]) => achievementByKey.has(key))
+      .map(([key, days]) => ({
+        userId: demoUser.id,
+        achievementId: achievementByKey.get(key)!,
+        unlockedAt: daysAgo(days, 15),
+      })),
+  });
+
+  const cbaUserEntries: {
+    thoughtText: string;
+    prosWeight: number;
+    consWeight: number;
+    days: number;
+    advantages: string[];
+    disadvantages: string[];
+  }[] = [
+    {
+      thoughtText: "Если я не успею подготовиться к встрече, это будет катастрофа",
+      prosWeight: 30,
+      consWeight: 70,
+      days: 20,
+      advantages: ["Заставлю себя выложиться на полную", "Лучше быть готовым, чем расслабленным"],
+      disadvantages: [
+        "Преследую недостижимый идеал",
+        "Трачу силы на тревогу вместо работы",
+        "Одна ошибка не делает встречу провалом",
+        "Даже неидеальная подготовка лучше нулевой",
+      ],
+    },
+    {
+      thoughtText: "Я не справлюсь с новой задачей на проекте",
+      prosWeight: 20,
+      consWeight: 80,
+      days: 16,
+      advantages: ["Не буду разочарован, если не выйдет", "Меньше ответственности"],
+      disadvantages: [
+        "Не даю себе шанс попробовать",
+        "Остаюсь в зоне комфорта и не расту",
+        "Упускаю возможность научиться",
+        "Уверенность не появится сама собой",
+      ],
+    },
+    {
+      thoughtText: "Коллеги заметят мою ошибку и будут плохо обо мне думать",
+      prosWeight: 35,
+      consWeight: 65,
+      days: 11,
+      advantages: ["Буду внимательнее", "Избегу смущения"],
+      disadvantages: [
+        "Все ошибаются, это нормально",
+        "Не могу читать мысли других",
+        "Скрывание ошибки только усугубляет её",
+        "Ошибка — повод исправить, а не стыдиться",
+      ],
+    },
+    {
+      thoughtText: "Мне нужно делать всё идеально, иначе это не считается",
+      prosWeight: 40,
+      consWeight: 60,
+      days: 7,
+      advantages: ["Кажется, что результат будет лучше"],
+      disadvantages: [
+        "Идеала не существует",
+        "Страх ошибки парализует",
+        "Замедляюсь из-за перфекционизма",
+        "Прогресс важнее совершенства",
+      ],
+    },
+    {
+      thoughtText: "Если я откажу другу, он обидится навсегда",
+      prosWeight: 25,
+      consWeight: 75,
+      days: 4,
+      advantages: ["Не хочу никого расстраивать"],
+      disadvantages: [
+        "У меня есть право на отказ",
+        "Дружба крепче одной просьбы",
+        "Отказ по делу уважают",
+        "Не могу угодить всем всегда",
+      ],
+    },
+    {
+      thoughtText: "Я пропустил тренировку — значит, я ленивый и не изменюсь",
+      prosWeight: 30,
+      consWeight: 70,
+      days: 1,
+      advantages: ["Строгость к себе мотивирует"],
+      disadvantages: [
+        "Один пропуск — не характеристика",
+        "Самокритика демотивирует",
+        "Завтра новый день для тренировки",
+        "Похвала прогрессу работает лучше ругани",
+      ],
+    },
+  ];
+
+  for (const e of cbaUserEntries) {
+    await prisma.cbaEntry.create({
+      data: {
+        userId: demoUser.id,
+        thoughtText: e.thoughtText,
+        prosWeight: e.prosWeight,
+        consWeight: e.consWeight,
+        createdAt: daysAgo(e.days, 16 + (e.days % 4)),
+        items: {
+          create: [
+            ...e.advantages.map((itemText) => ({ itemType: "advantage", itemText })),
+            ...e.disadvantages.map((itemText) => ({ itemType: "disadvantage", itemText })),
+          ],
+        },
+      },
+    });
+  }
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  await prisma.dailyMission.createMany({
+    data: [
+      {
+        userId: demoUser.id,
+        date: todayStart,
+        missionKey: "practice_breathing",
+        labelKey: "missions.practiceBreathing",
+        xpReward: 10,
+        claimed: true,
+        sortOrder: 0,
+      },
+      {
+        userId: demoUser.id,
+        date: todayStart,
+        missionKey: "practice_gratitude",
+        labelKey: "missions.practiceGratitude",
+        xpReward: 10,
+        claimed: false,
+        sortOrder: 1,
+      },
+      {
+        userId: demoUser.id,
+        date: todayStart,
+        missionKey: "complete_3_practices",
+        labelKey: "missions.complete3Practices",
+        xpReward: 15,
+        claimed: false,
+        sortOrder: 2,
+      },
+    ],
+  });
+
+  await prisma.userPreference.create({
+    data: {
+      userId: demoUser.id,
+      goals: ["stress", "anxiety"],
+      experienceLevel: "intermediate",
+      dailyReminder: true,
+      reminderTime: "21:30",
+      onboardingDone: true,
+      showSupportResources: true,
+    },
+  });
+
+  await prisma.feedback.createMany({
+    data: [
+      {
+        userId: demoUser.id,
+        message:
+          "Приложение очень помогает следить за настроением. Больше всего нравится дыхательная практика!",
+        createdAt: daysAgo(10, 12),
+      },
+      {
+        userId: demoUser.id,
+        message: "Хотелось бы больше разнообразия в ежедневных миссиях.",
+        createdAt: daysAgo(3, 18),
+      },
     ],
   });
 

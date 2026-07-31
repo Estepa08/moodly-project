@@ -4,6 +4,40 @@
  */
 
 export interface paths {
+    "/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Список всех пользователей (только для администратора) */
+        get: operations["AdminUsers_listUsers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Удалить пользователя вместе со всеми данными (только для администратора) */
+        delete: operations["AdminUsers_deleteUser"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/forgot-password": {
         parameters: {
             query?: never;
@@ -235,6 +269,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/creature/pet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Активировать питомца и/или задать имя */
+        patch: operations["Creature_setPet"];
+        trace?: never;
+    };
+    "/creature/pets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Получить коллекцию питомцев пользователя */
+        get: operations["Creature_getPets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/creature/reward": {
         parameters: {
             query?: never;
@@ -365,6 +433,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Reports_list"];
+        put?: never;
+        post: operations["Reports_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Reports_get"];
+        put?: never;
+        post?: never;
+        delete: operations["Reports_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reports/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Reports_download"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/test-results": {
         parameters: {
             query?: never;
@@ -481,6 +597,25 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Запись списка пользователей для админ-панели */
+        AdminUser: {
+            id: string;
+            email: string;
+            name?: string;
+            role: string;
+            /** Format: date-time */
+            createdAt: string;
+            emailVerified: boolean;
+            ageConfirmed: boolean;
+            /** Format: int32 */
+            entriesCount: number;
+            /** Format: int32 */
+            testResultsCount: number;
+            /** Format: int32 */
+            breathingSessionsCount: number;
+            /** Format: int32 */
+            cbaEntriesCount: number;
+        };
         AuthResponse: {
             accessToken: string;
             user: components["schemas"]["User"];
@@ -626,6 +761,20 @@ export interface components {
              * @description Дата последнего дыхательного упражнения
              */
             lastExerciseAt?: string;
+            /** @description Текущий выбранный тип питомца */
+            petType?: string;
+            /** @description Открытые типы питомцев */
+            unlockedPetTypes?: string[];
+            /** @description Имя питомца, заданное пользователем */
+            petName?: string;
+            /** @description Активный титул */
+            activeTitle?: string;
+            /** @description Открытые титулы */
+            unlockedTitles?: string[];
+            /** @description Активный скин */
+            activeSkin?: string;
+            /** @description Открытые скины */
+            unlockedSkins?: string[];
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -686,6 +835,19 @@ export interface components {
             description?: string;
             unit?: string;
         };
+        /** @description Коллекция питомцев пользователя */
+        PetCollection: {
+            unlockedPetTypes: string[];
+            activePetType: string;
+            petName: string;
+        };
+        /** @description Тело обновления питомца */
+        PetUpdateRequest: {
+            /** @description Тип питомца для активации */
+            petType?: string;
+            /** @description Новое имя питомца (пустая строка очищает) */
+            petName?: string;
+        };
         /** @description Запись о выполненной практике и полученном опыте */
         PracticeCompletion: {
             source: string;
@@ -697,6 +859,34 @@ export interface components {
         RefreshResponse: {
             accessToken: string;
         };
+        /** @description Отчёт для выгрузки статистики врачу (PDF/CSV), без участия врача в самом приложении */
+        Report: {
+            id: string;
+            userId: string;
+            format: components["schemas"]["ReportFormat"];
+            status: components["schemas"]["ReportStatus"];
+            /** Format: date-time */
+            periodFrom: string;
+            /** Format: date-time */
+            periodTo: string;
+            /** Format: date-time */
+            createdAt: string;
+            downloadUrl?: string;
+        };
+        ReportCreate: {
+            format: components["schemas"]["ReportFormat"];
+            /** Format: date-time */
+            periodFrom: string;
+            /** Format: date-time */
+            periodTo: string;
+        };
+        /** @enum {string} */
+        ReportFormat: "pdf" | "csv";
+        /**
+         * @description Статус генерации отчёта
+         * @enum {string}
+         */
+        ReportStatus: "pending" | "ready" | "failed";
         ResetPasswordRequest: {
             token: string;
             password: string;
@@ -773,6 +963,7 @@ export interface components {
             id: string;
             email: string;
             name?: string;
+            role: string;
             /** Format: date-time */
             createdAt: string;
         };
@@ -826,6 +1017,46 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AdminUsers_listUsers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUser"][];
+                };
+            };
+        };
+    };
+    AdminUsers_deleteUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     Auth_forgotPassword: {
         parameters: {
             query?: never;
@@ -1148,6 +1379,50 @@ export interface operations {
             };
         };
     };
+    Creature_setPet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetUpdateRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetCollection"];
+                };
+            };
+        };
+    };
+    Creature_getPets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetCollection"];
+                };
+            };
+        };
+    };
     Creature_reward: {
         parameters: {
             query?: never;
@@ -1388,6 +1663,114 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Parameter"][];
+                };
+            };
+        };
+    };
+    Reports_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Report"][];
+                };
+            };
+        };
+    };
+    Reports_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportCreate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Report"];
+                };
+            };
+        };
+    };
+    Reports_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Report"];
+                };
+            };
+        };
+    };
+    Reports_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Reports_download: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
                 };
             };
         };

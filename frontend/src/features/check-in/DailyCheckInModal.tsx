@@ -1,8 +1,11 @@
 import { useTranslation } from "react-i18next";
-import { Sun, Flame, Sparkles, Zap } from "lucide-react";
+import { Flame, Zap, Sparkles } from "lucide-react";
 import { ModalShell } from "../../components/ui/modal-shell";
 import { ComponentSize } from "../../lib/constants";
 import { Button } from "../../components/ui/button";
+import PetAvatar from "../gamification/PetAvatar";
+import { usePets } from "../gamification";
+import { PET_DEFINITIONS } from "../gamification/pets";
 
 interface DailyCheckInModalProps {
   open: boolean;
@@ -20,6 +23,12 @@ export default function DailyCheckInModal({
   isPending,
 }: DailyCheckInModalProps) {
   const { t } = useTranslation();
+  const { data: pets } = usePets();
+
+  const petType = pets?.activePetType ?? "puff";
+  const petName =
+    pets?.petName?.trim() ||
+    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
 
   const hour = new Date().getHours();
   const greetingKey =
@@ -35,36 +44,50 @@ export default function DailyCheckInModal({
       onOpenChange={(next) => {
         if (!next) onDismiss();
       }}
-      icon={Sun}
+      icon={Sparkles}
       iconSize={ComponentSize.Md}
       iconBg="bg-accent/10"
       iconColor="text-accent"
       title={t(greetingKey)}
-      description={t("dailyCheckIn.body")}
+      description={t("dailyCheckIn.petGreeting", { name: petName })}
     >
+      <div className="flex justify-center">
+        <PetAvatar petType={petType} size="lg" interactive ariaLabel={petName} />
+      </div>
+
       {streak > 0 && (
         <div className="flex items-center justify-center gap-2 py-3 rounded-xl bg-muted/50">
           <Flame aria-hidden="true" className="w-5 h-5 text-accent" />
           <span className="text-sm font-semibold text-foreground">
-            {t("dailyCheckIn.streak", { count: streak })}
+            {t("dailyCheckIn.streakDays", { count: streak })}
           </span>
         </div>
       )}
 
-      <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1">
-          <Sparkles aria-hidden="true" className="w-3 h-3" />
-          <span>{t("dailyCheckIn.expGained")}</span>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col items-center justify-center gap-0.5 py-2.5 rounded-xl bg-accent/10">
+          <span className="text-sm font-bold text-accent">{t("dailyCheckIn.expGained")}</span>
+          <span className="text-[11px] text-muted-foreground">{t("dailyCheckIn.expSub")}</span>
         </div>
-        <div className="flex items-center gap-1">
-          <Zap aria-hidden="true" className="w-3 h-3" />
-          <span>{t("dailyCheckIn.energyRestored")}</span>
+        <div className="flex flex-col items-center justify-center gap-0.5 py-2.5 rounded-xl bg-primary/10">
+          <span className="flex items-center gap-1 text-sm font-bold text-primary">
+            <Zap aria-hidden="true" className="w-3.5 h-3.5" />
+            {t("dailyCheckIn.energyRestored")}
+          </span>
+          <span className="text-[11px] text-muted-foreground">{t("dailyCheckIn.energySub")}</span>
         </div>
       </div>
 
       <Button variant="default" className="w-full" onClick={onCheckIn} disabled={isPending}>
         {isPending ? t("dailyCheckIn.checkingIn") : t("dailyCheckIn.button")}
       </Button>
+      <button
+        type="button"
+        onClick={onDismiss}
+        className="w-full text-center text-xs text-muted-foreground py-1 rounded-lg transition-[color] duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {t("dailyCheckIn.remindLater")}
+      </button>
     </ModalShell>
   );
 }

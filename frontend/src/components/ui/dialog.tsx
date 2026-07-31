@@ -2,6 +2,7 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { IconButton } from "./icon-button";
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -42,10 +43,17 @@ const DialogContent = React.forwardRef<
     >
       {children}
       {!hideClose && (
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-lg opacity-70 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer">
-          <X aria-hidden="true" className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
+        <IconButton
+          asChild
+          size="icon-sm"
+          variant="ghost"
+          label="Close"
+          className="absolute right-3 top-3 text-muted-foreground"
+        >
+          <DialogPrimitive.Close>
+            <X aria-hidden="true" className="h-4 w-4" />
+          </DialogPrimitive.Close>
+        </IconButton>
       )}
     </DialogPrimitive.Content>
   </DialogPortal>

@@ -17,14 +17,14 @@
     "date": "Дата"
   },
   "nav": {
-    "dashboard": "Дашборд",
+    "dashboard": "Статистика",
     "practices": "Практики",
     "breathing": "Дыхание",
     "gratitude": "Благодарность",
     "distortions": "Искажения",
     "sleepHygiene": "Сон",
     "cba": "Сравнение",
-    "thoughtJournal": "Дневник",
+    "thoughtJournal": "Дневник мыслей",
     "tests": "Тесты",
     "results": "Результаты",
     "feedback": "Обратная связь",
@@ -33,7 +33,8 @@
     "onboarding": "Знакомство",
     "privacy": "Конфиденциальность",
     "terms": "Условия использования",
-    "more": "Ещё"
+    "more": "Ещё",
+    "admin": "Админ"
   },
   "login": {
     "title": "Moodly",
@@ -88,11 +89,17 @@
     "emailNotVerified": "Пожалуйста, подтвердите email перед входом. Проверьте почту — мы отправили ссылку."
   },
   "dashboard": {
-    "title": "Дашборд",
+    "title": "Статистика",
+    "pendingEntry": {
+      "title": "Сегодня ещё не заполнили самочувствие",
+      "subtitle": "Нажмите, чтобы записать настроение, энергию, сон и тревогу",
+      "cta": "Заполнить",
+      "collapse": "Свернуть"
+    },
     "quickEntry": {
       "title": "Быстрая запись",
       "subtitle": "Как вы себя чувствуете прямо сейчас?",
-      "firstTimeHint": "Нажмите на иконку, затем выберите уровень ползунком",
+      "firstTimeHint": "Нажмите на иконку, затем выберите уровень",
       "paramMood": "Настроение",
       "paramAnxiety": "Тревога",
       "paramSleep": "Сон",
@@ -131,6 +138,7 @@
     "gratitudeSave": "Добавить",
     "gratitudeSaved": "Добавлено в дневник благодарности",
     "gratitudeEmpty": "Записей пока нет — напишите что-то небольшое, за что вы благодарны.",
+    "gratitudeEmptyPet": "{{name}} ждёт: начните с одного повода — маленький шаг тоже считается.",
     "gratitudeEmptyNote": "Пожалуйста, напишите что-нибудь перед сохранением",
     "gratitudePageSubtitle": "Небольшая регулярная привычка замечать хорошее.",
     "gratitudeHistoryTitle": "Благодарности за неделю",
@@ -146,7 +154,6 @@
     "gratitudeHideChart": "Скрыть график",
     "sleepHygiene": "Гигиена сна",
     "distortionQuiz": "Квиз искажений",
-    "thoughtJournalMood": "Настроение дневника мыслей",
     "practicesSummary": "Практики",
     "allPractices": "Все практики",
     "gratitudePrompt": "За что вы сегодня благодарны?",
@@ -157,6 +164,8 @@
     "thisWeekGratitude_many": "{{count}} записей на этой неделе",
     "showCorrelation": "Показать связь",
     "hideCorrelation": "Скрыть связь",
+    "showAllGratitude": "Показать все ({{count}})",
+    "hideAllGratitude": "Скрыть",
     "practicesLoading": "Загрузка...",
     "practicesBreathing": "Дыхание",
     "practicesGratitude": "Благодарность",
@@ -168,7 +177,8 @@
     "practicesEntriesCount": "{{count}} запись",
     "practicesEntriesCount_few": "{{count}} записи",
     "practicesEntriesCount_many": "{{count}} записей",
-    "wellbeing": "Самочувствие"
+    "wellbeing": "Самочувствие",
+    "testsTaken": "Пройдено тестов"
   },
   "gratitudePrompts": {
     "person": "Человек",
@@ -228,6 +238,8 @@
   "testResults": {
     "title": "Результаты тестов",
     "noResults": "Результатов пока нет — пройдите первый тест, когда будете готовы.",
+    "noResultsPet": "{{name}} рядом: пройдите первый тест — питомец подскажет, что это значит.",
+    "defaultPetName": "Питомец",
     "takeTest": "Пройти тест",
     "showFull": "Показать полностью",
     "showLess": "Свернуть",
@@ -241,7 +253,17 @@
     "nextTrack": "Записать самочувствие",
     "nextTests": "Пройти другой тест",
     "nextDistortions": "Узнать про образы мышления",
-    "supportResources": "Ресурсы поддержки"
+    "supportResources": "Ресурсы поддержки",
+    "thinkingPatternsTitle": "Профиль мышления",
+    "thinkingPatternsCompare": "Сравнение с предыдущим прохождением",
+    "thinkingPatternsBetter": "↓ лучше",
+    "thinkingPatternsWorse": "↑ хуже",
+    "thinkingPatternsSame": "— без изменений",
+    "thinkingPatternsLast": "Последний тест · {{date}}",
+    "thinkingPatternsPrevious": "Предыдущий тест · {{date}}",
+    "thinkingPatternsSingle": "Пройдите тест ещё раз, чтобы увидеть динамику.",
+    "thinkingPatternsLibraryHint": "Каждое название — ссылка в Библиотеку искажений",
+    "thinkingPatternsOpenLibrary": "{{name}}: открыть в библиотеке искажений"
   },
   "feedback": {
     "title": "Обратная связь",
@@ -499,23 +521,66 @@
     "categoryBody": "Тело",
     "categoryMind": "Разум"
   },
+  "trendPreview": {
+    "title": "Динамика",
+    "show": "График",
+    "hide": "Скрыть",
+    "days": "{{active}} из {{total}} дней"
+  },
   "thoughtJournal": {
     "title": "Дневник мыслей",
-    "subtitle": "Как вы сейчас себя чувствуете? — выберите настроение, при желании добавьте заметку.",
-    "moodPrompt": "Как вы?",
-    "notePlaceholder": "Что случилось? (необязательно)",
-    "save": "Сохранить",
+    "subtitle": "Разберите автоматическую мысль: что случилось, о чём вы подумали и что почувствовали.",
+    "lblSituation": "Что произошло?",
+    "situationPlaceholder": "Опишите ситуацию коротко…",
+    "lblThought": "Какая мысль пришла в голову?",
+    "thoughtPlaceholder": "Запишите мысль дословно…",
+    "lblFeel": "Как вы себя чувствуете?",
+    "lblAlternative": "Альтернативная мысль",
+    "alternativeOptional": "по желанию",
+    "alternativePlaceholder": "Что можно подумать иначе?…",
+    "save": "Сохранить · +5 XP",
+    "saveHint": "Награда за ежедневную практику",
     "saved": "Сохранено! +5 XP",
     "streak": "{{count}} день подряд",
-    "alreadySaved": "Вы уже отмечались сегодня. Возвращайтесь завтра!",
-    "noteLabel": "Заметка (необязательно)",
     "historyTitle": "История",
-    "noEntries": "Записей пока нет. Ваш первый чек-ин появится здесь.",
-    "noNote": "Нет заметки",
+    "noEntries": "Записей пока нет. Ваша первая запись появится здесь.",
+    "noNote": "Нет текста",
     "chartTitle": "Тренд настроения",
-    "emptyChart": "Отмечайтесь несколько дней, чтобы увидеть тренд",
+    "emptyChart": "Записывайтесь несколько дней, чтобы увидеть тренд",
+    "showAll": "Показать все ({{count}})",
+    "hideAll": "Скрыть",
     "today": "Сегодня",
     "yesterday": "Вчера"
+  },
+  "rating": {
+    "mood": {
+      "0": "Ужасно",
+      "25": "Плохо",
+      "5": "Нормально",
+      "75": "Хорошо",
+      "10": "Отлично"
+    },
+    "sleep": {
+      "0": "Без сна",
+      "25": "Плохо спал",
+      "5": "Нормально",
+      "75": "Хорошо",
+      "10": "Выспался"
+    },
+    "energy": {
+      "0": "Нет сил",
+      "25": "Мало сил",
+      "5": "Нормально",
+      "75": "Бодро",
+      "10": "Полный заряд"
+    },
+    "anxiety": {
+      "0": "Спокойно",
+      "25": "Лёгкая",
+      "5": "Умеренная",
+      "75": "Сильная",
+      "10": "Паника"
+    }
   },
   "sleepHygiene": {
     "title": "Гигиена сна",
@@ -550,23 +615,30 @@
     }
   },
   "lowMood": {
-    "title": "Мы рядом",
-    "body": "Мы заметили, что последние дни даются вам непросто. Не забывайте заботиться о себе — возможно, сейчас поможет дыхательное упражнение или короткий тест.",
-    "dismiss": "Позабочусь о себе",
-    "actionBreathing": "Дыхательное упражнение",
-    "actionTest": "Пройти тест"
+    "title": "Последние дни были непростыми",
+    "body": "{{name}} рядом. Не нужно ничего исправлять прямо сейчас.",
+    "dismiss": "Не хочу пока",
+    "actionBreathing": "Подышать вместе",
+    "actionBreathingSub": "2 минуты · без регистрации",
+    "actionRecord": "Записать, как сейчас"
   },
   "dailyCheckIn": {
     "greetingMorning": "Доброе утро",
     "greetingAfternoon": "Добрый день",
     "greetingEvening": "Добрый вечер",
     "body": "Уделите минутку, чтобы отметить своё состояние сегодня.",
+    "petGreeting": "{{name}} рад вас видеть",
     "button": "Отметиться",
     "checkingIn": "Отмечаюсь...",
     "streak": "{{count}} день подряд",
     "streak_plural": "{{count}} дней подряд",
+    "streakDays": "{{count}} день подряд",
+    "streakDays_plural": "{{count}} дней подряд",
     "expGained": "+20 XP",
-    "energyRestored": "Энергия восстановлена",
+    "expSub": "за чек-ин",
+    "energyRestored": "Энергия +100",
+    "energySub": "питомец заряжен",
+    "remindLater": "Напомнить позже",
     "levelUpTitle": "Новый уровень!",
     "levelUpBody": "Существо выросло до {{level}} уровня!"
   },
@@ -590,6 +662,12 @@
     "expAdvanced": "Продвинутый — регулярно практикую",
     "reminderTitle": "Ежедневное напоминание?",
     "reminderDesc": "Мы будем мягко напоминать проверять состояние каждый день.",
+    "petTitle": "Знакомьтесь — ваш питомец",
+    "petDesc": "Вылупился только что! Дайте ему имя и выберите, кто будет рядом.",
+    "petNameLabel": "Как зовут питомца?",
+    "petNamePlaceholder": "Например, Пуффи",
+    "petChooseTitle": "Выберите первого питомца",
+    "petMoreHint": "Ещё 3 питомца откроются за достижения — следите за прогрессом.",
     "actionTitle": "Готовы начать",
     "actionDesc": "Выберите первый шаг:"
   },
@@ -609,20 +687,6 @@
     "testTitle": "Пройдите тест",
     "testDesc": "Прошло 2+ недели с последнего теста.",
     "testAction": "Пройти тест"
-  },
-  "digest": {
-    "title": "Недельный дайджест",
-    "noData": "Недостаточно данных за эту неделю.",
-    "overviewTitle": "Обзор",
-    "totalEntries": "Записей",
-    "checkInDays": "Дней отметок",
-    "xpGained": "XP получено",
-    "creatureLevel": "Уровень питомца",
-    "averagesTitle": "Средние значения",
-    "practicesTitle": "Выполнено практик",
-    "testsTitle": "Пройдено тестов",
-    "averagesChartTitle": "Средние значения",
-    "practicesChartTitle": "Выполнено практик"
   },
   "privacy": {
     "title": "Политика обработки персональных данных",
@@ -776,5 +840,41 @@
     "comet": "Комета",
     "aurora": "Аврора",
     "active": "Активен"
+  },
+  "companion": {
+    "level": "Уровень {{level}}",
+    "xpToLevel": "XP до {{level}} уровня",
+    "energy": "Энергия {{value}}",
+    "calmness": "Спокойствие {{value}}",
+    "toCollection": "К коллекции питомцев"
+  },
+  "admin": {
+    "title": "Администрирование",
+    "subtitle": "Список зарегистрированных пользователей",
+    "total": "Всего",
+    "user": "Пользователь",
+    "role": "Роль",
+    "roleUser": "user",
+    "roleAdmin": "админ",
+    "registered": "Регистрация",
+    "emailVerified": "Email подтверждён",
+    "yes": "да",
+    "no": "нет",
+    "activity": "Активность",
+    "entriesCount": "записей",
+    "testsCount": "тестов",
+    "delete": "Удалить",
+    "deleteWarning": "Удаление необратимо: будут стёрты все данные пользователя (каскадно).",
+    "deleteConfirmTitle": "Удалить пользователя?",
+    "deleteConfirmDesc": "Данные {{email}} будут удалены без возможности восстановления.",
+    "confirmEmailLabel": "Введите email для подтверждения",
+    "deleteButton": "Удалить",
+    "cancel": "Отмена",
+    "emailMismatch": "Email не совпадает. Кнопка «Удалить» станет активной после верного ввода.",
+    "deleteFailed": "Не удалось удалить пользователя",
+    "loadFailed": "Не удалось загрузить список пользователей",
+    "empty": "Пока нет зарегистрированных пользователей",
+    "forbidden": "Доступ только для администратора",
+    "deleting": "Удаление..."
   }
 }

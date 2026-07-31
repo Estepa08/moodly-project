@@ -17,7 +17,7 @@
     "date": "Date"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Statistics",
     "practices": "Practices",
     "breathing": "Breathing",
     "gratitude": "Gratitude",
@@ -33,7 +33,8 @@
     "onboarding": "Getting Started",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "more": "More"
+    "more": "More",
+    "admin": "Admin"
   },
   "login": {
     "title": "Moodly",
@@ -88,11 +89,17 @@
     "emailNotVerified": "Please verify your email before logging in. Check your inbox for the verification link."
   },
   "dashboard": {
-    "title": "Dashboard",
+    "title": "Statistics",
+    "pendingEntry": {
+      "title": "Today's check-in pending",
+      "subtitle": "Tap to record your mood, energy, sleep, and anxiety",
+      "cta": "Fill in",
+      "collapse": "Collapse"
+    },
     "quickEntry": {
       "title": "Quick Entry",
       "subtitle": "How are you feeling right now?",
-      "firstTimeHint": "Tap an icon, then set today's level with the slider",
+      "firstTimeHint": "Tap an icon, then pick a level",
       "paramMood": "Mood",
       "paramAnxiety": "Anxiety",
       "paramSleep": "Sleep",
@@ -131,6 +138,7 @@
     "gratitudeSave": "Add",
     "gratitudeSaved": "Added to your gratitude journal",
     "gratitudeEmpty": "No entries yet — write down something small you're grateful for.",
+    "gratitudeEmptyPet": "{{name}} is waiting: start with one thing — small steps count too.",
     "gratitudeEmptyNote": "Please write something before saving",
     "gratitudePageSubtitle": "A small, regular habit of noticing what's good.",
     "gratitudeHistoryTitle": "This week's gratitude",
@@ -145,7 +153,6 @@
     "gratitudeHideChart": "Hide chart",
     "sleepHygiene": "Sleep Hygiene",
     "distortionQuiz": "Distortion Quiz",
-    "thoughtJournalMood": "Thought Journal Mood",
     "practicesSummary": "Practices",
     "allPractices": "All practices",
     "gratitudePrompt": "What are you grateful for today?",
@@ -155,6 +162,8 @@
     "thisWeekGratitude_other": "{{count}} entries this week",
     "showCorrelation": "Show correlation",
     "hideCorrelation": "Hide correlation",
+    "showAllGratitude": "Show all ({{count}})",
+    "hideAllGratitude": "Hide",
     "practicesLoading": "Loading...",
     "practicesBreathing": "Breathing",
     "practicesGratitude": "Gratitude",
@@ -164,7 +173,8 @@
     "practicesSessionsCount_other": "{{count}} sessions",
     "practicesEntriesCount": "{{count}} entry",
     "practicesEntriesCount_other": "{{count}} entries",
-    "wellbeing": "Wellbeing"
+    "wellbeing": "Wellbeing",
+    "testsTaken": "Tests Taken"
   },
   "gratitudePrompts": {
     "person": "Someone",
@@ -224,6 +234,8 @@
   "testResults": {
     "title": "Test Results",
     "noResults": "No results yet — take your first test when you feel ready.",
+    "noResultsPet": "{{name}} is here: take your first test and your pet will help you understand it.",
+    "defaultPetName": "Pet",
     "takeTest": "Take a test",
     "showFull": "Show full",
     "showLess": "Show less",
@@ -237,7 +249,17 @@
     "nextTrack": "Track your mood",
     "nextTests": "Take another test",
     "nextDistortions": "Learn about thinking patterns",
-    "supportResources": "Support resources"
+    "supportResources": "Support resources",
+    "thinkingPatternsTitle": "Thinking Patterns",
+    "thinkingPatternsCompare": "Compared with the previous attempt",
+    "thinkingPatternsBetter": "↓ better",
+    "thinkingPatternsWorse": "↑ worse",
+    "thinkingPatternsSame": "— unchanged",
+    "thinkingPatternsLast": "Latest test · {{date}}",
+    "thinkingPatternsPrevious": "Previous test · {{date}}",
+    "thinkingPatternsSingle": "Take the test again to see the trend.",
+    "thinkingPatternsLibraryHint": "Each label opens the Distortions Library",
+    "thinkingPatternsOpenLibrary": "{{name}}: open in distortions library"
   },
   "feedback": {
     "title": "Feedback",
@@ -495,23 +517,66 @@
     "categoryBody": "Body",
     "categoryMind": "Mind"
   },
+  "trendPreview": {
+    "title": "Trend",
+    "show": "Chart",
+    "hide": "Hide",
+    "days": "{{active}} of {{total}} days"
+  },
   "thoughtJournal": {
     "title": "Thought Journal",
-    "subtitle": "How are you feeling right now? — tap a mood, add a note if you like.",
-    "moodPrompt": "How are you?",
-    "notePlaceholder": "What happened? (optional)",
-    "save": "Save",
+    "subtitle": "Break down an automatic thought: what happened, what you thought, and how you felt.",
+    "lblSituation": "What happened?",
+    "situationPlaceholder": "Describe the situation briefly…",
+    "lblThought": "What thought crossed your mind?",
+    "thoughtPlaceholder": "Write the thought down word for word…",
+    "lblFeel": "How do you feel?",
+    "lblAlternative": "Alternative thought",
+    "alternativeOptional": "optional",
+    "alternativePlaceholder": "What could you think instead?…",
+    "save": "Save · +5 XP",
+    "saveHint": "Reward for daily practice",
     "saved": "Saved! +5 XP",
     "streak": "{{count}} day streak",
-    "alreadySaved": "You've already checked in today. Come back tomorrow!",
-    "noteLabel": "Note (optional)",
     "historyTitle": "History",
-    "noEntries": "No entries yet. Your first check-in will appear here.",
-    "noNote": "No note",
+    "noEntries": "No entries yet. Your first entry will appear here.",
+    "noNote": "No text",
     "chartTitle": "Mood Trend",
     "emptyChart": "Check in a few times to see your mood trend",
+    "showAll": "Show all ({{count}})",
+    "hideAll": "Hide",
     "today": "Today",
     "yesterday": "Yesterday"
+  },
+  "rating": {
+    "mood": {
+      "0": "Awful",
+      "25": "Bad",
+      "5": "Okay",
+      "75": "Good",
+      "10": "Great"
+    },
+    "sleep": {
+      "0": "No sleep",
+      "25": "Poor sleep",
+      "5": "Okay",
+      "75": "Good",
+      "10": "Rested"
+    },
+    "energy": {
+      "0": "Drained",
+      "25": "Low",
+      "5": "Okay",
+      "75": "Energetic",
+      "10": "Charged"
+    },
+    "anxiety": {
+      "0": "Calm",
+      "25": "Mild",
+      "5": "Moderate",
+      "75": "High",
+      "10": "Panic"
+    }
   },
   "sleepHygiene": {
     "title": "Sleep Hygiene",
@@ -546,23 +611,30 @@
     }
   },
   "lowMood": {
-    "title": "We're here for you",
-    "body": "We've noticed the last few days have been tough. Remember to take care of yourself — a breathing exercise or a quick check-in might help.",
-    "dismiss": "I'll take care",
-    "actionBreathing": "Try breathing exercise",
-    "actionTest": "Take a test"
+    "title": "The last few days have been tough",
+    "body": "{{name}} is here with you. There's nothing to fix right now.",
+    "dismiss": "Not right now",
+    "actionBreathing": "Breathe together",
+    "actionBreathingSub": "2 minutes · no setup",
+    "actionRecord": "Check in with yourself"
   },
   "dailyCheckIn": {
     "greetingMorning": "Good morning",
     "greetingAfternoon": "Good afternoon",
     "greetingEvening": "Good evening",
     "body": "Take a moment to check in with yourself today.",
+    "petGreeting": "{{name}} is happy to see you",
     "button": "Check in",
     "checkingIn": "Checking in...",
     "streak": "{{count}} day streak",
     "streak_plural": "{{count}} day streak",
+    "streakDays": "{{count}} day streak",
+    "streakDays_plural": "{{count}} day streak",
     "expGained": "+20 XP",
-    "energyRestored": "Energy restored",
+    "expSub": "per check-in",
+    "energyRestored": "Energy +100",
+    "energySub": "pet is charged",
+    "remindLater": "Remind me later",
     "levelUpTitle": "Level Up!",
     "levelUpBody": "Your creature grew to level {{level}}!"
   },
@@ -586,6 +658,12 @@
     "expAdvanced": "Advanced — regular practitioner",
     "reminderTitle": "Daily reminder?",
     "reminderDesc": "Get a gentle nudge to check in each day.",
+    "petTitle": "Meet your companion",
+    "petDesc": "It just hatched! Give it a name and pick who'll be by your side.",
+    "petNameLabel": "What's your pet's name?",
+    "petNamePlaceholder": "e.g. Puff",
+    "petChooseTitle": "Choose your first pet",
+    "petMoreHint": "3 more pets unlock through achievements — watch your progress.",
     "actionTitle": "Ready to begin",
     "actionDesc": "Pick your first step:"
   },
@@ -605,20 +683,6 @@
     "testTitle": "Retake a test",
     "testDesc": "It's been 2+ weeks since your last test.",
     "testAction": "Take a test"
-  },
-  "digest": {
-    "title": "Weekly Digest",
-    "noData": "Not enough data for this week.",
-    "overviewTitle": "Overview",
-    "totalEntries": "Entries",
-    "checkInDays": "Check-in days",
-    "xpGained": "XP gained",
-    "creatureLevel": "Pet level",
-    "averagesTitle": "Average values",
-    "practicesTitle": "Practices completed",
-    "testsTitle": "Tests taken",
-    "averagesChartTitle": "Average Values",
-    "practicesChartTitle": "Practices Completed"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -772,5 +836,41 @@
     "comet": "Comet",
     "aurora": "Aurora",
     "active": "Active"
+  },
+  "companion": {
+    "level": "Level {{level}}",
+    "xpToLevel": "XP to level {{level}}",
+    "energy": "Energy {{value}}",
+    "calmness": "Calmness {{value}}",
+    "toCollection": "Pet collection"
+  },
+  "admin": {
+    "title": "Administration",
+    "subtitle": "Registered users",
+    "total": "Total",
+    "user": "User",
+    "role": "Role",
+    "roleUser": "user",
+    "roleAdmin": "admin",
+    "registered": "Registered",
+    "emailVerified": "Email verified",
+    "yes": "yes",
+    "no": "no",
+    "activity": "Activity",
+    "entriesCount": "entries",
+    "testsCount": "tests",
+    "delete": "Delete",
+    "deleteWarning": "Deletion is irreversible: all user data will be removed.",
+    "deleteConfirmTitle": "Delete user?",
+    "deleteConfirmDesc": "Data for {{email}} will be deleted permanently.",
+    "confirmEmailLabel": "Type the email to confirm",
+    "deleteButton": "Delete",
+    "cancel": "Cancel",
+    "emailMismatch": "Email does not match. The Delete button enables once it matches.",
+    "deleteFailed": "Failed to delete user",
+    "loadFailed": "Failed to load users",
+    "empty": "No registered users yet",
+    "forbidden": "Admins only",
+    "deleting": "Deleting..."
   }
 }

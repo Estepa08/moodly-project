@@ -13,22 +13,13 @@ import {
 import { SleepHygieneListState } from "../../lib/constants";
 import { ChecklistItem } from "../../components/ui/checklist-item";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import PeriodSelector from "../../components/ui/PeriodSelector";
 import EmptyState from "../../components/ui/empty-state";
 import { Button } from "../../components/ui/button";
-import { cn, formatDateShort, formatChartDate } from "../../lib/utils";
-import SleepHygieneChart from "./SleepHygieneChart";
-
-const SLEEP_PERIODS = [
-  { key: "7d", label: "7d" },
-  { key: "14d", label: "14d" },
-  { key: "30d", label: "30d" },
-] as const;
+import { cn, formatDateShort } from "../../lib/utils";
 
 interface SleepHygieneChecklistProps {
   parameterId: string | undefined;
   hygieneEntries: components["schemas"]["Entry"][];
-  sleepEntries: components["schemas"]["Entry"][];
   createEntry: CreateEntryMutation;
   updateEntry: UpdateEntryMutation;
 }
@@ -36,7 +27,6 @@ interface SleepHygieneChecklistProps {
 export default function SleepHygieneChecklist({
   parameterId,
   hygieneEntries,
-  sleepEntries,
   createEntry,
   updateEntry,
 }: SleepHygieneChecklistProps) {
@@ -49,7 +39,6 @@ export default function SleepHygieneChecklist({
   const [showDetails, setShowDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [expandedEntryId, setExpandedEntryId] = useState<string | null>(null);
-  const [sleepPeriod, setSleepPeriod] = useState<string>("7d");
   const isPending = createEntry.isPending || updateEntry.isPending;
 
   useEffect(() => {
@@ -113,33 +102,6 @@ export default function SleepHygieneChecklist({
       value: today.value,
     };
   }, [hygieneEntries, i18n.language]);
-
-  const sleepChartData = useMemo(() => {
-    const periodDays = parseInt(sleepPeriod.replace("d", ""));
-    const cutoff = Date.now() - periodDays * 24 * 60 * 60 * 1000;
-    const entriesList = sleepEntries.filter((e) => new Date(e.createdAt).getTime() >= cutoff);
-    const grouped = new Map<string, { habits: number[]; sleep: number[] }>();
-    for (const e of entriesList) {
-      const day = formatChartDate(new Date(e.createdAt), i18n.language, false);
-      if (!grouped.has(day)) grouped.set(day, { habits: [], sleep: [] });
-      const g = grouped.get(day)!;
-      g.sleep.push(e.value);
-    }
-    for (const h of hygieneEntries) {
-      const day = formatChartDate(new Date(h.createdAt), i18n.language, false);
-      const g = grouped.get(day);
-      if (g) g.habits.push(h.value);
-    }
-    return Array.from(grouped.entries()).map(([date, v]) => ({
-      date,
-      habits: v.habits.length > 0 ? v.habits.reduce((s, x) => s + x, 0) / v.habits.length : 0,
-      sleep: v.sleep.reduce((s, x) => s + x, 0) / v.sleep.length,
-      _values: {
-        habits: v.habits.length > 0 ? v.habits : undefined,
-        sleep: v.sleep.length > 1 ? v.sleep : undefined,
-      },
-    }));
-  }, [sleepEntries, hygieneEntries, i18n.language, sleepPeriod]);
 
   return (
     <div className="space-y-4">
@@ -206,16 +168,18 @@ export default function SleepHygieneChecklist({
         </CardContent>
       </Card>
 
-      <button
+      <Button
+        variant="link"
+        size="sm"
         onClick={() => setShowDetails(!showDetails)}
-        className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="w-full h-auto px-0 gap-1 text-muted-foreground hover:text-foreground"
       >
         {t(showDetails ? "sleepHygiene.hideHistory" : "sleepHygiene.showHistory")}
         <ChevronDown
           aria-hidden="true"
-          className={cn("w-4 h-4 transition-transform", showDetails && "rotate-180")}
+          className={cn("transition-transform", showDetails && "rotate-180")}
         />
-      </button>
+      </Button>
 
       {showDetails &&
         hygieneEntries
@@ -274,20 +238,6 @@ export default function SleepHygieneChecklist({
               </Card>
             );
           })}
-
-      {sleepChartData.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex justify-center">
-            <PeriodSelector
-              options={SLEEP_PERIODS.map((p) => ({ key: p.key, label: p.label }))}
-              value={sleepPeriod}
-              onChange={setSleepPeriod}
-              size="sm"
-            />
-          </div>
-          <SleepHygieneChart data={sleepChartData} />
-        </div>
-      )}
     </div>
   );
 }

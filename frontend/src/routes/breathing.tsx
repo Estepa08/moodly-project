@@ -5,6 +5,7 @@ import { celebrate } from "../features/gamification";
 import { BreathingGuide, BreathPhase, BreathingTechnique } from "../features/breathing";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
+import { Button } from "../components/ui/button";
 import { SegmentGroup, SegmentButton } from "../components/ui/segment-button";
 
 const BreathingCreature = lazy(() => import("../features/breathing/BreathingCreature"));
@@ -103,12 +104,9 @@ export default function BreathingPage() {
               </ol>
             </div>
             <div className="flex justify-center">
-              <button
-                className="px-8 py-3 bg-primary text-primary-foreground rounded-xl shadow-neumorphic font-medium cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => setPhase("countdown")}
-              >
+              <Button size="lg" onClick={() => setPhase("countdown")}>
                 {t("breathing.begin")}
-              </button>
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -143,15 +141,17 @@ export default function BreathingPage() {
                 `breathing.pattern${technique === BreathingTechnique.Box ? "Box" : technique === BreathingTechnique.Quick ? "Quick" : "478"}`,
               )}
             </p>
-            <button
-              className="text-xs text-muted-foreground underline cursor-pointer hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            <Button
+              variant="link"
+              size="sm"
+              className="h-auto px-0 text-xs text-muted-foreground"
               onClick={() => {
                 setCountdown(3);
                 setPhase("idle");
               }}
             >
               {t("breathing.cancel")}
-            </button>
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -230,18 +230,10 @@ export default function BreathingPage() {
             </p>
             <p className="text-sm text-foreground/80">{t("breathing.calmnessNow")}</p>
             <div className="flex justify-center gap-3">
-              <button
-                className="px-6 py-2 bg-primary text-primary-foreground rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => setPhase("countdown")}
-              >
-                {t("breathing.doAnother")}
-              </button>
-              <button
-                className="px-6 py-2 bg-card text-primary rounded-xl shadow-neumorphic-sm font-medium cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => setPhase("idle")}
-              >
+              <Button onClick={() => setPhase("countdown")}>{t("breathing.doAnother")}</Button>
+              <Button variant="outline" onClick={() => setPhase("idle")}>
                 {t("common.back")}
-              </button>
+              </Button>
             </div>
           </CardContent>
         </Card>

@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 860" font-family="system-ui, sans-serif">
+  <title>Админ-панель Moodly — макет</title>
+  <style>
+    .bg { fill: #f5f5f4; }
+    .card { fill: #ffffff; stroke: #e7e5e4; stroke-width: 1; }
+    .chip { fill: #f0f0ee; rx: 8; }
+    .text-dark { fill: #1c1917; font-size: 14px; font-weight: 600; }
+    .text-muted { fill: #a8a29e; font-size: 12px; }
+    .text-sm { fill: #57534e; font-size: 12px; }
+    .primary { fill: #6366f1; }
+    .primary-text { fill: #ffffff; font-size: 12px; font-weight: 600; }
+    .destructive { fill: #ef4444; }
+    .destructive-text { fill: #ffffff; font-size: 12px; font-weight: 600; }
+    .muted-btn { fill: #f0f0ee; stroke: #e7e5e4; stroke-width: 1; }
+    .badge-user { fill: #f0f0ee; rx: 6; }
+    .badge-admin { fill: #eef2ff; rx: 6; }
+    .badge-admin-text { fill: #4f46e5; font-size: 11px; font-weight: 600; }
+    .label { fill: #a8a29e; font-size: 11px; }
+  </style>
+
+  <!-- ===== Desktop: страница /admin ===== -->
+  <rect class="bg" x="0" y="0" width="1240" height="860"/>
+
+  <text x="60" y="56" font-family="Lora, serif" font-size="26" font-weight="700" fill="#1c1917">Администрирование</text>
+  <text x="60" y="80" class="label">Список зарегистрированных пользователей</text>
+
+  <rect class="chip" x="1010" y="34" width="170" height="30"/>
+  <text x="1095" y="53" class="text-sm" text-anchor="middle">Всего: 4</text>
+
+  <!-- Таблица -->
+  <rect class="card" x="40" y="100" width="1120" height="400" rx="16"/>
+
+  <!-- Header строки -->
+  <text x="64" y="140" class="label">Пользователь</text>
+  <text x="360" y="140" class="label">Роль</text>
+  <text x="470" y="140" class="label">Регистрация</text>
+  <text x="640" y="140" class="label">Email подтверждён</text>
+  <text x="810" y="140" class="label">Активность</text>
+
+  <line x1="40" y1="156" x2="1160" y2="156" stroke="#e7e5e4" stroke-width="1"/>
+
+  <!-- Строка 1 -->
+  <circle cx="80" cy="196" r="16" fill="#eef2ff"/>
+  <text x="80" y="201" class="badge-admin-text" text-anchor="middle">ЕС</text>
+  <text x="108" y="190" class="text-dark">Евгений Степанов</text>
+  <text x="108" y="208" class="text-muted">step@example.com</text>
+  <rect class="badge-admin" x="356" y="184" width="56" height="22"/>
+  <text x="384" y="199" class="badge-admin-text" text-anchor="middle">админ</text>
+  <text x="470" y="200" class="text-sm">12.05.2026</text>
+  <rect class="chip" x="640" y="188" width="52" height="20"/>
+  <text x="666" y="202" class="text-sm" text-anchor="middle">да</text>
+  <text x="810" y="200" class="text-sm">34 зап · 12 тест</text>
+
+  <line x1="40" y1="228" x2="1160" y2="228" stroke="#e7e5e4" stroke-width="1"/>
+
+  <!-- Строка 2 -->
+  <circle cx="80" cy="268" r="16" fill="#f0f0ee"/>
+  <text x="80" y="273" class="text-sm" text-anchor="middle">DM</text>
+  <text x="108" y="262" class="text-dark">Demo User</text>
+  <text x="108" y="280" class="text-muted">demo@moodly.app</text>
+  <rect class="badge-user" x="356" y="256" width="56" height="22"/>
+  <text x="384" y="271" class="text-sm" text-anchor="middle">user</text>
+  <text x="470" y="272" class="text-sm">30.07.2026</text>
+  <rect class="chip" x="640" y="260" width="52" height="20"/>
+  <text x="666" y="274" class="text-sm" text-anchor="middle">да</text>
+  <text x="810" y="272" class="text-sm">57 зап · 9 тест</text>
+  <rect class="destructive" x="1040" y="256" width="84" height="28" rx="8"/>
+  <text x="1082" y="274" class="destructive-text" text-anchor="middle">Удалить</text>
+
+  <line x1="40" y1="300" x2="1160" y2="300" stroke="#e7e5e4" stroke-width="1"/>
+
+  <!-- Строка 3 -->
+  <circle cx="80" cy="340" r="16" fill="#fef3c7"/>
+  <text x="80" y="345" class="text-sm" text-anchor="middle">AN</text>
+  <text x="108" y="334" class="text-dark">Анна Новикова</text>
+  <text x="108" y="352" class="text-muted">anna@example.com</text>
+  <rect class="badge-user" x="356" y="328" width="56" height="22"/>
+  <text x="384" y="343" class="text-sm" text-anchor="middle">user</text>
+  <text x="470" y="344" class="text-sm">29.07.2026</text>
+  <rect class="chip" x="640" y="332" width="52" height="20"/>
+  <text x="666" y="346" class="text-sm" text-anchor="middle">нет</text>
+  <text x="810" y="344" class="text-sm">0 зап · 0 тест</text>
+  <rect class="destructive" x="1040" y="328" width="84" height="28" rx="8"/>
+  <text x="1082" y="346" class="destructive-text" text-anchor="middle">Удалить</text>
+
+  <line x1="40" y1="372" x2="1160" y2="372" stroke="#e7e5e4" stroke-width="1"/>
+
+  <!-- Строка 4 -->
+  <circle cx="80" cy="412" r="16" fill="#dcfce7"/>
+  <text x="80" y="417" class="text-sm" text-anchor="middle">ИП</text>
+  <text x="108" y="406" class="text-dark">Иван Петров</text>
+  <text x="108" y="424" class="text-muted">ivan@example.com</text>
+  <rect class="badge-user" x="356" y="400" width="56" height="22"/>
+  <text x="384" y="415" class="text-sm" text-anchor="middle">user</text>
+  <text x="470" y="416" class="text-sm">28.07.2026</text>
+  <rect class="chip" x="640" y="404" width="52" height="20"/>
+  <text x="666" y="418" class="text-sm" text-anchor="middle">да</text>
+  <text x="810" y="416" class="text-sm">12 зап · 3 тест</text>
+  <rect class="destructive" x="1040" y="400" width="84" height="28" rx="8"/>
+  <text x="1082" y="418" class="destructive-text" text-anchor="middle">Удалить</text>
+
+  <text x="60" y="540" class="label">Удаление необратимо: будут стёрты все данные пользователя (каскадно).</text>
+
+  <!-- ===== Модалка подтверждения ===== -->
+  <rect x="700" y="150" width="440" height="290" fill="#ffffff" stroke="#e7e5e4" stroke-width="1" rx="16"/>
+  <rect x="700" y="150" width="440" height="290" fill="#1c1917" opacity="0" />
+
+  <text x="732" y="196" font-family="Lora, serif" font-size="19" font-weight="700" fill="#1c1917">Удалить пользователя?</text>
+  <text x="732" y="220" class="text-sm">Данные <tspan fill="#1c1917" font-weight="600">demo@moodly.app</tspan> будут</text>
+  <text x="732" y="236" class="text-sm">удалены без возможности восстановления.</text>
+
+  <text x="732" y="272" class="label">Введите email для подтверждения</text>
+  <rect x="732" y="282" width="376" height="40" fill="#ffffff" stroke="#e7e5e4" stroke-width="1.5" rx="10"/>
+  <text x="748" y="307" class="text-muted">demo@moodly.app</text>
+
+  <rect class="muted-btn" x="732" y="356" width="120" height="40" rx="10"/>
+  <text x="792" y="381" class="text-dark" text-anchor="middle" font-size="13">Отмена</text>
+
+  <rect class="destructive" x="868" y="356" width="240" height="40" rx="10"/>
+  <text x="988" y="381" class="destructive-text" text-anchor="middle" font-size="13">Удалить</text>
+
+  <!-- ===== Mobile: страница /admin ===== -->
+  <rect class="bg" x="40" y="560" width="375" height="280" rx="16"/>
+  <text x="60" y="592" font-family="Lora, serif" font-size="18" font-weight="700" fill="#1c1917">Администрирование</text>
+
+  <!-- Карточка пользователя 1 -->
+  <rect class="card" x="60" y="610" width="335" height="64" rx="12"/>
+  <circle cx="82" cy="642" r="14" fill="#eef2ff"/>
+  <text x="82" y="646" class="badge-admin-text" text-anchor="middle">ЕС</text>
+  <text x="104" y="634" class="text-dark">Евгений Степанов</text>
+  <text x="104" y="650" class="text-muted">step@example.com</text>
+  <text x="380" y="650" class="text-sm" text-anchor="end">34 зап</text>
+
+  <!-- Карточка пользователя 2 с кнопкой -->
+  <rect class="card" x="60" y="682" width="335" height="64" rx="12"/>
+  <circle cx="82" cy="714" r="14" fill="#f0f0ee"/>
+  <text x="82" y="718" class="text-sm" text-anchor="middle">DM</text>
+  <text x="104" y="706" class="text-dark">Demo User</text>
+  <text x="104" y="722" class="text-muted">demo@moodly.app</text>
+  <rect class="destructive" x="311" y="706" width="68" height="26" rx="8"/>
+  <text x="345" y="723" class="destructive-text" text-anchor="middle" font-size="11">Удалить</text>
+
+  <!-- Карточка пользователя 3 -->
+  <rect class="card" x="60" y="754" width="335" height="64" rx="12"/>
+  <circle cx="82" cy="786" r="14" fill="#fef3c7"/>
+  <text x="82" y="790" class="text-sm" text-anchor="middle">АН</text>
+  <text x="104" y="778" class="text-dark">Анна Новикова</text>
+  <text x="104" y="794" class="text-muted">anna@example.com</text>
+  <rect class="destructive" x="311" y="778" width="68" height="26" rx="8"/>
+  <text x="345" y="795" class="destructive-text" text-anchor="middle" font-size="11">Удалить</text>
+
+  <text x="250" y="840" class="label" text-anchor="middle">Desktop — таблица · Mobile — карточки с кнопкой</text>
+</svg>

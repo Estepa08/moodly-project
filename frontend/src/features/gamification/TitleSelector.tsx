@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Check, Award } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { Chip } from "../../components/ui/chip";
 
 interface TitleSelectorProps {
   titles: string[];
@@ -30,38 +30,19 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
 
   return (
     <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => onSelect(null)}
-        className={cn(
-          "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-[color,background-color,transform] duration-150",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          !activeTitle
-            ? "bg-primary/10 text-primary ring-1 ring-primary"
-            : "bg-muted text-muted-foreground hover:bg-secondary cursor-pointer active:scale-[0.97]",
-        )}
-      >
+      <Chip variant={!activeTitle ? "active" : "default"} onClick={() => onSelect(null)}>
         {t("progress.noTitle")}
         {!activeTitle && <Check aria-hidden="true" className="w-3 h-3" />}
-      </button>
+      </Chip>
       {titles.map((title) => {
         const labelKey = TITLE_MAP[title] ?? title;
         const isActive = activeTitle === title;
         return (
-          <button
-            key={title}
-            onClick={() => onSelect(title)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-[color,background-color,transform] duration-150",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              isActive
-                ? "bg-primary/10 text-primary ring-1 ring-primary"
-                : "bg-muted text-muted-foreground hover:bg-secondary cursor-pointer active:scale-[0.97]",
-            )}
-          >
+          <Chip key={title} variant={isActive ? "active" : "default"} onClick={() => onSelect(title)}>
             <Award aria-hidden="true" className="w-3 h-3" />
             {t(labelKey)}
             {isActive && <Check aria-hidden="true" className="w-3 h-3" />}
-          </button>
+          </Chip>
         );
       })}
     </div>

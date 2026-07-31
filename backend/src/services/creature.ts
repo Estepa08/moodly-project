@@ -6,6 +6,8 @@ const CHECKIN_EXP = 20;
 const EXERCISE_EXP = 10;
 const MAX_ENERGY = 100;
 
+const STARTER_PET_TYPES = ["puff", "dewdrop", "sprout"];
+
 const PRACTICE_XP: Record<string, number> = {
   breathing: 10,
   gratitude: 5,
@@ -98,25 +100,48 @@ export const creatureService = {
   async getPets(userId: string) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      return { unlockedPetTypes: ["puff"], activePetType: "puff" };
+      return { unlockedPetTypes: ["puff"], activePetType: "puff", petName: null };
     }
     return {
       unlockedPetTypes: creature.unlockedPetTypes ?? ["puff"],
       activePetType: creature.petType ?? "puff",
+      petName: creature.petName ?? null,
     };
   },
 
-  async setPet(userId: string, petType: string) {
-    const creature = await prisma.creatureState.findUnique({ where: { userId } });
-    if (!creature) throw new AppError("NOT_FOUND", 404, "Creature state not found");
-    if (!creature.unlockedPetTypes.includes(petType)) {
-      throw new AppError("LOCKED", 403, "Pet type not unlocked");
+  async setPet(userId: string, petType?: string, petName?: string | null) {
+    const creature = await this.getState(userId);
+
+    if (petType === undefined && petName === undefined) {
+      throw new AppError("BAD_REQUEST", 400, "petType or petName is required");
     }
+
+    const data: Record<string, unknown> = {};
+    if (petType !== undefined) {
+      const unlocked = creature.unlockedPetTypes ?? ["puff"];
+      if (!unlocked.includes(petType)) {
+        if (STARTER_PET_TYPES.includes(petType)) {
+          data.unlockedPetTypes = [...unlocked, petType];
+        } else {
+          throw new AppError("LOCKED", 403, "Pet type not unlocked");
+        }
+      }
+      data.petType = petType;
+    }
+    if (petName !== undefined) {
+      const trimmed = petName?.trim() || null;
+      data.petName = trimmed;
+    }
+
     const updated = await prisma.creatureState.update({
       where: { userId },
-      data: { petType },
+      data,
     });
-    return { petType: updated.petType };
+    return {
+      unlockedPetTypes: updated.unlockedPetTypes ?? ["puff"],
+      activePetType: updated.petType ?? "puff",
+      petName: updated.petName ?? null,
+    };
   },
 
   async getHeatmap(userId: string, days = 90) {

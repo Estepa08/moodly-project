@@ -9,7 +9,6 @@ export enum ParameterName {
   SleepHygiene = "Sleep Hygiene",
   DistortionQuiz = "Distortion Quiz",
   ThoughtRelease = "Thought Release",
-  ThoughtJournalMood = "Thought Journal Mood",
   Wellbeing = "Wellbeing",
 }
 
@@ -22,7 +21,6 @@ export const PARAM_NAME_KEYS: Record<ParameterName, string> = {
   [ParameterName.SleepHygiene]: "dashboard.sleepHygiene",
   [ParameterName.DistortionQuiz]: "dashboard.distortionQuiz",
   [ParameterName.ThoughtRelease]: "distortions.tabLetGo",
-  [ParameterName.ThoughtJournalMood]: "dashboard.thoughtJournalMood",
   [ParameterName.Wellbeing]: "dashboard.wellbeing",
 };
 
@@ -36,7 +34,7 @@ export const TEXT_PARAMS = new Set<ParameterName>([
 export const PARAM_COLORS: Partial<Record<ParameterName, string>> = {
   [ParameterName.Anxiety]: "hsl(var(--primary))",
   [ParameterName.Sleep]: "hsl(var(--param-sleep))",
-  [ParameterName.Mood]: "hsl(270 50% 60%)",
+  [ParameterName.Mood]: "hsl(var(--param-mood))",
   [ParameterName.Energy]: "hsl(var(--param-energy))",
 };
 

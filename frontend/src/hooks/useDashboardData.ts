@@ -7,8 +7,7 @@ import { useCreatureState } from "../features/gamification";
 import type { components } from "../lib/api-types";
 import type { DistortionEntry } from "../features/analytics";
 import { DistortionKey } from "../lib/distortionsQuiz";
-import { TEXT_PARAMS, Period, Trend } from "../lib/constants";
-import type { ParameterName } from "../lib/constants";
+import { TEXT_PARAMS, Period, Trend, ParameterName } from "../lib/constants";
 import { isWithinLastDays, formatChartDate } from "../lib/utils";
 
 type Entry = components["schemas"]["Entry"];
@@ -21,6 +20,8 @@ export const PERIODS = [
   { key: Period.ThreeMonths, labelKey: "dashboard.threeMonths", days: 90 },
   { key: Period.All, labelKey: "dashboard.allTime", days: Infinity },
 ] as const;
+
+const DASHBOARD_EXCLUDED_PARAMS = new Set<string>(["Thought Journal Mood"]);
 
 const TEST_ABBR_KEYS: Record<string, string> = {
   "Оценка настроения": "tests.abbreviation.phq9",
@@ -55,7 +56,12 @@ export function useDashboardData(period: Period) {
   const createEntry = useCreateEntry();
 
   const numericParams = useMemo(
-    () => params?.filter((p) => !TEXT_PARAMS.has(p.name as ParameterName)),
+    () =>
+      params?.filter(
+        (p) =>
+          !TEXT_PARAMS.has(p.name as ParameterName) &&
+          !DASHBOARD_EXCLUDED_PARAMS.has(p.name),
+      ),
     [params],
   );
 

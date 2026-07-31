@@ -1,14 +1,16 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, BrainCircuit } from "lucide-react";
 import { DISTORTION_KEYS } from "../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { DistortionQuiz } from "../features/mood-entry";
 import { ThoughtRelease } from "../features/journal";
+import { Button } from "../components/ui/button";
 import { useParameters } from "../hooks/useParameters";
 import { useEntries, useCreateEntry } from "../hooks/useEntries";
-import { QuizScoreChart } from "../features/analytics";
+import { QuizScoreChart, TrendPreview } from "../features/analytics";
 import { useRewardPractice, PracticeSource } from "../features/gamification";
+import { SegmentControl, SegmentControlItem } from "../components/ui/segment-control";
 
 const TABS = [
   { key: "library", labelKey: "distortions.tabLibrary" },
@@ -34,6 +36,22 @@ export default function DistortionsPage() {
     quizParam ? { parameterId: quizParam.id } : undefined,
   );
 
+  const [chartOpen, setChartOpen] = useState(false);
+
+  const last7 = useMemo(() => {
+    const arr: (number | null)[] = new Array(7).fill(null);
+    for (const e of quizEntries ?? []) {
+      const dayIndex = Math.floor((Date.now() - new Date(e.createdAt).getTime()) / 86_400_000);
+      if (dayIndex >= 0 && dayIndex < 7) {
+        const idx = 6 - dayIndex;
+        arr[idx] = arr[idx] === null ? e.value : (arr[idx] + e.value) / 2;
+      }
+    }
+    return arr;
+  }, [quizEntries]);
+
+  const activeDays = last7.filter((v): v is number => v !== null).length;
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center">
@@ -43,9 +61,24 @@ export default function DistortionsPage() {
         <p className="text-sm text-muted-foreground mt-1">{t("distortions.subtitle")}</p>
       </div>
 
+      <div className="max-w-lg mx-auto">
+        <TrendPreview
+          title={t("trendPreview.title")}
+          label={t("trendPreview.days", { active: activeDays, total: 7 })}
+          days={last7}
+          icon={<BrainCircuit aria-hidden="true" className="w-4 h-4 text-primary" />}
+          expanded={chartOpen}
+          onToggle={() => setChartOpen((o) => !o)}
+          showLabel={t("trendPreview.show")}
+          hideLabel={t("trendPreview.hide")}
+          disabled={(quizEntries?.length ?? 0) === 0}
+        >
+          <QuizScoreChart entries={quizEntries ?? []} isLoading={quizLoading} noCard />
+        </TrendPreview>
+      </div>
+
       <div className="flex justify-center">
-        <div
-          className="flex items-center gap-1 bg-card rounded-xl shadow-neumorphic-sm p-1"
+        <SegmentControl
           role="tablist"
           aria-label={t("distortions.title")}
           onKeyDown={(e) => {
@@ -55,22 +88,18 @@ export default function DistortionsPage() {
           }}
         >
           {TABS.map((item) => (
-            <button
+            <SegmentControlItem
               key={item.key}
               role="tab"
               aria-selected={tab === item.key}
               aria-controls={`distortion-panel-${item.key}`}
+              active={tab === item.key}
               onClick={() => setTab(item.key)}
-              className={`px-4 min-h-[44px] text-xs font-medium rounded-lg transition-[color,background-color,box-shadow] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                tab === item.key
-                  ? "bg-primary text-primary-foreground shadow-neumorphic-sm"
-                  : "text-muted-foreground hover:text-primary"
-              }`}
             >
               {t(item.labelKey)}
-            </button>
+            </SegmentControlItem>
           ))}
-        </div>
+        </SegmentControl>
       </div>
 
       <div
@@ -99,17 +128,19 @@ export default function DistortionsPage() {
                     {t(`distortionsLibrary.${key}.definition`)}
                   </p>
 
-                  <button
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="h-auto px-0 gap-1"
                     aria-expanded={!!expanded[key]}
-                    className="flex items-center gap-1 text-sm text-primary hover:underline cursor-pointer transition-[text-decoration,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     onClick={() => setExpanded((prev) => ({ ...prev, [key]: !prev[key] }))}
                   >
                     <ChevronRight
                       aria-hidden="true"
-                      className={`w-4 h-4 transition-transform duration-150 ${expanded[key] ? "rotate-90" : ""}`}
+                      className={`transition-transform duration-150 ${expanded[key] ? "rotate-90" : ""}`}
                     />
                     {expanded[key] ? t("distortions.hideExample") : t("distortions.showExample")}
-                  </button>
+                  </Button>
 
                   {expanded[key] && (
                     <div className="space-y-2 text-sm">
@@ -140,9 +171,6 @@ export default function DistortionsPage() {
         {tab === "quiz" ? (
           <div className="space-y-4">
             <DistortionQuiz parameterId={quizParam?.id} createEntry={createEntry} />
-            {quizEntries && quizEntries.length > 0 && (
-              <QuizScoreChart entries={quizEntries} isLoading={quizLoading} />
-            )}
           </div>
         ) : null}
       </div>

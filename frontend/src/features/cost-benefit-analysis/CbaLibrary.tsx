@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Chip } from "../../components/ui/chip";
+import { IconButton } from "../../components/ui/icon-button";
 import EmptyState from "../../components/ui/empty-state";
 import { cn } from "../../lib/utils";
 import type { CbaExample } from "./cba.types";
@@ -36,13 +38,11 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
           {example.distortions.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {example.distortions.map((d) => (
-                <Link
-                  key={d.id}
-                  to="/practices/distortions"
-                  className="rounded-full px-3 py-1 text-xs font-medium bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-primary transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {t(`cognitiveDistortions.${d.distortionKey}`)}
-                </Link>
+                <Chip key={d.id} asChild>
+                  <Link to="/practices/distortions">
+                    {t(`cognitiveDistortions.${d.distortionKey}`)}
+                  </Link>
+                </Chip>
               ))}
             </div>
           )}
@@ -85,14 +85,15 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
       </Card>
 
       <div className="flex items-center justify-center gap-4">
-        <button
+        <IconButton
+          variant="ghost"
+          size="icon"
+          label={t("cba.prevExample")}
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
-          aria-label={t("cba.prevExample")}
-          className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-[color,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ChevronLeft aria-hidden="true" className="w-5 h-5" />
-        </button>
+        </IconButton>
         <div className="flex items-center gap-1.5">
           {examples.map((e, i) => (
             <span
@@ -104,14 +105,15 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
             />
           ))}
         </div>
-        <button
+        <IconButton
+          variant="ghost"
+          size="icon"
+          label={t("cba.nextExample")}
           onClick={() => setIndex((i) => Math.min(examples.length - 1, i + 1))}
           disabled={index === examples.length - 1}
-          aria-label={t("cba.nextExample")}
-          className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-[color,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] disabled:opacity-30 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <ChevronRight aria-hidden="true" className="w-5 h-5" />
-        </button>
+        </IconButton>
       </div>
     </div>
   );

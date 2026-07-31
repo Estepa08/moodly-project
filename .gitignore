@@ -3,9 +3,11 @@ dist/
 .env
 .env.local
 .env.*.local
+.env.prod
 .DS_Store
 .prisma/
 .next/
 *.tsbuildinfo
 coverage/
 CLAUDE.md
+docs/

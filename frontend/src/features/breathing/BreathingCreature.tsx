@@ -221,9 +221,9 @@ export default function BreathingCreature({
               {r.type === ReactionType.Dizzy ? (
                 <span className="text-lg">🌀</span>
               ) : r.type === ReactionType.Heart ? (
-                <Heart aria-hidden="true" className="w-4 h-4 text-accent" strokeWidth={2.5} />
+                <Heart aria-hidden="true" className="w-4 h-4 text-accent" />
               ) : (
-                <HelpCircle aria-hidden="true" className="w-4 h-4 text-primary" strokeWidth={2.5} />
+                <HelpCircle aria-hidden="true" className="w-4 h-4 text-primary" />
               )}
             </div>
           ))}

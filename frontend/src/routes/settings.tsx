@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../components/ui/dialog";
-import { Bell, Shield, Key, Trash2, AlertTriangle, ChevronRight } from "lucide-react";
+import { Bell, Shield, Trash2, AlertTriangle, ChevronRight } from "lucide-react";
 
 export default function SettingsPage() {
   const { t } = useTranslation();

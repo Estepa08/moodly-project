@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Trash2, Scale } from "lucide-react";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import { Card, CardContent } from "../../components/ui/card";
+import { IconButton } from "../../components/ui/icon-button";
 import EmptyState from "../../components/ui/empty-state";
 import type { CbaEntry } from "./cba.types";
 import type { useDeleteCbaEntry } from "./useCba";
@@ -37,13 +38,15 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
                 <p className="font-medium text-foreground">{entry.prosWeight}</p>
                 <p className="text-muted-foreground text-[10px]">{entry.consWeight}</p>
               </div>
-              <button
+              <IconButton
+                variant="ghost"
+                size="icon-sm"
+                label={t("cba.deleteEntry")}
                 onClick={() => deleteEntry.mutate(entry.id)}
-                aria-label={t("cba.deleteEntry")}
-                className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive transition-[color,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="text-muted-foreground hover:text-destructive"
               >
                 <Trash2 aria-hidden="true" className="w-4 h-4" />
-              </button>
+              </IconButton>
             </div>
           </CardContent>
         </Card>

@@ -60,7 +60,10 @@ export function useSetPet() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (petType: string) => api.creature.setPet(petType),
+    mutationFn: (args: string | { petType?: string; petName?: string | null }) =>
+      typeof args === "string"
+        ? api.creature.setPet(args)
+        : api.creature.setPet(args.petType, args.petName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
       queryClient.invalidateQueries({ queryKey: ["creature"] });
