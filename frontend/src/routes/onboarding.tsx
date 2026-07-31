@@ -20,6 +20,8 @@ import { useSetPet } from "../features/gamification";
 import { PET_DEFINITIONS, STARTER_PET_TYPES } from "../features/gamification/pets";
 import { cn } from "../lib/utils";
 
+const DEV_ALL_PETS = import.meta.env.DEV;
+
 const GOALS = [
   { key: "stress", icon: Wind },
   { key: "anxiety", icon: Brain },
@@ -265,15 +267,15 @@ export default function OnboardingPage() {
                   {t("onboarding2.petChooseTitle")}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {STARTER_PET_TYPES.map((type) => {
-                    const pet = PET_DEFINITIONS.find((p) => p.type === type);
-                    if (!pet) return null;
-                    const isActive = petType === type;
+                  {PET_DEFINITIONS.filter(
+                    (p) => DEV_ALL_PETS || STARTER_PET_TYPES.includes(p.type as never),
+                  ).map((pet) => {
+                    const isActive = petType === pet.type;
                     return (
                       <button
-                        key={type}
+                        key={pet.type}
                         type="button"
-                        onClick={() => setPetType(type)}
+                        onClick={() => setPetType(pet.type)}
                         aria-pressed={isActive}
                         className={cn(
                           "flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

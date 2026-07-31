@@ -1,15 +1,10 @@
-import { useState, lazy, Suspense } from "react";
+import { useState } from "react";
 import { Heart } from "lucide-react";
 import Lottie from "lottie-react";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { PET_DEFINITIONS } from "./pets";
+import { usePetAnimation } from "./usePetAnimation";
 import { cn } from "../../lib/utils";
-
-const PetAnimation = lazy(() =>
-  import("../../assets/lottie/breathing-creature.json").then((m) => ({
-    default: () => <Lottie animationData={m.default} loop autoplay />,
-  })),
-);
 
 export type PetAvatarSize = "sm" | "md" | "lg";
 
@@ -35,6 +30,7 @@ export default function PetAvatar({
   className,
 }: PetAvatarProps) {
   const isReducedMotion = useReducedMotion();
+  const animationData = usePetAnimation(petType);
   const [hearts, setHearts] = useState<number[]>([]);
 
   const addHeart = () => {
@@ -60,12 +56,10 @@ export default function PetAvatar({
     >
       <span className={cn("block rounded-full bg-secondary", box)} />
       <span className={cn("absolute inset-0 flex items-center justify-center", icon)}>
-        {isReducedMotion ? (
+        {isReducedMotion || !animationData ? (
           <span aria-hidden="true">{fallback}</span>
         ) : (
-          <Suspense fallback={<span aria-hidden="true">{fallback}</span>}>
-            <PetAnimation />
-          </Suspense>
+          <Lottie animationData={animationData} loop autoplay />
         )}
       </span>
       {hearts.map((id) => (

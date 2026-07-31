@@ -26,7 +26,22 @@ describe("LoginPage", () => {
   it("renders the login form", () => {
     renderWithProviders(<LoginPage />);
     expect(screen.getByText("Moodly")).toBeInTheDocument();
-    expect(screen.getByText("Sign in to your account")).toBeInTheDocument();
+    expect(
+      screen.getByText("A simple mood journal — notice how you're doing, day by day."),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+  });
+
+  it("does not render the registration fields", () => {
+    renderWithProviders(<LoginPage />);
+    expect(screen.queryByLabelText("Name (optional)")).not.toBeInTheDocument();
+  });
+
+  it("links to the register page instead of toggling", () => {
+    renderWithProviders(<LoginPage />);
+    const signUpLink = screen.getByRole("link", { name: /sign up/i });
+    expect(signUpLink).toHaveAttribute("href", "/register");
   });
 
   it("submits form and navigates on success", async () => {
@@ -35,11 +50,11 @@ describe("LoginPage", () => {
     const user = userEvent.setup();
     renderWithProviders(<LoginPage />);
 
-    const emailInput = screen.getAllByLabelText("Email")[0];
-    const passwordInput = screen.getAllByLabelText("Password")[0];
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
     await user.type(emailInput, "test@example.com");
     await user.type(passwordInput, "secret");
-    await user.click(screen.getAllByRole("button", { name: /sign in/i })[0]);
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() => {
       expect(api.auth.login).toHaveBeenCalledWith({
@@ -55,23 +70,14 @@ describe("LoginPage", () => {
     const user = userEvent.setup();
     renderWithProviders(<LoginPage />);
 
-    const emailInput = screen.getAllByLabelText("Email")[0];
-    const passwordInput = screen.getAllByLabelText("Password")[0];
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
     await user.type(emailInput, "bad@example.com");
     await user.type(passwordInput, "wrong");
-    await user.click(screen.getAllByRole("button", { name: /sign in/i })[0]);
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() => {
       expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
     });
-  });
-
-  it("toggles to register form", async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<LoginPage />);
-
-    const signUpButton = screen.getAllByRole("button", { name: /sign up/i })[0];
-    await user.click(signUpButton);
-    expect(screen.getByLabelText("Name (optional)")).toBeInTheDocument();
   });
 });
