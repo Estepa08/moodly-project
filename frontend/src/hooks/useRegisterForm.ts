@@ -10,7 +10,6 @@ export function useRegisterForm() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -23,7 +22,6 @@ export function useRegisterForm() {
       const res = await api.auth.register({
         email,
         password,
-        name: name || undefined,
         ageConfirmed,
       });
       login(res.accessToken);
@@ -34,8 +32,6 @@ export function useRegisterForm() {
   };
 
   return {
-    name,
-    setName,
     email,
     setEmail,
     password,

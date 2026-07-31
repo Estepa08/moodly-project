@@ -81,6 +81,12 @@ export default function Dashboard() {
     [coreParamIds, todayEntries],
   );
 
+  const savedTodayParamIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const e of todayEntries ?? []) ids.add(e.parameterId);
+    return ids;
+  }, [todayEntries]);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -130,7 +136,11 @@ export default function Dashboard() {
               isLoading={isDataLoading}
             />
           ) : (
-            <QuickEntryIcons createEntry={createEntry} numericParams={numericParams} />
+            <QuickEntryIcons
+              createEntry={createEntry}
+              numericParams={numericParams}
+              savedTodayParamIds={savedTodayParamIds}
+            />
           )}
         </div>
       )}

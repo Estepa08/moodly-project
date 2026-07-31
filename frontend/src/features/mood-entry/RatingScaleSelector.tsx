@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Zap } from "lucide-react";
 import { cn } from "../../lib/utils";
 import type { RatingLevel } from "../../lib/ratingLevels";
 
@@ -87,16 +86,6 @@ export function RatingScaleSelector({
                 aria-hidden="true"
                 className={compact ? "w-5 h-5" : "w-6 h-6 sm:w-7 sm:h-7"}
               />
-              {level.bolts != null && level.bolts > 0 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute -top-2 -right-2.5 flex items-end gap-px"
-                >
-                  {Array.from({ length: level.bolts }).map((_, i) => (
-                    <Zap key={i} className="w-2 h-2 fill-current" />
-                  ))}
-                </span>
-              )}
             </span>
             <span
               className={cn(

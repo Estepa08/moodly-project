@@ -85,4 +85,21 @@ describe("Dashboard", () => {
     expect(await screen.findByText("Quick Entry")).toBeInTheDocument();
     expect(localStorage.getItem("moodly_wellbeing_open")).toBe("1");
   });
+
+  it("marks quick entry icons as saved when a param has a today entry", async () => {
+    mockDashboardApi();
+    (api.entries.list as Mock).mockResolvedValue([
+      {
+        id: "e1",
+        userId: "u1",
+        parameterId: "1",
+        value: 7,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+    renderWithProviders(<Dashboard />);
+
+    expect(await screen.findByTestId("quick-entry-saved-Mood")).toBeInTheDocument();
+    expect(screen.queryByTestId("quick-entry-saved-Anxiety")).not.toBeInTheDocument();
+  });
 });

@@ -4,8 +4,6 @@ import { cn } from "../../lib/utils";
 import { usePets, useSetPet } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 
-const DEV_ALL_PETS = import.meta.env.DEV;
-
 export default function PetCollection() {
   const { t } = useTranslation();
   const { data: pets } = usePets();
@@ -17,7 +15,7 @@ export default function PetCollection() {
   return (
     <div className="grid grid-cols-3 gap-2">
       {PET_DEFINITIONS.map((pet) => {
-        const isUnlocked = DEV_ALL_PETS || unlocked.includes(pet.type);
+        const isUnlocked = unlocked.includes(pet.type);
         const isActive = active === pet.type;
         return (
           <button

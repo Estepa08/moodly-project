@@ -66,9 +66,9 @@ export default function Sidebar() {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-primary truncate">
-            {userData?.name ?? userData?.email ?? "—"}
+            {userData?.email ?? "—"}
           </p>
-          <p className="text-xs text-muted-foreground truncate">{userData?.email ?? ""}</p>
+          <p className="text-xs text-muted-foreground truncate">{userData?.name ?? ""}</p>
         </div>
         <IconButton
           variant="ghost"

@@ -13,8 +13,6 @@ export default function RegisterPage() {
   const isMobile = useIsMobile();
 
   const {
-    name,
-    setName,
     email,
     setEmail,
     password,
@@ -31,17 +29,6 @@ export default function RegisterPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="regName">{t("register.name")}</Label>
-          <Input
-            id="regName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            autoComplete="name"
-            enterKeyHint="next"
-            autoFocus={!isMobile}
-          />
-        </div>
-        <div className="space-y-2">
           <Label htmlFor="regEmail">{t("register.email")}</Label>
           <Input
             id="regEmail"
@@ -52,6 +39,7 @@ export default function RegisterPage() {
             inputMode="email"
             enterKeyHint="next"
             required
+            autoFocus={!isMobile}
             spellCheck={false}
           />
         </div>

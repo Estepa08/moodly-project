@@ -1,7 +1,7 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles, Check } from "lucide-react";
 import type { CreateEntryMutation } from "../../lib/app-types";
 import type { components } from "../../lib/api-types";
 import { PARAM_ICON_CONFIGS } from "../../lib/quickEntryIcons";
@@ -15,11 +15,13 @@ import { Button } from "../../components/ui/button";
 interface QuickEntryIconsProps {
   createEntry: CreateEntryMutation;
   numericParams: components["schemas"]["Parameter"][] | undefined;
+  savedTodayParamIds: Set<string>;
 }
 
 export default function QuickEntryIcons({
   createEntry,
   numericParams,
+  savedTodayParamIds,
 }: QuickEntryIconsProps) {
   const { t } = useTranslation();
   const [selectedParam, setSelectedParam] = useState<string | null>(null);
@@ -31,6 +33,12 @@ export default function QuickEntryIcons({
   const configs = PARAM_ICON_CONFIGS.filter((cfg) =>
     numericParams?.some((p) => p.name === cfg.parameterName),
   );
+
+  const paramIdByName = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of numericParams ?? []) map.set(p.name, p.id);
+    return map;
+  }, [numericParams]);
 
   const handleParamTap = useCallback((name: string) => {
     setSelectedParam((prev) => (prev === name ? null : name));
@@ -84,23 +92,39 @@ export default function QuickEntryIcons({
           {configs.map((cfg) => {
             const isActive = selectedParam === cfg.parameterName;
             const Icon = PARAM_ICONS[cfg.parameterName as ParameterName];
+            const paramId = paramIdByName.get(cfg.parameterName);
+            const isSaved = paramId ? savedTodayParamIds.has(paramId) : false;
+            const label = t(cfg.labelKey);
             return (
               <button
                 key={cfg.parameterName}
                 onClick={() => handleParamTap(cfg.parameterName)}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-[color,background-color,box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                className={`relative flex flex-col items-center gap-1.5 p-3 rounded-xl transition-[color,background-color,box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
                     ? "bg-primary/10 text-primary shadow-neumorphic-sm scale-105"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-neumorphic-sm"
                 }`}
-                aria-label={t(cfg.labelKey)}
+                aria-label={
+                  isSaved
+                    ? `${label} — ${t("dashboard.quickEntry.savedIndicator")}`
+                    : label
+                }
                 aria-pressed={isActive}
               >
                 <div className="w-14 h-14 flex items-center justify-center">
                   {Icon && <Icon aria-hidden="true" className="w-9 h-9 text-primary" />}
                 </div>
+                {isSaved && (
+                  <span
+                    data-testid={`quick-entry-saved-${cfg.parameterName}`}
+                    aria-hidden="true"
+                    className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-accent-foreground ring-2 ring-card"
+                  >
+                    <Check className="w-3 h-3" strokeWidth={3} />
+                  </span>
+                )}
                 <span className="text-xs font-medium leading-tight text-center">
-                  {t(cfg.labelKey)}
+                  {label}
                 </span>
               </button>
             );

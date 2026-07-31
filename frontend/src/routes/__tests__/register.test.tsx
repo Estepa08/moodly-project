@@ -27,7 +27,7 @@ describe("RegisterPage", () => {
     renderWithProviders(<RegisterPage />);
     expect(screen.getByText("Create Account")).toBeInTheDocument();
     expect(screen.getByText("Start your mood journal")).toBeInTheDocument();
-    expect(screen.getByLabelText("Name (optional)")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Name (optional)")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
   });
@@ -59,7 +59,6 @@ describe("RegisterPage", () => {
     const user = userEvent.setup();
     renderWithProviders(<RegisterPage />);
 
-    await user.type(screen.getByLabelText("Name (optional)"), "Alex");
     await user.type(screen.getByLabelText("Email"), "test@example.com");
     await user.type(screen.getByLabelText("Password"), "secret");
     await user.click(screen.getByRole("checkbox"));
@@ -69,7 +68,6 @@ describe("RegisterPage", () => {
       expect(api.auth.register).toHaveBeenCalledWith({
         email: "test@example.com",
         password: "secret",
-        name: "Alex",
         ageConfirmed: true,
       });
     });
