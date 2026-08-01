@@ -20,6 +20,7 @@ export default function DailyMissions() {
         return (
           <div
             key={mission.id}
+            data-testid={`mission-${mission.missionKey}`}
             className={cn(
               "rounded-xl p-3 flex items-center gap-3 transition-[background-color,opacity] duration-150",
               mission.claimed ? "bg-muted/30 opacity-60" : "bg-card shadow-neumorphic-sm",

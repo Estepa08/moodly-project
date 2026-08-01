@@ -34,7 +34,9 @@ export function getDistortions(result: RadarResultLike): DistortionEntry[] {
   }));
 }
 
-export function buildRadarComparison(results: RadarResultLike[] | undefined | null): RadarComparison | null {
+export function buildRadarComparison(
+  results: RadarResultLike[] | undefined | null,
+): RadarComparison | null {
   if (!results || results.length === 0) return null;
 
   const cdResults = results

@@ -67,14 +67,14 @@ export default function DailyCheckInModal({
       <div className="grid grid-cols-2 gap-2">
         <div className="flex flex-col items-center justify-center gap-0.5 py-2.5 rounded-xl bg-accent/10">
           <span className="text-sm font-bold text-accent">{t("dailyCheckIn.expGained")}</span>
-          <span className="text-[11px] text-muted-foreground">{t("dailyCheckIn.expSub")}</span>
+          <span className="text-xs text-muted-foreground">{t("dailyCheckIn.expSub")}</span>
         </div>
         <div className="flex flex-col items-center justify-center gap-0.5 py-2.5 rounded-xl bg-primary/10">
           <span className="flex items-center gap-1 text-sm font-bold text-primary">
             <Zap aria-hidden="true" className="w-3.5 h-3.5" />
             {t("dailyCheckIn.energyRestored")}
           </span>
-          <span className="text-[11px] text-muted-foreground">{t("dailyCheckIn.energySub")}</span>
+          <span className="text-xs text-muted-foreground">{t("dailyCheckIn.energySub")}</span>
         </div>
       </div>
 

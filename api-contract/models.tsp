@@ -192,17 +192,23 @@ model TestResult {
 model Feedback {
   id: string;
   userId: string;
+  /** Оценка приложения от 1 до 5 */
+  rating: int32;
   message: string;
   createdAt: utcDateTime;
 }
 
 model FeedbackCreate {
+  /** Оценка приложения от 1 до 5 */
+  rating: int32;
   message: string;
 }
 
 @doc("Запись обратной связи для админ-панели (все пользователи)")
 model AdminFeedback {
   id: string;
+  /** Оценка приложения от 1 до 5 */
+  rating: int32;
   message: string;
   createdAt: utcDateTime;
   user: {

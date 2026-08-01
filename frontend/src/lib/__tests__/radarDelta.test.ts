@@ -51,9 +51,7 @@ describe("buildRadarComparison", () => {
   });
 
   it("с одним результатом возвращает current без previous", () => {
-    const comparison = buildRadarComparison([
-      cdResult("2026-01-01", { allOrNothing: 5 }),
-    ]);
+    const comparison = buildRadarComparison([cdResult("2026-01-01", { allOrNothing: 5 })]);
     expect(comparison).not.toBeNull();
     expect(comparison!.previous).toBeNull();
     expect(comparison!.previousDate).toBeNull();
@@ -87,9 +85,7 @@ describe("buildRadarComparison", () => {
   });
 
   it("возвращает null, если текущий результат без данных distortions", () => {
-    expect(
-      buildRadarComparison([cdResult("2026-01-01", {})]),
-    ).toBeNull();
+    expect(buildRadarComparison([cdResult("2026-01-01", {})])).toBeNull();
   });
 });
 

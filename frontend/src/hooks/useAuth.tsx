@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { setToken, api } from "../lib/api";
 import { ONBOARDING_DONE_KEY } from "../lib/constants";
 
@@ -14,6 +15,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
+  const queryClient = useQueryClient();
 
   // The access token now lives only in memory (not localStorage), so on a
   // fresh page load we have to re-derive auth state from the httpOnly
@@ -32,10 +34,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setIsBootstrapping(false));
   }, []);
 
-  const login = useCallback((token: string) => {
-    setToken(token);
-    setIsAuthenticated(true);
-  }, []);
+  const login = useCallback(
+    (token: string) => {
+      queryClient.clear();
+      setToken(token);
+      setIsAuthenticated(true);
+    },
+    [queryClient],
+  );
 
   const logout = useCallback(async () => {
     // Best-effort: this also clears the httpOnly refresh cookie server-side,
@@ -45,10 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignore — we still clear local state below.
     }
+    queryClient.clear();
     setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem(ONBOARDING_DONE_KEY);
-  }, []);
+  }, [queryClient]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, isBootstrapping, login, logout }}>

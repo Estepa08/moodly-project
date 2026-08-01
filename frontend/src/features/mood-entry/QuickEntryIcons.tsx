@@ -83,9 +83,7 @@ export default function QuickEntryIcons({
           <Sparkles aria-hidden="true" className="w-5 h-5 text-accent" />
           <span>{t("dashboard.quickEntry.title")}</span>
         </CardTitle>
-        <p className="text-xs text-muted-foreground ml-7">
-          {t("dashboard.quickEntry.subtitle")}
-        </p>
+        <p className="text-xs text-muted-foreground ml-7">{t("dashboard.quickEntry.subtitle")}</p>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex justify-center gap-3">
@@ -105,9 +103,7 @@ export default function QuickEntryIcons({
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-neumorphic-sm"
                 }`}
                 aria-label={
-                  isSaved
-                    ? `${label} — ${t("dashboard.quickEntry.savedIndicator")}`
-                    : label
+                  isSaved ? `${label} — ${t("dashboard.quickEntry.savedIndicator")}` : label
                 }
                 aria-pressed={isActive}
               >
@@ -123,9 +119,7 @@ export default function QuickEntryIcons({
                     <Check className="w-3 h-3" strokeWidth={3} />
                   </span>
                 )}
-                <span className="text-xs font-medium leading-tight text-center">
-                  {label}
-                </span>
+                <span className="text-xs font-medium leading-tight text-center">{label}</span>
               </button>
             );
           })}
@@ -182,7 +176,7 @@ export default function QuickEntryIcons({
                           setShowNote(true);
                           setTimeout(() => noteInputRef.current?.focus(), 100);
                         }}
-                        className="h-auto px-2 min-h-[44px] text-[11px] text-muted-foreground hover:text-primary"
+                        className="h-auto px-2 min-h-[44px] text-xs text-muted-foreground hover:text-primary"
                         aria-label={t("dashboard.quickEntry.addNote")}
                       >
                         <Plus aria-hidden="true" className="w-3 h-3" />

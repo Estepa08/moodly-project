@@ -36,7 +36,9 @@ async function main() {
   const targetEmail = (email ?? "").trim().toLowerCase();
 
   if (!targetEmail || !password) {
-    console.error("Использование: db-create-user.ts --email=user@example.com --password=... [--admin]");
+    console.error(
+      "Использование: db-create-user.ts --email=user@example.com --password=... [--admin]",
+    );
     process.exitCode = 1;
     return;
   }

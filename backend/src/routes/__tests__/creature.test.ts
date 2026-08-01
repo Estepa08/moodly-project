@@ -7,12 +7,7 @@ let token: string;
 
 beforeAll(async () => {
   app = await buildApp();
-  const result = await registerAndLogin(
-    app,
-    "creature-test@example.com",
-    "secret123",
-    "Creature",
-  );
+  const result = await registerAndLogin(app, "creature-test@example.com", "secret123", "Creature");
   token = result.token;
 });
 

@@ -4,9 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -113,6 +112,7 @@ model TestResult {
 model Feedback {
   id        String   @id @default(cuid())
   userId    String
+  rating    Int      @default(0)
   message   String
   createdAt DateTime @default(now())
 

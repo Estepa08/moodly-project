@@ -1,7 +1,20 @@
 import { ReactNode } from "react";
 import {
-  LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell,
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  Cell,
 } from "recharts";
 import { ChartTooltip } from "./chart-tooltip";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -143,12 +156,7 @@ export function Chart({
                   />
                 )}
                 {series.map((s) => (
-                  <Bar
-                    key={s.dataKey}
-                    dataKey={s.dataKey}
-                    fill={s.color}
-                    radius={barRadius}
-                  />
+                  <Bar key={s.dataKey} dataKey={s.dataKey} fill={s.color} radius={barRadius} />
                 ))}
               </BarChart>
             ) : type === "area" ? (
@@ -214,14 +222,16 @@ export function Chart({
       {title && (
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            {icon && <span aria-hidden="true" className="w-4 h-4 text-primary">{icon}</span>}
+            {icon && (
+              <span aria-hidden="true" className="w-4 h-4 text-primary">
+                {icon}
+              </span>
+            )}
             {title}
           </CardTitle>
         </CardHeader>
       )}
-      <CardContent>
-        {chart}
-      </CardContent>
+      <CardContent>{chart}</CardContent>
     </Card>
   );
 }

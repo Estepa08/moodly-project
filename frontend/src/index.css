@@ -79,6 +79,15 @@
     overscroll-behavior: contain;
   }
 
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   h1,
   h2,
   h3,

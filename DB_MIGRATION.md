@@ -7,22 +7,26 @@ Neon → Supabase, → платный Render и т.д.). Проект испол
 
 ## Принципы
 
-- Приложение и инструменты всегда читают две переменные:
+- Приложение и инструменты читают:
   - `DATABASE_URL` — подключение для рантайма (у провайдеров с пулером —
     pooled URL: Neon `-pooler`, Supabase `:6543`).
   - `DIRECT_URL` — прямое подключение для Prisma CLI (миграции, introspection)
-    и утилит (`pg_dump`/`psql`). Задаётся в `datasource` блока `schema.prisma`
-    как `directUrl`.
-- Миграции применяются только через `DIRECT_URL` (`prisma migrate deploy`
-  в `docker-entrypoint.sh`), чтобы обойти пулер.
+    и утилит (`pg_dump`/`psql`). Нужен только при использовании пулера; в
+    `schema.prisma` `directUrl` задействован только тогда.
+- Сейчас `schema.prisma` использует только `DATABASE_URL` (пулера нет ни у
+  одного провайдера — локально, CI, Render Postgres). Если вернётся провайдер
+  с пулером (Neon/Supabase), снова добавь `directUrl = env("DIRECT_URL")` в
+  datasource-блок, а миграции будут идти через `DIRECT_URL`
+  (`prisma migrate deploy` в `docker-entrypoint.sh`), чтобы обойти пулер.
 - Данные переносятся стандартными `pg_dump`/`psql` — не зависит от провайдера.
 - Старая БД не удаляется, пока новая не проверена.
 
 ## Текущая настройка
 
 - Хостинг: Render (web-сервис `moodly`, Docker).
-- БД: Neon (managed Postgres). Секреты `DATABASE_URL`/`DIRECT_URL` заданы
+- БД: Render Postgres. Секреты `DATABASE_URL`/`DIRECT_URL` заданы
   вручную в панели Render (`render.yaml` использует `sync: false`).
+  Пулера нет — `directUrl` в схеме не используется, достаточно `DATABASE_URL`.
 - Локальные прод-скрипты (`make db-prod-*`) читают `backend/.env.prod`.
 
 ## Как проверить подключение

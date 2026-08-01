@@ -3,8 +3,10 @@
 echo "Waiting for database connection..."
 MAX_RETRIES=30
 RETRY_COUNT=0
-# Migrations go through DIRECT_URL (set in schema.prisma) to bypass the
-# connection pooler. `prisma migrate deploy` applies only unapplied migrations,
+# Migrations go through DATABASE_URL (direct connection, no pooler currently).
+# If a pooled provider (Neon/Supabase) is used, add directUrl to schema.prisma
+# and `prisma migrate deploy` will use DIRECT_URL to bypass the pooler.
+# `prisma migrate deploy` applies only unapplied migrations,
 # so it is safe to retry on connection failures.
 until npx prisma migrate deploy 2>/dev/null || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
   RETRY_COUNT=$((RETRY_COUNT + 1))

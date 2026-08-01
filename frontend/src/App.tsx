@@ -15,7 +15,6 @@ import Dashboard from "./routes/dashboard";
 const OnboardingPage = lazy(() => import("./routes/onboarding"));
 const TestsPage = lazy(() => import("./routes/tests"));
 const TestDetailPage = lazy(() => import("./routes/test-detail"));
-const TestResultsPage = lazy(() => import("./routes/test-results"));
 const BreathingPage = lazy(() => import("./routes/breathing"));
 const PracticesPage = lazy(() => import("./routes/practices"));
 const GratitudeJournalPage = lazy(() => import("./routes/gratitude-journal"));
@@ -91,7 +90,7 @@ export default function App() {
         <Route path="/practices" element={<PracticesPage />} />
         <Route path="/tests" element={<TestsPage />} />
         <Route path="/tests/:testId" element={<TestDetailPage />} />
-        <Route path="/results" element={<TestResultsPage />} />
+        <Route path="/results" element={<Navigate to="/" replace />} />
         <Route path="/practices/breathing" element={<BreathingPage />} />
         <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
         <Route path="/practices/distortions" element={<DistortionsPage />} />
@@ -104,8 +103,14 @@ export default function App() {
         <Route path="/gratitude-journal" element={<Navigate to="/practices/gratitude" replace />} />
         <Route path="/distortions" element={<Navigate to="/practices/distortions" replace />} />
         <Route path="/sleep-hygiene" element={<Navigate to="/practices/sleep-hygiene" replace />} />
-        <Route path="/thought-journal" element={<Navigate to="/practices/thought-journal" replace />} />
-        <Route path="/cost-benefit-analysis" element={<Navigate to="/practices/cost-benefit-analysis" replace />} />
+        <Route
+          path="/thought-journal"
+          element={<Navigate to="/practices/thought-journal" replace />}
+        />
+        <Route
+          path="/cost-benefit-analysis"
+          element={<Navigate to="/practices/cost-benefit-analysis" replace />}
+        />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route element={<AdminRoute />}>

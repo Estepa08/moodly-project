@@ -26,14 +26,14 @@
     "cba": "Сравнение",
     "thoughtJournal": "Дневник мыслей",
     "tests": "Тесты",
-    "results": "Результаты",
     "settings": "Настройки",
     "progress": "Прогресс",
     "onboarding": "Знакомство",
     "privacy": "Конфиденциальность",
     "terms": "Условия использования",
-    "more": "Ещё",
-    "admin": "Админ"
+    "admin": "Админ",
+    "main": "Основная навигация",
+    "profile": "Профиль"
   },
   "login": {
     "title": "Moodly",
@@ -106,7 +106,7 @@
     "weeklyAverages": "Средние за период",
     "noAveragesYet": "Записей пока нет — как только вы начнёте отслеживание, здесь появятся средние значения.",
     "testProgress": "Прогресс тестов",
-    "dateRange": "Период",
+    "period": "Период",
     "thisWeek": "Неделя",
     "twoWeeks": "2 недели",
     "oneMonth": "Месяц",
@@ -231,10 +231,9 @@
     "showLess": "Свернуть",
     "showScore": "Показать баллы",
     "hideScore": "Скрыть баллы",
-    "high": "Выражены:",
-    "moderate": "Умеренно:",
     "disclaimer": "Этот тест предназначен для самооценки и образовательных целей. Он не является медицинским диагнозом и не заменяет профессиональную консультацию. При любых вопросах обращайтесь к квалифицированному специалисту.",
     "scoreOf": "{{score}}/{{max}}",
+    "summaryCount": "{{count}} пройдено",
     "nextBreathing": "Попробовать дыхательное упражнение",
     "nextTrack": "Записать самочувствие",
     "nextTests": "Пройти другой тест",
@@ -249,7 +248,9 @@
     "thinkingPatternsPrevious": "Предыдущий тест · {{date}}",
     "thinkingPatternsSingle": "Пройдите тест ещё раз, чтобы увидеть динамику.",
     "thinkingPatternsLibraryHint": "Каждое название — ссылка в Библиотеку искажений",
-    "thinkingPatternsOpenLibrary": "{{name}}: открыть в библиотеке искажений"
+    "thinkingPatternsOpenLibrary": "{{name}}: открыть в библиотеке искажений",
+    "thinkingPatternsEmptyTitle": "Нет прохождений теста на искажения",
+    "thinkingPatternsEmptyDesc": "Пройдите тест, чтобы увидеть профиль мышления"
   },
   "breathing": {
     "title": "Дыхательное упражнение",
@@ -344,6 +345,8 @@
     "quizScore": "{{score}}/{{total}} ({{pct}}%)",
     "quizRestart": "Попробовать снова",
     "whichDistortion": "Какое это искажение?",
+    "next": "Далее",
+    "finish": "Посмотреть результат",
     "letGo": {
       "placeholder": "Напишите мысль, которая вас беспокоит",
       "hintQuestion": "Похоже на «{{distortion}}» — что бы вы сказали по-другому?",
@@ -493,12 +496,6 @@
     "timeThoughtJournal": "1–3 минуты",
     "categoryBody": "Тело",
     "categoryMind": "Разум"
-  },
-  "trendPreview": {
-    "title": "Динамика",
-    "show": "График",
-    "hide": "Скрыть",
-    "days": "{{active}} из {{total}} дней"
   },
   "thoughtJournal": {
     "title": "Дневник мыслей",
@@ -699,6 +696,7 @@
     "password": "Сменить пароль",
     "notifications": "Уведомления",
     "comingSoon": "Скоро",
+    "language": "Язык",
     "deleteAccount": "Удалить аккаунт",
     "deleteDesc": "Навсегда удалить ваш аккаунт и все связанные данные. Это действие нельзя отменить.",
     "deleteButton": "Удалить аккаунт",
@@ -708,6 +706,20 @@
     "confirmCancel": "Отмена",
     "confirmDelete": "Удалить",
     "deleting": "Удаление..."
+  },
+  "review": {
+    "title": "Отзыв о приложении",
+    "prompt": "Как вам Moodly?",
+    "placeholder": "Что вам нравится? Что можно улучшить?",
+    "submit": "Отправить отзыв",
+    "submitting": "Отправка...",
+    "thanks": "Спасибо! Ваш отзыв учтён.",
+    "edit": "Изменить отзыв",
+    "yourReview": "Ваш отзыв",
+    "errorRequired": "Поставьте оценку и напишите пару слов",
+    "loadFailed": "Не удалось загрузить ваш отзыв",
+    "submitFailed": "Не удалось отправить отзыв",
+    "starLabel": "Оценка {{value}} из 5"
   },
   "errors": {
     "notFound": "То, что вы ищете, не найдено",
@@ -749,7 +761,19 @@
     "xp1000": "Легенда XP",
     "xp1000Desc": "Заработать 1000 XP",
     "completions100": "Практикоман",
-    "completions100Desc": "Выполнить 100 практик"
+    "completions100Desc": "Выполнить 100 практик",
+    "level40": "Гармония",
+    "level40Desc": "Достичь 40 уровня",
+    "level50": "Легенда",
+    "level50Desc": "Достичь 50 уровня",
+    "streak60": "Пламя",
+    "streak60Desc": "Достичь серии в 60 дней",
+    "xp2000": "Провидец XP",
+    "xp2000Desc": "Заработать 2000 XP",
+    "breathing100": "Ветер",
+    "breathing100Desc": "Выполнить 100 дыхательных упражнений",
+    "completions250": "Неутомимый",
+    "completions250Desc": "Выполнить 250 практик"
   },
   "progress": {
     "xpToNext": "{{current}} / {{next}} XP",
@@ -788,6 +812,12 @@
     "titleWarrior": "Воин",
     "titleGuardian": "Страж",
     "titleSeeker": "Искатель",
+    "titleHarmonist": "Гармонист",
+    "titlePhoenix": "Феникс",
+    "titleVisionary": "Провидец",
+    "titleBreeze": "Бриз",
+    "titlePersistent": "Упорный",
+    "titleLegend": "Легенда",
     "less": "Меньше",
     "more": "Больше"
   },
@@ -801,6 +831,11 @@
     "practiceThoughtJournal": "Записать мысль в дневник",
     "complete3Practices": "Выполнить 3 практики",
     "logMoodEntry": "Записать настроение",
+    "completeTest": "Пройти тест",
+    "log3MoodEntries": "Сделать 3 записи о настроении",
+    "complete5Practices": "Выполнить 5 практик",
+    "breathing2": "Сделать 2 дыхательных упражнения",
+    "streak2": "Поддержать серию 2 дня подряд",
     "claim": "Забрать награду",
     "allDone": "Все задания выполнены! Отлично!",
     "thinkingPatterns": "Профиль мышления"
@@ -850,8 +885,8 @@
     "forbidden": "Доступ только для администратора",
     "deleting": "Удаление...",
     "usersTab": "Пользователи",
-    "feedbackTab": "Обратная связь",
+    "feedbackTab": "Отзывы",
     "noFeedback": "Отзывов пока нет.",
-    "feedbackLoadFailed": "Не удалось загрузить обратную связь"
+    "feedbackLoadFailed": "Не удалось загрузить отзывы"
   }
 }

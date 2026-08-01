@@ -805,12 +805,17 @@ components:
       type: object
       required:
         - id
+        - rating
         - message
         - createdAt
         - user
       properties:
         id:
           type: string
+        rating:
+          type: integer
+          format: int32
+          description: Оценка приложения от 1 до 5
         message:
           type: string
         createdAt:
@@ -1218,6 +1223,7 @@ components:
       required:
         - id
         - userId
+        - rating
         - message
         - createdAt
       properties:
@@ -1225,6 +1231,10 @@ components:
           type: string
         userId:
           type: string
+        rating:
+          type: integer
+          format: int32
+          description: Оценка приложения от 1 до 5
         message:
           type: string
         createdAt:
@@ -1234,8 +1244,13 @@ components:
     FeedbackCreate:
       type: object
       required:
+        - rating
         - message
       properties:
+        rating:
+          type: integer
+          format: int32
+          description: Оценка приложения от 1 до 5
         message:
           type: string
     ForgotPasswordRequest:

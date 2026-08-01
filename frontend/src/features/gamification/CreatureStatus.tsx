@@ -33,7 +33,7 @@ export default function CreatureStatus({ level, experience, className }: Creatur
           trackClassName="bg-muted"
           className="flex-1"
         />
-        <span className="text-[11px] text-muted-foreground tabular-nums leading-none font-medium">
+        <span className="text-xs text-muted-foreground tabular-nums leading-none font-medium">
           {experience}/{nextLevelExp}
         </span>
       </div>

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
-import { renderWithProviders, screen, fireEvent } from "../../test/test-utils";
+import userEvent from "@testing-library/user-event";
+import { renderWithProviders, screen, fireEvent, within } from "../../test/test-utils";
 import Dashboard from "../dashboard";
 import { api } from "../../lib/api";
 
@@ -52,15 +53,19 @@ describe("Dashboard", () => {
     mockDashboardApi();
     renderWithProviders(<Dashboard />);
 
-    // Period selector
-    expect(screen.getByText("Period")).toBeInTheDocument();
-    expect(screen.getByText("2 Weeks")).toBeInTheDocument();
-
     // Wellbeing accordion header
     expect(screen.getByText("Wellbeing")).toBeInTheDocument();
 
     // Tests taken card (empty state)
     expect(await screen.findByText("Tests Taken")).toBeInTheDocument();
+
+    // Radar and tests blocks each have their own period dropdown, defaulted to 2 Weeks
+    expect(screen.getAllByRole("combobox")).toHaveLength(2);
+    expect(screen.getAllByText("2 Weeks").length).toBeGreaterThanOrEqual(1);
+
+    // Thinking patterns radar is always visible (empty state without CD results)
+    expect(screen.getByText("Thinking Patterns")).toBeInTheDocument();
+    expect(screen.getByText("No thinking patterns test yet")).toBeInTheDocument();
 
     // Legacy digest sections removed
     expect(screen.queryByText("Weekly Averages")).not.toBeInTheDocument();
@@ -101,5 +106,100 @@ describe("Dashboard", () => {
 
     expect(await screen.findByTestId("quick-entry-saved-Mood")).toBeInTheDocument();
     expect(screen.queryByTestId("quick-entry-saved-Anxiety")).not.toBeInTheDocument();
+  });
+
+  it("renders thinking patterns radar when CD results are in the period", async () => {
+    mockDashboardApi();
+    (api.testResults.list as Mock).mockResolvedValue([
+      {
+        id: "r1",
+        testId: "cd1",
+        score: 3,
+        interpretation: "Mild",
+        recommendation: "Track your mood",
+        completedAt: new Date().toISOString(),
+        flags: { distortions: { allOrNothing: { score: 5 } } },
+      },
+    ]);
+    renderWithProviders(<Dashboard />);
+
+    expect(await screen.findByText("Thinking Patterns")).toBeInTheDocument();
+    expect(screen.queryByText("No thinking patterns test yet")).not.toBeInTheDocument();
+    expect(await screen.findByText("Take the test again to see the trend.")).toBeInTheDocument();
+  });
+
+  it("filters test results by the selected period", async () => {
+    const user = userEvent.setup();
+    mockDashboardApi();
+    const now = Date.now();
+    (api.testResults.list as Mock).mockResolvedValue([
+      {
+        id: "r1",
+        testId: "t1",
+        score: 5,
+        interpretation: "Mild",
+        recommendation: "x",
+        completedAt: new Date(now).toISOString(),
+      },
+      {
+        id: "r2",
+        testId: "t1",
+        score: 9,
+        interpretation: "Moderate",
+        recommendation: "y",
+        completedAt: new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ]);
+    (api.tests.list as Mock).mockResolvedValue([{ id: "t1", title: "Mood Test" }]);
+    renderWithProviders(<Dashboard />);
+
+    // Default period (2 weeks): the 30-day-old result is excluded
+    expect(await screen.findByText("Mood Test")).toBeInTheDocument();
+    expect(screen.getByText("1 taken")).toBeInTheDocument();
+    expect(screen.queryByText("Moderate")).not.toBeInTheDocument();
+
+    // Switch the tests dropdown to 1 Month — the 30-day-old result now appears
+    const testsCard = screen.getByText("Tests Taken").closest(".rounded-xl") as HTMLElement;
+    await user.click(within(testsCard).getByRole("combobox"));
+    await user.click(await screen.findByText("1 Month"));
+    expect(await screen.findByText("2 taken")).toBeInTheDocument();
+
+    // Expanding the test shows the older run's interpretation too
+    fireEvent.click(screen.getByText("Mood Test"));
+    expect(screen.getByText("Moderate")).toBeInTheDocument();
+  });
+
+  it("expands a test to show run history and details", async () => {
+    mockDashboardApi();
+    const now = Date.now();
+    (api.testResults.list as Mock).mockResolvedValue([
+      {
+        id: "r1",
+        testId: "t1",
+        score: 3,
+        interpretation: "Minimal",
+        recommendation: "Keep it up",
+        completedAt: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: "r2",
+        testId: "t1",
+        score: 7,
+        interpretation: "Moderate",
+        recommendation: "Consider support",
+        completedAt: new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ]);
+    (api.tests.list as Mock).mockResolvedValue([{ id: "t1", title: "Mood Test" }]);
+    renderWithProviders(<Dashboard />);
+
+    fireEvent.click(await screen.findByText("Mood Test"));
+
+    // Run history is now visible
+    expect(screen.getByText("2 taken")).toBeInTheDocument();
+
+    // Expanding an attempt shows its interpretation and recommendation
+    fireEvent.click(screen.getByText("Moderate"));
+    expect(await screen.findByText("Consider support")).toBeInTheDocument();
   });
 });

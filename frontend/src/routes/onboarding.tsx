@@ -265,41 +265,41 @@ export default function OnboardingPage() {
                   {t("onboarding2.petChooseTitle")}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {PET_DEFINITIONS.filter((p) =>
-                    STARTER_PET_TYPES.includes(p.type as never),
-                  ).map((pet) => {
-                    const isActive = petType === pet.type;
-                    return (
-                      <button
-                        key={pet.type}
-                        type="button"
-                        onClick={() => setPetType(pet.type)}
-                        aria-pressed={isActive}
-                        className={cn(
-                          "flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                          isActive
-                            ? "border-primary bg-primary/5 shadow-neumorphic-sm"
-                            : "border-border bg-card shadow-neumorphic-sm",
-                        )}
-                      >
-                        <span
+                  {PET_DEFINITIONS.filter((p) => STARTER_PET_TYPES.includes(p.type as never)).map(
+                    (pet) => {
+                      const isActive = petType === pet.type;
+                      return (
+                        <button
+                          key={pet.type}
+                          type="button"
+                          onClick={() => setPetType(pet.type)}
+                          aria-pressed={isActive}
                           className={cn(
-                            "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
-                            pet.color,
+                            "flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                            isActive
+                              ? "border-primary bg-primary/5 shadow-neumorphic-sm"
+                              : "border-border bg-card shadow-neumorphic-sm",
                           )}
                         >
-                          <span aria-hidden="true">{pet.emoji}</span>
-                        </span>
-                        <span className="text-[11px] font-medium text-foreground leading-tight">
-                          {t(pet.labelKey)}
-                        </span>
-                      </button>
-                    );
-                  })}
+                          <span
+                            className={cn(
+                              "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
+                              pet.color,
+                            )}
+                          >
+                            <span aria-hidden="true">{pet.emoji}</span>
+                          </span>
+                          <span className="text-xs font-medium text-foreground leading-tight">
+                            {t(pet.labelKey)}
+                          </span>
+                        </button>
+                      );
+                    },
+                  )}
                 </div>
               </div>
 
-              <p className="text-[11px] text-muted-foreground">{t("onboarding2.petMoreHint")}</p>
+              <p className="text-xs text-muted-foreground">{t("onboarding2.petMoreHint")}</p>
 
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(3)}>
