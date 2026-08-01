@@ -11,7 +11,7 @@ test("длинный путь: запись → практика → дневн�
   await gotoApp(page, "/practices/gratitude");
   await page.getByPlaceholder("За что вы благодарны сегодня?").fill("e2e-путь: повод для благодарности");
   await page.getByRole("button", { name: "Добавить" }).click();
-  await expect(page.getByText("Добавлено в дневник благодарности")).toBeVisible();
+  await expect(page.getByText("e2e-путь: повод для благодарности")).toBeVisible();
 
   await gotoApp(page, "/practices/thought-journal");
   await page.getByPlaceholder("Опишите ситуацию коротко…").fill("e2e-путь: сложная ситуация");
