@@ -131,18 +131,22 @@ db-prod-create-user:
 # DATABASE_URL берётся из backend/.env.prod.
 # Пример: make db-backup
 # Пример: make db-restore FILE=backups/moodly-20260801.sql
+# Утилиты: предпочитаем свежие клиенты из Homebrew libpq (совместимы с новыми
+# серверами, напр. Render Postgres 18), иначе системные pg_dump/psql.
+PG_DUMP ?= $(shell test -x /opt/homebrew/opt/libpq/bin/pg_dump && echo /opt/homebrew/opt/libpq/bin/pg_dump || echo pg_dump)
+PSQL ?= $(shell test -x /opt/homebrew/opt/libpq/bin/psql && echo /opt/homebrew/opt/libpq/bin/psql || echo psql)
 
 db-backup:
 	@mkdir -p backups
 	@set -a; . backend/.env.prod; set +a; \
-	  pg_dump "$$DATABASE_URL" --no-owner > "backups/moodly-$$(date +%Y%m%d-%H%M%S).sql"
+	  $(PG_DUMP) "$$DATABASE_URL" --no-owner > "backups/moodly-$$(date +%Y%m%d-%H%M%S).sql"
 	@echo "Backup saved to backups/"
 
 db-restore:
 	@test -n "$(FILE)" || (echo "Usage: make db-restore FILE=path.sql"; exit 1)
 	@test -f "$(FILE)" || (echo "File not found: $(FILE)"; exit 1)
 	@set -a; . backend/.env.prod; set +a; \
-	  psql "$$DATABASE_URL" < "$(FILE)"
+	  $(PSQL) "$$DATABASE_URL" < "$(FILE)"
 
 # ─── Dev/Prod Workflow ──────────────────────────────────
 
