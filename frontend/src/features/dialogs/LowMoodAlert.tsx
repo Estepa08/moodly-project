@@ -48,9 +48,7 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
             <Wind aria-hidden="true" className="w-4 h-4" />
             {t("lowMood.actionBreathing")}
           </span>
-          <span className="text-[11px] font-normal opacity-80">
-            {t("lowMood.actionBreathingSub")}
-          </span>
+          <span className="text-xs font-normal opacity-80">{t("lowMood.actionBreathingSub")}</span>
         </Button>
         <Button
           variant="secondary"

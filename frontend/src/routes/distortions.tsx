@@ -1,14 +1,13 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronRight, BrainCircuit } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { DISTORTION_KEYS } from "../lib/distortionsQuiz";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { DistortionQuiz } from "../features/mood-entry";
 import { ThoughtRelease } from "../features/journal";
 import { Button } from "../components/ui/button";
 import { useParameters } from "../hooks/useParameters";
-import { useEntries, useCreateEntry } from "../hooks/useEntries";
-import { QuizScoreChart, TrendPreview } from "../features/analytics";
+import { useCreateEntry } from "../hooks/useEntries";
 import { useRewardPractice, PracticeSource } from "../features/gamification";
 import { SegmentControl, SegmentControlItem } from "../components/ui/segment-control";
 
@@ -32,25 +31,6 @@ export default function DistortionsPage() {
   const createEntry = useCreateEntry(() => {
     rewardPractice.mutate(PracticeSource.Distortions);
   });
-  const { data: quizEntries, isLoading: quizLoading } = useEntries(
-    quizParam ? { parameterId: quizParam.id } : undefined,
-  );
-
-  const [chartOpen, setChartOpen] = useState(false);
-
-  const last7 = useMemo(() => {
-    const arr: (number | null)[] = new Array(7).fill(null);
-    for (const e of quizEntries ?? []) {
-      const dayIndex = Math.floor((Date.now() - new Date(e.createdAt).getTime()) / 86_400_000);
-      if (dayIndex >= 0 && dayIndex < 7) {
-        const idx = 6 - dayIndex;
-        arr[idx] = arr[idx] === null ? e.value : (arr[idx] + e.value) / 2;
-      }
-    }
-    return arr;
-  }, [quizEntries]);
-
-  const activeDays = last7.filter((v): v is number => v !== null).length;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -59,22 +39,6 @@ export default function DistortionsPage() {
           {t("distortions.title")}
         </h2>
         <p className="text-sm text-muted-foreground mt-1">{t("distortions.subtitle")}</p>
-      </div>
-
-      <div className="max-w-lg mx-auto">
-        <TrendPreview
-          title={t("trendPreview.title")}
-          label={t("trendPreview.days", { active: activeDays, total: 7 })}
-          days={last7}
-          icon={<BrainCircuit aria-hidden="true" className="w-4 h-4 text-primary" />}
-          expanded={chartOpen}
-          onToggle={() => setChartOpen((o) => !o)}
-          showLabel={t("trendPreview.show")}
-          hideLabel={t("trendPreview.hide")}
-          disabled={(quizEntries?.length ?? 0) === 0}
-        >
-          <QuizScoreChart entries={quizEntries ?? []} isLoading={quizLoading} noCard />
-        </TrendPreview>
       </div>
 
       <div className="flex justify-center">

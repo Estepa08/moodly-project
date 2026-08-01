@@ -1,4 +1,5 @@
 import { SegmentControl, SegmentControlItem } from "./segment-control";
+import { cn } from "../../lib/utils";
 
 interface PeriodOption {
   key: string;
@@ -21,9 +22,13 @@ export default function PeriodSelector({
   label,
 }: PeriodSelectorProps) {
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn("flex items-center gap-2", size === "md" && "w-full")}>
       {label && <span className="text-xs font-medium text-muted-foreground shrink-0">{label}</span>}
-      <SegmentControl role="tablist" aria-label={label ?? "period"}>
+      <SegmentControl
+        role="tablist"
+        aria-label={label ?? "period"}
+        className={cn(size === "md" && "flex-1 min-w-0")}
+      >
         {options.map((opt) => (
           <SegmentControlItem
             key={opt.key}

@@ -88,7 +88,7 @@ export default function AchievementGrid() {
               </p>
               <p
                 className={cn(
-                  "text-[10px] leading-tight mt-0.5",
+                  "text-[11px] leading-tight mt-0.5",
                   a.unlocked ? "text-muted-foreground" : "text-muted-foreground/60",
                 )}
               >
@@ -103,7 +103,7 @@ export default function AchievementGrid() {
                     style={{ width: `${a.progress}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{a.progress}%</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{a.progress}%</p>
               </div>
             )}
           </div>

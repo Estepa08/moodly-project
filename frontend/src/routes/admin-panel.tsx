@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../components/ui/dialog";
-import { AlertTriangle, MessageSquare, ShieldCheck, Users } from "lucide-react";
+import { AlertTriangle, MessageSquare, ShieldCheck, Star, Users } from "lucide-react";
 import { cn } from "../lib/utils";
 
 function initials(u: AdminUser): string {
@@ -46,6 +46,23 @@ function formatDate(iso: string, locale: string): string {
     month: "2-digit",
     year: "numeric",
   });
+}
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5" aria-label={`${rating} / 5`}>
+      {[1, 2, 3, 4, 5].map((value) => (
+        <Star
+          key={value}
+          aria-hidden="true"
+          className={cn(
+            "w-3.5 h-3.5",
+            value <= rating ? "text-warning fill-warning" : "text-muted-foreground/30",
+          )}
+        />
+      ))}
+    </div>
+  );
 }
 
 export default function AdminPanelPage() {
@@ -275,6 +292,9 @@ export default function AdminPanelPage() {
                       </p>
                     </div>
                     <p className="text-xs text-muted-foreground truncate mt-0.5">{f.user.email}</p>
+                    <div className="mt-1.5">
+                      <Stars rating={f.rating} />
+                    </div>
                     <p className="text-sm text-foreground mt-2">{f.message}</p>
                   </CardContent>
                 </Card>

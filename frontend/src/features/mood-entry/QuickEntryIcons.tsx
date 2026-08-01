@@ -176,7 +176,7 @@ export default function QuickEntryIcons({
                           setShowNote(true);
                           setTimeout(() => noteInputRef.current?.focus(), 100);
                         }}
-                        className="h-auto px-2 min-h-[44px] text-[11px] text-muted-foreground hover:text-primary"
+                        className="h-auto px-2 min-h-[44px] text-xs text-muted-foreground hover:text-primary"
                         aria-label={t("dashboard.quickEntry.addNote")}
                       >
                         <Plus aria-hidden="true" className="w-3 h-3" />

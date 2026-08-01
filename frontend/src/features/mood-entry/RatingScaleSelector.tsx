@@ -86,7 +86,7 @@ export function RatingScaleSelector({
             <span
               className={cn(
                 "leading-tight text-center truncate max-w-full",
-                compact ? "text-[9px]" : "text-[10px] sm:text-[11px]",
+                compact ? "text-[10px]" : "text-[10px] sm:text-[11px]",
               )}
             >
               {label}

@@ -1,7 +1,9 @@
 import type { FastifyInstance } from "fastify";
 import { feedbackService } from "../services/feedback.js";
+import { ValidationError } from "../lib/errors.js";
 
 interface FeedbackCreateBody {
+  rating: number;
   message: string;
 }
 
@@ -10,7 +12,14 @@ export default async function feedbackRoutes(fastify: FastifyInstance) {
     "/feedback",
     { preHandler: [fastify.authenticate] },
     async (request) => {
-      return feedbackService.create(request.userId, request.body.message);
+      const { rating, message } = request.body ?? {};
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+        throw new ValidationError("rating must be an integer between 1 and 5");
+      }
+      if (!message || typeof message !== "string" || message.trim().length === 0) {
+        throw new ValidationError("message must be a non-empty string");
+      }
+      return feedbackService.create(request.userId, rating, message.trim());
     },
   );
 

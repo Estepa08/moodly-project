@@ -289,7 +289,7 @@ export default function OnboardingPage() {
                           >
                             <span aria-hidden="true">{pet.emoji}</span>
                           </span>
-                          <span className="text-[11px] font-medium text-foreground leading-tight">
+                          <span className="text-xs font-medium text-foreground leading-tight">
                             {t(pet.labelKey)}
                           </span>
                         </button>
@@ -299,7 +299,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <p className="text-[11px] text-muted-foreground">{t("onboarding2.petMoreHint")}</p>
+              <p className="text-xs text-muted-foreground">{t("onboarding2.petMoreHint")}</p>
 
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(3)}>

@@ -37,10 +37,9 @@ await fastify.register(helmet, {
 await fastify.register(cors, { origin: getAllowedOrigins(), credentials: true });
 await fastify.register(cookie);
 
-const readRateLimit = Number(process.env.RATE_LIMIT_MAX ?? 100);
-const writeRateLimit = Number(
-  process.env.RATE_LIMIT_WRITE_MAX ?? (process.env.NODE_ENV === "test" ? 1000 : 10),
-);
+const isProduction = process.env.NODE_ENV === "production";
+const readRateLimit = Number(process.env.RATE_LIMIT_MAX ?? (isProduction ? 100 : 1000));
+const writeRateLimit = Number(process.env.RATE_LIMIT_WRITE_MAX ?? (isProduction ? 10 : 1000));
 await fastify.register(rateLimit, { max: readRateLimit, timeWindow: "1 minute" });
 
 fastify.addHook("onRoute", (routeOptions) => {

@@ -29,29 +29,31 @@ describe("AdminPanelPage", () => {
     mockAdminApi();
     renderWithProviders(<AdminPanelPage />);
     expect(await screen.findByText("Users")).toBeInTheDocument();
-    expect(screen.getByText("Feedback")).toBeInTheDocument();
+    expect(screen.getByText("Reviews")).toBeInTheDocument();
   });
 
-  it("shows feedback list with author email and message", async () => {
+  it("shows feedback list with author email, rating and message", async () => {
     mockAdminApi();
     (api.admin.listFeedback as Mock).mockResolvedValue([
       {
         id: "1",
+        rating: 5,
         message: "Great app!",
         createdAt: "2026-07-31T10:00:00.000Z",
         user: { email: "user@example.com", name: "User" },
       },
     ]);
     renderWithProviders(<AdminPanelPage />);
-    await userEvent.click(await screen.findByText("Feedback"));
+    await userEvent.click(await screen.findByText("Reviews"));
     expect(await screen.findByText("Great app!")).toBeInTheDocument();
     expect(screen.getByText("user@example.com")).toBeInTheDocument();
+    expect(screen.getByLabelText("5 / 5")).toBeInTheDocument();
   });
 
   it("shows empty state when there is no feedback", async () => {
     mockAdminApi();
     renderWithProviders(<AdminPanelPage />);
-    await userEvent.click(await screen.findByText("Feedback"));
-    expect(await screen.findByText("No feedback yet")).toBeInTheDocument();
+    await userEvent.click(await screen.findByText("Reviews"));
+    expect(await screen.findByText("No reviews yet")).toBeInTheDocument();
   });
 });

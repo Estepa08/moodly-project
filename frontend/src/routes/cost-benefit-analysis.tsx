@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Scale } from "lucide-react";
 import {
   useCbaExamples,
   useCbaCommonItems,
@@ -13,7 +12,6 @@ import {
 } from "../features/cost-benefit-analysis";
 import { useRewardPractice, PracticeSource } from "../features/gamification";
 import Spinner from "../components/ui/spinner";
-import { CbaTrendChart, TrendPreview } from "../features/analytics";
 import { SegmentControl, SegmentControlItem } from "../components/ui/segment-control";
 
 const TABS = [
@@ -25,7 +23,6 @@ const TABS = [
 export default function CostBenefitAnalysisPage() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("library");
-  const [chartOpen, setChartOpen] = useState(false);
 
   const { data: examples, isLoading: examplesLoading } = useCbaExamples();
   const { data: commonItems, isLoading: commonItemsLoading } = useCbaCommonItems();
@@ -37,41 +34,11 @@ export default function CostBenefitAnalysisPage() {
   });
   const deleteEntry = useDeleteCbaEntry();
 
-  const last7 = useMemo(() => {
-    const arr: (number | null)[] = new Array(7).fill(null);
-    for (const e of entries ?? []) {
-      const dayIndex = Math.floor((Date.now() - new Date(e.createdAt).getTime()) / 86_400_000);
-      if (dayIndex >= 0 && dayIndex < 7) {
-        const idx = 6 - dayIndex;
-        arr[idx] = (arr[idx] ?? 0) + 1;
-      }
-    }
-    return arr;
-  }, [entries]);
-
-  const activeDays = last7.filter((v): v is number => v !== null).length;
-
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold text-foreground font-serif">{t("cba.title")}</h2>
         <p className="text-sm text-muted-foreground mt-1">{t("cba.subtitle")}</p>
-      </div>
-
-      <div className="max-w-lg mx-auto">
-        <TrendPreview
-          title={t("trendPreview.title")}
-          label={t("trendPreview.days", { active: activeDays, total: 7 })}
-          days={last7}
-          icon={<Scale aria-hidden="true" className="w-4 h-4 text-primary" />}
-          expanded={chartOpen}
-          onToggle={() => setChartOpen((o) => !o)}
-          showLabel={t("trendPreview.show")}
-          hideLabel={t("trendPreview.hide")}
-          disabled={(entries?.length ?? 0) === 0}
-        >
-          {entries && entries.length > 0 && <CbaTrendChart entries={entries} noCard />}
-        </TrendPreview>
       </div>
 
       <div className="flex justify-center">

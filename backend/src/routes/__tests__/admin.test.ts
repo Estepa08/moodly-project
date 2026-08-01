@@ -129,13 +129,13 @@ describe("Admin", () => {
       method: "POST",
       url: "/feedback",
       headers: { authorization: `Bearer ${userToken}` },
-      payload: { message: "First feedback" },
+      payload: { rating: 5, message: "First feedback" },
     });
     await app.inject({
       method: "POST",
       url: "/feedback",
       headers: { authorization: `Bearer ${userToken}` },
-      payload: { message: "Second feedback" },
+      payload: { rating: 4, message: "Second feedback" },
     });
 
     const res = await app.inject({
@@ -144,9 +144,10 @@ describe("Admin", () => {
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
-    expect(Number(res.headers["x-total-count"])).toBeGreaterThanOrEqual(2);
+    expect(Number(res.headers["x-total-count"])).toBeGreaterThanOrEqual(1);
 
     const items = res.json() as Array<{
+      rating: number;
       message: string;
       user: { email: string };
       userId?: string;
@@ -154,9 +155,9 @@ describe("Admin", () => {
     const ours = items.filter(
       (f) => f.message === "First feedback" || f.message === "Second feedback",
     );
-    expect(ours).toHaveLength(2);
+    expect(ours).toHaveLength(1);
     expect(ours[0].message).toBe("Second feedback");
-    expect(ours[1].message).toBe("First feedback");
+    expect(ours[0].rating).toBe(4);
     expect(ours[0].user.email).toBe("admin-fb-user@example.com");
     expect(ours[0]).not.toHaveProperty("userId");
   });

@@ -52,7 +52,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
                 trackClassName="bg-muted"
               />
             </div>
-            <span className="text-[11px] text-muted-foreground tabular-nums font-medium whitespace-nowrap">
+            <span className="text-xs text-muted-foreground tabular-nums font-medium whitespace-nowrap">
               {creature.experience}/{nextLevelExp} XP
             </span>
           </div>

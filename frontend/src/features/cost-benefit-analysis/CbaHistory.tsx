@@ -36,7 +36,7 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
               />
               <div className="text-xs text-right shrink-0">
                 <p className="font-medium text-foreground">{entry.prosWeight}</p>
-                <p className="text-muted-foreground text-[10px]">{entry.consWeight}</p>
+                <p className="text-muted-foreground text-[11px]">{entry.consWeight}</p>
               </div>
               <IconButton
                 variant="ghost"

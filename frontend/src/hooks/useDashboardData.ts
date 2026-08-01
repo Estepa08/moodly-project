@@ -2,56 +2,53 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "./useParameters";
 import { useEntries, useCreateEntry } from "./useEntries";
-import { useTests, useTestResults } from "./useTests";
 import { useCreatureState } from "../features/gamification";
 import type { components } from "../lib/api-types";
-import type { DistortionEntry } from "../features/analytics";
-import { DistortionKey } from "../lib/distortionsQuiz";
 import { TEXT_PARAMS, Period, Trend, ParameterName } from "../lib/constants";
-import { isWithinLastDays, formatChartDate } from "../lib/utils";
+import { isWithinLastDays, formatChartDate, getDateRange } from "../lib/utils";
 
 type Entry = components["schemas"]["Entry"];
-type TestResult = components["schemas"]["TestResult"];
-
-export const PERIODS = [
-  { key: Period.OneWeek, labelKey: "dashboard.thisWeek", days: 7 },
-  { key: Period.TwoWeeks, labelKey: "dashboard.twoWeeks", days: 14 },
-  { key: Period.OneMonth, labelKey: "dashboard.oneMonth", days: 30 },
-  { key: Period.ThreeMonths, labelKey: "dashboard.threeMonths", days: 90 },
-  { key: Period.All, labelKey: "dashboard.allTime", days: Infinity },
-] as const;
 
 const DASHBOARD_EXCLUDED_PARAMS = new Set<string>(["Thought Journal Mood"]);
 
-const TEST_ABBR_KEYS: Record<string, string> = {
-  "Оценка настроения": "tests.abbreviation.phq9",
-  "Оценка уровня тревоги": "tests.abbreviation.gad7",
-  "Оценка тревоги по шкале Бернса": "tests.abbreviation.bai",
-  "Оценка депрессии по шкале Бернса": "tests.abbreviation.bdc",
-  "Определение когнитивных искажений": "tests.abbreviation.cd",
-};
+const SUMMARY_PERIOD = Period.TwoWeeks;
 
-function getDateRange(period: Period): { from?: string; to?: string } {
-  const p = PERIODS.find((x) => x.key === period);
-  if (!p || p.days === Infinity) return {};
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const from = new Date(today.getTime() - p.days * 24 * 60 * 60 * 1000);
-  return { from: from.toISOString(), to: today.toISOString() };
+function unionDateRange(
+  a: { from?: string; to?: string },
+  b: { from?: string; to?: string },
+): { from?: string; to?: string } {
+  if (!a.from || !b.from) return {};
+  const from = new Date(Math.min(Date.parse(a.from), Date.parse(b.from))).toISOString();
+  const to = new Date(Math.max(Date.parse(a.to!), Date.parse(b.to!))).toISOString();
+  return { from, to };
+}
+
+function entriesInRange(
+  entries: Entry[] | undefined,
+  range: { from?: string; to?: string },
+): Entry[] {
+  if (!entries || !range.from) return entries ?? [];
+  const from = Date.parse(range.from);
+  const to = Date.parse(range.to!);
+  return entries.filter((e) => {
+    const t = new Date(e.createdAt).getTime();
+    return t >= from && t < to;
+  });
 }
 
 export function useDashboardData(period: Period) {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const { data: params } = useParameters();
-  const dateRange = useMemo(() => getDateRange(period), [period]);
+  const dateRange = useMemo(
+    () => unionDateRange(getDateRange(period), getDateRange(SUMMARY_PERIOD)),
+    [period],
+  );
   const { data: allEntries, isLoading: entriesLoading } = useEntries(dateRange);
   const gratitudeParam = useMemo(() => params?.find((p) => p.name === "Gratitude"), [params]);
   const { data: gratitudeAllEntries } = useEntries(
     gratitudeParam ? { parameterId: gratitudeParam.id } : undefined,
   );
-  const { data: testResults, isLoading: resultsLoading } = useTestResults();
-  const { data: tests } = useTests();
   const { data: creatureState } = useCreatureState();
   const createEntry = useCreateEntry();
 
@@ -87,10 +84,15 @@ export function useDashboardData(period: Period) {
     return map;
   }, [allEntries, paramMap]);
 
+  const chartEntries = useMemo(
+    () => entriesInRange(allEntries, getDateRange(period)),
+    [allEntries, period],
+  );
+
   const trendData = useMemo(() => {
-    if (!allEntries || allEntries.length === 0) return [];
+    if (!chartEntries || chartEntries.length === 0) return [];
     const grouped = new Map<string, Record<string, unknown>>();
-    const sorted = [...allEntries].sort(
+    const sorted = [...chartEntries].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
     for (const e of sorted) {
@@ -106,15 +108,15 @@ export function useDashboardData(period: Period) {
       row[name] = values[name].reduce((s, v) => s + v, 0) / values[name].length;
     }
     return Array.from(grouped.values());
-  }, [allEntries, paramMap, i18n.language, period]);
+  }, [chartEntries, paramMap, i18n.language, period]);
 
-  const { weeklyAverages, wellbeing } = useMemo(() => {
-    if (!allEntries) return { weeklyAverages: [], wellbeing: { average: null, trend: Trend.Flat } };
-    const range = getDateRange(period);
-    const currentStart = range.from ? new Date(range.from).getTime() : 0;
-    const currentEnd = range.to ? new Date(range.to).getTime() : Date.now();
+  const wellbeing = useMemo(() => {
+    if (!allEntries) return { average: null, trend: Trend.Flat };
+    const range = getDateRange(SUMMARY_PERIOD);
+    const currentStart = range.from ? Date.parse(range.from) : 0;
+    const currentEnd = range.to ? Date.parse(range.to) : Date.now();
     const periodMs = currentEnd - currentStart;
-    const prevStart = new Date(currentStart - periodMs).getTime();
+    const prevStart = currentStart - periodMs;
     const prevEnd = currentStart;
 
     const calcAvg = (entries: Entry[], start: number, end: number) => {
@@ -134,7 +136,7 @@ export function useDashboardData(period: Period) {
       if (current !== null && previous !== null) {
         trend = current > previous ? Trend.Up : current < previous ? Trend.Down : Trend.Flat;
       }
-      return { name, average: current, previous, trend, visible: true };
+      return { name, average: current, previous, trend };
     });
 
     const wellbeingScore = (getValue: (name: string) => number | null) => {
@@ -161,16 +163,8 @@ export function useDashboardData(period: Period) {
             : Trend.Flat;
     }
 
-    return {
-      weeklyAverages: perParam.map(({ name, average, trend, visible }) => ({
-        name,
-        average,
-        trend,
-        visible,
-      })),
-      wellbeing: { average: wellbeingCurrent, trend: wellbeingTrend },
-    };
-  }, [allEntries, period, paramNames, entriesByParam]);
+    return { average: wellbeingCurrent, trend: wellbeingTrend };
+  }, [allEntries, paramNames, entriesByParam]);
 
   const gratitudeStats = useMemo(() => {
     const weekCount = (gratitudeAllEntries ?? []).filter((e) =>
@@ -179,66 +173,15 @@ export function useDashboardData(period: Period) {
     return { weekCount };
   }, [gratitudeAllEntries]);
 
-  const testAbbrMap = useMemo(() => {
-    const map = new Map<string, string>();
-    if (tests) {
-      for (const test of tests) {
-        const key = TEST_ABBR_KEYS[test.title];
-        map.set(test.id, key ? t(key) : test.title.slice(0, 8));
-      }
-    }
-    return map;
-  }, [tests, t]);
-
-  const testTimeline = useMemo(() => {
-    if (!testResults) return [];
-    const grouped = new Map<string, TestResult[]>();
-    for (const r of testResults) {
-      if (!grouped.has(r.testId)) grouped.set(r.testId, []);
-      grouped.get(r.testId)!.push(r);
-    }
-    return Array.from(grouped.entries()).map(([testId, results]) => {
-      const sorted = results.sort(
-        (a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime(),
-      );
-      const last = sorted[sorted.length - 1];
-      return {
-        testId,
-        label: testAbbrMap.get(testId) ?? testId.slice(0, 8),
-        results: sorted,
-        lastScore: last.score,
-      };
-    });
-  }, [testResults, testAbbrMap]);
-
-  const radarData: DistortionEntry[] = useMemo(() => {
-    const cdResult = testResults?.find(
-      (r) => (r.flags as Record<string, unknown> | undefined)?.distortions,
-    );
-    const cdDistortions = (
-      cdResult?.flags as Record<string, Record<string, { score: number }>> | undefined
-    )?.distortions;
-    return cdDistortions
-      ? Object.entries(cdDistortions).map(([key, val]) => ({
-          key: key as DistortionKey,
-          score: val.score,
-        }))
-      : [];
-  }, [testResults]);
-
   return {
     numericParams,
     trendData,
     paramNames,
     wellbeing,
-    weeklyAverages,
     entriesByParam,
     creatureState,
-    radarData,
-    testTimeline,
     createEntry,
     gratitudeStats,
-    isDataLoading: entriesLoading || resultsLoading,
-    resultsLoading,
+    isDataLoading: entriesLoading,
   };
 }

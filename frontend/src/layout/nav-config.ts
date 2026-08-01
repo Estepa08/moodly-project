@@ -6,11 +6,12 @@ import {
   Moon,
   Scale,
   ClipboardList,
-  BarChart3,
   Settings,
   BookOpen,
   Trophy,
   ShieldCheck,
+  User,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 
@@ -38,11 +39,16 @@ export const PRACTICE_ITEMS: NavItem[] = [
 export const OTHER_ITEMS: NavItem[] = [
   { labelKey: "nav.progress", path: "/progress", icon: Trophy },
   { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
-  { labelKey: "nav.results", path: "/results", icon: BarChart3 },
   { labelKey: "nav.settings", path: "/settings", icon: Settings },
 ];
 
-export const ALL_MORE_ITEMS = [...PRACTICE_ITEMS, ...OTHER_ITEMS];
+export const BOTTOM_NAV_ITEMS: NavItem[] = [
+  DASHBOARD_ITEM,
+  { labelKey: "nav.practices", path: "/practices", icon: Sparkles },
+  { labelKey: "nav.tests", path: "/tests", icon: ClipboardList },
+  { labelKey: "nav.progress", path: "/progress", icon: Trophy },
+  { labelKey: "nav.profile", path: "/settings", icon: User },
+];
 
 export const ADMIN_ITEM: NavItem = {
   labelKey: "nav.admin",

@@ -1,13 +1,15 @@
 import { useState, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import { useDashboardData, PERIODS } from "../hooks/useDashboardData";
+import { useDashboardData } from "../hooks/useDashboardData";
 import { useEntries } from "../hooks/useEntries";
+import { useTestResults } from "../hooks/useTests";
 import { Period } from "../lib/constants";
-import PeriodSelector from "../components/ui/PeriodSelector";
+import { filterByPeriod } from "../lib/utils";
 import { ParameterTrendsChart } from "../features/analytics";
 import { QuickEntryIcons } from "../features/mood-entry";
-import { WellbeingCard, TestsTakenCard } from "../widgets";
+import { WellbeingCard } from "../widgets";
+import TestsResultsSection from "../widgets/TestsResultsSection";
+import ThinkingPatternsCard from "../widgets/ThinkingPatternsCard";
 import CompanionCard from "../features/gamification/CompanionCard";
 
 const WELLBEING_PANEL_ID = "wellbeing-panel";
@@ -31,24 +33,38 @@ function persistWellbeingOpen(open: boolean) {
   }
 }
 
+const PERIOD_VALUES = Object.values(Period) as string[];
+
+function readPeriodParam(value: string | null, fallback: Period): Period {
+  return value && PERIOD_VALUES.includes(value) ? (value as Period) : fallback;
+}
+
 export default function Dashboard() {
-  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPeriod = (Object.values(Period) as string[]).includes(
-    searchParams.get("period") ?? "",
-  )
-    ? (searchParams.get("period") as Period)
-    : Period.TwoWeeks;
-  const [period, setPeriod] = useState<Period>(initialPeriod);
   const [expanded, setExpanded] = useState<boolean>(readWellbeingOpen);
 
-  const periodOptions = useMemo(
-    () => PERIODS.map((p) => ({ key: p.key, label: t(p.labelKey) })),
-    [t],
+  const period = useMemo(
+    () => ({
+      wellbeing: readPeriodParam(searchParams.get("wb"), Period.TwoWeeks),
+      radar: readPeriodParam(searchParams.get("radar"), Period.TwoWeeks),
+      tests: readPeriodParam(searchParams.get("tests"), Period.TwoWeeks),
+    }),
+    [searchParams],
   );
 
+  const setPeriodParam = (name: string, value: Period) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set(name, value);
+        return next;
+      },
+      { replace: true },
+    );
+  };
+
   const { trendData, paramNames, wellbeing, isDataLoading, numericParams, createEntry } =
-    useDashboardData(period);
+    useDashboardData(period.wellbeing);
 
   const todayStart = useMemo(() => {
     const d = new Date();
@@ -65,6 +81,18 @@ export default function Dashboard() {
     from: todayStart.toISOString(),
     to: todayEnd.toISOString(),
   });
+
+  const { data: allTestResults, isLoading: resultsLoading } = useTestResults();
+
+  const radarResults = useMemo(
+    () => filterByPeriod(allTestResults, period.radar),
+    [allTestResults, period.radar],
+  );
+
+  const testsResults = useMemo(
+    () => filterByPeriod(allTestResults, period.tests),
+    [allTestResults, period.tests],
+  );
 
   const coreParamIds = useMemo(
     () =>
@@ -89,20 +117,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-foreground font-serif">
-          {t("dashboard.dateRange")}
-        </h2>
-        <PeriodSelector
-          options={periodOptions}
-          value={period}
-          onChange={(key) => {
-            setPeriod(key as Period);
-            setSearchParams({ period: key }, { replace: true });
-          }}
-        />
-      </div>
-
       <CompanionCard />
 
       <WellbeingCard
@@ -134,6 +148,8 @@ export default function Dashboard() {
               trendData={trendData}
               paramNames={paramNames}
               isLoading={isDataLoading}
+              period={period.wellbeing}
+              onPeriodChange={(p) => setPeriodParam("wb", p)}
             />
           ) : (
             <QuickEntryIcons
@@ -145,7 +161,19 @@ export default function Dashboard() {
         </div>
       )}
 
-      <TestsTakenCard />
+      <ThinkingPatternsCard
+        results={radarResults ?? []}
+        isLoading={resultsLoading}
+        period={period.radar}
+        onPeriodChange={(p) => setPeriodParam("radar", p)}
+      />
+
+      <TestsResultsSection
+        results={testsResults ?? []}
+        isLoading={resultsLoading}
+        period={period.tests}
+        onPeriodChange={(p) => setPeriodParam("tests", p)}
+      />
     </div>
   );
 }

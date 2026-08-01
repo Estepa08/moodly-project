@@ -27,6 +27,11 @@ const MISSION_DEFINITIONS = [
   { key: "practice_thoughtJournal", labelKey: "missions.practiceThoughtJournal", xpReward: 10 },
   { key: "complete_3_practices", labelKey: "missions.complete3Practices", xpReward: 15 },
   { key: "log_mood_entry", labelKey: "missions.logMoodEntry", xpReward: 5 },
+  { key: "complete_test", labelKey: "missions.completeTest", xpReward: 15 },
+  { key: "log_3_mood_entries", labelKey: "missions.log3MoodEntries", xpReward: 10 },
+  { key: "complete_5_practices", labelKey: "missions.complete5Practices", xpReward: 20 },
+  { key: "breathing_2", labelKey: "missions.breathing2", xpReward: 10 },
+  { key: "streak_2", labelKey: "missions.streak2", xpReward: 10 },
 ];
 
 function applyLevelUp(state: { level: number; experience: number }, xpGain: number) {
@@ -225,8 +230,13 @@ export const creatureService = {
     const todayEntries = await prisma.entry.count({
       where: { userId, createdAt: { gte: today, lt: todayEnd } },
     });
+    const todayTests = await prisma.testResult.count({
+      where: { userId, completedAt: { gte: today, lt: todayEnd } },
+    });
+    const creature = await prisma.creatureState.findUnique({ where: { userId } });
 
     const completedSources = new Set(todayCompletions.map((c) => c.source));
+    const breathingCount = todayCompletions.filter((c) => c.source === "breathing").length;
 
     const MISSION_SOURCE: Record<string, string> = {
       checkin: "checkin",
@@ -243,8 +253,18 @@ export const creatureService = {
 
       if (m.missionKey === "complete_3_practices") {
         progress = Math.min(3, todayCompletions.length) / 3;
+      } else if (m.missionKey === "complete_5_practices") {
+        progress = Math.min(5, todayCompletions.length) / 5;
       } else if (m.missionKey === "log_mood_entry") {
         progress = todayEntries > 0 ? 1 : 0;
+      } else if (m.missionKey === "log_3_mood_entries") {
+        progress = Math.min(3, todayEntries) / 3;
+      } else if (m.missionKey === "complete_test") {
+        progress = todayTests > 0 ? 1 : 0;
+      } else if (m.missionKey === "breathing_2") {
+        progress = Math.min(2, breathingCount) / 2;
+      } else if (m.missionKey === "streak_2") {
+        progress = (creature?.streak ?? 0) >= 2 ? 1 : 0;
       } else {
         const source = MISSION_SOURCE[m.missionKey];
         progress = source && completedSources.has(source) ? 1 : 0;

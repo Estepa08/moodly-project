@@ -12,10 +12,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../components/ui/dialog";
-import { Bell, Shield, Trash2, AlertTriangle, ChevronRight } from "lucide-react";
+import { Globe, Bell, Shield, Star, Trash2, AlertTriangle, ChevronRight } from "lucide-react";
+import { cn } from "../lib/utils";
+import ReviewForm from "../features/review/ReviewForm";
 
 export default function SettingsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -68,12 +70,61 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
+            <Globe aria-hidden="true" className="w-4 h-4" />
+            {t("settings.language")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="relative flex items-stretch rounded-full bg-muted p-1 shadow-neumorphic-inset">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-neumorphic-sm transition-transform duration-200 motion-reduce:transition-none",
+                i18n.language === "en" && "translate-x-full",
+              )}
+            />
+            {(["ru", "en"] as const).map((lang) => {
+              const active = i18n.language === lang;
+              return (
+                <button
+                  key={lang}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => i18n.changeLanguage(lang)}
+                  className={cn(
+                    "relative z-10 flex-1 min-h-[44px] rounded-full text-sm font-medium text-center transition-colors duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]",
+                    active ? "text-primary-foreground" : "text-muted-foreground hover:text-primary",
+                  )}
+                >
+                  {lang === "ru" ? "Русский" : "English"}
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
             <Bell aria-hidden="true" className="w-4 h-4" />
             {t("settings.notifications")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">{t("settings.comingSoon")}</p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Star aria-hidden="true" className="w-4 h-4" />
+            {t("review.title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ReviewForm />
         </CardContent>
       </Card>
 

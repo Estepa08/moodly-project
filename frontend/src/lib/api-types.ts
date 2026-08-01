@@ -617,6 +617,11 @@ export interface components {
         /** @description Запись обратной связи для админ-панели (все пользователи) */
         AdminFeedback: {
             id: string;
+            /**
+             * Format: int32
+             * @description Оценка приложения от 1 до 5
+             */
+            rating: number;
             message: string;
             /** Format: date-time */
             createdAt: string;
@@ -834,11 +839,21 @@ export interface components {
         Feedback: {
             id: string;
             userId: string;
+            /**
+             * Format: int32
+             * @description Оценка приложения от 1 до 5
+             */
+            rating: number;
             message: string;
             /** Format: date-time */
             createdAt: string;
         };
         FeedbackCreate: {
+            /**
+             * Format: int32
+             * @description Оценка приложения от 1 до 5
+             */
+            rating: number;
             message: string;
         };
         ForgotPasswordRequest: {

@@ -54,7 +54,7 @@ export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
       <div className="flex gap-0.5 min-w-fit">
         <div className="flex flex-col gap-0.5 pr-1 justify-end">
           {DAY_LABELS.map((label, i) => (
-            <div key={i} className="h-[10px] text-[8px] text-muted-foreground leading-[10px]">
+            <div key={i} className="h-[10px] text-[10px] text-muted-foreground leading-[10px]">
               {label}
             </div>
           ))}

@@ -86,7 +86,7 @@ export default function TestDetailPage() {
                 <p className="text-muted-foreground">{recommendationText}</p>
               </div>
               <Button className="w-full" asChild>
-                <Link to="/results">{t("testDetail.viewAll")}</Link>
+                <Link to="/">{t("testDetail.viewAll")}</Link>
               </Button>
             </CardContent>
           </Card>

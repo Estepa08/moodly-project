@@ -112,6 +112,7 @@ model TestResult {
 model Feedback {
   id        String   @id @default(cuid())
   userId    String
+  rating    Int      @default(0)
   message   String
   createdAt DateTime @default(now())
 

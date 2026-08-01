@@ -13,7 +13,7 @@ export default function PetCollection() {
   const active = pets?.activePetType ?? "puff";
 
   return (
-    <div className="grid grid-cols-3 gap-2">
+    <div className="grid grid-cols-3 gap-2 justify-items-center">
       {PET_DEFINITIONS.map((pet) => {
         const isUnlocked = unlocked.includes(pet.type);
         const isActive = active === pet.type;
@@ -23,10 +23,10 @@ export default function PetCollection() {
             onClick={() => isUnlocked && !isActive && setPet.mutate(pet.type)}
             disabled={!isUnlocked || isActive}
             className={cn(
-              "rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150",
+              "w-full max-w-28 rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               isActive
-                ? "bg-primary/10 shadow-neumorphic-sm ring-2 ring-primary"
+                ? "bg-primary/10 shadow-neumorphic-inset ring-2 ring-primary"
                 : isUnlocked
                   ? "bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.97]"
                   : "bg-muted/50 opacity-50 cursor-not-allowed",
@@ -35,7 +35,7 @@ export default function PetCollection() {
           >
             <div
               className={cn(
-                "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
+                "w-11 h-11 rounded-full flex items-center justify-center text-xl",
                 isActive ? pet.color : isUnlocked ? "bg-secondary" : "bg-muted",
               )}
             >
@@ -45,11 +45,9 @@ export default function PetCollection() {
                 <Lock aria-hidden="true" className="w-4 h-4 text-muted-foreground" />
               )}
             </div>
-            <span className="text-[11px] font-medium text-center leading-tight">
-              {t(pet.labelKey)}
-            </span>
+            <span className="text-xs font-medium text-center leading-tight">{t(pet.labelKey)}</span>
             {isActive && (
-              <span className="text-[10px] text-primary font-semibold flex items-center gap-0.5">
+              <span className="text-[11px] text-primary font-semibold flex items-center gap-0.5">
                 <Check aria-hidden="true" className="w-3 h-3" /> {t("pets.active")}
               </span>
             )}
