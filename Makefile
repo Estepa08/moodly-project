@@ -1,6 +1,6 @@
 .PHONY: install setup generate dev dev-backend dev-frontend build build-backend build-frontend
 .PHONY: test test-backend test-frontend test-watch test-coverage
-.PHONY: db-generate db-push db-seed db-setup db-reset db-studio admin prod clean
+.PHONY: db-generate db-push db-seed db-setup db-reset db-backup db-restore db-studio admin prod clean
 .PHONY: db-prod-users db-prod-user-delete db-prod-studio db-prod-admin
 .PHONY: db-create-user db-prod-create-user
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
@@ -126,6 +126,24 @@ db-create-user:
 db-prod-create-user:
 	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-create-user.ts $(ARGS)
 
+# Резервное копирование и восстановление прод-БД через стандартные утилиты
+# Postgres — одинаково работают для Render, Neon, Supabase и т.д.
+# DATABASE_URL берётся из backend/.env.prod.
+# Пример: make db-backup
+# Пример: make db-restore FILE=backups/moodly-20260801.sql
+
+db-backup:
+	@mkdir -p backups
+	@set -a; . backend/.env.prod; set +a; \
+	  pg_dump "$$DATABASE_URL" --no-owner > "backups/moodly-$$(date +%Y%m%d-%H%M%S).sql"
+	@echo "Backup saved to backups/"
+
+db-restore:
+	@test -n "$(FILE)" || (echo "Usage: make db-restore FILE=path.sql"; exit 1)
+	@test -f "$(FILE)" || (echo "File not found: $(FILE)"; exit 1)
+	@set -a; . backend/.env.prod; set +a; \
+	  psql "$$DATABASE_URL" < "$(FILE)"
+
 # ─── Dev/Prod Workflow ──────────────────────────────────
 
 start-feature:
@@ -160,4 +178,4 @@ format-check:
 
 .PHONY: dev-watch test-watch-backend test-watch-frontend
 .PHONY: test-coverage-backend test-coverage-frontend
-.PHONY: db-generate db-push db-seed db-setup db-reset
+.PHONY: db-generate db-push db-seed db-setup db-reset db-backup db-restore

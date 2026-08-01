@@ -9,5 +9,6 @@ dist/
 .next/
 *.tsbuildinfo
 coverage/
+backups/
 CLAUDE.md
 docs/
