@@ -16,5 +16,12 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
   echo "WARNING: Could not apply migrations after $MAX_RETRIES attempts. Continuing..."
 fi
 
+# Тестовый стенд (e2e): наполняем справочники (тесты, параметры, онбординг).
+# Активируется только env E2E_SEED=1 на стенде moodly-e2e — прод не затрагивается.
+if [ "$E2E_SEED" = "1" ]; then
+  echo "Seeding reference data (E2E_SEED=1)..."
+  PROD_SEED=1 SEED_CONTENT_ONLY=1 node dist/seed.js || echo "WARNING: seed failed (non-fatal)"
+fi
+
 echo "Starting backend..."
 exec node dist/index.js

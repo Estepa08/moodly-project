@@ -17,6 +17,22 @@ tags:
   - name: Cba
   - name: Admin
 paths:
+  /admin/feedback:
+    get:
+      operationId: AdminUsers_listFeedback
+      description: Все сообщения обратной связи всех пользователей (только для администратора)
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdminFeedback'
+      tags:
+        - Admin
   /admin/users:
     get:
       operationId: AdminUsers_listUsers
@@ -785,6 +801,31 @@ security:
   - BearerAuth: []
 components:
   schemas:
+    AdminFeedback:
+      type: object
+      required:
+        - id
+        - message
+        - createdAt
+        - user
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            email:
+              type: string
+            name:
+              type: string
+          required:
+            - email
+      description: Запись обратной связи для админ-панели (все пользователи)
     AdminUser:
       type: object
       required:

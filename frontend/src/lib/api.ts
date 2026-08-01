@@ -16,6 +16,7 @@ type OnboardingStory = components["schemas"]["OnboardingStory"];
 type User = components["schemas"]["User"];
 type UserUpdate = components["schemas"]["UserUpdate"];
 export type AdminUser = components["schemas"]["AdminUser"];
+export type AdminFeedback = components["schemas"]["AdminFeedback"];
 type CbaExample = components["schemas"]["CbaExample"];
 type CbaCommonItem = components["schemas"]["CbaCommonItem"];
 type CbaEntry = components["schemas"]["CbaEntry"];
@@ -134,6 +135,7 @@ const BASE_URL = "/api";
 
 let accessToken: string | null = null;
 let refreshPromise: Promise<boolean> | null = null;
+let refreshSingleFlight: Promise<RefreshResponse> | null = null;
 
 export function setToken(token: string | null) {
   accessToken = token;
@@ -200,7 +202,19 @@ export const api = {
     login: (body: { email: string; password: string }) =>
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
-    refresh: () => request<RefreshResponse>("/auth/refresh", { method: "POST" }),
+    refresh: () => {
+      // Coalesce concurrent refresh calls (e.g. StrictMode double-invoke) so a
+      // single rotation of the one-time refresh token answers all callers
+      // instead of a second call racing it to a 401.
+      if (!refreshSingleFlight) {
+        refreshSingleFlight = request<RefreshResponse>("/auth/refresh", { method: "POST" }).finally(
+          () => {
+            refreshSingleFlight = null;
+          },
+        );
+      }
+      return refreshSingleFlight;
+    },
     forgotPassword: (body: { email: string }) =>
       request<{ message: string }>("/auth/forgot-password", {
         method: "POST",
@@ -328,5 +342,6 @@ export const api = {
   admin: {
     listUsers: () => request<AdminUser[]>("/admin/users"),
     deleteUser: (id: string) => request<void>(`/admin/users/${id}`, { method: "DELETE" }),
+    listFeedback: () => request<AdminFeedback[]>("/admin/feedback"),
   },
 };

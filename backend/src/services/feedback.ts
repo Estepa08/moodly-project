@@ -13,4 +13,19 @@ export const feedbackService = {
     ]);
     return { data, total };
   },
+
+  async listAll(skip?: number, take?: number) {
+    const [data, total] = await Promise.all([
+      prisma.feedback.findMany({
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: take ?? 200,
+        include: {
+          user: { select: { email: true, name: true } },
+        },
+      }),
+      prisma.feedback.count(),
+    ]);
+    return { data, total };
+  },
 };

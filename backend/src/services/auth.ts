@@ -32,7 +32,8 @@ export const authService = {
     }
 
     const userId = stored.userId;
-    await prisma.refreshToken.delete({ where: { id: stored.id } });
+    const { count } = await prisma.refreshToken.deleteMany({ where: { id: stored.id } });
+    if (count === 0) throw new AppError("INVALID_REFRESH_TOKEN", 401, "Invalid refresh token");
 
     return userId;
   },
