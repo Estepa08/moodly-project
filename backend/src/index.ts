@@ -36,14 +36,19 @@ await fastify.register(helmet, {
 });
 await fastify.register(cors, { origin: getAllowedOrigins(), credentials: true });
 await fastify.register(cookie);
-await fastify.register(rateLimit, { max: 100, timeWindow: "1 minute" });
+
+const readRateLimit = Number(process.env.RATE_LIMIT_MAX ?? 100);
+const writeRateLimit = Number(
+  process.env.RATE_LIMIT_WRITE_MAX ?? (process.env.NODE_ENV === "test" ? 1000 : 10),
+);
+await fastify.register(rateLimit, { max: readRateLimit, timeWindow: "1 minute" });
 
 fastify.addHook("onRoute", (routeOptions) => {
   const method = routeOptions.method;
   if (typeof method === "string" && ["POST", "PATCH", "PUT", "DELETE"].includes(method)) {
     routeOptions.config = {
       ...(routeOptions.config as object),
-      rateLimit: { max: 10, timeWindow: "1 minute" },
+      rateLimit: { max: writeRateLimit, timeWindow: "1 minute" },
     };
   }
 });

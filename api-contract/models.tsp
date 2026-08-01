@@ -200,6 +200,17 @@ model FeedbackCreate {
   message: string;
 }
 
+@doc("Запись обратной связи для админ-панели (все пользователи)")
+model AdminFeedback {
+  id: string;
+  message: string;
+  createdAt: utcDateTime;
+  user: {
+    email: string;
+    name?: string;
+  };
+}
+
 // ---------- OnboardingStory ----------
 
 @doc("Обучающая история для онбординга новых пользователей после регистрации")

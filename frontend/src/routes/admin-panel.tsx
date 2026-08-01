@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Tabs from "@radix-ui/react-tabs";
 import { api, type AdminUser } from "../lib/api";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useAdminFeedbackList } from "../hooks/useAdminFeedback";
 import { Button } from "../components/ui/button";
-import { Card } from "../components/ui/card";
+import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import Spinner from "../components/ui/spinner";
 import EmptyState from "../components/ui/empty-state";
@@ -15,7 +17,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../components/ui/dialog";
-import { AlertTriangle, ShieldCheck, Users } from "lucide-react";
+import { AlertTriangle, MessageSquare, ShieldCheck, Users } from "lucide-react";
 import { cn } from "../lib/utils";
 
 function initials(u: AdminUser): string {
@@ -56,6 +58,8 @@ export default function AdminPanelPage() {
     queryFn: () => api.admin.listUsers(),
   });
 
+  const [tab, setTab] = useState("users");
+  const feedbackQuery = useAdminFeedbackList();
   const [target, setTarget] = useState<AdminUser | null>(null);
   const [confirmEmail, setConfirmEmail] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -66,7 +70,9 @@ export default function AdminPanelPage() {
   }
 
   const users = usersQuery.data ?? [];
-  const matches = target !== null && confirmEmail.trim().toLowerCase() === target.email.toLowerCase();
+  const feedbacks = feedbackQuery.data ?? [];
+  const matches =
+    target !== null && confirmEmail.trim().toLowerCase() === target.email.toLowerCase();
 
   const openDelete = (user: AdminUser) => {
     setTarget(user);
@@ -104,123 +110,179 @@ export default function AdminPanelPage() {
         )}
       </div>
 
-      {usersQuery.isLoading ? (
-        <Card className="flex items-center justify-center py-16">
-          <Spinner size={28} />
-        </Card>
-      ) : usersQuery.isError ? (
-        <EmptyState icon={Users} title={t("admin.loadFailed")} />
-      ) : users.length === 0 ? (
-        <EmptyState icon={Users} title={t("admin.empty")} />
-      ) : (
-        <>
-          <p className="text-xs text-muted-foreground">{t("admin.deleteWarning")}</p>
+      <Tabs.Root value={tab} onValueChange={setTab}>
+        <Tabs.List className="inline-flex items-center gap-1 rounded-xl bg-secondary/50 p-1">
+          <Tabs.Trigger
+            value="users"
+            className={cn(
+              "px-4 py-1.5 rounded-lg text-sm font-medium transition-[color,background-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "text-muted-foreground hover:text-foreground data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-neumorphic-sm",
+            )}
+          >
+            {t("admin.usersTab")}
+          </Tabs.Trigger>
+          <Tabs.Trigger
+            value="feedback"
+            className={cn(
+              "px-4 py-1.5 rounded-lg text-sm font-medium transition-[color,background-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "text-muted-foreground hover:text-foreground data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-neumorphic-sm",
+            )}
+          >
+            {t("admin.feedbackTab")}
+          </Tabs.Trigger>
+        </Tabs.List>
 
-          <Card className="overflow-hidden">
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground border-b border-border">
-                    <th className="px-4 py-3 font-medium">{t("admin.user")}</th>
-                    <th className="px-4 py-3 font-medium">{t("admin.role")}</th>
-                    <th className="px-4 py-3 font-medium">{t("admin.registered")}</th>
-                    <th className="px-4 py-3 font-medium">{t("admin.emailVerified")}</th>
-                    <th className="px-4 py-3 font-medium">{t("admin.activity")}</th>
-                    <th className="px-4 py-3" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((u, idx) => (
-                    <tr key={u.id} className="border-b border-border last:border-0">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <span
-                            className={cn(
-                              "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0",
-                              AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                            )}
-                          >
-                            {initials(u)}
-                          </span>
-                          <div className="min-w-0">
-                            <p className="font-medium text-foreground truncate">
-                              {u.name ?? t("admin.roleUser")}
-                            </p>
-                            <p className="text-xs text-muted-foreground truncate">{u.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={cn(
-                            "inline-block px-2 py-0.5 rounded-md text-xs font-semibold",
-                            u.role === "admin"
-                              ? "bg-primary/10 text-primary"
-                              : "bg-secondary text-muted-foreground",
-                          )}
-                        >
-                          {u.role === "admin" ? t("admin.roleAdmin") : t("admin.roleUser")}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground">
-                        {formatDate(u.createdAt, i18n.language)}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground">
-                        {u.emailVerified ? t("admin.yes") : t("admin.no")}
-                      </td>
-                      <td className="px-4 py-3 text-muted-foreground">
-                        {u.entriesCount} {t("admin.entriesCount")} · {u.testResultsCount}{" "}
-                        {t("admin.testsCount")}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="border-destructive/30 text-destructive hover:bg-destructive/5"
-                          onClick={() => openDelete(u)}
-                        >
-                          {t("admin.delete")}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        <Tabs.Content value="users" className="space-y-4">
+          {usersQuery.isLoading ? (
+            <Card className="flex items-center justify-center py-16">
+              <Spinner size={28} />
+            </Card>
+          ) : usersQuery.isError ? (
+            <EmptyState icon={Users} title={t("admin.loadFailed")} />
+          ) : users.length === 0 ? (
+            <EmptyState icon={Users} title={t("admin.empty")} />
+          ) : (
+            <>
+              <p className="text-xs text-muted-foreground">{t("admin.deleteWarning")}</p>
 
-            <div className="md:hidden divide-y divide-border">
-              {users.map((u, idx) => (
-                <div key={u.id} className="px-4 py-3 flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0",
-                      AVATAR_COLORS[idx % AVATAR_COLORS.length],
-                    )}
-                  >
-                    {initials(u)}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-foreground truncate">{u.name ?? u.email}</p>
-                    <p className="text-xs text-muted-foreground truncate">{u.email}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {formatDate(u.createdAt, i18n.language)} · {u.entriesCount}{" "}
-                      {t("admin.entriesCount")}
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-destructive/30 text-destructive hover:bg-destructive/5 shrink-0"
-                    onClick={() => openDelete(u)}
-                  >
-                    {t("admin.delete")}
-                  </Button>
+              <Card className="overflow-hidden">
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground border-b border-border">
+                        <th className="px-4 py-3 font-medium">{t("admin.user")}</th>
+                        <th className="px-4 py-3 font-medium">{t("admin.role")}</th>
+                        <th className="px-4 py-3 font-medium">{t("admin.registered")}</th>
+                        <th className="px-4 py-3 font-medium">{t("admin.emailVerified")}</th>
+                        <th className="px-4 py-3 font-medium">{t("admin.activity")}</th>
+                        <th className="px-4 py-3" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((u, idx) => (
+                        <tr key={u.id} className="border-b border-border last:border-0">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <span
+                                className={cn(
+                                  "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0",
+                                  AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                                )}
+                              >
+                                {initials(u)}
+                              </span>
+                              <div className="min-w-0">
+                                <p className="font-medium text-foreground truncate">
+                                  {u.name ?? t("admin.roleUser")}
+                                </p>
+                                <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={cn(
+                                "inline-block px-2 py-0.5 rounded-md text-xs font-semibold",
+                                u.role === "admin"
+                                  ? "bg-primary/10 text-primary"
+                                  : "bg-secondary text-muted-foreground",
+                              )}
+                            >
+                              {u.role === "admin" ? t("admin.roleAdmin") : t("admin.roleUser")}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-muted-foreground">
+                            {formatDate(u.createdAt, i18n.language)}
+                          </td>
+                          <td className="px-4 py-3 text-muted-foreground">
+                            {u.emailVerified ? t("admin.yes") : t("admin.no")}
+                          </td>
+                          <td className="px-4 py-3 text-muted-foreground">
+                            {u.entriesCount} {t("admin.entriesCount")} · {u.testResultsCount}{" "}
+                            {t("admin.testsCount")}
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="border-destructive/30 text-destructive hover:bg-destructive/5"
+                              onClick={() => openDelete(u)}
+                            >
+                              {t("admin.delete")}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
+
+                <div className="md:hidden divide-y divide-border">
+                  {users.map((u, idx) => (
+                    <div key={u.id} className="px-4 py-3 flex items-center gap-3">
+                      <span
+                        className={cn(
+                          "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0",
+                          AVATAR_COLORS[idx % AVATAR_COLORS.length],
+                        )}
+                      >
+                        {initials(u)}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-foreground truncate">{u.name ?? u.email}</p>
+                        <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {formatDate(u.createdAt, i18n.language)} · {u.entriesCount}{" "}
+                          {t("admin.entriesCount")}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-destructive/30 text-destructive hover:bg-destructive/5 shrink-0"
+                        onClick={() => openDelete(u)}
+                      >
+                        {t("admin.delete")}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </>
+          )}
+        </Tabs.Content>
+
+        <Tabs.Content value="feedback" className="space-y-4">
+          {feedbackQuery.isLoading ? (
+            <Card className="flex items-center justify-center py-16">
+              <Spinner size={28} />
+            </Card>
+          ) : feedbackQuery.isError ? (
+            <EmptyState icon={MessageSquare} title={t("admin.feedbackLoadFailed")} />
+          ) : feedbacks.length === 0 ? (
+            <EmptyState icon={MessageSquare} title={t("admin.noFeedback")} />
+          ) : (
+            <div className="space-y-3">
+              {feedbacks.map((f) => (
+                <Card key={f.id}>
+                  <CardContent className="pt-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {f.user.name ?? f.user.email}
+                      </p>
+                      <p className="text-xs text-muted-foreground shrink-0">
+                        {formatDate(f.createdAt, i18n.language)}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">{f.user.email}</p>
+                    <p className="text-sm text-foreground mt-2">{f.message}</p>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-          </Card>
-        </>
-      )}
+          )}
+        </Tabs.Content>
+      </Tabs.Root>
 
       <Dialog
         open={target !== null}

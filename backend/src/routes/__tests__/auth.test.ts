@@ -67,4 +67,27 @@ describe("Auth", () => {
     const res = await app.inject({ method: "GET", url: "/users/me" });
     expect(res.statusCode).toBe(401);
   });
+
+  it("POST /auth/refresh — parallel refresh with one token returns no 500", async () => {
+    const reg = await app.inject({
+      method: "POST",
+      url: "/auth/register",
+      payload: { email: "refresh-race@example.com", password: "secret123", ageConfirmed: true },
+    });
+    expect(reg.statusCode).toBe(200);
+
+    const setCookie = reg.headers["set-cookie"] as string | undefined;
+    expect(setCookie).toBeDefined();
+    const cookie = setCookie.split(";")[0];
+
+    const [a, b] = await Promise.all([
+      app.inject({ method: "POST", url: "/auth/refresh", headers: { cookie } }),
+      app.inject({ method: "POST", url: "/auth/refresh", headers: { cookie } }),
+    ]);
+
+    const codes = [a.statusCode, b.statusCode].sort((x, y) => x - y);
+    expect(codes[0]).toBe(200);
+    expect(codes[1]).toBe(401);
+    expect(codes).not.toContain(500);
+  });
 });

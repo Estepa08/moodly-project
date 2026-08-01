@@ -96,4 +96,68 @@ describe("Admin", () => {
     });
     expect(res.statusCode).toBe(404);
   });
+
+  it("GET /admin/feedback — rejects missing token", async () => {
+    const res = await app.inject({ method: "GET", url: "/admin/feedback" });
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("GET /admin/feedback — rejects non-admin user", async () => {
+    const { token } = await registerAndLogin(app, "admin-fb-regular@example.com", "secret123");
+    const res = await app.inject({
+      method: "GET",
+      url: "/admin/feedback",
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(res.statusCode).toBe(403);
+  });
+
+  it("GET /admin/feedback — returns feedback with author email for admin", async () => {
+    const { token, userId } = await registerAndLogin(
+      app,
+      "admin-fb-admin@example.com",
+      "secret123",
+    );
+    await makeAdmin(userId);
+    const { token: userToken } = await registerAndLogin(
+      app,
+      "admin-fb-user@example.com",
+      "secret123",
+    );
+
+    await app.inject({
+      method: "POST",
+      url: "/feedback",
+      headers: { authorization: `Bearer ${userToken}` },
+      payload: { message: "First feedback" },
+    });
+    await app.inject({
+      method: "POST",
+      url: "/feedback",
+      headers: { authorization: `Bearer ${userToken}` },
+      payload: { message: "Second feedback" },
+    });
+
+    const res = await app.inject({
+      method: "GET",
+      url: "/admin/feedback",
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(Number(res.headers["x-total-count"])).toBeGreaterThanOrEqual(2);
+
+    const items = res.json() as Array<{
+      message: string;
+      user: { email: string };
+      userId?: string;
+    }>;
+    const ours = items.filter(
+      (f) => f.message === "First feedback" || f.message === "Second feedback",
+    );
+    expect(ours).toHaveLength(2);
+    expect(ours[0].message).toBe("Second feedback");
+    expect(ours[1].message).toBe("First feedback");
+    expect(ours[0].user.email).toBe("admin-fb-user@example.com");
+    expect(ours[0]).not.toHaveProperty("userId");
+  });
 });

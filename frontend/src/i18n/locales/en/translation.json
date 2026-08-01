@@ -27,7 +27,6 @@
     "thoughtJournal": "Thought Journal",
     "tests": "Tests",
     "results": "Results",
-    "feedback": "Feedback",
     "settings": "Settings",
     "progress": "Progress",
     "onboarding": "Getting Started",
@@ -247,19 +246,6 @@
     "thinkingPatternsSingle": "Take the test again to see the trend.",
     "thinkingPatternsLibraryHint": "Each label opens the Distortions Library",
     "thinkingPatternsOpenLibrary": "{{name}}: open in distortions library"
-  },
-  "feedback": {
-    "title": "Feedback",
-    "sendFeedback": "Send Feedback",
-    "yourMessage": "Your message",
-    "placeholder": "Share your thoughts...",
-    "send": "Send",
-    "sent": "Feedback sent!",
-    "noFeedback": "No feedback yet.",
-    "unsavedTitle": "Unsaved changes",
-    "unsavedDesc": "You have unsaved feedback. Do you really want to leave?",
-    "unsavedStay": "Stay",
-    "unsavedLeave": "Leave"
   },
   "breathing": {
     "title": "Breathing Exercise",
@@ -858,6 +844,10 @@
     "loadFailed": "Failed to load users",
     "empty": "No registered users yet",
     "forbidden": "Admins only",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "usersTab": "Users",
+    "feedbackTab": "Feedback",
+    "noFeedback": "No feedback yet",
+    "feedbackLoadFailed": "Failed to load feedback"
   }
 }
