@@ -78,7 +78,7 @@ describe("Auth", () => {
 
     const setCookie = reg.headers["set-cookie"] as string | undefined;
     expect(setCookie).toBeDefined();
-    const cookie = setCookie.split(";")[0];
+    const cookie = setCookie!.split(";")[0];
 
     const [a, b] = await Promise.all([
       app.inject({ method: "POST", url: "/auth/refresh", headers: { cookie } }),
