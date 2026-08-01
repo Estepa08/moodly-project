@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma.js";
 import { userService } from "../services/user.js";
 import { authService } from "../services/auth.js";

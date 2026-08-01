@@ -110,6 +110,9 @@ make db-restore FILE=backups/moodly-YYYYMMDD-HHMMSS.sql
 
 - **Neon free**: сон через 5 мин простоя, автопробуждение 1-3 сек при запросе;
   лимит 190 compute-часов/мес. Пул — pooled URL.
+  > ВАЖНО: из строки подключения Neon удаляй `&channel_binding=require` —
+  > Prisma (Rust engine) его не поддерживает и не может подключиться.
+  > Оставляй только `?sslmode=require`.
 - **Supabase free**: пауза после 7 дней без БД-запросов, восстановление только
   вручную через dashboard. Для Prisma: pooled URL `:6543?pgbouncer=true`
   в `DATABASE_URL`, direct `:5432` в `DIRECT_URL`.
