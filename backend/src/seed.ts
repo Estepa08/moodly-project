@@ -3,7 +3,7 @@ if (process.env.NODE_ENV === "production" && process.env.PROD_SEED !== "1") {
   process.exit(1);
 }
 
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { prisma } from "./lib/prisma.js";
 import { MS_PER_DAY } from "./lib/constants.js";
 
