@@ -24,7 +24,7 @@ COPY backend/package.json backend/package-lock.json ./
 RUN npm ci
 COPY backend/prisma ./prisma
 RUN npx prisma generate
-COPY backend/tsconfig.json ./
+COPY backend/tsconfig.json backend/tsconfig.build.json ./
 COPY backend/src ./src
 COPY backend/docker-entrypoint.sh ./
 RUN npm run build
