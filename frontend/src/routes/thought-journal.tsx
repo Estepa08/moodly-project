@@ -231,9 +231,7 @@ export default function ThoughtJournalPage() {
                       const value = rawValue as number;
                       const level = levelForValue(MOOD_LEVELS, value);
                       const label = t(level.labelKey);
-                      const values = (row?._values as Record<string, number[]> | undefined)?.[
-                        name
-                      ];
+                      const values = (row?._values as Record<string, number[]> | undefined)?.[name];
                       if (values && values.length > 1) {
                         return `${label}: ${value.toFixed(1)} (${values.join(", ")})`;
                       }
@@ -336,10 +334,14 @@ export default function ThoughtJournalPage() {
         <CardContent>
           {historyEntries.length > 0 ? (
             <div className="space-y-2">
-              {(showAllHistory ? historyEntries : historyEntries.slice(0, 3)).map((e) => {                const level = levelForValue(MOOD_LEVELS, e.value);
+              {(showAllHistory ? historyEntries : historyEntries.slice(0, 3)).map((e) => {
+                const level = levelForValue(MOOD_LEVELS, e.value);
                 const Icon = level.Icon;
                 return (
-                  <div key={e.id} className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm">
+                  <div
+                    key={e.id}
+                    className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm"
+                  >
                     <span className="w-6 h-6 flex-shrink-0 mt-0.5 flex items-center justify-center">
                       <Icon
                         aria-hidden="true"
@@ -378,7 +380,9 @@ export default function ThoughtJournalPage() {
               aria-expanded={showAllHistory}
               className="mt-3 flex items-center justify-center gap-1 w-full py-2 rounded-lg bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {showAllHistory ? t("thoughtJournal.hideAll") : t("thoughtJournal.showAll", { count: historyEntries.length })}
+              {showAllHistory
+                ? t("thoughtJournal.hideAll")
+                : t("thoughtJournal.showAll", { count: historyEntries.length })}
               {showAllHistory ? (
                 <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
               ) : (

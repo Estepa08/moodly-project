@@ -104,8 +104,14 @@ export default function App() {
         <Route path="/gratitude-journal" element={<Navigate to="/practices/gratitude" replace />} />
         <Route path="/distortions" element={<Navigate to="/practices/distortions" replace />} />
         <Route path="/sleep-hygiene" element={<Navigate to="/practices/sleep-hygiene" replace />} />
-        <Route path="/thought-journal" element={<Navigate to="/practices/thought-journal" replace />} />
-        <Route path="/cost-benefit-analysis" element={<Navigate to="/practices/cost-benefit-analysis" replace />} />
+        <Route
+          path="/thought-journal"
+          element={<Navigate to="/practices/thought-journal" replace />}
+        />
+        <Route
+          path="/cost-benefit-analysis"
+          element={<Navigate to="/practices/cost-benefit-analysis" replace />}
+        />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route element={<AdminRoute />}>

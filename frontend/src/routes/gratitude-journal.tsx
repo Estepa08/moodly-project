@@ -133,7 +133,11 @@ export default function GratitudeJournalPage() {
             noCard
             data={correlationData}
             series={[
-              { dataKey: "gratitude", color: "hsl(var(--accent))", label: t("dashboard.gratitude") },
+              {
+                dataKey: "gratitude",
+                color: "hsl(var(--accent))",
+                label: t("dashboard.gratitude"),
+              },
               { dataKey: "mood", color: "hsl(var(--primary))", label: t("dashboard.mood") },
             ]}
             xKey="date"

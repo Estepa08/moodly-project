@@ -58,9 +58,7 @@ export function useDashboardData(period: Period) {
   const numericParams = useMemo(
     () =>
       params?.filter(
-        (p) =>
-          !TEXT_PARAMS.has(p.name as ParameterName) &&
-          !DASHBOARD_EXCLUDED_PARAMS.has(p.name),
+        (p) => !TEXT_PARAMS.has(p.name as ParameterName) && !DASHBOARD_EXCLUDED_PARAMS.has(p.name),
       ),
     [params],
   );

@@ -38,15 +38,14 @@ export function RatingScaleSelector({
     vibrate();
   };
 
-  const handleKeyDown =
-    (index: number) => (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      e.preventDefault();
-      const delta = e.key === "ArrowRight" ? 1 : -1;
-      const next = Math.min(levels.length - 1, Math.max(0, index + delta));
-      handleSelect(levels[next]);
-      refs.current[next]?.focus();
-    };
+  const handleKeyDown = (index: number) => (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const delta = e.key === "ArrowRight" ? 1 : -1;
+    const next = Math.min(levels.length - 1, Math.max(0, index + delta));
+    handleSelect(levels[next]);
+    refs.current[next]?.focus();
+  };
 
   return (
     <div
@@ -82,10 +81,7 @@ export function RatingScaleSelector({
             )}
           >
             <span className="relative flex items-center justify-center">
-              <Icon
-                aria-hidden="true"
-                className={compact ? "w-5 h-5" : "w-6 h-6 sm:w-7 sm:h-7"}
-              />
+              <Icon aria-hidden="true" className={compact ? "w-5 h-5" : "w-6 h-6 sm:w-7 sm:h-7"} />
             </span>
             <span
               className={cn(

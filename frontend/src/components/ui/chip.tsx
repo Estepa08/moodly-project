@@ -8,7 +8,8 @@ const chipVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-foreground hover:shadow-neumorphic",
+        default:
+          "bg-muted text-muted-foreground shadow-neumorphic-sm hover:text-foreground hover:shadow-neumorphic",
         active: "bg-primary/10 text-primary ring-1 ring-primary",
         outline:
           "bg-card text-foreground border border-border shadow-neumorphic-sm hover:border-primary/60 hover:shadow-neumorphic",

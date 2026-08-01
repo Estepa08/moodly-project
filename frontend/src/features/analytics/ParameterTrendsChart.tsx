@@ -79,9 +79,7 @@ export default function ParameterTrendsChart({
           title=""
           noCard
           formatTooltip={(name, value, row) => {
-            const entryValues = (
-              row?.["_values"] as Record<string, number[]> | undefined
-            )?.[name];
+            const entryValues = (row?.["_values"] as Record<string, number[]> | undefined)?.[name];
             const label = t(PARAM_NAME_KEYS[name as ParameterName] ?? name);
             if (entryValues && entryValues.length > 1) {
               return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(", ")})`;

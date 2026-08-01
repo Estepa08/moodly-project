@@ -29,7 +29,9 @@ export default function Sidebar() {
   const highlights = useNavHighlights();
   const { isStale } = useStalePractices(3);
 
-  const isPracticeActive = location.pathname === "/practices" || PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
+  const isPracticeActive =
+    location.pathname === "/practices" ||
+    PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
   const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
 
   useEffect(() => {
@@ -65,9 +67,7 @@ export default function Sidebar() {
           <User aria-hidden="true" className="w-4 h-4 text-primary" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-primary truncate">
-            {userData?.email ?? "—"}
-          </p>
+          <p className="text-sm font-medium text-primary truncate">{userData?.email ?? "—"}</p>
           <p className="text-xs text-muted-foreground truncate">{userData?.name ?? ""}</p>
         </div>
         <IconButton
@@ -81,7 +81,11 @@ export default function Sidebar() {
         </IconButton>
       </div>
 
-      <Link to={DASHBOARD_ITEM.path} className={navButtonClass(location.pathname === "/")} aria-current={location.pathname === "/" ? "page" : undefined}>
+      <Link
+        to={DASHBOARD_ITEM.path}
+        className={navButtonClass(location.pathname === "/")}
+        aria-current={location.pathname === "/" ? "page" : undefined}
+      >
         <DASHBOARD_ITEM.icon
           aria-hidden="true"
           className={`w-5 h-5 shrink-0 ${highlights.dashboard ? "text-primary" : ""}`}
@@ -148,10 +152,7 @@ export default function Sidebar() {
           className={navButtonClass(location.pathname.startsWith(ADMIN_ITEM.path))}
           aria-current={location.pathname === ADMIN_ITEM.path ? "page" : undefined}
         >
-          <ADMIN_ITEM.icon
-            aria-hidden="true"
-            className="w-5 h-5 shrink-0 text-primary"
-          />
+          <ADMIN_ITEM.icon aria-hidden="true" className="w-5 h-5 shrink-0 text-primary" />
           <span className="text-sm font-medium truncate">{t(ADMIN_ITEM.labelKey)}</span>
         </Link>
       )}

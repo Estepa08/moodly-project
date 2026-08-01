@@ -37,11 +37,7 @@ export default function BottomNav({ onMoreOpen, isMoreActive }: BottomNavProps) 
 
   const iconClass = (path: string, base: string) => {
     const highlight =
-      path === "/"
-        ? highlights.dashboard
-        : path === "/tests"
-          ? highlights.tests
-          : false;
+      path === "/" ? highlights.dashboard : path === "/tests" ? highlights.tests : false;
     return cn(base, highlight && "text-primary");
   };
 

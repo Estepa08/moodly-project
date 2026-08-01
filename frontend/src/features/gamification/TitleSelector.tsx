@@ -38,7 +38,11 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
         const labelKey = TITLE_MAP[title] ?? title;
         const isActive = activeTitle === title;
         return (
-          <Chip key={title} variant={isActive ? "active" : "default"} onClick={() => onSelect(title)}>
+          <Chip
+            key={title}
+            variant={isActive ? "active" : "default"}
+            onClick={() => onSelect(title)}
+          >
             <Award aria-hidden="true" className="w-3 h-3" />
             {t(labelKey)}
             {isActive && <Check aria-hidden="true" className="w-3 h-3" />}

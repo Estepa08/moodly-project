@@ -29,8 +29,16 @@ export default function SleepHygieneChart({ data }: SleepHygieneChartProps) {
           noCard
           data={data as unknown as Record<string, unknown>[]}
           series={[
-            { dataKey: "habits", color: "hsl(var(--accent))", label: t("sleepHygiene.comparisonHabits") },
-            { dataKey: "sleep", color: "hsl(var(--param-sleep))", label: t("sleepHygiene.comparisonSleep") },
+            {
+              dataKey: "habits",
+              color: "hsl(var(--accent))",
+              label: t("sleepHygiene.comparisonHabits"),
+            },
+            {
+              dataKey: "sleep",
+              color: "hsl(var(--param-sleep))",
+              label: t("sleepHygiene.comparisonSleep"),
+            },
           ]}
           xKey="date"
           formatTooltip={(name, value, row) => {

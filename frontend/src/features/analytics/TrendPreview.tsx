@@ -76,12 +76,7 @@ export default function TrendPreview({
             {icon}
             {title}
           </h3>
-          <Chip
-            variant="default"
-            onClick={onToggle}
-            aria-expanded={expanded}
-            disabled={disabled}
-          >
+          <Chip variant="default" onClick={onToggle} aria-expanded={expanded} disabled={disabled}>
             {expanded ? <ChevronUp aria-hidden="true" /> : <ChevronDown aria-hidden="true" />}
             {expanded ? hideLabel : showLabel}
           </Chip>

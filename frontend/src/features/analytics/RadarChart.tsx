@@ -127,8 +127,7 @@ export default function RadarChart({ data, previousData, maxValue, className }: 
       };
     });
 
-    const path =
-      points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
+    const path = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
 
     return (
       <path

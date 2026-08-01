@@ -32,7 +32,10 @@ export default function Breadcrumbs() {
     <nav aria-label="Breadcrumb" className="px-4 pt-2">
       <ol className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <li>
-          <Link to="/" className="hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded">
+          <Link
+            to="/"
+            className="hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          >
             {t(DASHBOARD_ITEM.labelKey)}
           </Link>
         </li>
