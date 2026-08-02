@@ -192,7 +192,7 @@ async function pickMission(page: Page): Promise<string> {
   return candidates[0];
 }
 
-test("миссия засчитывает выполнение, claim начисляет XP", async ({ page }) => {
+test("миссия засчитывает выполнение, claim начисляет XP", { tag: "@missions" }, async ({ page }) => {
   await register(page, uniqueEmail("missions"));
 
   const missionKey = await pickMission(page);

@@ -6,6 +6,9 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
+    "test:affected": "node run-affected.mjs",
+    "test:affected:list": "node run-affected.mjs --list",
+    "test:smoke": "playwright test --grep \"@dashboard|@auth|@navigation\"",
     "report": "playwright show-report"
   },
   "devDependencies": {

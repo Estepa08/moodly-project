@@ -180,7 +180,6 @@ describe("TestDetailPage", () => {
     });
 
     await user.click(screen.getByText("Several days"));
-    await user.click(screen.getByRole("button", { name: /review/i }));
     await user.click(screen.getByRole("button", { name: /submit/i }));
 
     await waitFor(() => {
@@ -224,7 +223,6 @@ describe("TestDetailPage", () => {
 
     await waitFor(() => expect(screen.getByText("Test question 1?")).toBeInTheDocument());
     await user.click(screen.getByText("Moderately"));
-    await user.click(screen.getByRole("button", { name: /review/i }));
     await user.click(screen.getByRole("button", { name: /submit/i }));
 
     await waitFor(() => {

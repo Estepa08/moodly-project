@@ -40,15 +40,12 @@ export default function TestDetailPage() {
     currentAnswer,
     answers,
     result,
-    showReview,
     showExitConfirm,
-    setShowReview,
     setShowExitConfirm,
     handleAnswer,
     handleNext,
     handleBack,
     handleSubmit,
-    handleGoToQuestion,
   } = useTestFlow(testId);
 
   const petType = pets?.activePetType ?? "puff";
@@ -154,50 +151,6 @@ export default function TestDetailPage() {
         <p className="text-sm text-muted-foreground">{t("testDetail.unavailableDesc")}</p>
         <Button className="mt-4" asChild>
           <Link to="/tests">{t("common.back")}</Link>
-        </Button>
-      </div>
-    );
-  }
-
-  // ── Review screen ──
-  if (showReview) {
-    return (
-      <div className="max-w-lg mx-auto space-y-4">
-        <h1 className="text-lg font-semibold font-serif text-foreground">
-          {t("testDetail.reviewTitle")}
-        </h1>
-        <p className="text-sm text-muted-foreground">{t("testDetail.reviewDesc")}</p>
-
-        <div className="space-y-2">
-          {test.questions.map((q, i) => {
-            const ans = answers[i];
-            const opt = ans ? q.options.find((o) => o.id === ans.optionId) : null;
-            return (
-              <button
-                key={q.id}
-                className="w-full flex items-center gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm text-left cursor-pointer transition-[transform,box-shadow] duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => handleGoToQuestion(i)}
-              >
-                <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <Check aria-hidden="true" className="w-3.5 h-3.5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{q.text}</p>
-                  {opt && (
-                    <p className="text-xs text-muted-foreground mt-0.5 truncate">{opt.text}</p>
-                  )}
-                </div>
-                <ChevronLeft
-                  aria-hidden="true"
-                  className="w-4 h-4 text-muted-foreground shrink-0 rotate-180"
-                />
-              </button>
-            );
-          })}
-        </div>
-
-        <Button className="w-full" onClick={handleSubmit} disabled={submitMutation.isPending}>
-          {submitMutation.isPending ? t("common.sending") : t("testDetail.submitTest")}
         </Button>
       </div>
     );
@@ -311,8 +264,8 @@ export default function TestDetailPage() {
         </p>
 
         {hasAnswer && questionIndex === test.questions.length - 1 ? (
-          <Button size="sm" onClick={() => setShowReview(true)}>
-            {t("testDetail.review")}
+          <Button size="sm" onClick={handleSubmit} disabled={submitMutation.isPending}>
+            {submitMutation.isPending ? t("common.sending") : t("testDetail.submitTest")}
           </Button>
         ) : hasAnswer ? (
           <Button size="sm" onClick={handleNextFeed}>

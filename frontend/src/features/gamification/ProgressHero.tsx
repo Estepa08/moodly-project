@@ -29,7 +29,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
           <PetAvatar petType={petType} size="lg" plain interactive ariaLabel={petName} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-wrap items-center gap-2 mb-1">
             <span className="px-3 py-0.5 rounded-full bg-primary/10 text-xs font-bold text-primary">
               {t("creature.level", { level: creature.level })}
             </span>

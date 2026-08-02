@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { register, login, logoutDesktop, uniqueEmail, E2E_PASSWORD } from "../helpers";
 
-test("повторный вход: после выхода можно войти с тем же паролем", async ({ page }) => {
+test("повторный вход: после выхода можно войти с тем же паролем", { tag: "@auth" }, async ({ page }) => {
   const email = await register(page);
 
   await logoutDesktop(page);
@@ -11,7 +11,7 @@ test("повторный вход: после выхода можно войти
   await expect(page.locator("#main-content")).toBeVisible();
 });
 
-test("вход с неверным паролем показывает ошибку", async ({ page }) => {
+test("вход с неверным паролем показывает ошибку", { tag: "@auth" }, async ({ page }) => {
   const email = uniqueEmail("auth-badpass");
   await register(page, email);
 
@@ -26,7 +26,7 @@ test("вход с неверным паролем показывает ошиб�
   await expect(page).toHaveURL(/\/login/);
 });
 
-test("регистрация невозможна без согласия 18+", async ({ page }) => {
+test("регистрация невозможна без согласия 18+", { tag: "@auth" }, async ({ page }) => {
   await page.goto("/register");
   await page.locator("#regEmail").fill(uniqueEmail("auth-noconsent"));
   await page.locator("#regPassword").fill(E2E_PASSWORD);
@@ -38,7 +38,7 @@ test("регистрация невозможна без согласия 18+", 
   await expect(submit).toBeEnabled();
 });
 
-test("формы auth доступны: forgot-password и reset-password", async ({ page }) => {
+test("формы auth доступны: forgot-password и reset-password", { tag: "@auth" }, async ({ page }) => {
   await page.goto("/forgot-password");
   await expect(page.getByRole("heading", { name: "Забыли пароль" })).toBeVisible();
   await page.locator("#email").fill(uniqueEmail("auth-forgot"));

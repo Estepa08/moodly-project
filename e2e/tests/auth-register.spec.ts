@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("регистрация: новый пользователь попадает в приложение", async ({ page }) => {
+test("регистрация: новый пользователь попадает в приложение", { tag: "@auth" }, async ({ page }) => {
   const email = `e2e-${Date.now()}-${Math.floor(Math.random() * 10000)}@example.com`;
 
   await page.goto("/register");

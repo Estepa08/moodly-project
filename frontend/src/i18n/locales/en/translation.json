@@ -160,7 +160,12 @@
     "practicesEntriesCount": "{{count}} entry",
     "practicesEntriesCount_other": "{{count}} entries",
     "wellbeing": "Wellbeing",
-    "testsTaken": "Tests Taken"
+    "testsTaken": "Tests Taken",
+    "firstTimeHint": {
+      "title": "Your charts will appear here",
+      "description": "Take a test or do a practice — and your mood, energy, sleep, and anxiety data will start showing up in the charts on this page.",
+      "dismiss": "Got it"
+    }
   },
   "gratitudePrompts": {
     "person": "Someone",
@@ -204,11 +209,7 @@
     "questionProgress": "Question {{current}} of {{total}}",
     "previous": "Previous",
     "next": "Next",
-    "reviewTitle": "Review Your Answers",
-    "reviewDesc": "Tap any question to change your answer",
     "submitTest": "Submit Test",
-    "editAnswers": "Edit Answers",
-    "review": "Review",
     "exitConfirmTitle": "Leaving so soon?",
     "exitConfirmDesc": "You can always come back and continue where you left off.",
     "exitConfirmCancel": "Keep Going",

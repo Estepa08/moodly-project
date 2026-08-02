@@ -16,7 +16,8 @@ export function getDateRange(period: Period): { from?: string; to?: string } {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const from = new Date(today.getTime() - p.days * 24 * 60 * 60 * 1000);
-  return { from: from.toISOString(), to: today.toISOString() };
+  const to = new Date(today.getTime() + MS_PER_DAY);
+  return { from: from.toISOString(), to: to.toISOString() };
 }
 
 export function filterByPeriod<T extends { completedAt: string }>(
@@ -27,7 +28,7 @@ export function filterByPeriod<T extends { completedAt: string }>(
   const range = getDateRange(period);
   if (!range.from || !range.to) return results;
   const from = new Date(range.from).getTime();
-  const toExclusive = new Date(range.to).getTime() + MS_PER_DAY;
+  const toExclusive = new Date(range.to).getTime();
   return results.filter((r) => {
     const t = new Date(r.completedAt).getTime();
     return t >= from && t < toExclusive;

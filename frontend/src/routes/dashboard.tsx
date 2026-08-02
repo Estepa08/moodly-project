@@ -7,7 +7,7 @@ import { Period } from "../lib/constants";
 import { filterByPeriod } from "../lib/utils";
 import { ParameterTrendsChart } from "../features/analytics";
 import { QuickEntryIcons } from "../features/mood-entry";
-import { WellbeingCard } from "../widgets";
+import { WellbeingCard, FirstTimeHint } from "../widgets";
 import TestsResultsSection from "../widgets/TestsResultsSection";
 import ThinkingPatternsCard from "../widgets/ThinkingPatternsCard";
 import CompanionCard from "../features/gamification/CompanionCard";
@@ -115,9 +115,16 @@ export default function Dashboard() {
     return ids;
   }, [todayEntries]);
 
+  const isFirstTime = useMemo(
+    () => trendData.length === 0 && (allTestResults?.length ?? 0) === 0,
+    [trendData, allTestResults],
+  );
+
   return (
     <div className="space-y-4">
       <CompanionCard />
+
+      <FirstTimeHint visible={isFirstTime} />
 
       <WellbeingCard
         average={wellbeing.average}

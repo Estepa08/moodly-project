@@ -1,6 +1,15 @@
 name: E2E
 
 on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "backend/**"
+      - "frontend/src/**"
+      - "e2e/**"
+      - "prisma/**"
+      - ".prisma/**"
+      - "api-contract/**"
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
@@ -66,7 +75,16 @@ jobs:
 
       - name: Run E2E tests
         working-directory: e2e
-        run: npx playwright test --workers 4
+        env:
+          E2E_BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          if [[ -n "$E2E_BASE_REF" ]]; then
+            # PR: запускаем только спеки, затронутые изменениями ветки
+            node run-affected.mjs --base "origin/${E2E_BASE_REF}" --workers 4 || [ $? -eq 3 ]
+          else
+            # schedule / вручную: полный прогон
+            npx playwright test --workers 4
+          fi
 
       - name: Upload Playwright report
         if: always()

@@ -20,7 +20,7 @@ export default function BulletStat({
   const progress = Math.min((value / target) * 100, 100);
 
   return (
-    <div className="rounded-xl bg-card shadow-neumorphic-sm p-3 flex flex-col gap-2">
+    <div className="rounded-xl bg-card shadow-neumorphic-sm p-3 flex flex-col gap-2 min-w-0">
       <div className="flex items-center gap-2">
         <div
           className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
@@ -28,8 +28,10 @@ export default function BulletStat({
         >
           <Icon aria-hidden="true" className="w-3.5 h-3.5" style={{ color }} />
         </div>
-        <span className="text-xs text-muted-foreground leading-tight flex-1">{label}</span>
-        <span className="text-sm font-bold text-foreground tabular-nums">
+        <span className="text-xs text-muted-foreground leading-tight flex-1 min-w-0 truncate">
+          {label}
+        </span>
+        <span className="text-sm font-bold text-foreground tabular-nums whitespace-nowrap shrink-0">
           {value}
           {unit}
         </span>
@@ -40,9 +42,9 @@ export default function BulletStat({
           style={{ width: `${progress}%`, backgroundColor: color }}
         />
       </div>
-      <div className="flex justify-between text-[10px] text-muted-foreground">
-        <span>{Math.round(progress)}%</span>
-        <span>
+      <div className="flex justify-between gap-2 text-[10px] text-muted-foreground">
+        <span className="whitespace-nowrap">{Math.round(progress)}%</span>
+        <span className="truncate">
           Goal: {target}
           {unit}
         </span>

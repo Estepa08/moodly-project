@@ -3,7 +3,7 @@ import { register, uniqueEmail, passTest, gotoApp } from "../helpers";
 
 test.setTimeout(180_000);
 
-test("прохождение BAI-теста приводит к результату", async ({ page }) => {
+test("прохождение BAI-теста приводит к результату", { tag: "@tests" }, async ({ page }) => {
   await register(page, uniqueEmail("test-bai"));
 
   await gotoApp(page, "/tests");
@@ -15,7 +15,7 @@ test("прохождение BAI-теста приводит к результа
   await expect(page.getByText("Интерпретация")).toBeVisible();
 });
 
-test("результат теста можно раскрыть и перейти к истории", async ({ page }) => {
+test("результат теста можно раскрыть и перейти к истории", { tag: "@tests" }, async ({ page }) => {
   await register(page, uniqueEmail("test-result"));
 
   await gotoApp(page, "/tests");
@@ -30,7 +30,7 @@ test("результат теста можно раскрыть и перейт�
   await expect(page.getByRole("heading", { name: "Результаты тестов" })).toBeVisible();
 });
 
-test("история результатов показывает пройденный тест", async ({ page }) => {
+test("история результатов показывает пройденный тест", { tag: "@tests" }, async ({ page }) => {
   await register(page, uniqueEmail("test-history"));
 
   await gotoApp(page, "/tests");
