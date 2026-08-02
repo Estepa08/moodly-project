@@ -252,13 +252,7 @@ export default function TestDetailPage() {
             );
           })}
         </div>
-        <PetAvatar
-          petType={petType}
-          size="sm"
-          contained
-          ariaLabel={petName}
-          feedSignal={feedSignal}
-        />
+        <PetAvatar petType={petType} size="sm" plain ariaLabel={petName} feedSignal={feedSignal} />
       </div>
 
       <Card>

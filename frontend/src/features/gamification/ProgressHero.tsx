@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import Lottie from "lottie-react";
 import { Sparkles } from "lucide-react";
-import { usePetAnimation } from "./usePetAnimation";
+import PetAvatar from "./PetAvatar";
+import { PET_DEFINITIONS } from "./pets";
 import { usePets } from "./useCreature";
 import { StreakIndicator } from "./index";
 import { ProgressBar } from "../../components/ui/progress-bar";
@@ -15,7 +15,10 @@ interface ProgressHeroProps {
 export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();
   const { data: pets } = usePets();
-  const animationData = usePetAnimation(pets?.activePetType ?? "puff");
+  const petType = pets?.activePetType ?? "puff";
+  const petName =
+    pets?.petName?.trim() ||
+    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
@@ -23,14 +26,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
     <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
         <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-          {animationData ? (
-            <Lottie
-              animationData={animationData}
-              loop
-              autoplay
-              style={{ width: "100%", height: "100%" }}
-            />
-          ) : null}
+          <PetAvatar petType={petType} size="lg" plain interactive ariaLabel={petName} />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
