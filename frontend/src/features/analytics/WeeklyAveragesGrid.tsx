@@ -42,8 +42,8 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                   ? goodness >= 7
                     ? "text-primary"
                     : goodness >= 4
-                      ? "text-primary/70"
-                      : "text-primary/40"
+                      ? "text-primary-muted"
+                      : "text-primary-dim"
                   : "text-muted-foreground";
               const TrendIcon =
                 avg.trend === Trend.Up
@@ -62,7 +62,7 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                   ? "text-muted-foreground"
                   : trendIsGood
                     ? "text-primary"
-                    : "text-primary/50";
+                    : "text-primary-dim";
               return (
                 <div
                   key={avg.name}

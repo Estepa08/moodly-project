@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Calendar, Flame, Sparkles, Brain, Zap, Activity } from "lucide-react";
+import { Calendar, Flame, Sparkles, Brain, Zap, Activity, UtensilsCrossed } from "lucide-react";
 import type { CreatureStats } from "../../lib/api";
 import BulletStat from "../../components/ui/bullet-stat";
 
@@ -55,6 +55,13 @@ export default function CreatureStatsBlock({ stats }: CreatureStatsBlockProps) {
         target={100}
         unit="%"
         color="hsl(45 93% 47%)"
+      />
+      <BulletStat
+        icon={UtensilsCrossed}
+        label={t("progress.feedsTotal")}
+        value={stats.feedCount ?? 0}
+        target={1000}
+        color="hsl(38 92% 50%)"
       />
     </div>
   );

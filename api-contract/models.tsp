@@ -314,6 +314,14 @@ model CreatureState {
   activeSkin?: string;
   @doc("Открытые скины")
   unlockedSkins?: string[];
+  @doc("Текущее настроение питомца (happy / calm / support)")
+  petMood?: string;
+  @doc("Стадия эволюции питомца (baby / kid / adult / max)")
+  stage?: string;
+  @doc("Всего скормленных единиц еды")
+  feedCount: int32;
+  @doc("Скормленные единицы по каждому питомцу (map тип → количество)")
+  feedCounts: unknown;
 }
 
 @doc("Коллекция питомцев пользователя")
@@ -321,6 +329,21 @@ model PetCollection {
   unlockedPetTypes: string[];
   activePetType: string;
   petName: string;
+  @doc("Скормленные единицы по каждому питомцу (map тип → количество)")
+  feedCounts: unknown;
+}
+
+@doc("Результат кормления питомца")
+model FeedResponse {
+  state: CreatureState;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
+  @doc("Сколько XP начислено за это кормление (0 после дневного лимита)")
+  xpAwarded: int32;
+  @doc("Всего скормленных единиц еды")
+  feedCount: int32;
+  @doc("Скормленные единицы по каждому питомцу (map тип → количество)")
+  feedCounts: unknown;
 }
 
 @doc("Тело обновления питомца")

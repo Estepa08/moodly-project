@@ -696,6 +696,9 @@
     "password": "Сменить пароль",
     "notifications": "Уведомления",
     "comingSoon": "Скоро",
+    "companionSection": "Питомец",
+    "companionToggleLabel": "Плавающий питомец",
+    "companionToggleDesc": "Показывать питомца в правом нижнем углу экрана",
     "language": "Язык",
     "deleteAccount": "Удалить аккаунт",
     "deleteDesc": "Навсегда удалить ваш аккаунт и все связанные данные. Это действие нельзя отменить.",
@@ -773,7 +776,13 @@
     "breathing100": "Ветер",
     "breathing100Desc": "Выполнить 100 дыхательных упражнений",
     "completions250": "Неутомимый",
-    "completions250Desc": "Выполнить 250 практик"
+    "completions250Desc": "Выполнить 250 практик",
+    "feed50": "Заботливый хозяин",
+    "feed50Desc": "Покормить питомца 50 раз",
+    "feed200": "Щедрый друг",
+    "feed200Desc": "Покормить питомца 200 раз",
+    "feed1000": "Лучший хозяин",
+    "feed1000Desc": "Покормить питомца 1000 раз"
   },
   "progress": {
     "xpToNext": "{{current}} / {{next}} XP",
@@ -802,6 +811,7 @@
     "streakDays": "Серия",
     "calmness": "Спокойствие",
     "energy": "Энергия",
+    "feedsTotal": "Покормлено",
     "noAchievementsYet": "Выполняйте практики, чтобы получать достижения!",
     "noTitlesYet": "Открывайте титулы через достижения!",
     "noTitle": "Нет",
@@ -842,12 +852,22 @@
   },
   "pets": {
     "puff": "Пых",
-    "kitty": "Котик",
-    "dewdrop": "Капелька",
-    "sprout": "Росток",
-    "comet": "Комета",
-    "aurora": "Аврора",
-    "active": "Активен"
+    "sloth": "Ленивец",
+    "fox": "Лиса",
+    "giraffe": "Жираф",
+    "dove": "Голубь",
+    "tiger": "Тигр",
+    "turtle": "Черепаха",
+    "monkey": "Обезьянка",
+    "bull": "Бык",
+    "koala": "Коала",
+    "cow": "Корова",
+    "robot": "Робот",
+    "robot2": "Робот 2",
+    "salad": "Салат",
+    "tucan": "Тукан",
+    "active": "Активен",
+    "fedCount": "×{{count}}"
   },
   "companion": {
     "level": "Уровень {{level}}",
@@ -855,6 +875,24 @@
     "energy": "Энергия {{value}}",
     "calmness": "Спокойствие {{value}}",
     "toCollection": "К коллекции питомцев"
+  },
+  "petMood": {
+    "happy": "В отличном настроении",
+    "calm": "Спокоен",
+    "support": "Рядом с тобой"
+  },
+  "petStage": {
+    "baby": "Детёныш",
+    "kid": "Подросток",
+    "adult": "Взрослый",
+    "max": "Легенда"
+  },
+  "reward": {
+    "practiceComplete": "Практика завершена!",
+    "testComplete": "Тест завершён!",
+    "petHappy": "{{name}} рад за тебя!",
+    "missionTest": "XP за миссию «Завершить тест»",
+    "streakLevel": "Серия: {{streak}} дн. · Уровень {{level}}"
   },
   "admin": {
     "title": "Администрирование",

@@ -10,6 +10,8 @@ import { useTestResultText } from "../hooks/useTestResultText";
 import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
 import { WellnessDisclaimer } from "../widgets";
+import { RewardMoment, PetAvatar, usePets, useFeed } from "../features/gamification";
+import { PET_DEFINITIONS } from "../features/gamification/pets";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +28,9 @@ export default function TestDetailPage() {
   const navigate = useNavigate();
   const { testId } = useParams<{ testId: string }>();
   const { resolve } = useTestResultText();
+  const { data: pets } = usePets();
+  const feed = useFeed();
+  const [feedSignal, setFeedSignal] = useState(0);
 
   const {
     test,
@@ -46,6 +51,20 @@ export default function TestDetailPage() {
     handleGoToQuestion,
   } = useTestFlow(testId);
 
+  const petType = pets?.activePetType ?? "puff";
+  const petName =
+    pets?.petName?.trim() ||
+    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
+
+  const handleNextFeed = () => {
+    const isLastQuestion = test ? questionIndex === test.questions.length - 1 : false;
+    handleNext();
+    if (!isLastQuestion) {
+      feed.mutate();
+      setFeedSignal(Date.now());
+    }
+  };
+
   // ── Result view ──
   if (result && test) {
     const maxScore = test.questions.length * 3;
@@ -56,6 +75,12 @@ export default function TestDetailPage() {
     return (
       <>
         <div className="max-w-lg mx-auto pb-20">
+          <RewardMoment
+            title={t("reward.testComplete")}
+            chip={t("reward.missionTest")}
+            showCollectionLink
+            className="mb-4"
+          />
           <Card>
             <CardHeader>
               <CardTitle>
@@ -199,32 +224,41 @@ export default function TestDetailPage() {
         </Button>
       </header>
 
-      <div
-        className="flex gap-1"
-        role="progressbar"
-        aria-valuenow={questionIndex + 1}
-        aria-valuemin={1}
-        aria-valuemax={test.questions.length}
-        aria-label={t("testDetail.questionProgress", {
-          current: questionIndex + 1,
-          total: test.questions.length,
-        })}
-      >
-        {test.questions.map((_, i) => {
-          const isDone = answers.length > i;
-          const isCurrent = i === questionIndex;
-          return (
-            <div
-              key={i}
-              className={cn(
-                "h-1.5 flex-1 rounded-full transition-colors duration-200",
-                isDone && "bg-primary",
-                isCurrent && !isDone && "bg-primary/50",
-                !isDone && !isCurrent && "bg-muted",
-              )}
-            />
-          );
-        })}
+      <div className="flex items-center gap-3">
+        <div
+          className="flex flex-1 gap-1"
+          role="progressbar"
+          aria-valuenow={questionIndex + 1}
+          aria-valuemin={1}
+          aria-valuemax={test.questions.length}
+          aria-label={t("testDetail.questionProgress", {
+            current: questionIndex + 1,
+            total: test.questions.length,
+          })}
+        >
+          {test.questions.map((_, i) => {
+            const isDone = answers.length > i;
+            const isCurrent = i === questionIndex;
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "h-1.5 flex-1 rounded-full transition-colors duration-200",
+                  isDone && "bg-primary",
+                  isCurrent && !isDone && "bg-primary/70",
+                  !isDone && !isCurrent && "bg-primary/30",
+                )}
+              />
+            );
+          })}
+        </div>
+        <PetAvatar
+          petType={petType}
+          size="sm"
+          contained
+          ariaLabel={petName}
+          feedSignal={feedSignal}
+        />
       </div>
 
       <Card>
@@ -287,7 +321,7 @@ export default function TestDetailPage() {
             {t("testDetail.review")}
           </Button>
         ) : hasAnswer ? (
-          <Button size="sm" onClick={handleNext}>
+          <Button size="sm" onClick={handleNextFeed}>
             {t("testDetail.next")}
           </Button>
         ) : (

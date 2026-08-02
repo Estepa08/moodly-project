@@ -21,10 +21,9 @@ export default function LayoutModals() {
 
   useEffect(() => {
     if (lastResult?.leveledUp) {
-      celebrate(
-        t("dailyCheckIn.levelUpTitle"),
-        t("dailyCheckIn.levelUpBody", { level: lastResult.state.level }),
-      );
+      celebrate(t("dailyCheckIn.levelUpBody", { level: lastResult.state.level }), {
+        title: t("dailyCheckIn.levelUpTitle"),
+      });
     }
   }, [lastResult, t]);
 

@@ -61,11 +61,23 @@ export interface CreatureState {
   unlockedTitles?: string[];
   activeSkin?: string;
   unlockedSkins?: string[];
+  petMood?: "happy" | "calm" | "support";
+  stage?: "baby" | "kid" | "adult" | "max";
+  feedCount?: number;
+  feedCounts?: Record<string, number>;
 }
 
 interface CheckInResponse {
   state: CreatureState;
   leveledUp: boolean;
+}
+
+export interface FeedResponse {
+  state: CreatureState;
+  leveledUp: boolean;
+  xpAwarded: number;
+  feedCount: number;
+  feedCounts: Record<string, number>;
 }
 
 interface PracticeCompletion {
@@ -85,12 +97,15 @@ export interface CreatureStats {
   calmness: number;
   energy: number;
   sourceBreakdown: Record<string, number>;
+  feedCount?: number;
+  feedCounts?: Record<string, number>;
 }
 
 export interface PetCollection {
   unlockedPetTypes: string[];
   activePetType: string;
   petName: string | null;
+  feedCounts?: Record<string, number>;
 }
 
 export interface HeatmapEntry {
@@ -294,6 +309,7 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ source }),
       }),
+    feed: () => request<FeedResponse>("/creature/feed", { method: "POST" }),
     getCompletions: (days = 30) =>
       request<PracticeCompletion[]>(`/creature/completions?days=${days}`),
     getStats: () => request<CreatureStats>("/creature/stats"),

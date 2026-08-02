@@ -191,6 +191,8 @@ model CreatureState {
   petType          String   @default("puff")
   unlockedPetTypes String[] @default(["puff"])
   petName          String?
+  feedCount        Int      @default(0)
+  feedCounts       Json     @default("{}")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

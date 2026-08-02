@@ -11,6 +11,7 @@ export default function PetCollection() {
 
   const unlocked = pets?.unlockedPetTypes ?? ["puff"];
   const active = pets?.activePetType ?? "puff";
+  const feedCounts = pets?.feedCounts ?? {};
 
   return (
     <div className="grid grid-cols-3 gap-2 justify-items-center">
@@ -49,6 +50,12 @@ export default function PetCollection() {
             {isActive && (
               <span className="text-[11px] text-primary font-semibold flex items-center gap-0.5">
                 <Check aria-hidden="true" className="w-3 h-3" /> {t("pets.active")}
+              </span>
+            )}
+            {isUnlocked && (feedCounts[pet.type] ?? 0) > 0 && (
+              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-0.5">
+                <span aria-hidden="true">{pet.feed?.[0] ?? "🫧"}</span>
+                {t("pets.fedCount", { count: feedCounts[pet.type] })}
               </span>
             )}
           </button>

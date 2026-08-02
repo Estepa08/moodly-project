@@ -78,3 +78,58 @@ describe("Entries", () => {
     expect(res.statusCode).toBe(204);
   });
 });
+
+describe("Entries reward mood XP", () => {
+  it("POST /entries — Mood entry awards +5 XP (up to 3 per day)", async () => {
+    const moodParam = await prisma.parameter.create({ data: { name: "Mood" } });
+    const user = await registerAndLogin(app, "entries-mood@example.com", "secret123", "Moody");
+
+    const getXp = async () => {
+      const res = await app.inject({
+        method: "GET",
+        url: "/creature",
+        headers: { authorization: `Bearer ${user.token}` },
+      });
+      return res.json().experience;
+    };
+
+    expect(await getXp()).toBe(0);
+
+    for (let i = 0; i < 3; i++) {
+      const res = await app.inject({
+        method: "POST",
+        url: "/entries",
+        headers: { authorization: `Bearer ${user.token}` },
+        payload: { parameterId: moodParam.id, value: 7 },
+      });
+      expect(res.statusCode).toBe(200);
+    }
+    expect(await getXp()).toBe(15);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/entries",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload: { parameterId: moodParam.id, value: 7 },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(await getXp()).toBe(15);
+  });
+
+  it("POST /entries — non-Mood entry awards no XP", async () => {
+    const user = await registerAndLogin(app, "entries-nonmood@example.com", "secret123", "Energy");
+    const res = await app.inject({
+      method: "POST",
+      url: "/entries",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload: { parameterId, value: 7 },
+    });
+    expect(res.statusCode).toBe(200);
+    const state = await app.inject({
+      method: "GET",
+      url: "/creature",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(state.json().experience).toBe(0);
+  });
+});

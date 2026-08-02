@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../lib/api";
 import { PracticeSource } from "./practice.enums";
+import { celebrateReward } from "./celebration";
 
 export function useCreatureState() {
   return useQuery({
@@ -15,8 +16,9 @@ export function useCompleteExercise() {
 
   return useMutation({
     mutationFn: (duration: number) => api.creature.completeExercise(duration),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["creature"] });
+      celebrateReward("breathing", data);
     },
   });
 }
@@ -26,8 +28,22 @@ export function useRewardPractice() {
 
   return useMutation({
     mutationFn: (source: PracticeSource) => api.creature.reward(source),
+    onSuccess: (data, source) => {
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+      celebrateReward(source, data);
+    },
+  });
+}
+
+export function useFeed() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.creature.feed(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["creature"] });
+      queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
+      queryClient.invalidateQueries({ queryKey: ["creature", "stats"] });
     },
   });
 }

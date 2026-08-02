@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import { getPetAnimations } from "./pets";
+import { getPetAnimations, type PetEmotion } from "./pets";
 
 const fallbackAnimation = () => import("../../assets/lottie/breathing-creature.json");
 
-export function usePetAnimation(petType: string) {
+export function usePetAnimation(petType: string, emotion: PetEmotion = "idle") {
   const [data, setData] = useState<unknown>(null);
 
   useEffect(() => {
     let cancelled = false;
-    const animations = getPetAnimations(petType);
+    const requested = getPetAnimations(petType, emotion);
+    const pool = requested.length > 0 ? requested : getPetAnimations(petType, "idle");
     const load =
-      animations.length > 0
-        ? animations[Math.floor(Math.random() * animations.length)]
-        : fallbackAnimation;
+      pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : fallbackAnimation;
 
     load().then((module) => {
       if (!cancelled) setData(module.default);
@@ -21,7 +20,7 @@ export function usePetAnimation(petType: string) {
     return () => {
       cancelled = true;
     };
-  }, [petType]);
+  }, [petType, emotion]);
 
   return data;
 }

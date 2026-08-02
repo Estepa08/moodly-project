@@ -808,6 +808,17 @@ export interface components {
             activeSkin?: string;
             /** @description Открытые скины */
             unlockedSkins?: string[];
+            /** @description Текущее настроение питомца (happy / calm / support) */
+            petMood?: string;
+            /** @description Стадия эволюции питомца (baby / kid / adult / max) */
+            stage?: string;
+            /**
+             * Format: int32
+             * @description Всего скормленных единиц еды
+             */
+            feedCount: number;
+            /** @description Скормленные единицы по каждому питомцу (map тип → количество) */
+            feedCounts: unknown;
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -834,6 +845,24 @@ export interface components {
         Error: {
             code: string;
             message: string;
+        };
+        /** @description Результат кормления питомца */
+        FeedResponse: {
+            state: components["schemas"]["CreatureState"];
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
+            /**
+             * Format: int32
+             * @description Сколько XP начислено за это кормление (0 после дневного лимита)
+             */
+            xpAwarded: number;
+            /**
+             * Format: int32
+             * @description Всего скормленных единиц еды
+             */
+            feedCount: number;
+            /** @description Скормленные единицы по каждому питомцу (map тип → количество) */
+            feedCounts: unknown;
         };
         /** @description Обратная связь от пользователя (сбор ОС) */
         Feedback: {
@@ -883,6 +912,8 @@ export interface components {
             unlockedPetTypes: string[];
             activePetType: string;
             petName: string;
+            /** @description Скормленные единицы по каждому питомцу (map тип → количество) */
+            feedCounts: unknown;
         };
         /** @description Тело обновления питомца */
         PetUpdateRequest: {

@@ -235,7 +235,7 @@ export default function ThoughtJournalPage() {
                           {e.note}
                         </p>
                       ) : (
-                        <p className="text-sm text-muted-foreground/50 italic">
+                        <p className="text-sm text-muted-foreground italic">
                           {t("thoughtJournal.noNote")}
                         </p>
                       )}

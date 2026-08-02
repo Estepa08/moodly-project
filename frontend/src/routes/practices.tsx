@@ -98,7 +98,7 @@ export default function PracticesPage() {
                     </span>
                     <p className="text-sm font-semibold text-foreground">{t(p.labelKey)}</p>
                     <p className="text-xs text-muted-foreground mt-0.5">{t(p.descKey)}</p>
-                    <p className="flex items-center gap-1 text-xs text-muted-foreground/70 mt-1.5">
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground mt-1.5">
                       <Clock aria-hidden="true" className="w-3 h-3" />
                       {t(p.timeKey)}
                     </p>

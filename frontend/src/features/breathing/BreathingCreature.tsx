@@ -4,6 +4,8 @@ import type { AnimationItem } from "lottie-web";
 import { Heart, HelpCircle } from "lucide-react";
 import animationData from "../../assets/lottie/breathing-creature.json";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { usePets } from "../gamification";
+import { usePetAnimation } from "../gamification/usePetAnimation";
 import { BreathPhase, ReactionType } from "./breathing.enums";
 
 interface Reaction {
@@ -34,6 +36,9 @@ export default function BreathingCreature({
   followCursor = true,
 }: BreathingCreatureProps) {
   const reducedMotion = useReducedMotion();
+  const { data: pets } = usePets();
+  const petType = pets?.activePetType ?? "puff";
+  const petAnimation = usePetAnimation(petType);
   const containerRef = useRef<HTMLDivElement>(null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const pointerRef = useRef({ x: 0, y: 0 });
@@ -203,7 +208,7 @@ export default function BreathingCreature({
       >
         <Lottie
           lottieRef={lottieRef}
-          animationData={animationData}
+          animationData={petAnimation ?? animationData}
           loop
           autoplay={!reducedMotion}
           style={{ width: "100%", height: "100%", cursor: "pointer" }}

@@ -14,6 +14,26 @@ vi.mock("../../lib/api", () => ({
       get: vi.fn(),
       submitResult: vi.fn(),
     },
+    creature: {
+      getPets: vi.fn().mockResolvedValue({
+        unlockedPetTypes: ["puff"],
+        activePetType: "puff",
+        petName: null,
+        feedCounts: {},
+      }),
+      getState: vi.fn().mockResolvedValue({
+        level: 1,
+        streak: 1,
+        calmness: 50,
+        energy: 100,
+      }),
+      feed: vi.fn().mockResolvedValue({
+        leveledUp: false,
+        xpAwarded: 1,
+        feedCount: 1,
+        feedCounts: { puff: 1 },
+      }),
+    },
   },
   setToken: vi.fn(),
   getToken: vi.fn(() => null),
@@ -84,6 +104,49 @@ describe("TestDetailPage", () => {
     expect(screen.getByText("Several days")).toBeInTheDocument();
     expect(screen.queryByText("Trouble relaxing?")).not.toBeInTheDocument();
     expect(screen.getByText("Question 1 of 2")).toBeInTheDocument();
+  });
+
+  it("feeds the pet once when advancing to the next question", async () => {
+    const { api } = await import("../../lib/api");
+    (api.tests.get as Mock).mockResolvedValueOnce({
+      id: "3",
+      title: "Feed Test",
+      active: true,
+      questions: [
+        {
+          id: "q1",
+          text: "Question one?",
+          options: [
+            { id: "a1", text: "No", score: 0 },
+            { id: "a2", text: "Yes", score: 1 },
+          ],
+        },
+        {
+          id: "q2",
+          text: "Question two?",
+          options: [
+            { id: "b1", text: "No", score: 0 },
+            { id: "b2", text: "Yes", score: 1 },
+          ],
+        },
+      ],
+    });
+    (api.creature.feed as Mock).mockClear();
+
+    const user = userEvent.setup();
+    renderAt("/tests/3");
+
+    await waitFor(() => {
+      expect(screen.getByText("Question one?")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText("Yes"));
+    await user.click(screen.getByRole("button", { name: /next/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Question two?")).toBeInTheDocument();
+    });
+    expect(api.creature.feed).toHaveBeenCalledTimes(1);
   });
 
   it("shows result after answering all questions", async () => {

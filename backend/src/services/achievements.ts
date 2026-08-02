@@ -18,19 +18,23 @@ export const achievementsService = {
       where: { userId },
       select: { source: true, xpAwarded: true },
     });
+    const practiceCompletions = completions.filter(
+      (c) => c.source !== "moodEntry" && c.source !== "feed",
+    );
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
-    const uniquePractices = new Set(completions.map((c) => c.source));
+    const uniquePractices = new Set(practiceCompletions.map((c) => c.source));
 
     return all.map((a) => {
       const criteria = a.criteria as Record<string, unknown>;
       const progress = calculateProgress(
         criteria,
         creature,
-        completions.length,
+        practiceCompletions.length,
         breathingCount,
         totalXp,
         uniquePractices,
+        creature?.feedCount ?? 0,
       );
       const isUnlocked = unlockedMap.has(a.id);
       return {
@@ -65,9 +69,12 @@ export const achievementsService = {
       where: { userId },
       select: { source: true, xpAwarded: true },
     });
+    const practiceCompletions = completions.filter(
+      (c) => c.source !== "moodEntry" && c.source !== "feed",
+    );
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
-    const uniquePractices = new Set(completions.map((c) => c.source));
+    const uniquePractices = new Set(practiceCompletions.map((c) => c.source));
 
     const newlyUnlocked: typeof all = [];
 
@@ -77,10 +84,11 @@ export const achievementsService = {
       const progress = calculateProgress(
         criteria,
         creature,
-        completions.length,
+        practiceCompletions.length,
         breathingCount,
         totalXp,
         uniquePractices,
+        creature?.feedCount ?? 0,
       );
       if (progress >= 100) {
         newlyUnlocked.push(a);
@@ -196,11 +204,12 @@ function percentOf(current: number, target: number): number {
 
 function calculateProgress(
   criteria: Record<string, unknown>,
-  creature: { level: number; experience: number; streak: number } | null,
+  creature: { level: number; experience: number; streak: number; feedCount: number } | null,
   totalCompletions: number,
   breathingCount: number,
   totalXp: number,
   uniquePractices?: Set<string>,
+  feedCount = 0,
 ): number {
   const type = criteria.type as string;
   const value = (criteria.value as number) ?? 0;
@@ -218,6 +227,8 @@ function calculateProgress(
       return percentOf(totalCompletions, value);
     case "total_xp":
       return percentOf(totalXp, value);
+    case "feed_count":
+      return percentOf(feedCount, value);
     case "all_practices":
       return (uniquePractices?.size ?? 0) >= 6 ? 100 : 0;
     default:

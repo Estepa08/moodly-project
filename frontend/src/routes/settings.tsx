@@ -12,9 +12,22 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../components/ui/dialog";
-import { Globe, Bell, Shield, Star, Trash2, AlertTriangle, ChevronRight } from "lucide-react";
+import {
+  Globe,
+  Bell,
+  Shield,
+  Star,
+  Trash2,
+  AlertTriangle,
+  ChevronRight,
+  PawPrint,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import ReviewForm from "../features/review/ReviewForm";
+import {
+  isCompanionHidden,
+  setCompanionHidden,
+} from "../features/gamification/companionVisibility";
 
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
@@ -23,6 +36,13 @@ export default function SettingsPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+  const [companionHidden, setCompanionHiddenState] = useState(isCompanionHidden());
+
+  const toggleCompanion = () => {
+    const next = !companionHidden;
+    setCompanionHiddenState(next);
+    setCompanionHidden(next);
+  };
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -79,7 +99,7 @@ export default function SettingsPage() {
             <span
               aria-hidden="true"
               className={cn(
-                "absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-neumorphic-sm transition-transform duration-200 motion-reduce:transition-none",
+                "absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary-strong shadow-neumorphic-sm transition-transform duration-200 motion-reduce:transition-none",
                 i18n.language === "en" && "translate-x-full",
               )}
             />
@@ -113,6 +133,43 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">{t("settings.comingSoon")}</p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <PawPrint aria-hidden="true" className="w-4 h-4" />
+            {t("settings.companionSection")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium">{t("settings.companionToggleLabel")}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t("settings.companionToggleDesc")}
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={!companionHidden}
+              aria-label={t("settings.companionToggleLabel")}
+              onClick={toggleCompanion}
+              className={cn(
+                "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                !companionHidden ? "bg-primary" : "bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
+                  !companionHidden && "translate-x-5",
+                )}
+              />
+            </button>
+          </div>
         </CardContent>
       </Card>
 
