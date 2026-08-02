@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { register, uniqueEmail, logoutDesktop, gotoApp } from "../helpers";
 
-test("настройки: раздел и удаление с подтверждением", async ({ page }) => {
+test("настройки: раздел и удаление с подтверждением", { tag: "@settings" }, async ({ page }) => {
   await register(page, uniqueEmail("settings-del"));
 
   await gotoApp(page, "/settings");
@@ -14,7 +14,7 @@ test("настройки: раздел и удаление с подтвержд
   await expect(page.getByRole("heading", { name: "Удалить аккаунт?" })).not.toBeVisible();
 });
 
-test("выход из аккаунта из сайдбара", async ({ page }) => {
+test("выход из аккаунта из сайдбара", { tag: "@settings" }, async ({ page }) => {
   await register(page, uniqueEmail("settings-logout"));
 
   await logoutDesktop(page);

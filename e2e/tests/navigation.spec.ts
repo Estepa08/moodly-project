@@ -12,7 +12,7 @@ const ROUTES: Array<[string, string]> = [
   ["/practices/thought-journal", "Дневник мыслей"],
 ];
 
-test("все ключевые маршруты открываются после входа", async ({ page }) => {
+test("все ключевые маршруты открываются после входа", { tag: "@navigation" }, async ({ page }) => {
   await register(page, uniqueEmail("nav-all"));
 
   for (const [path, marker] of ROUTES) {
@@ -21,7 +21,7 @@ test("все ключевые маршруты открываются после
   }
 });
 
-test("неавторизованный пользователь перенаправляется на вход", async ({ page }) => {
+test("неавторизованный пользователь перенаправляется на вход", { tag: "@navigation" }, async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveURL(/\/login/);
 });

@@ -3,7 +3,7 @@ import { register, uniqueEmail, dismissCheckIn } from "../helpers";
 
 test.use({ ...devices["iPhone 14"], browserName: "chromium" });
 
-test("мобильная регистрация и нижняя навигация", async ({ page }) => {
+test("мобильная регистрация и нижняя навигация", { tag: "@mobile" }, async ({ page }) => {
   await register(page, uniqueEmail("mobile-reg"));
   await dismissCheckIn(page);
 
@@ -16,7 +16,7 @@ test("мобильная регистрация и нижняя навигаци
   await expect(page.getByRole("link", { name: "Дыхание" })).toBeVisible();
 });
 
-test("мобильная запись настроения", async ({ page }) => {
+test("мобильная запись настроения", { tag: "@mobile" }, async ({ page }) => {
   await register(page, uniqueEmail("mobile-entry"));
 
   await page.getByRole("button", { name: "Сон" }).click();

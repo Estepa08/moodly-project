@@ -71,9 +71,7 @@ export async function passTest(
     if (i < questions) {
       await page.getByRole("button", { name: "Далее" }).click();
     } else {
-      await page.getByRole("button", { name: "Проверить" }).click();
+      await page.getByRole("button", { name: "Отправить тест" }).click();
     }
   }
-  await page.getByRole("heading", { name: "Проверьте ответы" }).waitFor();
-  await page.getByRole("button", { name: "Отправить тест" }).click();
 }

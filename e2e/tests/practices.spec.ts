@@ -3,7 +3,7 @@ import { register, uniqueEmail, gotoApp } from "../helpers";
 
 test.setTimeout(150_000);
 
-test("дыхание: быстрое упражнение завершается", async ({ page }) => {
+test("дыхание: быстрое упражнение завершается", { tag: "@practices" }, async ({ page }) => {
   await register(page, uniqueEmail("practice-breath"));
 
   await gotoApp(page, "/practices/breathing");
@@ -14,7 +14,7 @@ test("дыхание: быстрое упражнение завершается
   await expect(page.getByRole("button", { name: "Ещё раз" })).toBeVisible();
 });
 
-test("благодарность: добавляется запись", async ({ page }) => {
+test("благодарность: добавляется запись", { tag: "@practices" }, async ({ page }) => {
   await register(page, uniqueEmail("practice-gratitude"));
 
   await gotoApp(page, "/practices/gratitude");
@@ -25,7 +25,7 @@ test("благодарность: добавляется запись", async ({
   await expect(page.getByText("e2e-благодарность за тест")).toBeVisible();
 });
 
-test("дневник мыслей: сохраняется запись с XP", async ({ page }) => {
+test("дневник мыслей: сохраняется запись с XP", { tag: "@practices" }, async ({ page }) => {
   await register(page, uniqueEmail("practice-thought"));
 
   await gotoApp(page, "/practices/thought-journal");
@@ -36,7 +36,7 @@ test("дневник мыслей: сохраняется запись с XP", a
   await expect(page.getByText("Сохранено! +5 XP")).toBeVisible();
 });
 
-test("страницы практик открываются", async ({ page }) => {
+test("страницы практик открываются", { tag: "@practices" }, async ({ page }) => {
   await register(page, uniqueEmail("practice-open"));
 
   await gotoApp(page, "/practices/distortions");

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { register, quickEntry, gotoApp } from "../helpers";
 
-test("запись настроения: создаётся быстрая запись", async ({ page }) => {
+test("запись настроения: создаётся быстрая запись", { tag: "@dashboard" }, async ({ page }) => {
   await register(page);
 
   await page.getByRole("button", { name: "Настроение" }).click();
@@ -10,7 +10,7 @@ test("запись настроения: создаётся быстрая за�
   await expect(page.getByTestId("quick-entry-saved-Mood")).toBeVisible();
 });
 
-test("запись настроения с заметкой сохраняет текст", async ({ page }) => {
+test("запись настроения с заметкой сохраняет текст", { tag: "@dashboard" }, async ({ page }) => {
   await register(page);
 
   await quickEntry(page, "Тревога", "e2e-заметка о тревоге");
@@ -18,7 +18,7 @@ test("запись настроения с заметкой сохраняет �
   await expect(page.getByTestId("quick-entry-saved-Anxiety")).toBeVisible();
 });
 
-test("период дашборда переключается", async ({ page }) => {
+test("период дашборда переключается", { tag: "@dashboard" }, async ({ page }) => {
   await register(page);
 
   await page.getByRole("tab", { name: "Месяц", exact: true }).click();
@@ -28,7 +28,7 @@ test("период дашборда переключается", async ({ page }
   );
 });
 
-test("пустое состояние прогресса и статистика отображаются", async ({ page }) => {
+test("пустое состояние прогресса и статистика отображаются", { tag: "@dashboard" }, async ({ page }) => {
   await register(page);
 
   await gotoApp(page, "/progress");

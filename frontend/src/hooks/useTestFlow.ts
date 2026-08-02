@@ -23,7 +23,6 @@ export function useTestFlow(testId?: string) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ questionId: string; optionId: string }[]>([]);
   const [result, setResult] = useState<ResultData | null>(null);
-  const [showReview, setShowReview] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   const currentAnswer = answers[questionIndex];
@@ -45,11 +44,15 @@ export function useTestFlow(testId?: string) {
 
   const handleNext = useCallback(() => {
     if (questionIndex === test!.questions.length - 1) {
-      setShowReview(true);
+      submitMutation.mutate(answers, {
+        onSuccess: (data) => {
+          setResult(data as ResultData);
+        },
+      });
       return;
     }
     setQuestionIndex((i) => i + 1);
-  }, [questionIndex, test]);
+  }, [questionIndex, test, answers, submitMutation]);
 
   const handleBack = useCallback(() => {
     if (questionIndex > 0) setQuestionIndex((i) => i - 1);
@@ -63,11 +66,6 @@ export function useTestFlow(testId?: string) {
     });
   }, [answers, submitMutation]);
 
-  const handleGoToQuestion = useCallback((idx: number) => {
-    setQuestionIndex(idx);
-    setShowReview(false);
-  }, []);
-
   return {
     test,
     isLoading,
@@ -76,14 +74,11 @@ export function useTestFlow(testId?: string) {
     answers,
     currentAnswer,
     result,
-    showReview,
     showExitConfirm,
-    setShowReview,
     setShowExitConfirm,
     handleAnswer,
     handleNext,
     handleBack,
     handleSubmit,
-    handleGoToQuestion,
   };
 }

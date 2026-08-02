@@ -57,8 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         <main
           id="main-content"
-          className="flex-1 px-4 space-y-4 md:pb-8"
-          style={{ paddingBottom: "calc(2rem + var(--sab))" }}
+          className="flex-1 px-4 space-y-4 pb-[calc(5.5rem+var(--sab))] md:pb-8"
         >
           <div aria-live="polite" aria-atomic="true" className="sr-only" id="sr-announcements" />
           {children}

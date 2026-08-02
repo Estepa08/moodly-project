@@ -164,7 +164,12 @@
     "practicesEntriesCount_few": "{{count}} записи",
     "practicesEntriesCount_many": "{{count}} записей",
     "wellbeing": "Самочувствие",
-    "testsTaken": "Пройдено тестов"
+    "testsTaken": "Пройдено тестов",
+    "firstTimeHint": {
+      "title": "Здесь появятся ваши графики",
+      "description": "Пройдите тест или практику — и данные по настроению, энергии, сну и тревоге начнут собираться в графиках на этой странице.",
+      "dismiss": "Понятно"
+    }
   },
   "gratitudePrompts": {
     "person": "Человек",
@@ -208,11 +213,7 @@
     "questionProgress": "Вопрос {{current}} из {{total}}",
     "previous": "Назад",
     "next": "Далее",
-    "reviewTitle": "Проверьте ответы",
-    "reviewDesc": "Нажмите на вопрос, чтобы изменить ответ",
     "submitTest": "Отправить тест",
-    "editAnswers": "Изменить ответы",
-    "review": "Проверить",
     "exitConfirmTitle": "Уже уходите?",
     "exitConfirmDesc": "Вы всегда можете вернуться и продолжить с того же места.",
     "exitConfirmCancel": "Продолжить",

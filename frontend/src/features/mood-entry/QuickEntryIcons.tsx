@@ -86,7 +86,7 @@ export default function QuickEntryIcons({
         <p className="text-xs text-muted-foreground ml-7">{t("dashboard.quickEntry.subtitle")}</p>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
           {configs.map((cfg) => {
             const isActive = selectedParam === cfg.parameterName;
             const Icon = PARAM_ICONS[cfg.parameterName as ParameterName];
@@ -97,7 +97,7 @@ export default function QuickEntryIcons({
               <button
                 key={cfg.parameterName}
                 onClick={() => handleParamTap(cfg.parameterName)}
-                className={`relative flex flex-col items-center gap-1.5 p-3 rounded-xl transition-[color,background-color,box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                className={`relative flex flex-col items-center gap-1.5 p-2 sm:p-3 rounded-xl transition-[color,background-color,box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
                     ? "bg-primary/10 text-primary shadow-neumorphic-sm scale-105"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-neumorphic-sm"
@@ -107,8 +107,10 @@ export default function QuickEntryIcons({
                 }
                 aria-pressed={isActive}
               >
-                <div className="w-14 h-14 flex items-center justify-center">
-                  {Icon && <Icon aria-hidden="true" className="w-9 h-9 text-primary" />}
+                <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
+                  {Icon && (
+                    <Icon aria-hidden="true" className="w-8 h-8 sm:w-9 sm:h-9 text-primary" />
+                  )}
                 </div>
                 {isSaved && (
                   <span
