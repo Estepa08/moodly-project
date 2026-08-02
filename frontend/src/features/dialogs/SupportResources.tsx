@@ -50,13 +50,13 @@ export default function SupportResources({ open, onDismiss }: Props) {
             <>
               <a
                 href="tel:112"
-                className="block w-full text-center py-3 rounded-lg bg-primary text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
+                className="block w-full text-center py-3 rounded-lg bg-primary-strong text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
               >
                 112
               </a>
               <a
                 href="tel:88002000122"
-                className="block w-full text-center py-3 rounded-lg bg-primary text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
+                className="block w-full text-center py-3 rounded-lg bg-primary-strong text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
               >
                 8-800-200-01-22
               </a>
@@ -64,7 +64,7 @@ export default function SupportResources({ open, onDismiss }: Props) {
           ) : (
             <a
               href="tel:988"
-              className="block w-full text-center py-3 rounded-lg bg-primary text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
+              className="block w-full text-center py-3 rounded-lg bg-primary-strong text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
             >
               {t("supportResources.call")} 988
             </a>

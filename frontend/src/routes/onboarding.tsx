@@ -256,7 +256,7 @@ export default function OnboardingPage() {
                   onChange={(e) => setPetName(e.target.value)}
                   placeholder={t("onboarding2.petNamePlaceholder")}
                   maxLength={24}
-                  className="w-full px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm placeholder:text-muted-foreground/70 border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm placeholder:text-muted-foreground border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
 

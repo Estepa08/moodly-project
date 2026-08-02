@@ -2,21 +2,22 @@ import { useState } from "react";
 import { Heart } from "lucide-react";
 import Lottie from "lottie-react";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { PET_DEFINITIONS } from "./pets";
+import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from "./pets";
 import { usePetAnimation } from "./usePetAnimation";
 import { cn } from "../../lib/utils";
 
 export type PetAvatarSize = "sm" | "md" | "lg";
 
 const SIZE_CLASS: Record<PetAvatarSize, { box: string; icon: string }> = {
-  sm: { box: "w-10 h-10", icon: "text-lg" },
-  md: { box: "w-14 h-14", icon: "text-2xl" },
-  lg: { box: "w-[72px] h-[72px]", icon: "text-4xl" },
+  sm: { box: "w-12 h-12", icon: "text-xl" },
+  md: { box: "w-[72px] h-[72px]", icon: "text-3xl" },
+  lg: { box: "w-24 h-24", icon: "text-5xl" },
 };
 
 interface PetAvatarProps {
   petType?: string;
   size?: PetAvatarSize;
+  emotion?: PetEmotion;
   interactive?: boolean;
   ariaLabel?: string;
   className?: string;
@@ -25,12 +26,13 @@ interface PetAvatarProps {
 export default function PetAvatar({
   petType = "puff",
   size = "md",
+  emotion = "idle",
   interactive = false,
   ariaLabel,
   className,
 }: PetAvatarProps) {
   const isReducedMotion = useReducedMotion();
-  const animationData = usePetAnimation(petType);
+  const animationData = usePetAnimation(petType, emotion);
   const [hearts, setHearts] = useState<number[]>([]);
 
   const addHeart = () => {
@@ -42,6 +44,9 @@ export default function PetAvatar({
 
   const fallback = PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? "🫧";
   const { box, icon } = SIZE_CLASS[size];
+
+  const showPetBounce =
+    emotion === "happy" && !hasPetEmotion(petType, "happy") && !isReducedMotion && !!animationData;
 
   return (
     <button
@@ -55,7 +60,13 @@ export default function PetAvatar({
       )}
     >
       <span className={cn("block rounded-full bg-secondary", box)} />
-      <span className={cn("absolute inset-0 flex items-center justify-center", icon)}>
+      <span
+        className={cn(
+          "absolute inset-0 flex items-center justify-center",
+          icon,
+          showPetBounce && "animate-pet-happy",
+        )}
+      >
         {isReducedMotion || !animationData ? (
           <span aria-hidden="true">{fallback}</span>
         ) : (

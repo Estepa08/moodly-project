@@ -86,12 +86,7 @@ export default function AchievementGrid() {
               >
                 {t(a.titleKey)}
               </p>
-              <p
-                className={cn(
-                  "text-[11px] leading-tight mt-0.5",
-                  a.unlocked ? "text-muted-foreground" : "text-muted-foreground/60",
-                )}
-              >
+              <p className={cn("text-[11px] leading-tight mt-0.5", "text-muted-foreground")}>
                 {t(a.descKey)}
               </p>
             </div>

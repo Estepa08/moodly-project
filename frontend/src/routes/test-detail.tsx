@@ -10,6 +10,7 @@ import { useTestResultText } from "../hooks/useTestResultText";
 import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
 import { WellnessDisclaimer } from "../widgets";
+import { RewardMoment } from "../features/gamification";
 import {
   Dialog,
   DialogContent,
@@ -56,6 +57,12 @@ export default function TestDetailPage() {
     return (
       <>
         <div className="max-w-lg mx-auto pb-20">
+          <RewardMoment
+            title={t("reward.testComplete")}
+            chip={t("reward.missionTest")}
+            showCollectionLink
+            className="mb-4"
+          />
           <Card>
             <CardHeader>
               <CardTitle>
@@ -219,8 +226,8 @@ export default function TestDetailPage() {
               className={cn(
                 "h-1.5 flex-1 rounded-full transition-colors duration-200",
                 isDone && "bg-primary",
-                isCurrent && !isDone && "bg-primary/50",
-                !isDone && !isCurrent && "bg-muted",
+                isCurrent && !isDone && "bg-primary/70",
+                !isDone && !isCurrent && "bg-primary/30",
               )}
             />
           );

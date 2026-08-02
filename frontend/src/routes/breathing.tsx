@@ -1,7 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useCompleteExercise } from "../features/gamification";
-import { celebrate } from "../features/gamification";
 import { BreathingGuide, BreathPhase, BreathingTechnique } from "../features/breathing";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import Spinner from "../components/ui/spinner";
@@ -94,7 +93,7 @@ export default function BreathingPage() {
               </SegmentGroup>
             </div>
             <div className="space-y-1 text-sm text-muted-foreground border-t border-border pt-4">
-              <p className="text-xs font-medium text-foreground/60 uppercase tracking-wider">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 {t("breathing.howItWorks")}
               </p>
               <ol className="list-decimal list-inside space-y-0.5">
@@ -185,16 +184,7 @@ export default function BreathingPage() {
                 setLastDuration(duration);
                 setBreathPhase(BreathPhase.Inhale);
                 setBreathProgress(0);
-                completeExercise.mutate(duration, {
-                  onSuccess: (data) => {
-                    if (data.leveledUp) {
-                      celebrate(
-                        t("dailyCheckIn.levelUpTitle"),
-                        t("dailyCheckIn.levelUpBody", { level: data.state.level }),
-                      );
-                    }
-                  },
-                });
+                completeExercise.mutate(duration);
                 setPhase("done");
               }}
               onCancel={() => {

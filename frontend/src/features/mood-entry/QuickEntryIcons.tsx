@@ -114,7 +114,7 @@ export default function QuickEntryIcons({
                   <span
                     data-testid={`quick-entry-saved-${cfg.parameterName}`}
                     aria-hidden="true"
-                    className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-accent-foreground ring-2 ring-card"
+                    className="absolute -top-1.5 -right-1.5 flex items-center justify-center w-5 h-5 rounded-full bg-accent-strong text-accent-foreground ring-2 ring-card"
                   >
                     <Check className="w-3 h-3" strokeWidth={3} />
                   </span>

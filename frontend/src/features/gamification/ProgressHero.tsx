@@ -21,7 +21,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   return (
     <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
+        <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
           {animationData ? (
             <Lottie
               animationData={animationData}

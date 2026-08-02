@@ -842,11 +842,20 @@
   },
   "pets": {
     "puff": "Пых",
-    "kitty": "Котик",
-    "dewdrop": "Капелька",
-    "sprout": "Росток",
-    "comet": "Комета",
-    "aurora": "Аврора",
+    "sloth": "Ленивец",
+    "fox": "Лиса",
+    "giraffe": "Жираф",
+    "dove": "Голубь",
+    "tiger": "Тигр",
+    "turtle": "Черепаха",
+    "monkey": "Обезьянка",
+    "bull": "Бык",
+    "koala": "Коала",
+    "cow": "Корова",
+    "robot": "Робот",
+    "robot2": "Робот 2",
+    "salad": "Салат",
+    "tucan": "Тукан",
     "active": "Активен"
   },
   "companion": {
@@ -855,6 +864,13 @@
     "energy": "Энергия {{value}}",
     "calmness": "Спокойствие {{value}}",
     "toCollection": "К коллекции питомцев"
+  },
+  "reward": {
+    "practiceComplete": "Практика завершена!",
+    "testComplete": "Тест завершён!",
+    "petHappy": "{{name}} рад за тебя!",
+    "missionTest": "XP за миссию «Завершить тест»",
+    "streakLevel": "Серия: {{streak}} дн. · Уровень {{level}}"
   },
   "admin": {
     "title": "Администрирование",

@@ -35,13 +35,13 @@ describe("Creature pets", () => {
       method: "PATCH",
       url: "/creature/pet",
       headers: { authorization: `Bearer ${token}` },
-      payload: { petType: "dewdrop", petName: "Капля" },
+      payload: { petType: "sloth", petName: "Ленивец" },
     });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
-      unlockedPetTypes: ["puff", "dewdrop"],
-      activePetType: "dewdrop",
-      petName: "Капля",
+      unlockedPetTypes: ["puff", "sloth"],
+      activePetType: "sloth",
+      petName: "Ленивец",
     });
   });
 
@@ -53,7 +53,7 @@ describe("Creature pets", () => {
       payload: { petName: "Дружок" },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toMatchObject({ activePetType: "dewdrop", petName: "Дружок" });
+    expect(res.json()).toMatchObject({ activePetType: "sloth", petName: "Дружок" });
   });
 
   it("PATCH /creature/pet — rejects a non-starter locked pet", async () => {
@@ -61,7 +61,7 @@ describe("Creature pets", () => {
       method: "PATCH",
       url: "/creature/pet",
       headers: { authorization: `Bearer ${token}` },
-      payload: { petType: "kitty" },
+      payload: { petType: "giraffe" },
     });
     expect(res.statusCode).toBe(403);
   });

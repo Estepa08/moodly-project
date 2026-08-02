@@ -838,11 +838,20 @@
   },
   "pets": {
     "puff": "Puff",
-    "kitty": "Kitty",
-    "dewdrop": "Dewdrop",
-    "sprout": "Sprout",
-    "comet": "Comet",
-    "aurora": "Aurora",
+    "sloth": "Sloth",
+    "fox": "Fox",
+    "giraffe": "Giraffe",
+    "dove": "Dove",
+    "tiger": "Tiger",
+    "turtle": "Turtle",
+    "monkey": "Monkey",
+    "bull": "Bull",
+    "koala": "Koala",
+    "cow": "Cow",
+    "robot": "Robot",
+    "robot2": "Robot 2",
+    "salad": "Salad",
+    "tucan": "Toucan",
     "active": "Active"
   },
   "companion": {
@@ -851,6 +860,13 @@
     "energy": "Energy {{value}}",
     "calmness": "Calmness {{value}}",
     "toCollection": "Pet collection"
+  },
+  "reward": {
+    "practiceComplete": "Practice completed!",
+    "testComplete": "Test completed!",
+    "petHappy": "{{name}} is happy for you!",
+    "missionTest": "XP for the \"Complete test\" mission",
+    "streakLevel": "Streak: {{streak}} days · Level {{level}}"
   },
   "admin": {
     "title": "Administration",

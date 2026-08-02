@@ -33,7 +33,7 @@ export default function DailyMissions() {
                 <button
                   onClick={() => claimMission.mutate(mission.id)}
                   disabled={claimMission.isPending}
-                  className="w-6 h-6 rounded-full bg-primary flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]"
+                  className="w-6 h-6 rounded-full bg-primary-strong flex items-center justify-center cursor-pointer hover:bg-primary-strong/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]"
                   aria-label={t("missions.claim")}
                 >
                   <Gift aria-hidden="true" className="w-3.5 h-3.5 text-primary-foreground" />

@@ -6,7 +6,7 @@ const CHECKIN_EXP = 20;
 const EXERCISE_EXP = 10;
 const MAX_ENERGY = 100;
 
-const STARTER_PET_TYPES = ["puff", "dewdrop", "sprout"];
+const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
 
 const PRACTICE_XP: Record<string, number> = {
   breathing: 10,

@@ -25,12 +25,12 @@ const sizeMap: Record<ComponentSize, { button: string; check: string; icon: stri
 const colorMap: Record<CheckedColor, { bg: string; border: string; icon: string }> = {
   [CheckedColor.Primary]: {
     bg: "bg-primary/10 text-primary",
-    border: "bg-primary border-primary",
+    border: "bg-primary-strong border-primary-strong",
     icon: "text-primary-foreground",
   },
   [CheckedColor.Accent]: {
     bg: "bg-accent/10 text-accent",
-    border: "bg-accent border-accent",
+    border: "bg-accent-strong border-accent-strong",
     icon: "text-white",
   },
 };

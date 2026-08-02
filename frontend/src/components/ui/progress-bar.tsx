@@ -24,7 +24,7 @@ export function ProgressBar({
   return (
     <div
       className={cn(
-        "flex overflow-hidden shadow-neumorphic-inset",
+        "flex overflow-hidden shadow-neumorphic-inset bg-muted",
         rounded && "rounded-full",
         trackClassName,
         className,

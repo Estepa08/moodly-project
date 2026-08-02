@@ -27,15 +27,15 @@ export default function WellbeingCard({
       ? average >= 7
         ? "text-primary"
         : average >= 4
-          ? "text-primary/70"
-          : "text-primary/40"
+          ? "text-primary-muted"
+          : "text-primary-dim"
       : "text-muted-foreground";
   const TrendIcon = trend === Trend.Up ? TrendingUp : trend === Trend.Down ? TrendingDown : Minus;
   const trendColor =
     trend === Trend.Up
       ? "text-primary"
       : trend === Trend.Down
-        ? "text-primary/50"
+        ? "text-primary-dim"
         : "text-muted-foreground";
 
   return (

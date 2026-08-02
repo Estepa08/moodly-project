@@ -1,8 +1,51 @@
 import { toast } from "sonner";
-import CelebrationToast from "./CelebrationToast";
+import RewardMoment from "./RewardMoment";
+import i18n from "../../i18n/i18n";
 
-export function celebrate(title: string, description?: string) {
-  toast.custom((_t) => <CelebrationToast title={title} description={description} />, {
+const PRACTICE_REWARD_XP: Record<string, number> = {
+  breathing: 10,
+  gratitude: 5,
+  sleepHygiene: 5,
+  distortions: 10,
+  cba: 10,
+  thoughtJournal: 5,
+};
+
+const REWARD_COOLDOWN_MS = 4000;
+let lastRewardAt = 0;
+
+interface CelebrateOptions {
+  title?: string;
+  chip?: string;
+  showCollectionLink?: boolean;
+}
+
+export function celebrate(subtitle: string, options: CelebrateOptions = {}) {
+  toast.custom(() => <RewardMoment subtitle={subtitle} {...options} />, {
     duration: 4000,
+  });
+}
+
+export function celebrateReward(
+  source: string,
+  data: { leveledUp?: boolean; state?: { level: number } },
+) {
+  const t = i18n.t.bind(i18n);
+
+  if (data.leveledUp) {
+    lastRewardAt = Date.now();
+    celebrate(t("dailyCheckIn.levelUpBody", { level: data.state?.level }), {
+      title: t("dailyCheckIn.levelUpTitle"),
+    });
+    return;
+  }
+
+  const now = Date.now();
+  if (now - lastRewardAt < REWARD_COOLDOWN_MS) return;
+  lastRewardAt = now;
+
+  const xp = PRACTICE_REWARD_XP[source];
+  celebrate(t("reward.practiceComplete"), {
+    chip: xp ? `+${xp} XP` : undefined,
   });
 }

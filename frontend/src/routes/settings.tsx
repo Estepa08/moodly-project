@@ -79,7 +79,7 @@ export default function SettingsPage() {
             <span
               aria-hidden="true"
               className={cn(
-                "absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary shadow-neumorphic-sm transition-transform duration-200 motion-reduce:transition-none",
+                "absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full bg-primary-strong shadow-neumorphic-sm transition-transform duration-200 motion-reduce:transition-none",
                 i18n.language === "en" && "translate-x-full",
               )}
             />

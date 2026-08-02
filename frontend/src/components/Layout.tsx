@@ -8,6 +8,7 @@ import { Button } from "../components/ui/button";
 import Sidebar from "../layout/Sidebar";
 import LayoutModals from "../layout/LayoutModals";
 import BottomNav from "../layout/BottomNav";
+import FloatingCompanion from "../features/gamification/FloatingCompanion";
 import Breadcrumbs from "../components/ui/breadcrumbs";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -67,6 +68,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <BottomNav />
         </div>
 
+        <FloatingCompanion />
         <LayoutModals />
       </div>
     </div>
