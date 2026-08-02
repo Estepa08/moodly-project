@@ -1,17 +1,22 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, type CSSProperties } from "react";
 import Lottie, { type LottieRefCurrentProps } from "lottie-react";
 import type { AnimationItem } from "lottie-web";
-import { Heart, HelpCircle } from "lucide-react";
 import animationData from "../../assets/lottie/breathing-creature.json";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { usePets } from "../gamification";
 import { usePetAnimation } from "../gamification/usePetAnimation";
+import { PET_DEFINITIONS } from "../gamification/pets";
 import { BreathPhase, ReactionType } from "./breathing.enums";
 
 interface Reaction {
   id: number;
   type: ReactionType;
   x: number;
+  emoji: string;
+  swayA: number;
+  swayB: number;
+  tilt: number;
+  by: number;
 }
 
 interface BreathingCreatureProps {
@@ -51,16 +56,36 @@ export default function BreathingCreature({
 
   const [reactions, setReactions] = useState<Reaction[]>([]);
 
-  const spawnReaction = useCallback((type: ReactionType) => {
-    if (type === ReactionType.Dizzy) dizzyActiveRef.current = true;
-    const id = nextReactionId++;
-    const x = (Math.random() - 0.5) * 30;
-    setReactions((prev) => [...prev, { id, type, x }]);
-    setTimeout(() => {
-      setReactions((prev) => prev.filter((r) => r.id !== id));
-      if (type === ReactionType.Dizzy) dizzyActiveRef.current = false;
-    }, REACTION_DURATION);
-  }, []);
+  const spawnReaction = useCallback(
+    (type: ReactionType) => {
+      if (type === ReactionType.Dizzy) dizzyActiveRef.current = true;
+      const id = nextReactionId++;
+      const def = PET_DEFINITIONS.find((p) => p.type === petType);
+      const feed = def?.feed ?? ["🫧"];
+      const emoji =
+        type === ReactionType.Dizzy
+          ? (def?.emoji ?? "🫧")
+          : feed[Math.floor(Math.random() * feed.length)];
+      setReactions((prev) => [
+        ...prev,
+        {
+          id,
+          type,
+          x: (Math.random() - 0.5) * 60,
+          emoji,
+          swayA: Math.random() * 40 - 20,
+          swayB: Math.random() * 60 - 30,
+          tilt: (Math.random() - 0.5) * 36,
+          by: -(220 + Math.random() * 70),
+        },
+      ]);
+      setTimeout(() => {
+        setReactions((prev) => prev.filter((r) => r.id !== id));
+        if (type === ReactionType.Dizzy) dizzyActiveRef.current = false;
+      }, REACTION_DURATION);
+    },
+    [petType],
+  );
 
   const handleClick = useCallback(() => {
     const now = Date.now();
@@ -220,16 +245,34 @@ export default function BreathingCreature({
           {reactions.map((r) => (
             <div
               key={r.id}
-              className="absolute left-1/2 -translate-x-1/2 top-[35%] w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center animate-bubble-up"
-              style={{ marginLeft: r.x }}
+              className="absolute left-1/2 top-[35%] animate-bubble-up"
+              style={
+                {
+                  marginLeft: `calc(${r.x}px - 20px)`,
+                  "--by": `${r.by}px`,
+                } as CSSProperties
+              }
             >
-              {r.type === ReactionType.Dizzy ? (
-                <span className="text-lg">🌀</span>
-              ) : r.type === ReactionType.Heart ? (
-                <Heart aria-hidden="true" className="w-4 h-4 text-accent" />
-              ) : (
-                <HelpCircle aria-hidden="true" className="w-4 h-4 text-primary" />
-              )}
+              <div
+                className="w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center animate-bubble-sway"
+                style={
+                  {
+                    "--sway-a": `${r.swayA}px`,
+                    "--sway-b": `${r.swayB}px`,
+                    "--tilt": `${r.tilt}deg`,
+                  } as CSSProperties
+                }
+              >
+                {r.type === ReactionType.Dizzy ? (
+                  <span className="text-lg animate-pet-dizzy-wobble" aria-hidden="true">
+                    {r.emoji}
+                  </span>
+                ) : (
+                  <span className="text-lg" aria-hidden="true">
+                    {r.emoji}
+                  </span>
+                )}
+              </div>
             </div>
           ))}
         </div>

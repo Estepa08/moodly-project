@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Lottie from "lottie-react";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from "./pets";
@@ -8,18 +8,30 @@ import { cn } from "../../lib/utils";
 export type PetAvatarSize = "sm" | "md" | "lg";
 
 const SIZE_CLASS: Record<PetAvatarSize, { box: string; icon: string }> = {
-  sm: { box: "w-12 h-12", icon: "text-xl" },
+  sm: { box: "w-[60px] h-[60px]", icon: "text-2xl" },
   md: { box: "w-[72px] h-[72px]", icon: "text-3xl" },
   lg: { box: "w-24 h-24", icon: "text-5xl" },
 };
 
 const FEED_ITEM_COUNT = 6;
+const BUBBLE_LIFETIME_MS = 3200;
+
+type BubbleDepth = "over" | "under";
+
+interface BubbleTrajectory {
+  swayA: number;
+  swayB: number;
+  tilt: number;
+  by: number;
+}
 
 interface FloatItem {
   id: number;
   emoji: string;
   offset: number;
   delay: number;
+  depth: BubbleDepth;
+  trajectory: BubbleTrajectory;
 }
 
 interface PetAvatarProps {
@@ -33,6 +45,8 @@ interface PetAvatarProps {
   feedSignal?: number;
   /** Обрезает еду/пузыри по кругу аватара (для тостов и шапки теста — ничего не вылетает наружу) */
   contained?: boolean;
+  /** Убирает фон-кружок (питомец на прозрачной подложке) */
+  plain?: boolean;
 }
 
 export default function PetAvatar({
@@ -44,6 +58,7 @@ export default function PetAvatar({
   className,
   feedSignal,
   contained = false,
+  plain = false,
 }: PetAvatarProps) {
   const isReducedMotion = useReducedMotion();
   const animationData = usePetAnimation(petType, emotion);
@@ -67,11 +82,28 @@ export default function PetAvatar({
   const spawnBubble = () => {
     if (!interactive) return;
     const id = Date.now() + Math.random();
+    const depth: BubbleDepth = Math.random() > 0.5 ? "over" : "under";
+    const trajectory: BubbleTrajectory = {
+      swayA: Math.random() * 40 - 20,
+      swayB: Math.random() * 60 - 30,
+      tilt: (Math.random() - 0.5) * 36,
+      by: -(220 + Math.random() * 70),
+    };
     setBubbles((prev) => [
       ...prev,
-      { id, emoji: pickEmoji(), offset: Math.random() * 24 - 12, delay: 0 },
+      {
+        id,
+        emoji: pickEmoji(),
+        offset: Math.random() * 60 - 30,
+        delay: 0,
+        depth,
+        trajectory,
+      },
     ]);
-    const timer = setTimeout(() => setBubbles((prev) => prev.filter((b) => b.id !== id)), 1800);
+    const timer = setTimeout(
+      () => setBubbles((prev) => prev.filter((b) => b.id !== id)),
+      BUBBLE_LIFETIME_MS,
+    );
     timersRef.current.push(timer);
   };
 
@@ -92,6 +124,8 @@ export default function PetAvatar({
       emoji: feedEmojis[i % feedEmojis.length],
       offset: (i % 5) * 10 - 20,
       delay: i * 130,
+      depth: "under",
+      trajectory: { swayA: 0, swayB: 0, tilt: 0, by: -260 },
     }));
     setFeedItems(items);
 
@@ -131,7 +165,7 @@ export default function PetAvatar({
         className,
       )}
     >
-      <span className={cn("block rounded-full bg-secondary", box)} />
+      <span className={cn("block rounded-full", plain ? "bg-transparent" : "bg-secondary", box)} />
       <span
         className={cn(
           "absolute inset-0 flex items-center justify-center",
@@ -150,10 +184,29 @@ export default function PetAvatar({
         <span
           key={b.id}
           aria-hidden="true"
-          className="absolute left-1/2 top-0 w-6 h-6 flex items-center justify-center text-lg animate-bubble-up"
-          style={{ marginLeft: b.offset }}
+          className={cn(
+            "absolute left-1/2 top-0 w-6 h-6 flex items-center justify-center text-lg animate-bubble-up pointer-events-none",
+            b.depth === "over" && "z-20",
+          )}
+          style={
+            {
+              marginLeft: b.offset,
+              "--by": `${b.trajectory.by}px`,
+            } as CSSProperties
+          }
         >
-          {b.emoji}
+          <span
+            className="animate-bubble-sway"
+            style={
+              {
+                "--sway-a": `${b.trajectory.swayA}px`,
+                "--sway-b": `${b.trajectory.swayB}px`,
+                "--tilt": `${b.trajectory.tilt}deg`,
+              } as CSSProperties
+            }
+          >
+            {b.emoji}
+          </span>
         </span>
       ))}
 
@@ -161,7 +214,7 @@ export default function PetAvatar({
         <span
           key={item.id}
           aria-hidden="true"
-          className="absolute left-1/2 top-[30%] w-6 h-6 flex items-center justify-center text-lg animate-feed-fall"
+          className="absolute left-1/2 top-[30%] w-6 h-6 flex items-center justify-center text-lg animate-feed-fall pointer-events-none"
           style={{ marginLeft: item.offset, animationDelay: `${item.delay}ms` }}
         >
           {item.emoji}
