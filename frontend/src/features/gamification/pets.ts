@@ -8,10 +8,11 @@ export interface PetDefinition {
   labelKey: string;
   color: string;
   emoji: string;
+  feed: string[];
   animations?: Record<PetEmotion, (() => Promise<{ default: unknown }>)[]>;
 }
 
-type PetMeta = Pick<PetDefinition, "labelKey" | "color" | "emoji">;
+type PetMeta = Pick<PetDefinition, "labelKey" | "color" | "emoji" | "feed">;
 
 const KNOWN_ORDER = [
   "puff",
@@ -32,21 +33,21 @@ const KNOWN_ORDER = [
 ];
 
 const PET_META: Record<string, PetMeta> = {
-  puff: { labelKey: "pets.puff", color: "bg-pet-1", emoji: "🫧" },
-  sloth: { labelKey: "pets.sloth", color: "bg-pet-3", emoji: "🦥" },
-  fox: { labelKey: "pets.fox", color: "bg-pet-4", emoji: "🦊" },
-  giraffe: { labelKey: "pets.giraffe", color: "bg-pet-7", emoji: "🦒" },
-  dove: { labelKey: "pets.dove", color: "bg-pet-8", emoji: "🕊️" },
-  tiger: { labelKey: "pets.tiger", color: "bg-pet-9", emoji: "🐯" },
-  turtle: { labelKey: "pets.turtle", color: "bg-pet-10", emoji: "🐢" },
-  monkey: { labelKey: "pets.monkey", color: "bg-pet-2", emoji: "🐒" },
-  bull: { labelKey: "pets.bull", color: "bg-pet-5", emoji: "🐂" },
-  koala: { labelKey: "pets.koala", color: "bg-pet-6", emoji: "🐨" },
-  cow: { labelKey: "pets.cow", color: "bg-pet-11", emoji: "🐮" },
-  robot: { labelKey: "pets.robot", color: "bg-pet-14", emoji: "🤖" },
-  robot2: { labelKey: "pets.robot2", color: "bg-pet-12", emoji: "🤖" },
-  salad: { labelKey: "pets.salad", color: "bg-pet-13", emoji: "🥗" },
-  tucan: { labelKey: "pets.tucan", color: "bg-pet-15", emoji: "🐦" },
+  puff: { labelKey: "pets.puff", color: "bg-pet-1", emoji: "🫧", feed: ["🫧", "🫧"] },
+  sloth: { labelKey: "pets.sloth", color: "bg-pet-3", emoji: "🦥", feed: ["🍃"] },
+  fox: { labelKey: "pets.fox", color: "bg-pet-4", emoji: "🦊", feed: ["🍓", "🫐"] },
+  giraffe: { labelKey: "pets.giraffe", color: "bg-pet-7", emoji: "🦒", feed: ["🌿"] },
+  dove: { labelKey: "pets.dove", color: "bg-pet-8", emoji: "🕊️", feed: ["🌻"] },
+  tiger: { labelKey: "pets.tiger", color: "bg-pet-9", emoji: "🐯", feed: ["🥩"] },
+  turtle: { labelKey: "pets.turtle", color: "bg-pet-10", emoji: "🐢", feed: ["🍀"] },
+  monkey: { labelKey: "pets.monkey", color: "bg-pet-2", emoji: "🐒", feed: ["🍌", "🍌"] },
+  bull: { labelKey: "pets.bull", color: "bg-pet-5", emoji: "🐂", feed: ["🌾"] },
+  koala: { labelKey: "pets.koala", color: "bg-pet-6", emoji: "🐨", feed: ["🌱"] },
+  cow: { labelKey: "pets.cow", color: "bg-pet-11", emoji: "🐮", feed: ["🌼", "🌿"] },
+  robot: { labelKey: "pets.robot", color: "bg-pet-14", emoji: "🤖", feed: ["⚙️"] },
+  robot2: { labelKey: "pets.robot2", color: "bg-pet-12", emoji: "🤖", feed: ["🔩"] },
+  salad: { labelKey: "pets.salad", color: "bg-pet-13", emoji: "🥗", feed: ["🥬", "🥕"] },
+  tucan: { labelKey: "pets.tucan", color: "bg-pet-15", emoji: "🐦", feed: ["🥭"] },
 };
 
 // Папка питомца (русское имя) → латинский тип. Папки без записи
@@ -137,6 +138,7 @@ function buildPetDefinitions(): PetDefinition[] {
       labelKey: meta.labelKey,
       color: meta.color,
       emoji: meta.emoji,
+      feed: meta.feed,
       animations: {
         idle: files.get(type)?.idle.map((f) => f.loader) ?? [],
         happy: files.get(type)?.happy.map((f) => f.loader) ?? [],
@@ -154,6 +156,7 @@ function buildPetDefinitions(): PetDefinition[] {
       labelKey: type,
       color: AUTO_COLORS[index % AUTO_COLORS.length],
       emoji: "🐾",
+      feed: ["🫧"],
       animations: {
         idle: files.get(type)?.idle.map((f) => f.loader) ?? [],
         happy: files.get(type)?.happy.map((f) => f.loader) ?? [],

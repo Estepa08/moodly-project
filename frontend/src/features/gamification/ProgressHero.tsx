@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Lottie from "lottie-react";
+import { Sparkles } from "lucide-react";
 import { usePetAnimation } from "./usePetAnimation";
 import { usePets } from "./useCreature";
 import { StreakIndicator } from "./index";
@@ -35,6 +36,10 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
           <div className="flex items-center gap-2 mb-1">
             <span className="px-3 py-0.5 rounded-full bg-primary/10 text-xs font-bold text-primary">
               {t("creature.level", { level: creature.level })}
+            </span>
+            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-accent/10 text-xs font-semibold text-accent">
+              <Sparkles aria-hidden="true" className="w-3 h-3" />
+              {t(`petStage.${creature.stage ?? "baby"}`)}
             </span>
             <StreakIndicator streak={creature.streak} />
           </div>

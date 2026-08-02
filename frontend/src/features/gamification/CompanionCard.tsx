@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Zap, Waves, Flame } from "lucide-react";
+import { Zap, Waves, Flame, Sparkles } from "lucide-react";
 import { useCreatureState, usePets } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 import { EXP_PER_LEVEL } from "../../lib/constants";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import PetAvatar from "./PetAvatar";
+
+const PET_MOOD_EMOJI: Record<string, string> = {
+  happy: "😊",
+  calm: "😌",
+  support: "💙",
+};
 
 export default function CompanionCard() {
   const { t } = useTranslation();
@@ -19,6 +25,10 @@ export default function CompanionCard() {
   const definition = PET_DEFINITIONS.find((p) => p.type === activePetType);
   const displayName = petName?.trim() || (definition ? t(definition.labelKey) : "");
 
+  const petMood = creature.petMood ?? "calm";
+  const stage = creature.stage ?? "baby";
+  const moodEmoji = PET_MOOD_EMOJI[petMood] ?? "😌";
+
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
@@ -28,7 +38,12 @@ export default function CompanionCard() {
       className="bg-card rounded-xl shadow-neumorphic p-4 space-y-3"
     >
       <div className="flex items-center gap-3">
-        <PetAvatar petType={activePetType} interactive ariaLabel={displayName} />
+        <PetAvatar
+          petType={activePetType}
+          interactive
+          ariaLabel={displayName}
+          emotion={petMood === "happy" ? "happy" : "idle"}
+        />
         <div className="min-w-0 flex-1">
           <p className="font-serif font-semibold text-foreground text-lg leading-tight truncate">
             {displayName}
@@ -40,6 +55,10 @@ export default function CompanionCard() {
             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning/10 text-xs font-semibold text-warning">
               <Flame aria-hidden="true" className="w-3 h-3" />
               {creature.streak}
+            </span>
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 text-xs font-semibold text-accent">
+              <Sparkles aria-hidden="true" className="w-3 h-3" />
+              {t(`petStage.${stage}`)}
             </span>
           </div>
         </div>
@@ -69,6 +88,12 @@ export default function CompanionCard() {
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
+        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-xs font-semibold text-primary">
+          <span aria-hidden="true" className="text-sm leading-none">
+            {moodEmoji}
+          </span>
+          {t(`petMood.${petMood}`)}
+        </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 text-xs font-semibold text-accent">
           <Zap aria-hidden="true" className="w-3.5 h-3.5" />
           {t("companion.energy", { value: creature.energy })}

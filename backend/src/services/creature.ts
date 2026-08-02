@@ -5,8 +5,49 @@ import { achievementsService } from "./achievements.js";
 const CHECKIN_EXP = 20;
 const EXERCISE_EXP = 10;
 const MAX_ENERGY = 100;
+const MOOD_ENTRY_XP = 5;
+const MOOD_ENTRY_DAILY_LIMIT = 3;
+const MOOD_PARAM_NAME = "Mood";
+const FEED_XP = 1;
+const FEED_XP_DAILY_LIMIT = 50;
 
 const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
+
+const EVOLUTION_STAGES = [
+  { key: "baby", minLevel: 1 },
+  { key: "kid", minLevel: 5 },
+  { key: "adult", minLevel: 10 },
+  { key: "max", minLevel: 20 },
+];
+
+function stageForLevel(level: number): string {
+  let stage = EVOLUTION_STAGES[0].key;
+  for (const s of EVOLUTION_STAGES) {
+    if (level >= s.minLevel) stage = s.key;
+  }
+  return stage;
+}
+
+async function computePetMood(userId: string, calmness: number): Promise<string> {
+  const since = new Date();
+  since.setDate(since.getDate() - 7);
+  since.setHours(0, 0, 0, 0);
+  const entries = await prisma.entry.findMany({
+    where: {
+      userId,
+      createdAt: { gte: since },
+      parameter: { name: MOOD_PARAM_NAME },
+    },
+    select: { value: true },
+  });
+  if (entries.length === 0) {
+    return calmness >= 70 ? "happy" : "calm";
+  }
+  const avg = entries.reduce((sum, e) => sum + e.value, 0) / entries.length;
+  if (avg >= 7) return "happy";
+  if (avg >= 5) return calmness >= 70 ? "happy" : "calm";
+  return "support";
+}
 
 const PRACTICE_XP: Record<string, number> = {
   breathing: 10,
@@ -56,13 +97,18 @@ export const creatureService = {
       });
     }
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+    const energy = state.energy ?? 100;
+    const level = state.level ?? 1;
+    const petMood = await computePetMood(userId, state.calmness ?? 50);
     return {
       ...state,
-      energy: state.energy ?? 100,
-      level: state.level ?? 1,
+      energy,
+      level,
       experience: state.experience ?? 0,
       streak: state.streak ?? 0,
       sessionCount,
+      petMood,
+      stage: stageForLevel(level),
     };
   },
 
@@ -72,19 +118,24 @@ export const creatureService = {
       where: { userId },
       select: { source: true, xpAwarded: true, createdAt: true },
     });
+    const practiceCompletions = completions.filter(
+      (c) => c.source !== "moodEntry" && c.source !== "feed",
+    );
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
-    const totalPractices = completions.length;
+    const totalPractices = practiceCompletions.length;
     const totalCheckins = await prisma.practiceCompletion.count({
       where: { userId, source: "checkin" },
     });
     const firstActivity =
-      completions.length > 0 ? completions[completions.length - 1].createdAt : null;
+      practiceCompletions.length > 0
+        ? practiceCompletions[practiceCompletions.length - 1].createdAt
+        : null;
     const daysSinceFirst = firstActivity
       ? Math.max(1, Math.floor((Date.now() - firstActivity.getTime()) / MS_PER_DAY))
       : 0;
 
     const sourceBreakdown: Record<string, number> = {};
-    for (const c of completions) {
+    for (const c of practiceCompletions) {
       sourceBreakdown[c.source as string] = (sourceBreakdown[c.source as string] ?? 0) + 1;
     }
 
@@ -99,18 +150,26 @@ export const creatureService = {
       calmness: creature.calmness,
       energy: creature.energy,
       sourceBreakdown,
+      feedCount: creature.feedCount ?? 0,
+      feedCounts: (creature.feedCounts as Record<string, number>) ?? {},
     };
   },
 
   async getPets(userId: string) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      return { unlockedPetTypes: ["puff"], activePetType: "puff", petName: null };
+      return {
+        unlockedPetTypes: ["puff"],
+        activePetType: "puff",
+        petName: null,
+        feedCounts: {},
+      };
     }
     return {
       unlockedPetTypes: creature.unlockedPetTypes ?? ["puff"],
       activePetType: creature.petType ?? "puff",
       petName: creature.petName ?? null,
+      feedCounts: (creature.feedCounts as Record<string, number>) ?? {},
     };
   },
 
@@ -223,10 +282,12 @@ export const creatureService = {
     const todayEnd = new Date(today);
     todayEnd.setDate(todayEnd.getDate() + 1);
 
-    const todayCompletions = await prisma.practiceCompletion.findMany({
-      where: { userId, createdAt: { gte: today, lt: todayEnd } },
-      select: { source: true },
-    });
+    const todayCompletions = (
+      await prisma.practiceCompletion.findMany({
+        where: { userId, createdAt: { gte: today, lt: todayEnd } },
+        select: { source: true },
+      })
+    ).filter((c) => c.source !== "moodEntry" && c.source !== "feed");
     const todayEntries = await prisma.entry.count({
       where: { userId, createdAt: { gte: today, lt: todayEnd } },
     });
@@ -436,6 +497,82 @@ export const creatureService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
 
-    return completions;
+    return completions.filter((c) => c.source !== "feed");
+  },
+
+  async rewardMoodEntry(userId: string) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(today);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const moodCount = await prisma.practiceCompletion.count({
+      where: { userId, source: "moodEntry", createdAt: { gte: today, lt: todayEnd } },
+    });
+    if (moodCount >= MOOD_ENTRY_DAILY_LIMIT) return null;
+
+    const state = await this.getState(userId);
+    const { experience, level, leveledUp } = applyLevelUp(state, MOOD_ENTRY_XP);
+
+    const [updated] = await Promise.all([
+      prisma.creatureState.update({
+        where: { userId },
+        data: { experience, level },
+      }),
+      prisma.practiceCompletion.create({
+        data: { userId, source: "moodEntry", xpAwarded: MOOD_ENTRY_XP },
+      }),
+    ]);
+
+    achievementsService.check(userId).catch(() => {});
+
+    return { ...updated, leveledUp };
+  },
+
+  async feed(userId: string) {
+    const state = await this.getState(userId);
+    const petType = state.petType ?? "puff";
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(today);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const todayFeeds = await prisma.practiceCompletion.count({
+      where: { userId, source: "feed", createdAt: { gte: today, lt: todayEnd } },
+    });
+    const xpAwarded = todayFeeds < FEED_XP_DAILY_LIMIT ? FEED_XP : 0;
+
+    const feedCounts = { ...((state.feedCounts as Record<string, number>) ?? {}) };
+    feedCounts[petType] = (feedCounts[petType] ?? 0) + 1;
+
+    const { experience, level, leveledUp } = applyLevelUp(state, xpAwarded);
+
+    const [updated] = await Promise.all([
+      prisma.creatureState.update({
+        where: { userId },
+        data: {
+          feedCount: { increment: 1 },
+          feedCounts,
+          experience,
+          level,
+        },
+      }),
+      prisma.practiceCompletion.create({
+        data: { userId, source: "feed", xpAwarded },
+      }),
+    ]);
+
+    const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    achievementsService.check(userId).catch(() => {});
+
+    return {
+      state: { ...updated, sessionCount },
+      leveledUp,
+      xpAwarded,
+      feedCount: updated.feedCount,
+      feedCounts: (updated.feedCounts as Record<string, number>) ?? {},
+    };
   },
 };

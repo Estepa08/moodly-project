@@ -1102,6 +1102,8 @@ components:
         - level
         - experience
         - streak
+        - feedCount
+        - feedCounts
       properties:
         id:
           type: string
@@ -1162,6 +1164,18 @@ components:
           items:
             type: string
           description: Открытые скины
+        petMood:
+          type: string
+          description: Текущее настроение питомца (happy / calm / support)
+        stage:
+          type: string
+          description: Стадия эволюции питомца (baby / kid / adult / max)
+        feedCount:
+          type: integer
+          format: int32
+          description: Всего скормленных единиц еды
+        feedCounts:
+          description: Скормленные единицы по каждому питомцу (map тип → количество)
       description: Текущее состояние существа пользователя
     Entry:
       type: object
@@ -1218,6 +1232,31 @@ components:
           type: string
         message:
           type: string
+    FeedResponse:
+      type: object
+      required:
+        - state
+        - leveledUp
+        - xpAwarded
+        - feedCount
+        - feedCounts
+      properties:
+        state:
+          $ref: '#/components/schemas/CreatureState'
+        leveledUp:
+          type: boolean
+          description: Был ли достигнут новый уровень
+        xpAwarded:
+          type: integer
+          format: int32
+          description: Сколько XP начислено за это кормление (0 после дневного лимита)
+        feedCount:
+          type: integer
+          format: int32
+          description: Всего скормленных единиц еды
+        feedCounts:
+          description: Скормленные единицы по каждому питомцу (map тип → количество)
+      description: Результат кормления питомца
     Feedback:
       type: object
       required:
@@ -1309,6 +1348,7 @@ components:
         - unlockedPetTypes
         - activePetType
         - petName
+        - feedCounts
       properties:
         unlockedPetTypes:
           type: array
@@ -1318,6 +1358,8 @@ components:
           type: string
         petName:
           type: string
+        feedCounts:
+          description: Скормленные единицы по каждому питомцу (map тип → количество)
       description: Коллекция питомцев пользователя
     PetUpdateRequest:
       type: object

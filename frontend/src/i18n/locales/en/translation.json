@@ -693,6 +693,9 @@
     "notifications": "Notifications",
     "comingSoon": "Coming soon",
     "language": "Language",
+    "companionSection": "Pet",
+    "companionToggleLabel": "Floating pet",
+    "companionToggleDesc": "Show the pet in the bottom-right corner of the screen",
     "deleteAccount": "Delete Account",
     "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteButton": "Delete my account",
@@ -769,7 +772,13 @@
     "breathing100": "The Breeze",
     "breathing100Desc": "Complete 100 breathing exercises",
     "completions250": "Relentless",
-    "completions250Desc": "Complete 250 practices"
+    "completions250Desc": "Complete 250 practices",
+    "feed50": "Caring Owner",
+    "feed50Desc": "Feed your pet 50 times",
+    "feed200": "Generous Friend",
+    "feed200Desc": "Feed your pet 200 times",
+    "feed1000": "Best Owner",
+    "feed1000Desc": "Feed your pet 1000 times"
   },
   "progress": {
     "xpToNext": "{{current}} / {{next}} XP",
@@ -798,6 +807,7 @@
     "streakDays": "Streak",
     "calmness": "Calmness",
     "energy": "Energy",
+    "feedsTotal": "Fed",
     "noAchievementsYet": "Complete practices to earn achievements!",
     "noTitlesYet": "Unlock titles through achievements!",
     "noTitle": "None",
@@ -852,7 +862,8 @@
     "robot2": "Robot 2",
     "salad": "Salad",
     "tucan": "Toucan",
-    "active": "Active"
+    "active": "Active",
+    "fedCount": "×{{count}}"
   },
   "companion": {
     "level": "Level {{level}}",
@@ -860,6 +871,17 @@
     "energy": "Energy {{value}}",
     "calmness": "Calmness {{value}}",
     "toCollection": "Pet collection"
+  },
+  "petMood": {
+    "happy": "In a great mood",
+    "calm": "Calm",
+    "support": "Here for you"
+  },
+  "petStage": {
+    "baby": "Baby",
+    "kid": "Adolescent",
+    "adult": "Adult",
+    "max": "Legend"
   },
   "reward": {
     "practiceComplete": "Practice completed!",

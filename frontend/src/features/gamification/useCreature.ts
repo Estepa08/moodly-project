@@ -35,6 +35,19 @@ export function useRewardPractice() {
   });
 }
 
+export function useFeed() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.creature.feed(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+      queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
+      queryClient.invalidateQueries({ queryKey: ["creature", "stats"] });
+    },
+  });
+}
+
 export function useCompletions(days = 30) {
   return useQuery({
     queryKey: ["creature", "completions", days],

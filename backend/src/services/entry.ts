@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma.js";
 import { NotFoundError, AppError } from "../lib/errors.js";
+import { creatureService } from "./creature.js";
 
 export interface EntryCreateInput {
   userId: string;
@@ -55,7 +56,7 @@ export const entryService = {
       throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
     }
 
-    return prisma.entry.create({
+    const created = await prisma.entry.create({
       data: {
         userId: input.userId,
         parameterId: input.parameterId,
@@ -63,6 +64,21 @@ export const entryService = {
         note: input.note,
       },
     });
+
+    await this.rewardMoodIfNeeded(input.userId, input.parameterId);
+
+    return created;
+  },
+
+  async rewardMoodIfNeeded(userId: string, parameterId: string) {
+    try {
+      const parameter = await prisma.parameter.findUnique({ where: { id: parameterId } });
+      if (parameter?.name === "Mood") {
+        await creatureService.rewardMoodEntry(userId);
+      }
+    } catch {
+      // награда не должна ломать создание записи настроения
+    }
   },
 
   async getById(id: string, userId: string) {

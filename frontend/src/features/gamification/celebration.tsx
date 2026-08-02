@@ -18,6 +18,8 @@ interface CelebrateOptions {
   title?: string;
   chip?: string;
   showCollectionLink?: boolean;
+  /** Числовой XP для анимации кормления и счётчика в RewardMoment */
+  xp?: number;
 }
 
 export function celebrate(subtitle: string, options: CelebrateOptions = {}) {
@@ -47,5 +49,6 @@ export function celebrateReward(
   const xp = PRACTICE_REWARD_XP[source];
   celebrate(t("reward.practiceComplete"), {
     chip: xp ? `+${xp} XP` : undefined,
+    xp,
   });
 }

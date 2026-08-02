@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import PetAvatar from "./PetAvatar";
 import { usePets } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
+import { isCompanionHidden, subscribeCompanionVisibility } from "./companionVisibility";
 
 const HIDDEN_PATHS = ["/tests/", "/practices/breathing", "/onboarding"];
 
@@ -10,7 +12,11 @@ export default function FloatingCompanion() {
   const { t } = useTranslation();
   const location = useLocation();
   const { data: pets } = usePets();
+  const [hidden, setHidden] = useState(isCompanionHidden);
 
+  useEffect(() => subscribeCompanionVisibility(() => setHidden(isCompanionHidden())), []);
+
+  if (hidden) return null;
   if (HIDDEN_PATHS.some((path) => location.pathname.startsWith(path))) return null;
 
   const petType = pets?.activePetType ?? "puff";

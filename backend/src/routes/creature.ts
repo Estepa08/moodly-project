@@ -51,6 +51,10 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
+  fastify.post("/creature/feed", { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.feed(request.userId);
+  });
+
   fastify.get<{ Querystring: CompletionsQuery }>(
     "/creature/completions",
     { preHandler: [fastify.authenticate] },
