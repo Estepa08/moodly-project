@@ -56,11 +56,11 @@ COPY --from=shared-build /workspace/shared /app/shared
 RUN rm -f /app/node_modules/@moodly/shared && ln -s /app/shared /app/node_modules/@moodly/shared
 COPY infra/Caddyfile /etc/caddy/Caddyfile
 
-ENV BACKEND_UPSTREAM=127.0.0.1:3000
+ENV BACKEND_UPSTREAM=127.0.0.1:3001
 ENV PORT=3000
 
 EXPOSE 3000
 
 RUN chmod +x /app/entrypoint.sh
 
-CMD (cd /app && PORT=3000 /app/entrypoint.sh) & caddy run --config /etc/caddy/Caddyfile
+CMD (cd /app && PORT=3001 /app/entrypoint.sh) & caddy run --config /etc/caddy/Caddyfile
