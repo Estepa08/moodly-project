@@ -51,7 +51,9 @@ export function useFeed() {
     mutationFn: async () => {
       if (!navigator.onLine) {
         // офлайн: локально увеличиваем счётчики и ставим в outbox
-        const local = (await getLocalCreature()) ?? ({} as { petType?: string; feedCounts?: Record<string, number>; feedCount?: number });
+        const local =
+          (await getLocalCreature()) ??
+          ({} as { petType?: string; feedCounts?: Record<string, number>; feedCount?: number });
         const petType = local.petType ?? "puff";
         const feedCounts = { ...(local.feedCounts ?? {}) };
         feedCounts[petType] = (feedCounts[petType] ?? 0) + 1;
@@ -63,7 +65,13 @@ export function useFeed() {
           feedCount,
           feedCounts,
         });
-        return { state: { ...local, petType, feedCount, feedCounts }, leveledUp: false, xpAwarded: 0, feedCount, feedCounts };
+        return {
+          state: { ...local, petType, feedCount, feedCounts },
+          leveledUp: false,
+          xpAwarded: 0,
+          feedCount,
+          feedCounts,
+        };
       }
       return api.creature.feed();
     },
@@ -109,7 +117,9 @@ export function useSetPet() {
           ? { petType: args, petName: null }
           : { petType: args.petType, petName: args.petName };
       if (!navigator.onLine) {
-        const local = (await getLocalCreature()) ?? ({} as { petType?: string; unlockedPetTypes?: string[]; petName?: string | null });
+        const local =
+          (await getLocalCreature()) ??
+          ({} as { petType?: string; unlockedPetTypes?: string[]; petName?: string | null });
         const next: Record<string, unknown> = { ...local };
         if (data.petType) {
           next.petType = data.petType;

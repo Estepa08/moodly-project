@@ -71,7 +71,9 @@ describe("Sync push", () => {
     const id = uuidv7();
     await push([entryAction(id, parameter, 3)]);
 
-    const del = await push([{ entity: "entry", action: "delete", id, occurredAt: new Date().toISOString(), payload: {} }]);
+    const del = await push([
+      { entity: "entry", action: "delete", id, occurredAt: new Date().toISOString(), payload: {} },
+    ]);
     expect(del.statusCode).toBe(200);
 
     const row = await prisma.entry.findUnique({ where: { id } });
@@ -80,11 +82,27 @@ describe("Sync push", () => {
   });
 
   it("rejects unknown entity / invalid payload", async () => {
-    const bad = await push([{ entity: "nope", action: "upsert", id: uuidv7(), occurredAt: new Date().toISOString(), payload: {} }]);
+    const bad = await push([
+      {
+        entity: "nope",
+        action: "upsert",
+        id: uuidv7(),
+        occurredAt: new Date().toISOString(),
+        payload: {},
+      },
+    ]);
     expect(bad.statusCode).toBe(400);
 
     const parameter = (await prisma.parameter.create({ data: { name: "SyncBad2" } })).id;
-    const missingValue = await push([{ entity: "entry", action: "upsert", id: uuidv7(), occurredAt: new Date().toISOString(), payload: { parameterId: parameter } }]);
+    const missingValue = await push([
+      {
+        entity: "entry",
+        action: "upsert",
+        id: uuidv7(),
+        occurredAt: new Date().toISOString(),
+        payload: { parameterId: parameter },
+      },
+    ]);
     expect(missingValue.statusCode).toBe(400);
   });
 });
@@ -103,7 +121,9 @@ describe("Sync pull", () => {
     const id = uuidv7();
 
     // создаём запись напрямую в БД (симуляция второй device/онлайн-фичи)
-    await prisma.entry.create({ data: { id, userId: user.userId, parameterId: parameter, value: 9 } });
+    await prisma.entry.create({
+      data: { id, userId: user.userId, parameterId: parameter, value: 9 },
+    });
 
     const res = await pull("", user.token);
     expect(res.statusCode).toBe(200);
@@ -122,7 +142,9 @@ describe("Sync pull", () => {
     const parameter = (await prisma.parameter.create({ data: { name: "SyncPaginate" } })).id;
 
     for (let i = 0; i < 5; i++) {
-      await prisma.entry.create({ data: { id: uuidv7(), userId: user.userId, parameterId: parameter, value: i } });
+      await prisma.entry.create({
+        data: { id: uuidv7(), userId: user.userId, parameterId: parameter, value: i },
+      });
     }
 
     const first = await pull("?limit=2", user.token);
@@ -130,7 +152,10 @@ describe("Sync pull", () => {
     expect(first.json().changes).toHaveLength(2);
     expect(first.json().hasMore).toBe(true);
 
-    const second = await pull(`?since=${encodeURIComponent(first.json().cursor)}&sinceId=${first.json().cursorId}&limit=100`, user.token);
+    const second = await pull(
+      `?since=${encodeURIComponent(first.json().cursor)}&sinceId=${first.json().cursorId}&limit=100`,
+      user.token,
+    );
     expect(second.statusCode).toBe(200);
     expect(second.json().changes).toHaveLength(3);
     expect(second.json().hasMore).toBe(false);
@@ -140,7 +165,9 @@ describe("Sync pull", () => {
     const user = await registerAndLogin(app, "sync-tombstone@example.com", "secret123");
     const parameter = (await prisma.parameter.create({ data: { name: "SyncTomb" } })).id;
     const id = uuidv7();
-    await prisma.entry.create({ data: { id, userId: user.userId, parameterId: parameter, value: 1 } });
+    await prisma.entry.create({
+      data: { id, userId: user.userId, parameterId: parameter, value: 1 },
+    });
 
     // сначала вытягиваем (чтобы запись была "известна"), затем мягко удаляем
     await pull("", user.token);
@@ -157,9 +184,7 @@ describe("Sync push daily limit", () => {
     const user = await registerAndLogin(app, "sync-limit@example.com", "secret123");
     const parameter = (await prisma.parameter.create({ data: { name: "SyncLimit" } })).id;
 
-    const batch = Array.from({ length: 100 }, () =>
-      entryAction(uuidv7(), parameter, 5),
-    );
+    const batch = Array.from({ length: 100 }, () => entryAction(uuidv7(), parameter, 5));
     const res = await push(batch, user.token);
     expect(res.statusCode).toBe(200);
     expect(res.json().applied).toBe(100);
@@ -177,7 +202,10 @@ describe("Sync push daily limit", () => {
     expect(first.statusCode).toBe(200);
 
     // повторная отправка двух "новых" батчей на существующий id и один новый
-    const again = await push([entryAction(id, parameter, 6), entryAction(uuidv7(), parameter, 7)], user.token);
+    const again = await push(
+      [entryAction(id, parameter, 6), entryAction(uuidv7(), parameter, 7)],
+      user.token,
+    );
     expect(again.statusCode).toBe(200);
     expect(again.json().applied).toBe(2);
   });
@@ -198,7 +226,14 @@ describe("Sync creatureState", () => {
     const user = await registerAndLogin(app, "sync-creature@example.com", "secret123");
 
     const res = await push(
-      [creatureAction("creature-profile", { petType: "fox", level: 3, experience: 120, calmness: 60 })],
+      [
+        creatureAction("creature-profile", {
+          petType: "fox",
+          level: 3,
+          experience: 120,
+          calmness: 60,
+        }),
+      ],
       user.token,
     );
     expect(res.statusCode).toBe(200);
@@ -210,10 +245,7 @@ describe("Sync creatureState", () => {
     expect(row?.experience).toBe(120);
 
     // повторный push — апдейт той же строки, не дубликат
-    await push(
-      [creatureAction("creature-profile", { petType: "tucan", level: 4 })],
-      user.token,
-    );
+    await push([creatureAction("creature-profile", { petType: "tucan", level: 4 })], user.token);
     const rows = await prisma.creatureState.findMany({ where: { userId: user.userId } });
     expect(rows).toHaveLength(1);
     expect(rows[0]?.petType).toBe("tucan");
@@ -267,7 +299,14 @@ describe("Sync userAchievement (read-only from client)", () => {
   it("rejects a client push of userAchievement", async () => {
     const user = await registerAndLogin(app, "sync-ach-push@example.com", "secret123");
     const res = await push(
-      [{ entity: "userAchievement", action: "upsert", id: uuidv7(), payload: { achievementId: "x" } }],
+      [
+        {
+          entity: "userAchievement",
+          action: "upsert",
+          id: uuidv7(),
+          payload: { achievementId: "x" },
+        },
+      ],
       user.token,
     );
     expect(res.statusCode).toBe(400);
@@ -291,7 +330,11 @@ describe("Sync userAchievement (read-only from client)", () => {
 
     const res = await pull("", user.token);
     expect(res.statusCode).toBe(200);
-    const changes = res.json().changes as { entity: string; id: string; data: { achievementId?: string } }[];
+    const changes = res.json().changes as {
+      entity: string;
+      id: string;
+      data: { achievementId?: string };
+    }[];
     const ach = changes.find((c) => c.entity === "userAchievement");
     expect(ach?.data.achievementId).toBe(achievement.id);
   });

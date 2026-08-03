@@ -32,7 +32,13 @@ export interface UserPreference {
 }
 
 export interface SyncAction {
-  entity: "entry" | "feedback" | "testResult" | "breathingSession" | "practiceCompletion" | "creatureState";
+  entity:
+    | "entry"
+    | "feedback"
+    | "testResult"
+    | "breathingSession"
+    | "practiceCompletion"
+    | "creatureState";
   action: "upsert" | "delete";
   id: string;
   occurredAt: string;

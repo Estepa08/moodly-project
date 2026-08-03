@@ -176,11 +176,12 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
   };
 
   const checkedItemsText = (bank: CbaCommonItem[], checked: Set<string>): string[] =>
-    bank
-      .filter((i) => checked.has(i.id))
-      .map((i) => t(`cba.commonItems.${i.itemKey}`));
+    bank.filter((i) => checked.has(i.id)).map((i) => t(`cba.commonItems.${i.itemKey}`));
 
-  const advantageItems = [...checkedItemsText(advantageBank, checkedAdvantages), ...customAdvantages];
+  const advantageItems = [
+    ...checkedItemsText(advantageBank, checkedAdvantages),
+    ...customAdvantages,
+  ];
   const disadvantageItems = [
     ...checkedItemsText(disadvantageBank, checkedDisadvantages),
     ...customDisadvantages,

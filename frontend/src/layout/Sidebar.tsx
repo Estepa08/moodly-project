@@ -72,7 +72,9 @@ export default function Sidebar() {
           aria-hidden="true"
           className={`w-5 h-5 shrink-0 ${highlights.dashboard ? "text-primary" : ""}`}
         />
-        <span className="text-sm font-medium truncate">{t(DASHBOARD_ITEM.shortLabelKey ?? DASHBOARD_ITEM.labelKey)}</span>
+        <span className="text-sm font-medium truncate">
+          {t(DASHBOARD_ITEM.shortLabelKey ?? DASHBOARD_ITEM.labelKey)}
+        </span>
       </Link>
 
       <button
@@ -84,7 +86,9 @@ export default function Sidebar() {
           aria-hidden="true"
           className={`w-5 h-5 shrink-0 ${highlights.practices ? "text-primary" : ""}`}
         />
-        <span className="text-sm font-medium truncate flex-1 text-left">{t("nav.short.practices")}</span>
+        <span className="text-sm font-medium truncate flex-1 text-left">
+          {t("nav.short.practices")}
+        </span>
         <ChevronDown
           aria-hidden="true"
           className={`w-4 h-4 shrink-0 transition-transform duration-150 ${practicesOpen ? "rotate-180" : ""}`}
@@ -106,7 +110,9 @@ export default function Sidebar() {
                   aria-hidden="true"
                   className={`w-4 h-4 shrink-0 ${source && isStale(source) ? "text-primary" : ""}`}
                 />
-                <span className="text-sm font-medium truncate">{t(item.shortLabelKey ?? item.labelKey)}</span>
+                <span className="text-sm font-medium truncate">
+                  {t(item.shortLabelKey ?? item.labelKey)}
+                </span>
               </Link>
             );
           })}
@@ -124,7 +130,9 @@ export default function Sidebar() {
             aria-hidden="true"
             className={`w-5 h-5 shrink-0 ${item.path === "/tests" && highlights.tests ? "text-primary" : ""}`}
           />
-          <span className="text-sm font-medium truncate">{t(item.shortLabelKey ?? item.labelKey)}</span>
+          <span className="text-sm font-medium truncate">
+            {t(item.shortLabelKey ?? item.labelKey)}
+          </span>
         </Link>
       ))}
 
@@ -135,7 +143,9 @@ export default function Sidebar() {
           aria-current={location.pathname === ADMIN_ITEM.path ? "page" : undefined}
         >
           <ADMIN_ITEM.icon aria-hidden="true" className="w-5 h-5 shrink-0 text-primary" />
-          <span className="text-sm font-medium truncate">{t(ADMIN_ITEM.shortLabelKey ?? ADMIN_ITEM.labelKey)}</span>
+          <span className="text-sm font-medium truncate">
+            {t(ADMIN_ITEM.shortLabelKey ?? ADMIN_ITEM.labelKey)}
+          </span>
         </Link>
       )}
     </nav>

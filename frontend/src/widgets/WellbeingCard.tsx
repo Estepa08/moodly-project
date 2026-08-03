@@ -39,7 +39,10 @@ export default function WellbeingCard({
           className="flex items-center justify-between w-full gap-3 py-4 text-left cursor-pointer rounded-xl transition-[box-shadow,transform] duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <Heart aria-hidden="true" className="w-6 h-6 text-primary shrink-0 animate-heart-beat" />
+            <Heart
+              aria-hidden="true"
+              className="w-6 h-6 text-primary shrink-0 animate-heart-beat"
+            />
             <span className="text-base font-medium text-foreground">
               {t("dashboard.wellbeing")}
             </span>

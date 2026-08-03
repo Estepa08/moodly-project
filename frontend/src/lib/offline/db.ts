@@ -126,7 +126,9 @@ export async function getLocalCreature(): Promise<LocalCreature | undefined> {
 }
 
 /** Патчит локальное зеркало CreatureState (для офлайн-мутаций). */
-export async function updateLocalCreature(patch: Partial<LocalCreature>): Promise<LocalCreature | undefined> {
+export async function updateLocalCreature(
+  patch: Partial<LocalCreature>,
+): Promise<LocalCreature | undefined> {
   const db = getDb();
   const existing = await db.creature.get("creature-profile");
   const merged: LocalCreature = {

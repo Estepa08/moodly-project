@@ -63,9 +63,7 @@ export default function AchievementGrid() {
     );
   }
 
-  const withProgress = achievements.filter(
-    (a) => !isHidden(a) && (a.unlocked || a.progress > 0),
-  );
+  const withProgress = achievements.filter((a) => !isHidden(a) && (a.unlocked || a.progress > 0));
   const hidden = achievements.filter((a) => isHidden(a));
   const rest = achievements.filter((a) => !isHidden(a) && !a.unlocked && a.progress === 0);
 
@@ -101,9 +99,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
     <div
       className={cn(
         "rounded-xl p-3 flex flex-col gap-1.5 transition-[background-color,box-shadow] duration-150 min-h-[128px]",
-        a.unlocked || a.progress > 0 || hidden
-          ? "bg-card shadow-neumorphic-sm"
-          : "bg-muted/30",
+        a.unlocked || a.progress > 0 || hidden ? "bg-card shadow-neumorphic-sm" : "bg-muted/30",
         hidden && "border border-dashed",
       )}
     >
@@ -124,9 +120,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
             <Lock aria-hidden="true" className="w-3 h-3 text-muted-foreground" />
           )}
         </div>
-        {a.unlocked && (
-          <Check aria-hidden="true" className="w-3.5 h-3.5 text-success shrink-0" />
-        )}
+        {a.unlocked && <Check aria-hidden="true" className="w-3.5 h-3.5 text-success shrink-0" />}
       </div>
       <div className="min-w-0">
         <p
@@ -144,7 +138,9 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
       {a.titleReward && !hidden && (
         <div className="inline-flex items-center gap-1 self-start rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
           <Medal aria-hidden="true" className="w-3 h-3 shrink-0" />
-          <span className="truncate">{TITLE_EMOJI[a.titleReward] ?? "🎖️"} {t(TITLE_MAP[a.titleReward] ?? a.titleReward)}</span>
+          <span className="truncate">
+            {TITLE_EMOJI[a.titleReward] ?? "🎖️"} {t(TITLE_MAP[a.titleReward] ?? a.titleReward)}
+          </span>
         </div>
       )}
       {!a.unlocked && !hidden && (

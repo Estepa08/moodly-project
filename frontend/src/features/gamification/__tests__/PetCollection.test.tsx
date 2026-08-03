@@ -31,7 +31,12 @@ describe("PetCollection", () => {
 
   it("expands to all pets and hides the 'Show all' button after click", () => {
     vi.mocked(usePets).mockReturnValue({
-      data: { unlockedPetTypes: ["puff"], activePetType: "puff", petType: "puff", petTypeName: null },
+      data: {
+        unlockedPetTypes: ["puff"],
+        activePetType: "puff",
+        petType: "puff",
+        petTypeName: null,
+      },
       isLoading: false,
     } as never);
 

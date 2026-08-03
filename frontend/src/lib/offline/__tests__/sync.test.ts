@@ -27,7 +27,12 @@ beforeEach(async () => {
       ]),
   );
   vi.spyOn(api.sync, "push").mockResolvedValue({ applied: 1 });
-  vi.spyOn(api.sync, "pull").mockResolvedValue({ cursor: "c", cursorId: "", hasMore: false, changes: [] });
+  vi.spyOn(api.sync, "pull").mockResolvedValue({
+    cursor: "c",
+    cursorId: "",
+    hasMore: false,
+    changes: [],
+  });
 });
 
 afterEach(() => {
@@ -37,7 +42,12 @@ afterEach(() => {
 describe("offline outbox", () => {
   it("enqueue ставит операцию в очередь и держит её там при ошибке сети", async () => {
     vi.mocked(api.sync.push).mockRejectedValueOnce(new TypeError("Failed to fetch"));
-    vi.mocked(api.sync.pull).mockResolvedValueOnce({ cursor: "c", cursorId: "", hasMore: false, changes: [] });
+    vi.mocked(api.sync.pull).mockResolvedValueOnce({
+      cursor: "c",
+      cursorId: "",
+      hasMore: false,
+      changes: [],
+    });
 
     await enqueue("entry", "upsert", "entry-1", { parameterId: "p1", value: 5 });
 
@@ -57,7 +67,12 @@ describe("offline outbox", () => {
       occurredAt: new Date().toISOString(),
       createdAt: Date.now(),
     });
-    vi.mocked(api.sync.pull).mockResolvedValueOnce({ cursor: "c", cursorId: "", hasMore: false, changes: [] });
+    vi.mocked(api.sync.pull).mockResolvedValueOnce({
+      cursor: "c",
+      cursorId: "",
+      hasMore: false,
+      changes: [],
+    });
 
     const flushed = await flushOutbox();
     expect(flushed).toBe(1);
@@ -133,17 +148,34 @@ describe("offline pull", () => {
 
     const stored = await getDb().entries.get("entry-9");
     expect(stored?.value).toBe(7);
-    expect(await getDb().syncMeta.get("syncCursor")).toMatchObject({ value: "2026-08-03T10:00:00.000Z" });
+    expect(await getDb().syncMeta.get("syncCursor")).toMatchObject({
+      value: "2026-08-03T10:00:00.000Z",
+    });
   });
 
   it("применяет tombstone как удаление локальной записи", async () => {
-    await getDb().entries.put({ id: "entry-9", userId: "", parameterId: "p1", value: 7, createdAt: "x", updatedAt: "x" });
+    await getDb().entries.put({
+      id: "entry-9",
+      userId: "",
+      parameterId: "p1",
+      value: 7,
+      createdAt: "x",
+      updatedAt: "x",
+    });
 
     vi.mocked(api.sync.pull).mockResolvedValueOnce({
       cursor: "2026-08-03T10:00:00.000Z",
       cursorId: "entry-9",
       hasMore: false,
-      changes: [{ entity: "entry", id: "entry-9", action: "delete", updatedAt: "2026-08-03T10:00:00.000Z", data: {} }],
+      changes: [
+        {
+          entity: "entry",
+          id: "entry-9",
+          action: "delete",
+          updatedAt: "2026-08-03T10:00:00.000Z",
+          data: {},
+        },
+      ],
     });
 
     await pullChanges();
@@ -156,13 +188,29 @@ describe("offline pull", () => {
         cursor: "c1",
         cursorId: "a",
         hasMore: true,
-        changes: [{ entity: "entry", id: "e1", action: "upsert", updatedAt: "2026-08-03T09:00:00.000Z", data: { value: 1 } }],
+        changes: [
+          {
+            entity: "entry",
+            id: "e1",
+            action: "upsert",
+            updatedAt: "2026-08-03T09:00:00.000Z",
+            data: { value: 1 },
+          },
+        ],
       })
       .mockResolvedValueOnce({
         cursor: "c2",
         cursorId: "b",
         hasMore: false,
-        changes: [{ entity: "entry", id: "e2", action: "upsert", updatedAt: "2026-08-03T10:00:00.000Z", data: { value: 2 } }],
+        changes: [
+          {
+            entity: "entry",
+            id: "e2",
+            action: "upsert",
+            updatedAt: "2026-08-03T10:00:00.000Z",
+            data: { value: 2 },
+          },
+        ],
       });
 
     const pulled = await pullChanges();
@@ -184,7 +232,12 @@ describe("syncNow", () => {
       occurredAt: new Date().toISOString(),
       createdAt: Date.now(),
     });
-    vi.mocked(api.sync.pull).mockResolvedValueOnce({ cursor: "c", cursorId: "", hasMore: false, changes: [] });
+    vi.mocked(api.sync.pull).mockResolvedValueOnce({
+      cursor: "c",
+      cursorId: "",
+      hasMore: false,
+      changes: [],
+    });
 
     const result = await syncNow();
     expect(result).toEqual({ pushed: 1, pulled: 0 });

@@ -99,7 +99,12 @@ function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<
       const score = num(payload.score);
       const interpretation = str(payload.interpretation);
       const recommendation = str(payload.recommendation);
-      if (!testId || score === undefined || interpretation === undefined || recommendation === undefined) {
+      if (
+        !testId ||
+        score === undefined ||
+        interpretation === undefined ||
+        recommendation === undefined
+      ) {
         throw new AppError("INVALID_PAYLOAD", 400, "testResult payload incomplete");
       }
       return {
@@ -129,7 +134,11 @@ function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<
       const source = str(payload.source);
       const xpAwarded = num(payload.xpAwarded);
       if (!source || xpAwarded === undefined) {
-        throw new AppError("INVALID_PAYLOAD", 400, "practiceCompletion requires source and xpAwarded");
+        throw new AppError(
+          "INVALID_PAYLOAD",
+          400,
+          "practiceCompletion requires source and xpAwarded",
+        );
       }
       return { source, xpAwarded: Math.trunc(xpAwarded) };
     }
@@ -178,10 +187,12 @@ function sanitizeCreatureState(payload: Record<string, unknown>): Record<string,
   if (feedCount !== undefined) out.feedCount = feedCount;
 
   if (payload.lastCheckInAt !== undefined) {
-    out.lastCheckInAt = payload.lastCheckInAt === null ? null : isoDate(payload.lastCheckInAt) ?? null;
+    out.lastCheckInAt =
+      payload.lastCheckInAt === null ? null : (isoDate(payload.lastCheckInAt) ?? null);
   }
   if (payload.lastExerciseAt !== undefined) {
-    out.lastExerciseAt = payload.lastExerciseAt === null ? null : isoDate(payload.lastExerciseAt) ?? null;
+    out.lastExerciseAt =
+      payload.lastExerciseAt === null ? null : (isoDate(payload.lastExerciseAt) ?? null);
   }
 
   const activeSkin = str(payload.activeSkin);
@@ -189,10 +200,10 @@ function sanitizeCreatureState(payload: Record<string, unknown>): Record<string,
   const petType = str(payload.petType);
   if (petType !== undefined) out.petType = petType;
   if (payload.petName !== undefined) {
-    out.petName = payload.petName === null ? null : str(payload.petName) ?? null;
+    out.petName = payload.petName === null ? null : (str(payload.petName) ?? null);
   }
   if (payload.activeTitle !== undefined) {
-    out.activeTitle = payload.activeTitle === null ? null : str(payload.activeTitle) ?? null;
+    out.activeTitle = payload.activeTitle === null ? null : (str(payload.activeTitle) ?? null);
   }
 
   const unlockedSkins = strArray(payload.unlockedSkins);
@@ -359,7 +370,10 @@ export const syncService = {
     return { applied: actions.length };
   },
 
-  async pull(userId: string, opts: { since?: string; sinceId?: string; limit?: number }): Promise<PullResult> {
+  async pull(
+    userId: string,
+    opts: { since?: string; sinceId?: string; limit?: number },
+  ): Promise<PullResult> {
     const limit = Math.min(Math.max(opts.limit ?? 500, 1), 1000);
 
     let cursor: Date;

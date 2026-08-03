@@ -121,7 +121,10 @@ export default function SuggestCombobox({
         )}
         <ChevronDown
           aria-hidden="true"
-          className={cn("ml-auto h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-150", open && "rotate-180")}
+          className={cn(
+            "ml-auto h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-150",
+            open && "rotate-180",
+          )}
         />
       </button>
 
@@ -168,7 +171,9 @@ export default function SuggestCombobox({
                   <span
                     className={cn(
                       "w-4 h-4 shrink-0 rounded-md border flex items-center justify-center",
-                      checked ? "bg-primary-strong border-primary-strong text-white" : "border-border",
+                      checked
+                        ? "bg-primary-strong border-primary-strong text-white"
+                        : "border-border",
                     )}
                   >
                     {checked && <Check aria-hidden="true" className="w-3 h-3" />}

@@ -38,10 +38,14 @@ export function useSync(options?: { onSynced?: () => void | Promise<void> }) {
     }
   }, [refreshPending]);
 
-  useEffect(() => subscribeSync(() => {
-    setState(getSyncStatus());
-    void refreshPending();
-  }), [refreshPending]);
+  useEffect(
+    () =>
+      subscribeSync(() => {
+        setState(getSyncStatus());
+        void refreshPending();
+      }),
+    [refreshPending],
+  );
 
   useEffect(() => {
     const onOnline = () => void run();
