@@ -2,7 +2,6 @@ mymoodly.ru, mymoodly.online {
     root * /srv
     encode gzip
 
-    # Перенаправляем /api/... на бэкенд (порт 3001)
     handle /api/* {
         uri strip_prefix /api
         reverse_proxy {$BACKEND_UPSTREAM} {
@@ -12,7 +11,6 @@ mymoodly.ru, mymoodly.online {
         }
     }
 
-    # Раздаём статику для фронтенда
     handle {
         try_files {path} /index.html
         file_server
