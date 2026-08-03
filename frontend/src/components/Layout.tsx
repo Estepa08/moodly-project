@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
@@ -62,6 +62,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div aria-live="polite" aria-atomic="true" className="sr-only" id="sr-announcements" />
           {children}
         </main>
+
+        <footer className="px-6 pb-6 md:pb-8 text-center space-y-1">
+          <p className="text-xs text-muted-foreground">{t("common.footerText")}</p>
+          <p className="text-xs text-muted-foreground">
+            © 2026{" "}
+            <span className="inline-flex items-center gap-1">
+              <span>{t("common.footerDivider")}</span>
+              <Link to="/privacy" className="text-primary hover:underline">
+                {t("common.footerPrivacy")}
+              </Link>
+              <span>{t("common.footerDivider")}</span>
+              <Link to="/terms" className="text-primary hover:underline">
+                {t("common.footerTerms")}
+              </Link>
+            </span>
+          </p>
+        </footer>
 
         <div className="md:hidden relative z-40">
           <BottomNav />

@@ -22,6 +22,8 @@ describe("Auth", () => {
         password: "secret123",
         name: "Test",
         ageConfirmed: true,
+        pdpConsent: true,
+        birthYear: 1998,
       },
     });
     expect(res.statusCode).toBe(200);
@@ -30,11 +32,47 @@ describe("Auth", () => {
     expect(body.user.email).toBe("test@example.com");
   });
 
+  it("POST /auth/register — rejects without pdp consent", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/auth/register",
+      payload: {
+        email: "noconsent@example.com",
+        password: "secret123",
+        ageConfirmed: true,
+        pdpConsent: false,
+      },
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json().code).toBe("PDP_CONSENT_REQUIRED");
+  });
+
+  it("POST /auth/register — rejects users under 18 by birth year", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/auth/register",
+      payload: {
+        email: "minor@example.com",
+        password: "secret123",
+        ageConfirmed: true,
+        pdpConsent: true,
+        birthYear: 2010,
+      },
+    });
+    expect(res.statusCode).toBe(400);
+    expect(res.json().code).toBe("AGE_REQUIRED");
+  });
+
   it("POST /auth/register — rejects duplicate email", async () => {
     const res = await app.inject({
       method: "POST",
       url: "/auth/register",
-      payload: { email: "test@example.com", password: "secret123", ageConfirmed: true },
+      payload: {
+        email: "test@example.com",
+        password: "secret123",
+        ageConfirmed: true,
+        pdpConsent: true,
+      },
     });
     expect(res.statusCode).toBe(409);
   });
@@ -72,7 +110,12 @@ describe("Auth", () => {
     const reg = await app.inject({
       method: "POST",
       url: "/auth/register",
-      payload: { email: "refresh-race@example.com", password: "secret123", ageConfirmed: true },
+      payload: {
+        email: "refresh-race@example.com",
+        password: "secret123",
+        ageConfirmed: true,
+        pdpConsent: true,
+      },
     });
     expect(reg.statusCode).toBe(200);
 

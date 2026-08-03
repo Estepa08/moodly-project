@@ -18,6 +18,7 @@ import { ExpLevel } from "../lib/constants";
 import Spinner from "../components/ui/spinner";
 import { useSetPet } from "../features/gamification";
 import { PET_DEFINITIONS, STARTER_PET_TYPES } from "../features/gamification/pets";
+import { WellnessDisclaimer } from "../widgets";
 import { cn } from "../lib/utils";
 
 const GOALS = [
@@ -356,6 +357,7 @@ export default function OnboardingPage() {
                   </div>
                 </button>
               </div>
+              <WellnessDisclaimer variant="compact" />
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(4)}>
                   {t("common.back")}

@@ -212,7 +212,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   auth: {
-    register: (body: { email: string; password: string; name?: string; ageConfirmed?: boolean }) =>
+    register: (body: {
+      email: string;
+      password: string;
+      name?: string;
+      ageConfirmed: boolean;
+      pdpConsent: boolean;
+      birthYear?: number;
+    }) =>
       request<RegisterResponse>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
     login: (body: { email: string; password: string }) =>
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),

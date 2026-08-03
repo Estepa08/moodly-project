@@ -20,6 +20,8 @@ model User {
   // registration time so consent can be demonstrated per account rather than
   // relying on a client-side-only flag.
   ageConfirmed      Boolean   @default(false)
+  pdpConsent        Boolean   @default(false)
+  birthYear         Int?
   consentAcceptedAt DateTime?
   consentVersion    String?
 

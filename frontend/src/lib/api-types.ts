@@ -1045,6 +1045,10 @@ export interface components {
             email: string;
             password: string;
             name?: string;
+            ageConfirmed: boolean;
+            pdpConsent: boolean;
+            /** Format: int32 */
+            birthYear?: number;
         };
         /** @description Настройки и предпочтения пользователя */
         UserPreference: {

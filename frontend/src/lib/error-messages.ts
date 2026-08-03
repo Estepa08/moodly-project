@@ -7,6 +7,8 @@ const ERROR_CODE_MAP: Record<string, string> = {
   INVALID_CREDENTIALS: "errors.invalidCredentials",
   CONFLICT: "errors.conflict",
   CONSENT_REQUIRED: "errors.consentRequired",
+  PDP_CONSENT_REQUIRED: "errors.pdpConsentRequired",
+  AGE_REQUIRED: "errors.ageError",
   INVALID_REFRESH_TOKEN: "errors.sessionExpired",
   REFRESH_TOKEN_EXPIRED: "errors.sessionExpired",
   INVALID_RESET_TOKEN: "errors.invalidResetToken",

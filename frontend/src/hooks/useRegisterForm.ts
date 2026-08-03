@@ -12,17 +12,29 @@ export function useRegisterForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [birthYear, setBirthYear] = useState("");
   const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [pdpConsent, setPdpConsent] = useState(false);
   const [error, setError] = useState("");
+
+  const currentYear = new Date().getFullYear();
+  const birthYearNum = birthYear ? Number(birthYear) : null;
+  const isAdult = birthYearNum != null && currentYear - birthYearNum >= 18;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!isAdult) {
+      setError(t("register.ageError"));
+      return;
+    }
     try {
       const res = await api.auth.register({
         email,
         password,
         ageConfirmed,
+        pdpConsent,
+        birthYear: birthYearNum ?? undefined,
       });
       login(res.accessToken);
       navigate("/");
@@ -36,9 +48,14 @@ export function useRegisterForm() {
     setEmail,
     password,
     setPassword,
+    birthYear,
+    setBirthYear,
     ageConfirmed,
     setAgeConfirmed,
+    pdpConsent,
+    setPdpConsent,
     error,
     handleSubmit,
+    isAdult,
   };
 }

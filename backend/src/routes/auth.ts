@@ -24,12 +24,14 @@ export default async function authRoutes(fastify: FastifyInstance) {
     if (!parsed.success) {
       throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
     }
-    const { email, password, name, ageConfirmed } = parsed.data;
+    const { email, password, name, ageConfirmed, pdpConsent, birthYear } = parsed.data;
     const { user } = await userService.register({
       email,
       password,
       name,
       ageConfirmed,
+      pdpConsent,
+      birthYear,
     });
     const accessToken = await reply.jwtSign(
       { userId: user.id },

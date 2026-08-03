@@ -30,7 +30,10 @@ export async function register(
   await page.goto("/register");
   await page.locator("#regEmail").fill(email);
   await page.locator("#regPassword").fill(password);
-  await page.getByRole("checkbox").check();
+  await page.locator("#regBirthYear").fill("1998");
+  const checkboxes = page.getByRole("checkbox");
+  await checkboxes.nth(0).check();
+  await checkboxes.nth(1).check();
   await page.getByRole("button", { name: "Зарегистрироваться" }).click();
   await expect(page).not.toHaveURL(/\/register/);
   await dismissCheckIn(page);
