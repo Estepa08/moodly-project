@@ -30,6 +30,7 @@ describe("RegisterPage", () => {
     expect(screen.queryByLabelText("Name (optional)")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeInTheDocument();
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    expect(screen.getByLabelText("Birth year")).toBeInTheDocument();
   });
 
   it("links to the login page", () => {
@@ -38,15 +39,18 @@ describe("RegisterPage", () => {
     expect(signInLink).toHaveAttribute("href", "/login");
   });
 
-  it("disables submit until age consent is confirmed", async () => {
+  it("disables submit until both consents are confirmed", async () => {
     const user = userEvent.setup();
     renderWithProviders(<RegisterPage />);
 
     const submitButton = screen.getByRole("button", { name: /sign up/i });
+    const checkboxes = screen.getAllByRole("checkbox");
     expect(submitButton).toBeDisabled();
 
-    const consentCheckbox = screen.getByRole("checkbox");
-    await user.click(consentCheckbox);
+    await user.click(checkboxes[0]);
+    expect(submitButton).toBeDisabled();
+
+    await user.click(checkboxes[1]);
     expect(submitButton).toBeEnabled();
   });
 
@@ -61,7 +65,10 @@ describe("RegisterPage", () => {
 
     await user.type(screen.getByLabelText("Email"), "test@example.com");
     await user.type(screen.getByLabelText("Password"), "secret");
-    await user.click(screen.getByRole("checkbox"));
+    await user.type(screen.getByLabelText("Birth year"), "1998");
+    const checkboxes = screen.getAllByRole("checkbox");
+    await user.click(checkboxes[0]);
+    await user.click(checkboxes[1]);
     await user.click(screen.getByRole("button", { name: /sign up/i }));
 
     await waitFor(() => {
@@ -69,9 +76,31 @@ describe("RegisterPage", () => {
         email: "test@example.com",
         password: "secret",
         ageConfirmed: true,
+        pdpConsent: true,
+        birthYear: 1998,
       });
     });
     expect(setToken).toHaveBeenCalledWith("access-token");
+  });
+
+  it("blocks submit when birth year makes user under 18", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<RegisterPage />);
+
+    await user.type(screen.getByLabelText("Email"), "minor@example.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.type(screen.getByLabelText("Birth year"), "2010");
+    const checkboxes = screen.getAllByRole("checkbox");
+    await user.click(checkboxes[0]);
+    await user.click(checkboxes[1]);
+    await user.click(screen.getByRole("button", { name: /sign up/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Registration is available to users 18 and older"),
+      ).toBeInTheDocument();
+    });
+    expect(api.auth.register).not.toHaveBeenCalled();
   });
 
   it("shows error message on failure", async () => {
@@ -84,7 +113,10 @@ describe("RegisterPage", () => {
 
     await user.type(screen.getByLabelText("Email"), "taken@example.com");
     await user.type(screen.getByLabelText("Password"), "secret");
-    await user.click(screen.getByRole("checkbox"));
+    await user.type(screen.getByLabelText("Birth year"), "1998");
+    const checkboxes = screen.getAllByRole("checkbox");
+    await user.click(checkboxes[0]);
+    await user.click(checkboxes[1]);
     await user.click(screen.getByRole("button", { name: /sign up/i }));
 
     await waitFor(() => {

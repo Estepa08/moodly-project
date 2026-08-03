@@ -9,6 +9,8 @@ export const registerSchema = z.object({
   password: passwordSchema,
   name: z.string().max(100).optional(),
   ageConfirmed: z.boolean(),
+  pdpConsent: z.boolean(),
+  birthYear: z.number().int().min(1900).max(new Date().getFullYear()).optional(),
 });
 
 export const loginSchema = z.object({

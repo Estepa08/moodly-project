@@ -38,7 +38,7 @@ function gitOk(args) {
 }
 
 function resolveBase(cliBase) {
-  if (cliBase) return cliBase;
+  if (cliBase && gitOk(`rev-parse --verify ${cliBase}`)) return cliBase;
   const candidates = ["origin/develop", "origin/main"];
   for (const ref of candidates) {
     if (!gitOk(`rev-parse --verify ${ref}`)) continue;
@@ -61,7 +61,17 @@ function changedFiles(base) {
       if (f) out.add(f);
     }
   };
-  add(execSync(`git diff --name-only -z ${base}...HEAD --`, { cwd: ROOT }));
+  try {
+    add(execSync(`git diff --name-only -z ${base}...HEAD --`, { cwd: ROOT }));
+  } catch {
+    // нет общего предка (shallow/несвязанная история) — двухточечный diff
+    try {
+      add(execSync(`git diff --name-only -z ${base} HEAD --`, { cwd: ROOT }));
+    } catch {
+      // ref недоступен — считаем по HEAD
+      add(execSync("git diff --name-only -z HEAD^ HEAD --", { cwd: ROOT }));
+    }
+  }
   add(execSync("git diff --name-only -z", { cwd: ROOT }));
   add(execSync("git diff --cached --name-only -z", { cwd: ROOT }));
   add(execSync("git ls-files --others --exclude-standard -z", { cwd: ROOT }));

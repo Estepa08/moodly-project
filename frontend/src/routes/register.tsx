@@ -17,8 +17,12 @@ export default function RegisterPage() {
     setEmail,
     password,
     setPassword,
+    birthYear,
+    setBirthYear,
     ageConfirmed,
     setAgeConfirmed,
+    pdpConsent,
+    setPdpConsent,
     error,
     handleSubmit,
   } = useRegisterForm();
@@ -50,10 +54,24 @@ export default function RegisterPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
-            enterKeyHint="go"
+            enterKeyHint="next"
             required
             showLabel={t("common.showPassword")}
             hideLabel={t("common.hidePassword")}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="regBirthYear">{t("register.birthYear")}</Label>
+          <Input
+            id="regBirthYear"
+            type="text"
+            inputMode="numeric"
+            value={birthYear}
+            onChange={(e) => setBirthYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+            autoComplete="bday-year"
+            enterKeyHint="next"
+            placeholder={t("register.birthYearPlaceholder")}
+            spellCheck={false}
           />
         </div>
         <div className="space-y-2">
@@ -66,7 +84,7 @@ export default function RegisterPage() {
               required
             />
             <span>
-              {t("register.consentText")}{" "}
+              {t("register.ageConsentText")}{" "}
               <Link to="/terms" className="text-primary hover:underline">
                 {t("register.termsLink")}
               </Link>{" "}
@@ -76,13 +94,28 @@ export default function RegisterPage() {
               </Link>
             </span>
           </Label>
+          <Label className="flex items-start gap-2 text-sm cursor-pointer">
+            <input
+              type="checkbox"
+              checked={pdpConsent}
+              onChange={(e) => setPdpConsent(e.target.checked)}
+              className="mt-1"
+              required
+            />
+            <span>
+              {t("register.pdpConsentText")}{" "}
+              <Link to="/privacy" className="text-primary hover:underline">
+                {t("register.pdpConsentLink")}
+              </Link>
+            </span>
+          </Label>
         </div>
         {error && (
           <p className="text-sm text-destructive" role="alert">
             {error}
           </p>
         )}
-        <Button type="submit" className="w-full" disabled={!ageConfirmed}>
+        <Button type="submit" className="w-full" disabled={!ageConfirmed || !pdpConsent}>
           {t("register.signUp")}
         </Button>
 

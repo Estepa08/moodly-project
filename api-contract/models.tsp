@@ -30,6 +30,9 @@ model UserCreate {
   email: string;
   password: string;
   name?: string;
+  ageConfirmed: boolean;
+  pdpConsent: boolean;
+  birthYear?: int32;
 }
 
 model UserUpdate {

@@ -241,6 +241,8 @@ export default function TestDetailPage() {
         </CardContent>
       </Card>
 
+      {isFirst && <WellnessDisclaimer variant="compact" />}
+
       <div className="flex items-center justify-between">
         {!isFirst ? (
           <Button

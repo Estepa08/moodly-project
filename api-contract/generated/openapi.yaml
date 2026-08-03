@@ -1648,6 +1648,8 @@ components:
       required:
         - email
         - password
+        - ageConfirmed
+        - pdpConsent
       properties:
         email:
           type: string
@@ -1655,6 +1657,13 @@ components:
           type: string
         name:
           type: string
+        ageConfirmed:
+          type: boolean
+        pdpConsent:
+          type: boolean
+        birthYear:
+          type: integer
+          format: int32
     UserPreference:
       type: object
       required:

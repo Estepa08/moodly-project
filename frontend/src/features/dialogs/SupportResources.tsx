@@ -74,6 +74,10 @@ export default function SupportResources({ open, onDismiss }: Props) {
           </p>
         </div>
 
+        <p className="text-xs text-muted-foreground text-center">
+          {t("supportResources.notSubstitute")}
+        </p>
+
         <Button variant="outline" className="w-full" onClick={onDismiss}>
           {t("common.close")}
         </Button>

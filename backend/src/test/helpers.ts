@@ -50,7 +50,7 @@ export async function registerAndLogin(
   const reg = await app.inject({
     method: "POST",
     url: "/auth/register",
-    payload: { email, password, name, ageConfirmed: true },
+    payload: { email, password, name, ageConfirmed: true, pdpConsent: true },
   });
   const body = reg.json();
   return { token: body.accessToken, userId: body.user.id };

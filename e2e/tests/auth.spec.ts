@@ -26,15 +26,20 @@ test("вход с неверным паролем показывает ошиб�
   await expect(page).toHaveURL(/\/login/);
 });
 
-test("регистрация невозможна без согласия 18+", { tag: "@auth" }, async ({ page }) => {
+test("регистрация невозможна без согласий", { tag: "@auth" }, async ({ page }) => {
   await page.goto("/register");
   await page.locator("#regEmail").fill(uniqueEmail("auth-noconsent"));
   await page.locator("#regPassword").fill(E2E_PASSWORD);
+  await page.locator("#regBirthYear").fill("1998");
 
   const submit = page.getByRole("button", { name: "Зарегистрироваться" });
   await expect(submit).toBeDisabled();
 
-  await page.getByRole("checkbox").check();
+  const checkboxes = page.getByRole("checkbox");
+  await checkboxes.nth(0).check();
+  await expect(submit).toBeDisabled();
+
+  await checkboxes.nth(1).check();
   await expect(submit).toBeEnabled();
 });
 
