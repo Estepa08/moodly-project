@@ -20,6 +20,7 @@ WORKDIR /workspace
 COPY --from=shared-build /workspace/shared /workspace/shared
 WORKDIR /workspace/frontend
 COPY frontend/package.json frontend/package-lock.json ./
+COPY frontend/scripts ./scripts
 RUN npm ci
 COPY frontend/ .
 COPY --from=contract /workspace/api-contract/generated /workspace/api-contract/generated
