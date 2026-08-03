@@ -3,6 +3,7 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { SyncStatusIndicator } from "./SyncStatusIndicator";
 import { SkipLink } from "../widgets";
 import { Button } from "../components/ui/button";
 import Sidebar from "../layout/Sidebar";
@@ -41,6 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {t("common.moodly")}
           </h1>
           <div className="flex items-center gap-2">
+            <SyncStatusIndicator />
             <Button
               variant="outline"
               onClick={handleLogout}

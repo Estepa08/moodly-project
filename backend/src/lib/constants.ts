@@ -1,2 +1,1 @@
-export const EXP_PER_LEVEL = 100;
-export const MS_PER_DAY = 86400000;
+export { EXP_PER_LEVEL, MS_PER_DAY } from "@moodly/shared";

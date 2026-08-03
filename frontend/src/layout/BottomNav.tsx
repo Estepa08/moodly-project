@@ -45,7 +45,7 @@ export default function BottomNav() {
               aria-hidden="true"
               className={cn("w-6 h-6 shrink-0", active && "text-primary", iconClass(item.path, ""))}
             />
-            <span className="text-xs font-medium leading-tight truncate">{t(item.labelKey)}</span>
+            <span className="text-xs font-medium leading-tight truncate">{t(item.shortLabelKey ?? item.labelKey)}</span>
           </Link>
         );
       })}

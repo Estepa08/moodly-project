@@ -8,7 +8,7 @@ interface TitleSelectorProps {
   onSelect: (title: string | null) => void;
 }
 
-const TITLE_MAP: Record<string, string> = {
+export const TITLE_MAP: Record<string, string> = {
   serenity_keeper: "progress.titleSerenityKeeper",
   spark: "progress.titleSpark",
   sage: "progress.titleSage",
@@ -21,9 +21,27 @@ const TITLE_MAP: Record<string, string> = {
   breeze: "progress.titleBreeze",
   persistent: "progress.titlePersistent",
   legend: "progress.titleLegend",
+  mentor: "progress.titleMentor",
+  chronicle: "progress.titleChronicle",
+  trailblazer: "progress.titleTrailblazer",
+  zenmonk: "progress.titleZenmonk",
+  nightOwl: "progress.titleNightOwl",
+  caretaker: "progress.titleCaretaker",
+  mystic: "progress.titleMystic",
+  lucid: "progress.titleLucid",
+  titan: "progress.titleTitan",
+  iron_will: "progress.titleIronWill",
+  luminary: "progress.titleLuminary",
+  breath_guru: "progress.titleBreathGuru",
+  habit_architect: "progress.titleHabitArchitect",
+  mood_keeper: "progress.titleMoodKeeper",
+  sunbeam: "progress.titleSunbeam",
+  soul_scribe: "progress.titleSoulScribe",
+  know_thyself: "progress.titleKnowThyself",
+  stargazer: "progress.titleStargazer",
 };
 
-const TITLE_EMOJI: Record<string, string> = {
+export const TITLE_EMOJI: Record<string, string> = {
   serenity_keeper: "🛡️",
   spark: "✨",
   sage: "📖",
@@ -36,6 +54,24 @@ const TITLE_EMOJI: Record<string, string> = {
   breeze: "🌬️",
   persistent: "💪",
   legend: "👑",
+  mentor: "🎓",
+  chronicle: "📜",
+  trailblazer: "🛤️",
+  zenmonk: "🧘",
+  nightOwl: "🌙",
+  caretaker: "🌱",
+  mystic: "🌀",
+  lucid: "💡",
+  titan: "🗿",
+  iron_will: "🏔️",
+  luminary: "🌟",
+  breath_guru: "🫧",
+  habit_architect: "🧱",
+  mood_keeper: "🎭",
+  sunbeam: "🌻",
+  soul_scribe: "📝",
+  know_thyself: "🔍",
+  stargazer: "🌠",
 };
 
 const NO_TITLE_EMOJI = "🏷️";
@@ -52,31 +88,32 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       <button
         type="button"
         onClick={() => onSelect(null)}
         className={cn(
-          "w-full rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150",
+          "relative w-full rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,transform] duration-150",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "min-h-[96px]",
           !activeTitle
-            ? "bg-primary/10 shadow-neumorphic-inset"
+            ? "bg-card shadow-neumorphic-inset border-2 border-primary"
             : "bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.97]",
         )}
         aria-pressed={!activeTitle}
         aria-label={t("progress.noTitle")}
       >
+        {!activeTitle && (
+          <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+            <Check aria-hidden="true" className="w-3 h-3" strokeWidth={3} />
+          </span>
+        )}
         <div className="w-11 h-11 rounded-full flex items-center justify-center text-xl bg-secondary">
           {NO_TITLE_EMOJI}
         </div>
-        <span className="text-xs font-medium text-center leading-tight">
+        <span className="text-xs font-medium text-center leading-tight line-clamp-1">
           {t("progress.noTitle")}
         </span>
-        {!activeTitle && (
-          <span className="text-[11px] text-primary font-semibold flex items-center gap-0.5">
-            <Check aria-hidden="true" className="w-3 h-3" /> {t("pets.active")}
-          </span>
-        )}
       </button>
 
       {titles.map((title) => {
@@ -89,24 +126,27 @@ export default function TitleSelector({ titles, activeTitle, onSelect }: TitleSe
             type="button"
             onClick={() => onSelect(title)}
             className={cn(
-              "w-full rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150",
+              "relative w-full rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,transform] duration-150",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "min-h-[96px]",
               isActive
-                ? "bg-primary/10 shadow-neumorphic-inset"
+                ? "bg-card shadow-neumorphic-inset border-2 border-primary"
                 : "bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.97]",
             )}
             aria-pressed={isActive}
             aria-label={t(labelKey)}
           >
+            {isActive && (
+              <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                <Check aria-hidden="true" className="w-3 h-3" strokeWidth={3} />
+              </span>
+            )}
             <div className="w-11 h-11 rounded-full flex items-center justify-center text-xl bg-secondary">
               {emoji}
             </div>
-            <span className="text-xs font-medium text-center leading-tight">{t(labelKey)}</span>
-            {isActive && (
-              <span className="text-[11px] text-primary font-semibold flex items-center gap-0.5">
-                <Check aria-hidden="true" className="w-3 h-3" /> {t("pets.active")}
-              </span>
-            )}
+            <span className="text-xs font-medium text-center leading-tight line-clamp-1">
+              {t(labelKey)}
+            </span>
           </button>
         );
       })}

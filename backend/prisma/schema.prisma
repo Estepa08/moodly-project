@@ -15,6 +15,8 @@ model User {
   name      String?
   role      String   @default("user")
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   // 18+ confirmation and personal-data processing consent, recorded at
   // registration time so consent can be demonstrated per account rather than
@@ -42,6 +44,8 @@ model User {
   userAchievements UserAchievement[]
   creatureState CreatureState?
   dailyMissions  DailyMission[]
+  devices   Device[]
+  syncCursor SyncCursor?
 }
 
 model Parameter {
@@ -60,6 +64,8 @@ model Entry {
   value       Float
   note        String?
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parameter Parameter @relation(fields: [parameterId], references: [id])
@@ -67,6 +73,7 @@ model Entry {
   @@index([userId])
   @@index([parameterId])
   @@index([userId, parameterId])
+  @@index([userId, updatedAt])
 }
 
 model Test {
@@ -103,12 +110,15 @@ model TestResult {
   recommendation String
   flags          Json?
   completedAt    DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  deletedAt      DateTime?
 
   test Test @relation(fields: [testId], references: [id])
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([testId])
+  @@index([userId, updatedAt])
 }
 
 model Feedback {
@@ -117,10 +127,13 @@ model Feedback {
   rating    Int      @default(0)
   message   String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([userId, updatedAt])
 }
 
 model OnboardingStory {
@@ -168,12 +181,14 @@ model UserAchievement {
   achievementId String
   unlockedAt    DateTime @default(now())
   notified      Boolean  @default(false)
+  updatedAt     DateTime @updatedAt
 
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   achievement Achievement @relation(fields: [achievementId], references: [id])
 
   @@unique([userId, achievementId])
   @@index([userId])
+  @@index([userId, updatedAt])
 }
 
 model CreatureState {
@@ -195,6 +210,8 @@ model CreatureState {
   petName          String?
   feedCount        Int      @default(0)
   feedCounts       Json     @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -208,6 +225,8 @@ model UserPreference {
   reminderTime    String? @default("09:00")
   onboardingDone       Boolean @default(false)
   showSupportResources Boolean @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -218,11 +237,14 @@ model PracticeCompletion {
   source    String
   xpAwarded Int
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([userId, createdAt])
+  @@index([userId, updatedAt])
 }
 
 model ResetToken {
@@ -240,13 +262,41 @@ model ResetToken {
 model RefreshToken {
   id        String   @id @default(cuid())
   userId    String
+  deviceId  String?
   tokenHash String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device Device? @relation(fields: [deviceId], references: [id])
 
   @@index([userId])
+  @@index([deviceId])
+}
+
+model Device {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  userAgent  String?
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+
+  @@index([userId])
+  @@index([userId, updatedAt])
+}
+
+model SyncCursor {
+  userId       String   @id
+  lastPulledAt DateTime @default(now())
+  lastPulledId String?
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model BreathingSession {
@@ -256,10 +306,13 @@ model BreathingSession {
   initialCalmness Int
   finalCalmness   Int
   completedAt     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([userId, updatedAt])
 }
 
 model CbaExample {
@@ -299,6 +352,10 @@ model CbaCommonItem {
   id       String @id @default(cuid())
   itemType String
   itemText String
+  category String
+  itemKey  String
+
+  @@index([itemType, category])
 }
 
 model CbaEntry {
@@ -308,11 +365,14 @@ model CbaEntry {
   prosWeight  Int
   consWeight  Int
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   items CbaEntryItem[]
 
   @@index([userId])
+  @@index([userId, updatedAt])
 }
 
 model DailyMission {
@@ -323,12 +383,15 @@ model DailyMission {
   labelKey   String
   xpReward   Int      @default(10)
   claimed    Boolean  @default(false)
-  sortOrder  Int      @default(0)
-  createdAt  DateTime @default(now())
+sortOrder  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, date])
+  @@unique([userId, date, missionKey])
 }
 
 model PushSubscription {
@@ -348,6 +411,8 @@ model CbaEntryItem {
   entryId  String
   itemType String
   itemText String
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   entry CbaEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
 

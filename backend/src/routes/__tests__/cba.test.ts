@@ -26,7 +26,14 @@ beforeAll(async () => {
       distortions: { create: [{ distortionKey: "labeling" }] },
     },
   });
-  await prisma.cbaCommonItem.create({ data: { itemType: "advantage", itemText: "Common pro" } });
+  await prisma.cbaCommonItem.create({
+    data: {
+      itemType: "advantage",
+      itemText: "Common pro",
+      category: "anxiety",
+      itemKey: "anxiety.commonPro",
+    },
+  });
 
   const result = await registerAndLogin(app, "cba-test@example.com", "secret123");
   token = result.token;

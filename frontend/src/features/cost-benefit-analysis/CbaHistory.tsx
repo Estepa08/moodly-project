@@ -28,7 +28,7 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
             <div className="flex items-center gap-3">
               <ProgressBar
                 segments={[
-                  { value: entry.prosWeight, className: "bg-accent" },
+                  { value: entry.prosWeight, className: "bg-success" },
                   { value: entry.consWeight, className: "bg-destructive" },
                 ]}
                 className="flex-1 h-2"

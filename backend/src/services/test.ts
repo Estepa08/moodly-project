@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma.js";
 import { NotFoundError } from "../lib/errors.js";
 import { getInterpretation } from "./test-interpretations.js";
+import { computeScore } from "@moodly/shared";
 
 interface TestAnswer {
   questionId: string;
@@ -28,17 +29,8 @@ export const testService = {
     if (!test.active) throw new NotFoundError("Test");
 
     const questions = test.questions as { id: string; options: { id: string; score: number }[] }[];
-    let score = 0;
-    for (const answer of answers) {
-      const question = questions.find((q) => q.id === answer.questionId);
-      if (!question) continue;
-      const option = question.options.find((o) => o.id === answer.optionId);
-      if (option) score += option.score;
-    }
 
-    const maxScore = questions.reduce((sum, q) => {
-      return sum + Math.max(...q.options.map((o) => o.score));
-    }, 0);
+    const { score, maxScore } = computeScore(questions, answers);
 
     const { interpretation, recommendation, flags } = await getInterpretation(
       test.id,

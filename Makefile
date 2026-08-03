@@ -10,6 +10,7 @@
 
 install:
 	cd api-contract && npm install
+	cd shared && npm install
 	cd backend && npm install
 	cd frontend && npm install
 
@@ -17,6 +18,7 @@ setup: install generate db-setup
 
 generate:
 	cd api-contract && npm run build
+	cd shared && npm run build
 	cd frontend && npm run generate:api
 
 # ─── Development ────────────────────────────────────────

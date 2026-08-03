@@ -16,7 +16,7 @@ export const achievementsService = {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     const completions = await prisma.practiceCompletion.findMany({
       where: { userId },
-      select: { source: true, xpAwarded: true },
+      select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
       (c) => c.source !== "moodEntry" && c.source !== "feed",
@@ -24,6 +24,7 @@ export const achievementsService = {
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
     const uniquePractices = new Set(practiceCompletions.map((c) => c.source));
+    const extra = await collectExtraMetrics(prisma, userId, completions);
 
     return all.map((a) => {
       const criteria = a.criteria as Record<string, unknown>;
@@ -35,6 +36,7 @@ export const achievementsService = {
         totalXp,
         uniquePractices,
         creature?.feedCount ?? 0,
+        extra,
       );
       const isUnlocked = unlockedMap.has(a.id);
       return {
@@ -67,7 +69,7 @@ export const achievementsService = {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     const completions = await prisma.practiceCompletion.findMany({
       where: { userId },
-      select: { source: true, xpAwarded: true },
+      select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
       (c) => c.source !== "moodEntry" && c.source !== "feed",
@@ -75,6 +77,7 @@ export const achievementsService = {
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
     const uniquePractices = new Set(practiceCompletions.map((c) => c.source));
+    const extra = await collectExtraMetrics(prisma, userId, completions);
 
     const newlyUnlocked: typeof all = [];
 
@@ -89,6 +92,7 @@ export const achievementsService = {
         totalXp,
         uniquePractices,
         creature?.feedCount ?? 0,
+        extra,
       );
       if (progress >= 100) {
         newlyUnlocked.push(a);
@@ -202,6 +206,40 @@ function percentOf(current: number, target: number): number {
   return Math.min(100, Math.round((current / Math.max(target, 1)) * 100));
 }
 
+interface ExtraMetrics {
+  moodEntryCount: number;
+  gratitudeCount: number;
+  thoughtJournalCount: number;
+  testCount: number;
+  nightCount: number;
+}
+
+async function collectExtraMetrics(
+  prisma: typeof import("../lib/prisma.js").prisma,
+  userId: string,
+  completions: { source: string; createdAt: Date }[],
+): Promise<ExtraMetrics> {
+  const sourceCounts: Record<string, number> = {};
+  let nightCount = 0;
+  for (const c of completions) {
+    sourceCounts[c.source] = (sourceCounts[c.source] ?? 0) + 1;
+    if (c.source !== "feed" && c.source !== "moodEntry") {
+      const hour = c.createdAt.getHours();
+      if (hour >= 22 || hour < 6) nightCount += 1;
+    }
+  }
+  const testCount = await prisma.testResult.count({
+    where: { userId, deletedAt: null },
+  });
+  return {
+    moodEntryCount: sourceCounts["moodEntry"] ?? 0,
+    gratitudeCount: sourceCounts["gratitude"] ?? 0,
+    thoughtJournalCount: sourceCounts["thoughtJournal"] ?? 0,
+    testCount,
+    nightCount,
+  };
+}
+
 function calculateProgress(
   criteria: Record<string, unknown>,
   creature: { level: number; experience: number; streak: number; feedCount: number } | null,
@@ -210,6 +248,7 @@ function calculateProgress(
   totalXp: number,
   uniquePractices?: Set<string>,
   feedCount = 0,
+  extra?: ExtraMetrics,
 ): number {
   const type = criteria.type as string;
   const value = (criteria.value as number) ?? 0;
@@ -231,6 +270,16 @@ function calculateProgress(
       return percentOf(feedCount, value);
     case "all_practices":
       return (uniquePractices?.size ?? 0) >= 6 ? 100 : 0;
+    case "mood_entries":
+      return percentOf(extra?.moodEntryCount ?? 0, value);
+    case "gratitude_count":
+      return percentOf(extra?.gratitudeCount ?? 0, value);
+    case "thought_journal_count":
+      return percentOf(extra?.thoughtJournalCount ?? 0, value);
+    case "test_count":
+      return percentOf(extra?.testCount ?? 0, value);
+    case "night_practices":
+      return percentOf(extra?.nightCount ?? 0, value);
     default:
       return 0;
   }

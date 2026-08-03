@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { useCurrentUser } from "./hooks/useCurrentUser";
+import SyncCoordinator from "./lib/offline/SyncCoordinator";
 import Layout from "./components/Layout";
 import Spinner from "./components/ui/spinner";
 import LoginPage from "./routes/login";
@@ -52,6 +53,7 @@ function ProtectedRoute() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return (
     <Layout>
+      <SyncCoordinator />
       <ProtectedSuspense>
         <Outlet />
       </ProtectedSuspense>

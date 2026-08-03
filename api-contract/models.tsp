@@ -391,6 +391,16 @@ enum CbaItemType {
   disadvantage,
 }
 
+@doc("Тема автоматической мысли, к которой относится подсказка")
+enum CbaItemCategory {
+  anxiety,
+  "self-esteem",
+  relationships,
+  work,
+  health,
+  habit,
+}
+
 model CbaExampleItem {
   id: string;
   itemType: CbaItemType;
@@ -421,6 +431,8 @@ model CbaCommonItem {
   id: string;
   itemType: CbaItemType;
   itemText: string;
+  category: CbaItemCategory;
+  itemKey: string;
 }
 
 model CbaEntryItemInput {

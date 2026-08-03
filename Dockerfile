@@ -6,8 +6,18 @@ RUN npm ci
 COPY api-contract/ .
 RUN npm run build
 
-# Stage 2: Generate API types + build frontend
+# Stage 2: Build shared logic package (@moodly/shared)
+FROM node:22-bookworm-slim AS shared-build
+WORKDIR /workspace/shared
+COPY shared/package.json shared/package-lock.json ./
+RUN npm ci
+COPY shared/ .
+RUN npm run build
+
+# Stage 3: Generate API types + build frontend
 FROM node:22-bookworm-slim AS frontend-build
+WORKDIR /workspace
+COPY --from=shared-build /workspace/shared /workspace/shared
 WORKDIR /workspace/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
@@ -16,8 +26,10 @@ COPY --from=contract /workspace/api-contract/generated /workspace/api-contract/g
 RUN npm run generate:api
 RUN npm run build
 
-# Stage 3: Compile backend
+# Stage 4: Compile backend
 FROM node:22-bookworm-slim AS backend-build
+WORKDIR /workspace
+COPY --from=shared-build /workspace/shared /workspace/shared
 WORKDIR /workspace/backend
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY backend/package.json backend/package-lock.json ./
@@ -29,7 +41,7 @@ COPY backend/src ./src
 COPY backend/docker-entrypoint.sh ./
 RUN npm run build
 
-# Stage 4: Runtime — Caddy serves frontend, proxies /api to backend
+# Stage 5: Runtime — Caddy serves frontend, proxies /api to backend
 FROM node:22-alpine
 RUN apk add --no-cache caddy openssl
 
@@ -38,6 +50,8 @@ COPY --from=backend-build /workspace/backend/dist /app/dist
 COPY --from=backend-build /workspace/backend/node_modules /app/node_modules
 COPY --from=backend-build /workspace/backend/prisma /app/prisma
 COPY --from=backend-build /workspace/backend/docker-entrypoint.sh /app/entrypoint.sh
+# node_modules/@moodly/shared — relative symlink на ../../../shared; кладём пакет на ту же глубину
+COPY --from=shared-build /workspace/shared /app/shared
 COPY infra/Caddyfile /etc/caddy/Caddyfile
 
 ENV BACKEND_UPSTREAM=127.0.0.1:3000

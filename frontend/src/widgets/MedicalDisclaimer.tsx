@@ -27,7 +27,7 @@ export default function WellnessDisclaimer({ className, variant = "expanded" }: 
   return (
     <div
       className={cn(
-        "flex items-start gap-2 rounded-xl bg-muted p-3 border border-border",
+        "flex items-start gap-2 rounded-xl bg-white p-3 border border-border",
         className,
       )}
     >

@@ -18,6 +18,7 @@ import achievementRoutes from "./routes/achievements.js";
 import cbaRoutes from "./routes/cba.js";
 import digestRoutes from "./routes/digest.js";
 import notificationRoutes from "./routes/notifications.js";
+import syncRoutes from "./routes/sync.js";
 import adminRoutes from "./routes/admin.js";
 import { setErrorHandler } from "./lib/handle-error.js";
 
@@ -69,6 +70,7 @@ await fastify.register(achievementRoutes);
 await fastify.register(cbaRoutes);
 await fastify.register(digestRoutes);
 await fastify.register(notificationRoutes);
+await fastify.register(syncRoutes);
 await fastify.register(adminRoutes);
 
 setErrorHandler(fastify);

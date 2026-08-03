@@ -49,7 +49,9 @@ export default function ProgressPage() {
       {stats && (
         <CollapsibleSection
           title={t("progress.statsTitle")}
+          subtitle={t("progress.statsSubtitle")}
           icon={Target}
+          iconClassName="bg-primary/10 text-primary"
           defaultOpen
           storageKey="moodly_collapse_progress_stats"
         >
@@ -59,7 +61,9 @@ export default function ProgressPage() {
 
       <CollapsibleSection
         title={t("progress.missionsTitle")}
+        subtitle={t("progress.missionsSubtitle")}
         icon={ListChecks}
+        iconClassName="bg-accent/10 text-accent"
         defaultOpen
         storageKey="moodly_collapse_progress_missions"
       >
@@ -68,7 +72,9 @@ export default function ProgressPage() {
 
       <CollapsibleSection
         title={t("progress.petsTitle")}
+        subtitle={t("progress.petsSubtitle")}
         icon={PawPrint}
+        iconClassName="bg-pet-1/10 text-pet-1"
         defaultOpen
         storageKey="moodly_collapse_progress_pets"
       >
@@ -78,7 +84,9 @@ export default function ProgressPage() {
       {creature && creature.unlockedTitles && creature.unlockedTitles.length > 0 && (
         <CollapsibleSection
           title={t("progress.titlesTitle")}
+          subtitle={t("progress.titlesSubtitle")}
           icon={Medal}
+          iconClassName="bg-info/10 text-info"
           defaultOpen={false}
           storageKey="moodly_collapse_progress_titles"
         >
@@ -92,7 +100,9 @@ export default function ProgressPage() {
 
       <CollapsibleSection
         title={t("progress.achievementsTitle")}
+        subtitle={t("progress.achievementsSubtitle")}
         icon={Trophy}
+        iconClassName="bg-warning/10 text-warning"
         defaultOpen
         storageKey="moodly_collapse_progress_achievements"
       >
@@ -101,7 +111,9 @@ export default function ProgressPage() {
 
       <CollapsibleSection
         title={t("progress.activityTitle")}
+        subtitle={t("progress.activitySubtitle")}
         icon={Activity}
+        iconClassName="bg-success/10 text-success"
         defaultOpen={false}
         storageKey="moodly_collapse_progress_activity"
       >
