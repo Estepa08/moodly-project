@@ -53,6 +53,7 @@ COPY --from=backend-build /workspace/backend/prisma /app/prisma
 COPY --from=backend-build /workspace/backend/docker-entrypoint.sh /app/entrypoint.sh
 # node_modules/@moodly/shared — relative symlink на ../../../shared; кладём пакет на ту же глубину
 COPY --from=shared-build /workspace/shared /app/shared
+RUN rm -f /app/node_modules/@moodly/shared && ln -s /app/shared /app/node_modules/@moodly/shared
 COPY infra/Caddyfile /etc/caddy/Caddyfile
 
 ENV BACKEND_UPSTREAM=127.0.0.1:3000
