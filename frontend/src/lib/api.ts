@@ -31,6 +31,35 @@ export interface UserPreference {
   showSupportResources: boolean;
 }
 
+export interface SyncAction {
+  entity:
+    | "entry"
+    | "feedback"
+    | "testResult"
+    | "breathingSession"
+    | "practiceCompletion"
+    | "creatureState";
+  action: "upsert" | "delete";
+  id: string;
+  occurredAt: string;
+  payload: Record<string, unknown>;
+}
+
+export interface SyncChange {
+  entity: SyncAction["entity"] | "userAchievement";
+  id: string;
+  action: "upsert" | "delete";
+  updatedAt: string;
+  data: Record<string, unknown>;
+}
+
+export interface PullResult {
+  cursor: string;
+  cursorId: string;
+  hasMore: boolean;
+  changes: SyncChange[];
+}
+
 export interface WeeklyDigest {
   startDate: string;
   endDate: string;
@@ -366,5 +395,20 @@ export const api = {
     listUsers: () => request<AdminUser[]>("/admin/users"),
     deleteUser: (id: string) => request<void>(`/admin/users/${id}`, { method: "DELETE" }),
     listFeedback: () => request<AdminFeedback[]>("/admin/feedback"),
+  },
+  sync: {
+    push: (actions: SyncAction[]) =>
+      request<{ applied: number }>("/sync/push", {
+        method: "POST",
+        body: JSON.stringify({ actions }),
+      }),
+    pull: (opts?: { since?: string; sinceId?: string; limit?: number }) => {
+      const q = new URLSearchParams();
+      if (opts?.since) q.set("since", opts.since);
+      if (opts?.sinceId) q.set("sinceId", opts.sinceId);
+      if (opts?.limit) q.set("limit", String(opts.limit));
+      const qs = q.toString();
+      return request<PullResult>(`/sync/pull${qs ? `?${qs}` : ""}`);
+    },
   },
 };

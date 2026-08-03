@@ -128,7 +128,6 @@ export default function Dashboard() {
 
       <WellbeingCard
         average={wellbeing.average}
-        trend={wellbeing.trend}
         isLoading={isDataLoading}
         expanded={expanded}
         onToggle={() => {

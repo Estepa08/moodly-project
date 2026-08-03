@@ -929,12 +929,18 @@ components:
         - id
         - itemType
         - itemText
+        - category
+        - itemKey
       properties:
         id:
           type: string
         itemType:
           $ref: '#/components/schemas/CbaItemType'
         itemText:
+          type: string
+        category:
+          $ref: '#/components/schemas/CbaItemCategory'
+        itemKey:
           type: string
       description: Типовой пункт из общего банка подсказок для заполнения формы CBA
     CbaEntry:
@@ -1074,6 +1080,16 @@ components:
           $ref: '#/components/schemas/CbaItemType'
         itemText:
           type: string
+    CbaItemCategory:
+      type: string
+      enum:
+        - anxiety
+        - self-esteem
+        - relationships
+        - work
+        - health
+        - habit
+      description: Тема автоматической мысли, к которой относится подсказка
     CbaItemType:
       type: string
       enum:

@@ -11,8 +11,10 @@ const prisma = new PrismaClient();
 async function createMission(missionKey: string, labelKey: string, xpReward: number) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  return prisma.dailyMission.create({
-    data: {
+  return prisma.dailyMission.upsert({
+    where: { userId_date_missionKey: { userId, date: today, missionKey } },
+    update: { labelKey, xpReward },
+    create: {
       userId,
       date: today,
       missionKey,

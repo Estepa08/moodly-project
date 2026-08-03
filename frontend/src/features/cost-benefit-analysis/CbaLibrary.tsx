@@ -49,7 +49,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <p className="text-xs font-medium text-accent">{t("cba.pros")}</p>
+              <p className="text-xs font-medium text-success">{t("cba.pros")}</p>
               <ul className="space-y-1">
                 {advantages.map((i) => (
                   <li key={i.id} className="text-sm text-muted-foreground">
@@ -71,11 +71,17 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
           </div>
 
           <div className="flex items-center justify-center gap-3 pt-1">
-            <span className="text-sm font-semibold text-accent">{example.prosWeight}</span>
+            <span className="text-sm font-semibold text-success">{example.prosWeight}</span>
             <ProgressBar
+              height={3}
               segments={[
-                { value: example.prosWeight, className: "bg-accent" },
-                { value: example.consWeight, className: "bg-destructive" },
+                {
+                  value: Math.min(100, example.prosWeight + example.consWeight),
+                  style: {
+                    backgroundImage:
+                      "linear-gradient(to right, hsl(var(--success)), hsl(var(--destructive)))",
+                  },
+                },
               ]}
               className="flex-1"
             />

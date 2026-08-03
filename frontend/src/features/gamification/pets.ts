@@ -30,6 +30,18 @@ const KNOWN_ORDER = [
   "robot2",
   "salad",
   "tucan",
+  "liza",
+  "nastya",
+  "ksyusha",
+  "marina",
+  "alisa",
+  "sofya",
+  "vera",
+  "nika",
+  "mila",
+  "lev",
+  "mark",
+  "timur",
 ];
 
 const PET_META: Record<string, PetMeta> = {
@@ -48,6 +60,18 @@ const PET_META: Record<string, PetMeta> = {
   robot2: { labelKey: "pets.robot2", color: "bg-pet-12", emoji: "🤖", feed: ["🔩"] },
   salad: { labelKey: "pets.salad", color: "bg-pet-13", emoji: "🥗", feed: ["🥬", "🥕"] },
   tucan: { labelKey: "pets.tucan", color: "bg-pet-15", emoji: "🐦", feed: ["🥭"] },
+  liza: { labelKey: "pets.liza", color: "bg-pet-1", emoji: "👧", feed: ["💧"] },
+  nastya: { labelKey: "pets.nastya", color: "bg-pet-2", emoji: "👧", feed: ["💧"] },
+  ksyusha: { labelKey: "pets.ksyusha", color: "bg-pet-3", emoji: "👧", feed: ["💧"] },
+  marina: { labelKey: "pets.marina", color: "bg-pet-4", emoji: "👩", feed: ["💧"] },
+  alisa: { labelKey: "pets.alisa", color: "bg-pet-5", emoji: "👩", feed: ["💧"] },
+  sofya: { labelKey: "pets.sofya", color: "bg-pet-6", emoji: "👩", feed: ["💧"] },
+  vera: { labelKey: "pets.vera", color: "bg-pet-7", emoji: "👩", feed: ["💧"] },
+  nika: { labelKey: "pets.nika", color: "bg-pet-8", emoji: "👩", feed: ["💧"] },
+  mila: { labelKey: "pets.mila", color: "bg-pet-9", emoji: "👩", feed: ["💧"] },
+  lev: { labelKey: "pets.lev", color: "bg-pet-10", emoji: "👨", feed: ["💧"] },
+  mark: { labelKey: "pets.mark", color: "bg-pet-11", emoji: "👨", feed: ["💧"] },
+  timur: { labelKey: "pets.timur", color: "bg-pet-12", emoji: "👨", feed: ["💧"] },
 };
 
 // Папка питомца (русское имя) → латинский тип. Папки без записи
@@ -65,8 +89,19 @@ const FOLDER_TO_TYPE: Record<string, string> = {
   Корова: "cow",
   Робот: "robot",
   Робот2: "robot2",
-  Салат: "salad",
   Тукан: "tucan",
+  Девушка4: "liza",
+  Девушка5: "nastya",
+  Девушка6: "ksyusha",
+  Женщина7: "marina",
+  Женщина8: "alisa",
+  Женщина9: "sofya",
+  Женщина10: "vera",
+  Женщина11: "nika",
+  Женщина12: "mila",
+  Мужчина3: "lev",
+  Мужчина4: "mark",
+  Мужчина5: "timur",
 };
 
 const AUTO_COLORS = [

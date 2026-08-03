@@ -1,11 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Heart, TrendingUp, TrendingDown, Minus, ChevronDown } from "lucide-react";
+import { Heart, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
-import { Trend } from "../lib/constants";
 
 interface WellbeingCardProps {
   average: number | null;
-  trend: Trend;
   isLoading: boolean;
   expanded: boolean;
   onToggle: () => void;
@@ -14,7 +12,6 @@ interface WellbeingCardProps {
 
 export default function WellbeingCard({
   average,
-  trend,
   isLoading,
   expanded,
   onToggle,
@@ -30,13 +27,6 @@ export default function WellbeingCard({
           ? "text-primary-muted"
           : "text-primary-dim"
       : "text-muted-foreground";
-  const TrendIcon = trend === Trend.Up ? TrendingUp : trend === Trend.Down ? TrendingDown : Minus;
-  const trendColor =
-    trend === Trend.Up
-      ? "text-primary"
-      : trend === Trend.Down
-        ? "text-primary-dim"
-        : "text-muted-foreground";
 
   return (
     <Card className="shadow-neumorphic">
@@ -49,7 +39,10 @@ export default function WellbeingCard({
           className="flex items-center justify-between w-full gap-3 py-4 text-left cursor-pointer rounded-xl transition-[box-shadow,transform] duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <Heart aria-hidden="true" className="w-6 h-6 text-primary shrink-0" />
+            <Heart
+              aria-hidden="true"
+              className="w-6 h-6 text-primary shrink-0 animate-heart-beat"
+            />
             <span className="text-base font-medium text-foreground">
               {t("dashboard.wellbeing")}
             </span>
@@ -64,7 +57,6 @@ export default function WellbeingCard({
                 <span className={`text-5xl font-bold font-serif ${colorClass}`}>
                   {average !== null ? average.toFixed(1) : "—"}
                 </span>
-                <TrendIcon aria-hidden="true" className={`w-5 h-5 mb-2 ${trendColor}`} />
               </div>
             )}
             <ChevronDown

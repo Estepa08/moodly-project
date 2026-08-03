@@ -2,6 +2,7 @@
 .PHONY: test test-backend test-frontend test-watch test-coverage
 .PHONY: db-generate db-push db-seed db-setup db-reset db-backup db-restore db-studio admin prod clean
 .PHONY: db-prod-users db-prod-user-delete db-prod-studio db-prod-admin
+.PHONY: db-prod-ru-users db-prod-ru-user-delete db-prod-ru-studio db-prod-ru-admin db-prod-ru-create-user
 .PHONY: db-create-user db-prod-create-user
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
 .PHONY: start-feature
@@ -10,6 +11,7 @@
 
 install:
 	cd api-contract && npm install
+	cd shared && npm install
 	cd backend && npm install
 	cd frontend && npm install
 
@@ -17,6 +19,7 @@ setup: install generate db-setup
 
 generate:
 	cd api-contract && npm run build
+	cd shared && npm run build
 	cd frontend && npm run generate:api
 
 # ─── Development ────────────────────────────────────────
@@ -80,16 +83,21 @@ db-seed:
 
 db-setup: db-generate db-push db-seed
 
-# Prisma Studio: «make admin dev» — dev-БД; «make admin prod» — прод-БД (backend/.env.prod).
-# Заглушки dev/prod нужны, чтобы make не выполнял их как отдельные таргеты при вызове admin.
+# Prisma Studio: «make admin dev» — dev-БД; «make admin prod» — прод-БД (backend/.env.prod);
+# «make admin prod ru» — RU-прод (backend/.env.prod.ru.local).
+# Заглушки dev/prod/ru нужны, чтобы make не выполнял их как отдельные таргеты при вызове admin.
 admin:
 	@case "$(filter-out $@,$(MAKECMDGOALS))" in \
 	  dev) cd backend && npx prisma studio ;; \
+	  *ru*) cd backend && set -a && . ./.env.prod.ru.local && set +a && npx prisma studio ;; \
 	  prod) cd backend && set -a && . ./.env.prod && set +a && npx prisma studio ;; \
-	  *) echo "Usage: make admin dev|prod"; exit 1 ;; \
+	  *) echo "Usage: make admin dev|prod|prod ru"; exit 1 ;; \
 	esac
 
 prod:
+	@:
+
+ru:
 	@:
 
 db-studio:
@@ -125,6 +133,25 @@ db-create-user:
 
 db-prod-create-user:
 	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-create-user.ts $(ARGS)
+
+# RU-прод (Docker Host + Amvera). DATABASE_URL берётся из backend/.env.prod.ru.local.
+# Пример: make db-prod-ru-users
+# Пример: make db-prod-ru-create-user ARGS="--email=user@example.com --password=<пароль> --admin"
+
+db-prod-ru-users:
+	cd backend && node --env-file=.env.prod.ru.local --import tsx src/scripts/db-prod-users.ts
+
+db-prod-ru-user-delete:
+	cd backend && node --env-file=.env.prod.ru.local --import tsx src/scripts/db-prod-user-delete.ts $(ARGS)
+
+db-prod-ru-studio:
+	cd backend && set -a && . ./.env.prod.ru.local && set +a && npx prisma studio
+
+db-prod-ru-admin:
+	cd backend && node --env-file=.env.prod.ru.local --import tsx src/scripts/db-prod-admin.ts $(ARGS)
+
+db-prod-ru-create-user:
+	cd backend && node --env-file=.env.prod.ru.local --import tsx src/scripts/db-create-user.ts $(ARGS)
 
 # Резервное копирование и восстановление прод-БД через стандартные утилиты
 # Postgres — одинаково работают для Render, Neon, Supabase и т.д.

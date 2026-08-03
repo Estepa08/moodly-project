@@ -18,7 +18,7 @@ export default function CbaWeightSlider({ prosWeight, onChange }: CbaWeightSlide
       </div>
       <ProgressBar
         segments={[
-          { value: prosWeight, className: "bg-accent" },
+          { value: prosWeight, className: "bg-success" },
           { value: 100 - prosWeight, className: "bg-destructive" },
         ]}
         className="h-2"

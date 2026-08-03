@@ -6,21 +6,65 @@ import { Button } from "../../components/ui/button";
 import { IconButton } from "../../components/ui/icon-button";
 import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
-import { ChecklistItem } from "../../components/ui/checklist-item";
-import { ComponentSize } from "../../lib/constants";
-import { cn } from "../../lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import CbaWeightSlider from "./CbaWeightSlider";
+import SuggestCombobox from "./SuggestCombobox";
 import type { useCreateCbaEntry } from "./useCba";
-import type { CbaCommonItem } from "./cba.types";
+import type { CbaCommonItem, CbaItemCategory } from "./cba.types";
 
 interface CbaEntryFormProps {
   commonItems: CbaCommonItem[];
   createEntry: ReturnType<typeof useCreateCbaEntry>;
 }
 
-function ItemChecklist({
+const CATEGORIES: CbaItemCategory[] = [
+  "anxiety",
+  "self-esteem",
+  "relationships",
+  "work",
+  "health",
+  "habit",
+];
+
+function CategoryPicker({
+  value,
+  onChange,
+}: {
+  value: CbaItemCategory;
+  onChange: (c: CbaItemCategory) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-1.5">
+      <span className="text-xs font-medium text-muted-foreground">{t("cba.categoryLabel")}</span>
+      <Select value={value} onValueChange={(v) => onChange(v as CbaItemCategory)}>
+        <SelectTrigger>
+          <SelectValue placeholder={t("cba.categoryPlaceholder")} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {CATEGORIES.map((c) => (
+              <SelectItem key={c} value={c}>
+                {t(`cba.categories.${c}`)}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function ItemSuggest({
   title,
-  common,
+  options,
   checked,
   onToggle,
   custom,
@@ -29,7 +73,7 @@ function ItemChecklist({
   accentClassName,
 }: {
   title: string;
-  common: CbaCommonItem[];
+  options: CbaCommonItem[];
   checked: Set<string>;
   onToggle: (id: string) => void;
   custom: string[];
@@ -49,18 +93,20 @@ function ItemChecklist({
 
   return (
     <div className="space-y-2">
-      <p className={cn("text-xs font-medium", accentClassName)}>{title}</p>
-      <div className="space-y-1.5">
-        {common.map((item) => (
-          <ChecklistItem
-            key={item.id}
-            checked={checked.has(item.id)}
-            onToggle={() => onToggle(item.id)}
-            label={item.itemText}
-            size={ComponentSize.Sm}
-          />
-        ))}
-      </div>
+      <SuggestCombobox
+        label={title}
+        accentClassName={accentClassName}
+        options={options.map((o) => ({
+          id: o.id,
+          label: t(`cba.commonItems.${o.itemKey}`),
+        }))}
+        selected={Array.from(checked)}
+        onToggle={onToggle}
+        placeholder={t("cba.suggestionsPlaceholder")}
+        searchPlaceholder={t("cba.suggestionsSearch")}
+        emptyText={t("cba.suggestionsEmpty")}
+        selectedCountLabel="cba.selectedCount"
+      />
 
       {custom.length > 0 && (
         <ul className="space-y-1.5">
@@ -111,14 +157,16 @@ function ItemChecklist({
 export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormProps) {
   const { t } = useTranslation();
   const [thoughtText, setThoughtText] = useState("");
+  const [category, setCategory] = useState<CbaItemCategory>("anxiety");
   const [checkedAdvantages, setCheckedAdvantages] = useState<Set<string>>(new Set());
   const [checkedDisadvantages, setCheckedDisadvantages] = useState<Set<string>>(new Set());
   const [customAdvantages, setCustomAdvantages] = useState<string[]>([]);
   const [customDisadvantages, setCustomDisadvantages] = useState<string[]>([]);
   const [prosWeight, setProsWeight] = useState(50);
 
-  const advantageBank = commonItems.filter((i) => i.itemType === "advantage");
-  const disadvantageBank = commonItems.filter((i) => i.itemType === "disadvantage");
+  const categoryItems = commonItems.filter((i) => i.category === category);
+  const advantageBank = categoryItems.filter((i) => i.itemType === "advantage");
+  const disadvantageBank = categoryItems.filter((i) => i.itemType === "disadvantage");
 
   const toggle = (set: Set<string>, setter: (s: Set<string>) => void, id: string) => {
     const next = new Set(set);
@@ -127,12 +175,15 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
     setter(next);
   };
 
+  const checkedItemsText = (bank: CbaCommonItem[], checked: Set<string>): string[] =>
+    bank.filter((i) => checked.has(i.id)).map((i) => t(`cba.commonItems.${i.itemKey}`));
+
   const advantageItems = [
-    ...advantageBank.filter((i) => checkedAdvantages.has(i.id)).map((i) => i.itemText),
+    ...checkedItemsText(advantageBank, checkedAdvantages),
     ...customAdvantages,
   ];
   const disadvantageItems = [
-    ...disadvantageBank.filter((i) => checkedDisadvantages.has(i.id)).map((i) => i.itemText),
+    ...checkedItemsText(disadvantageBank, checkedDisadvantages),
     ...customDisadvantages,
   ];
 
@@ -158,6 +209,7 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
           setCheckedDisadvantages(new Set());
           setCustomAdvantages([]);
           setCustomDisadvantages([]);
+          setCategory("anxiety");
           setProsWeight(50);
         },
       },
@@ -182,10 +234,12 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
           />
         </div>
 
+        <CategoryPicker value={category} onChange={setCategory} />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <ItemChecklist
+          <ItemSuggest
             title={t("cba.pros")}
-            common={advantageBank}
+            options={advantageBank}
             checked={checkedAdvantages}
             onToggle={(id) => toggle(checkedAdvantages, setCheckedAdvantages, id)}
             custom={customAdvantages}
@@ -193,11 +247,11 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
             onRemoveCustom={(i) =>
               setCustomAdvantages((prev) => prev.filter((_, idx) => idx !== i))
             }
-            accentClassName="text-accent"
+            accentClassName="text-success"
           />
-          <ItemChecklist
+          <ItemSuggest
             title={t("cba.cons")}
-            common={disadvantageBank}
+            options={disadvantageBank}
             checked={checkedDisadvantages}
             onToggle={(id) => toggle(checkedDisadvantages, setCheckedDisadvantages, id)}
             custom={customDisadvantages}

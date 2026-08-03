@@ -4,7 +4,9 @@ import { cn } from "../../lib/utils";
 
 interface CollapsibleSectionProps {
   title: string;
+  subtitle?: string;
   icon?: LucideIcon;
+  iconClassName?: string;
   defaultOpen?: boolean;
   storageKey?: string;
   children: ReactNode;
@@ -13,7 +15,9 @@ interface CollapsibleSectionProps {
 
 export default function CollapsibleSection({
   title,
+  subtitle,
   icon: Icon,
+  iconClassName,
   defaultOpen = true,
   storageKey,
   children,
@@ -53,19 +57,39 @@ export default function CollapsibleSection({
         onClick={toggle}
         aria-expanded={open}
         aria-controls={id}
-        className="flex items-center gap-2 w-full py-2 rounded-lg transition-[color,opacity,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+        className="group flex items-center gap-3 w-full p-3 rounded-xl bg-card shadow-neumorphic-sm transition-[box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
       >
-        {Icon && <Icon aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0" />}
-        <span className="text-sm font-semibold text-foreground font-serif flex-1 text-left">
-          {title}
-        </span>
-        <ChevronDown
-          aria-hidden="true"
-          className={cn(
-            "w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0",
-            open && "rotate-180",
+        {Icon && (
+          <span
+            className={cn(
+              "w-9 h-9 rounded-xl shrink-0 flex items-center justify-center bg-accent/10 text-accent transition-colors duration-200",
+              iconClassName,
+            )}
+          >
+            <Icon aria-hidden="true" className="w-4 h-4" />
+          </span>
+        )}
+        <span className="flex-1 min-w-0 text-left">
+          <span className="block text-sm font-semibold text-foreground font-serif leading-tight">
+            {title}
+          </span>
+          {subtitle && (
+            <span className="block text-[11px] text-muted-foreground leading-tight mt-0.5">
+              {subtitle}
+            </span>
           )}
-        />
+        </span>
+        <span
+          className={cn(
+            "w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-muted/60 text-muted-foreground transition-[background-color,transform] duration-200",
+            open && "bg-accent/10 text-accent",
+          )}
+        >
+          <ChevronDown
+            aria-hidden="true"
+            className={cn("w-4 h-4 transition-transform duration-200", open && "rotate-180")}
+          />
+        </span>
       </button>
       <div
         id={id}
@@ -74,7 +98,7 @@ export default function CollapsibleSection({
           open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
-        <div className="pt-1">{children}</div>
+        <div className="px-0.5 pt-2">{children}</div>
       </div>
     </div>
   );

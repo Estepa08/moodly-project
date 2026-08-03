@@ -3,14 +3,15 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useRewardPractice, PracticeSource, useCreatureState } from "../features/gamification";
 import { useParameters } from "../hooks/useParameters";
-import { useEntries, useCreateEntry } from "../hooks/useEntries";
+import { useEntries, useCreateEntry, useDeleteEntry } from "../hooks/useEntries";
 import { RatingScaleSelector } from "../features/mood-entry";
 import { RATING_LEVELS, levelForValue } from "../lib/ratingLevels";
 import { ParameterName } from "../lib/constants";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Flame, ClipboardList, ChevronDown, ChevronUp } from "lucide-react";
+import { IconButton } from "../components/ui/icon-button";
+import { Flame, ClipboardList, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import EmptyState from "../components/ui/empty-state";
 import { LoadingCard } from "../components/ui/loading-card";
 
@@ -50,6 +51,8 @@ export default function ThoughtJournalPage() {
       },
     });
   });
+
+  const deleteEntry = useDeleteEntry();
 
   const buildNote = () => {
     const parts: string[] = [];
@@ -240,6 +243,16 @@ export default function ThoughtJournalPage() {
                         </p>
                       )}
                     </div>
+                    <IconButton
+                      variant="ghost"
+                      size="icon-sm"
+                      label={t("thoughtJournal.deleteEntry")}
+                      onClick={() => deleteEntry.mutate(e.id)}
+                      disabled={deleteEntry.isPending}
+                      className="text-muted-foreground shrink-0 hover:text-destructive"
+                    >
+                      <Trash2 aria-hidden="true" className="w-4 h-4" />
+                    </IconButton>
                   </div>
                 );
               })}

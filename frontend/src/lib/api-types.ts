@@ -688,6 +688,8 @@ export interface components {
             id: string;
             itemType: components["schemas"]["CbaItemType"];
             itemText: string;
+            category: components["schemas"]["CbaItemCategory"];
+            itemKey: string;
         };
         /** @description Запись пользователя в технике "анализ издержек и выгод": мысль + плюсы/минусы + соотношение (в сумме 100) */
         CbaEntry: {
@@ -744,6 +746,11 @@ export interface components {
             itemType: components["schemas"]["CbaItemType"];
             itemText: string;
         };
+        /**
+         * @description Тема автоматической мысли, к которой относится подсказка
+         * @enum {string}
+         */
+        CbaItemCategory: "anxiety" | "self-esteem" | "relationships" | "work" | "health" | "habit";
         /**
          * @description Тип пункта: довод "за" веру в мысль (advantage) или "против" (disadvantage)
          * @enum {string}

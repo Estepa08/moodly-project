@@ -37,7 +37,22 @@
     "terms": "Terms of Service",
     "admin": "Admin",
     "main": "Main navigation",
-    "profile": "Profile"
+    "profile": "Profile",
+    "short": {
+      "dashboard": "Statistics",
+      "practices": "Practices",
+      "thoughtJournal": "Journal",
+      "gratitude": "Gratitude",
+      "distortions": "Distortions",
+      "sleepHygiene": "Sleep",
+      "cba": "CBA",
+      "breathing": "Breathing",
+      "progress": "Progress",
+      "tests": "Tests",
+      "settings": "Settings",
+      "admin": "Admin",
+      "profile": "Profile"
+    }
   },
   "login": {
     "title": "Moodly",
@@ -485,7 +500,72 @@
     "save": "Save entry",
     "saveError": "Failed to save the entry",
     "historyEmpty": "No saved entries yet.",
-    "deleteEntry": "Delete entry"
+    "deleteEntry": "Delete entry",
+    "categoryLabel": "What is your thought about?",
+    "categoryPlaceholder": "Choose a theme",
+    "suggestionsLabel": "Suggestions for this theme",
+    "suggestionsPlaceholder": "Pick suggestions…",
+    "suggestionsSearch": "Search suggestions…",
+    "suggestionsEmpty": "Nothing found",
+    "selectedCount": "Selected: {{count}}",
+    "categories": {
+      "anxiety": "Anxiety",
+      "self-esteem": "Self-esteem",
+      "relationships": "Relationships",
+      "work": "Work",
+      "health": "Health",
+      "habit": "Habits"
+    },
+    "commonItems": {
+      "anxiety": {
+        "avoidEmbarrassment": "Avoid embarrassment/moment of awkwardness",
+        "safer": "Feel safer",
+        "avoidUncertainty": "Don't have to face uncertainty",
+        "postpone": "Can put off dealing with the problem",
+        "loseOpportunities": "I lose time/opportunities",
+        "growsAvoidance": "The anxiety grows with avoidance",
+        "noRealityCheck": "Never check whether it's actually true",
+        "worseLongTerm": "Feel worse in the long run"
+      },
+      "self-esteem": {
+        "selfCritiqueMotivates": "Feels like self-criticism motivates me",
+        "noRiskMistake": "Don't risk making a mistake and hearing criticism",
+        "lowerConfidence": "Lowers my self-confidence",
+        "guiltDrains": "Guilt drains me rather than motivates",
+        "ignoreStrengths": "I overlook my strengths",
+        "unreachableIdeal": "I compare myself to an unattainable ideal"
+      },
+      "relationships": {
+        "avoidConflict": "Avoid the conflict for now",
+        "appearCalm": "Keep up the appearance of calm",
+        "problemGrows": "The problem doesn't get solved and builds up",
+        "hurtsClose": "It damages close relationships",
+        "hiddenTension": "The tension is still there, just hidden",
+        "othersDecide": "Others decide for me, not the way I need"
+      },
+      "work": {
+        "goAllIn": "It pushes me to give my all",
+        "bePrepared": "Better prepared than relaxed",
+        "energyOnWorry": "I spend energy on worry instead of work",
+        "noChancePrepare": "I never give myself a chance to prepare",
+        "oneMistake": "One mistake doesn't make it a failure",
+        "stopsProgress": "It keeps me from moving toward my goal"
+      },
+      "health": {
+        "instantRelief": "Instant relief from worry",
+        "bodyScanning": "Constantly scanning my body raises my anxiety",
+        "skipDoctor": "I put off an actual doctor's visit",
+        "catastrophize": "I catastrophize ordinary sensations",
+        "blocksNormalLife": "The belief stops me from living normally"
+      },
+      "habit": {
+        "noChange": "I don't have to change anything right now",
+        "comfort": "Habitual behavior feels safe",
+        "giveUpHabit": "I'm building the habit of giving up at the first twinge of worry",
+        "lostTime": "I lose time that could go toward getting better",
+        "harderLater": "The longer it goes, the harder change becomes"
+      }
+    }
   },
   "practices": {
     "subtitle": "Pick a practice that feels right for you",
@@ -523,6 +603,7 @@
     "historyTitle": "History",
     "noEntries": "No entries yet. Your first entry will appear here.",
     "noNote": "No text",
+    "deleteEntry": "Delete entry",
     "chartTitle": "Mood Trend",
     "emptyChart": "Check in a few times to see your mood trend",
     "showAll": "Show all ({{count}})",
@@ -533,31 +614,31 @@
   "rating": {
     "mood": {
       "0": "Awful",
-      "25": "Bad",
       "5": "Okay",
-      "75": "Good",
-      "10": "Great"
+      "10": "Great",
+      "25": "Bad",
+      "75": "Good"
     },
     "sleep": {
       "0": "No sleep",
-      "25": "Poor sleep",
       "5": "Okay",
-      "75": "Good",
-      "10": "Rested"
+      "10": "Rested",
+      "25": "Poor sleep",
+      "75": "Good"
     },
     "energy": {
       "0": "Drained",
-      "25": "Low",
       "5": "Okay",
-      "75": "Energetic",
-      "10": "Charged"
+      "10": "Charged",
+      "25": "Low",
+      "75": "Energetic"
     },
     "anxiety": {
       "0": "Calm",
-      "25": "Mild",
       "5": "Moderate",
-      "75": "High",
-      "10": "Panic"
+      "10": "Panic",
+      "25": "Mild",
+      "75": "High"
     }
   },
   "sleepHygiene": {
@@ -806,7 +887,67 @@
     "feed200": "Generous Friend",
     "feed200Desc": "Feed your pet 200 times",
     "feed1000": "Best Owner",
-    "feed1000Desc": "Feed your pet 1000 times"
+    "feed1000Desc": "Feed your pet 1000 times",
+    "streak25": "A Quarter of the Way",
+    "streak25Desc": "Reach a 25-day streak",
+    "xp5000": "XP Benchmark",
+    "xp5000Desc": "Earn 5000 XP",
+    "breathing500": "Nowhere Deeper",
+    "breathing500Desc": "Complete 500 breathing exercises",
+    "completions500": "Practice Maestro",
+    "completions500Desc": "Complete 500 practices",
+    "mysteryOwl": "Midnight Guest",
+    "mysteryOwlDesc": "There is a path that begins after midnight…",
+    "mysteryCaretaker": "Quiet Care",
+    "mysteryCaretakerDesc": "Something asks for affection more often than it seems…",
+    "mysteryMystic": "Whisper of the Edge",
+    "mysteryMysticDesc": "Only those unafraid of limits can see boundaries…",
+    "mysteryLucid": "The Perfect Circle",
+    "mysteryLucidDesc": "The circle closes only for the persistent…",
+    "level60": "Colossus",
+    "level60Desc": "Reach level 60",
+    "streak100": "Iron Resolve",
+    "streak100Desc": "Maintain a 100-day streak",
+    "xp10000": "XP Peak",
+    "xp10000Desc": "Earn 10000 total XP",
+    "breathing1000": "Inner Cosmos",
+    "breathing1000Desc": "Complete 1000 breathing exercises",
+    "completions1000": "Creator",
+    "completions1000Desc": "Complete 1000 practices",
+    "moodKeeper": "Mirror of the Soul",
+    "moodKeeperDesc": "Log your mood 365 times",
+    "sunbeam": "Ray of Light",
+    "sunbeamDesc": "Complete 30 gratitude practices",
+    "soulScribe": "Quill of Fate",
+    "soulScribeDesc": "Keep a thought journal 50 times",
+    "knowThyself": "Know Thyself",
+    "knowThyselfDesc": "Complete 20 psychological tests",
+    "mysteryStargazer": "Whisper of Stars",
+    "mysteryStargazerDesc": "Some things can only be done under the stars…",
+    "meditation5": "First Breath",
+    "meditation5Desc": "Complete 5 breathing practices",
+    "meditation10": "Ten Minutes of Silence",
+    "meditation10Desc": "Complete 10 breathing practices",
+    "meditation20": "Breathing Rhythm",
+    "meditation20Desc": "Complete 20 breathing practices",
+    "meditation30": "Thirty Breaths",
+    "meditation30Desc": "Complete 30 breathing practices",
+    "meditation50": "Fifty Calm Moments",
+    "meditation50Desc": "Complete 50 breathing practices",
+    "meditation75": "Deep Breathing",
+    "meditation75Desc": "Complete 75 breathing practices",
+    "meditation100": "A Hundred Calm Moments",
+    "meditation100Desc": "Complete 100 breathing practices",
+    "meditation150": "Hundred and Fifty Breaths",
+    "meditation150Desc": "Complete 150 breathing practices",
+    "meditation200": "Two Hundred Calms",
+    "meditation200Desc": "Complete 200 breathing practices",
+    "meditation300": "Three Hundred Breaths",
+    "meditation300Desc": "Complete 300 breathing practices",
+    "meditation500": "Five Hundred Calms",
+    "meditation500Desc": "Complete 500 breathing practices",
+    "meditation1000": "Breathing Master",
+    "meditation1000Desc": "Complete 1000 breathing practices"
   },
   "progress": {
     "xpToNext": "{{current}} / {{next}} XP",
@@ -853,7 +994,33 @@
     "titlePersistent": "Persistent",
     "titleLegend": "Legend",
     "less": "Less",
-    "more": "More"
+    "more": "More",
+    "statsSubtitle": "Key metrics and streak",
+    "missionsSubtitle": "Tasks for today",
+    "petsSubtitle": "Your collection and rewards",
+    "achievementsSubtitle": "Milestones and secrets",
+    "activitySubtitle": "Activity by day",
+    "titlesSubtitle": "Choose your active title",
+    "mysteryHint": "???",
+    "titleMentor": "Mentor",
+    "titleChronicle": "Chronicler",
+    "titleTrailblazer": "Trailblazer",
+    "titleZenmonk": "Zen Monk",
+    "titleNightOwl": "Night Owl",
+    "titleCaretaker": "Caring Guardian",
+    "titleMystic": "Mystic",
+    "titleLucid": "Clear Mind",
+    "titleTitan": "Titan",
+    "titleIronWill": "Iron Will",
+    "titleLuminary": "Enlightened",
+    "titleBreathGuru": "Breath Guru",
+    "titleHabitArchitect": "Habit Architect",
+    "titleMoodKeeper": "Keeper of Emotions",
+    "titleSunbeam": "Sunbeam",
+    "titleSoulScribe": "Chronicler of Thoughts",
+    "titleKnowThyself": "Know Thyself",
+    "titleStargazer": "Stargazer",
+    "showAllAchievements": "Show all achievements ({{count}})"
   },
   "missions": {
     "checkin": "Check in today",
@@ -890,8 +1057,21 @@
     "robot2": "Robot 2",
     "salad": "Salad",
     "tucan": "Toucan",
+    "liza": "Liza",
+    "nastya": "Nastya",
+    "ksyusha": "Ksyusha",
+    "marina": "Marina",
+    "alisa": "Alisa",
+    "sofya": "Sofiya",
+    "vera": "Vera",
+    "nika": "Nika",
+    "mila": "Mila",
+    "lev": "Lev",
+    "mark": "Mark",
+    "timur": "Timur",
     "active": "Active",
-    "fedCount": "×{{count}}"
+    "fedCount": "×{{count}}",
+    "showAll": "Show all ({{count}})"
   },
   "companion": {
     "level": "Level {{level}}",
@@ -950,5 +1130,14 @@
     "feedbackTab": "Reviews",
     "noFeedback": "No reviews yet",
     "feedbackLoadFailed": "Failed to load reviews"
+  },
+  "sync": {
+    "status": {
+      "idle": "Synced",
+      "syncing": "Syncing...",
+      "offline": "Offline — will sync when back online",
+      "error": "Sync error — tap to retry"
+    },
+    "pending": "{{count}} operations queued"
   }
 }

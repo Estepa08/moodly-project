@@ -1,32 +1,22 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../lib/errors.js";
-import { EXP_PER_LEVEL, MS_PER_DAY } from "../lib/constants.js";
 import { achievementsService } from "./achievements.js";
-const CHECKIN_EXP = 20;
-const EXERCISE_EXP = 10;
-const MAX_ENERGY = 100;
-const MOOD_ENTRY_XP = 5;
-const MOOD_ENTRY_DAILY_LIMIT = 3;
-const MOOD_PARAM_NAME = "Mood";
-const FEED_XP = 1;
-const FEED_XP_DAILY_LIMIT = 50;
-
-const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
-
-const EVOLUTION_STAGES = [
-  { key: "baby", minLevel: 1 },
-  { key: "kid", minLevel: 5 },
-  { key: "adult", minLevel: 10 },
-  { key: "max", minLevel: 20 },
-];
-
-function stageForLevel(level: number): string {
-  let stage = EVOLUTION_STAGES[0].key;
-  for (const s of EVOLUTION_STAGES) {
-    if (level >= s.minLevel) stage = s.key;
-  }
-  return stage;
-}
+import {
+  applyLevelUp,
+  stageForLevel,
+  selectDailyMissions,
+  PRACTICE_XP,
+  CHECKIN_EXP,
+  EXERCISE_EXP,
+  MAX_ENERGY,
+  MOOD_ENTRY_XP,
+  MOOD_ENTRY_DAILY_LIMIT,
+  MOOD_PARAM_NAME,
+  FEED_XP,
+  FEED_XP_DAILY_LIMIT,
+  STARTER_PET_TYPES,
+  MS_PER_DAY,
+} from "@moodly/shared";
 
 async function computePetMood(userId: string, calmness: number): Promise<string> {
   const since = new Date();
@@ -47,45 +37,6 @@ async function computePetMood(userId: string, calmness: number): Promise<string>
   if (avg >= 7) return "happy";
   if (avg >= 5) return calmness >= 70 ? "happy" : "calm";
   return "support";
-}
-
-const PRACTICE_XP: Record<string, number> = {
-  breathing: 10,
-  gratitude: 5,
-  sleepHygiene: 5,
-  distortions: 10,
-  cba: 10,
-  thoughtJournal: 5,
-};
-
-const MISSION_DEFINITIONS = [
-  { key: "checkin", labelKey: "missions.checkin", xpReward: 10 },
-  { key: "practice_breathing", labelKey: "missions.practiceBreathing", xpReward: 10 },
-  { key: "practice_gratitude", labelKey: "missions.practiceGratitude", xpReward: 10 },
-  { key: "practice_sleepHygiene", labelKey: "missions.practiceSleepHygiene", xpReward: 10 },
-  { key: "practice_distortions", labelKey: "missions.practiceDistortions", xpReward: 10 },
-  { key: "practice_cba", labelKey: "missions.practiceCba", xpReward: 10 },
-  { key: "practice_thoughtJournal", labelKey: "missions.practiceThoughtJournal", xpReward: 10 },
-  { key: "complete_3_practices", labelKey: "missions.complete3Practices", xpReward: 15 },
-  { key: "log_mood_entry", labelKey: "missions.logMoodEntry", xpReward: 5 },
-  { key: "complete_test", labelKey: "missions.completeTest", xpReward: 15 },
-  { key: "log_3_mood_entries", labelKey: "missions.log3MoodEntries", xpReward: 10 },
-  { key: "complete_5_practices", labelKey: "missions.complete5Practices", xpReward: 20 },
-  { key: "breathing_2", labelKey: "missions.breathing2", xpReward: 10 },
-  { key: "streak_2", labelKey: "missions.streak2", xpReward: 10 },
-];
-
-function applyLevelUp(state: { level: number; experience: number }, xpGain: number) {
-  let { level, experience } = state;
-  experience += xpGain;
-  let leveledUp = false;
-  const nextLevelExp = level * EXP_PER_LEVEL;
-  if (experience >= nextLevelExp) {
-    experience -= nextLevelExp;
-    level += 1;
-    leveledUp = true;
-  }
-  return { experience, level, leveledUp };
 }
 
 export const creatureService = {
@@ -252,19 +203,18 @@ export const creatureService = {
       return this._evaluateMissions(userId, existingMissions);
     }
 
-    const shuffled = [...MISSION_DEFINITIONS].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, 3);
+    const selected = selectDailyMissions(userId, today, 3);
 
     const created = await Promise.all(
-      selected.map((m, i) =>
+      selected.map((m) =>
         prisma.dailyMission.create({
           data: {
             userId,
             date: today,
-            missionKey: m.key,
+            missionKey: m.missionKey,
             labelKey: m.labelKey,
             xpReward: m.xpReward,
-            sortOrder: i,
+            sortOrder: m.sortOrder,
           },
         }),
       ),
