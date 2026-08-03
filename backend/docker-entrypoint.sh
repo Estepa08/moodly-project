@@ -1,6 +1,13 @@
 #!/bin/sh
 
 echo "Waiting for database connection..."
+node -e "
+const { PrismaClient } = require('@prisma/client');
+const p = new PrismaClient();
+p.\$connect()
+  .then(() => { console.log('DB connection: OK'); process.exit(0); })
+  .catch((e) => { console.error('DB connection: FAIL -', e.message); process.exit(1); });
+"
 MAX_RETRIES=30
 RETRY_COUNT=0
 # Migrations go through DATABASE_URL (direct connection, no pooler currently).
