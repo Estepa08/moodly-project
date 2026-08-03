@@ -8,7 +8,7 @@ RETRY_COUNT=0
 # and `prisma migrate deploy` will use DIRECT_URL to bypass the pooler.
 # `prisma migrate deploy` applies only unapplied migrations,
 # so it is safe to retry on connection failures.
-until npx prisma migrate deploy 2>/dev/null || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
+until npx prisma migrate deploy || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
   RETRY_COUNT=$((RETRY_COUNT + 1))
   echo "Attempt $RETRY_COUNT/$MAX_RETRIES: database not ready, retrying in 2s..."
   sleep 2
