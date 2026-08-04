@@ -1,9 +1,14 @@
 /// <reference lib="webworker" />
-import { precacheAndRoute } from "workbox-precaching";
+import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
+import { NavigationRoute, registerRoute } from "workbox-routing";
 
 declare const self: ServiceWorkerGlobalScope;
 
 precacheAndRoute(self.__WB_MANIFEST);
+
+// SPA-navigation: любой переход (в т.ч. офлайн deep-link при чистом кэше)
+// отдаём из precache index.html, чтобы маршруты React открывались всегда.
+registerRoute(new NavigationRoute(createHandlerBoundToURL("/index.html")));
 
 self.addEventListener("push", (event) => {
   let data: { title: string; body: string; url?: string } = { title: "Moodly", body: "" };

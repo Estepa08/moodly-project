@@ -11,7 +11,7 @@ export default defineConfig({
       srcDir: "src",
       filename: "sw.ts",
       strategies: "injectManifest",
-      includeAssets: ["icons/*.svg"],
+      includeAssets: ["icons/*.svg", "icons/*.png"],
       manifest: {
         name: "Moodly — дневник настроения",
         short_name: "Moodly",
@@ -35,6 +35,12 @@ export default defineConfig({
             sizes: "512x512",
             type: "image/svg+xml",
             purpose: "any maskable",
+          },
+          {
+            src: "/icons/icon-180.png",
+            sizes: "180x180",
+            type: "image/png",
+            purpose: "any",
           },
         ],
         categories: ["health", "lifestyle", "productivity"],
