@@ -1,18 +1,34 @@
+# --- Глобальные настройки (опционально) ---
+{
+    # Включаем автоматическое получение SSL сертификатов
+    auto_https off
+}
+
+# --- Настройка для ваших доменов ---
 mymoodly.ru, mymoodly.online {
+    # Указываем папку, откуда Caddy будет раздавать статику
     root * /srv
     encode gzip
 
+    # 1. Обработка запросов к API (прокси на бэкенд)
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy {$BACKEND_UPSTREAM} {
+        # Проксируем на ваш бэкенд, который слушает порт 3001 внутри контейнера
+        reverse_proxy localhost:3001 {
+            # Проверяем, что бэкенд жив, чтобы не было 502 ошибок
             health_uri /health
             health_interval 5s
             health_timeout 2s
         }
     }
 
+    # 2. Обработка всех остальных запросов (SPA-маршрутизация)
+    # Этот блок срабатывает, если запрос не начался с /api/
     handle {
+        # Пытаемся найти файл. Если не найден - отдаём index.html
+        # Это нужно для SPA, чтобы React/Vue обрабатывали маршруты сами
         try_files {path} /index.html
+        # Раздаём файлы из корня /srv
         file_server
     }
 }
