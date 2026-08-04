@@ -134,7 +134,7 @@ db-create-user:
 db-prod-create-user:
 	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-create-user.ts $(ARGS)
 
-# RU-прод (Docker Host + Amvera). DATABASE_URL берётся из backend/.env.prod.ru.local.
+# RU-прод (Docker Host — my.dockhost.ru). DATABASE_URL берётся из backend/.env.prod.ru.local.
 # Пример: make db-prod-ru-users
 # Пример: make db-prod-ru-create-user ARGS="--email=user@example.com --password=<пароль> --admin"
 

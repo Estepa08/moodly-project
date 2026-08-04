@@ -13,5 +13,11 @@ coverage/
 backups/
 CLAUDE.md
 docs/
+infra/certs/*.key
+infra/certs/*.pem
+infra/certs/*.crt
+infra/certs/*.cer
+infra/certs/*.bak
+!infra/certs/README.md
 e2e/test-results/
 e2e/playwright-report/
