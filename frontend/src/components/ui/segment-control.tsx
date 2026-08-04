@@ -26,8 +26,10 @@ export function SegmentControl({
   );
 }
 
-interface SegmentControlItemProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onClick"> {
+interface SegmentControlItemProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "onClick"
+> {
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
