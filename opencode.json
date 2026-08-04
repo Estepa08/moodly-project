@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4-flash-free",
   "skills": {
     "moodly-ui-ux": {
       "description": "Moodly product UX principles — calmness, accessibility, non-judgmental tone for mood journal",

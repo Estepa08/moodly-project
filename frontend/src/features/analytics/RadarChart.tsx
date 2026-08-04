@@ -8,6 +8,7 @@ import {
   type RadarCustomLayerProps,
 } from "@nivo/radar";
 import { useTranslation } from "react-i18next";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { DistortionKey } from "../../lib/distortionsQuiz";
 
 export interface DistortionEntry {
@@ -29,6 +30,7 @@ const LIBRARY_PATH = "/practices/distortions";
 export default function RadarChart({ data, previousData, maxValue, className }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isNarrow = useMediaQuery("(max-width: 400px)");
 
   const labelledData = useMemo<RadarDatum[]>(
     () => data.map((d) => ({ ...d, label: t(`cognitiveDistortions.${d.key}`) })),
@@ -87,13 +89,13 @@ export default function RadarChart({ data, previousData, maxValue, className }: 
           <text
             textAnchor={anchor}
             dominantBaseline="central"
-            fontSize={11}
+            fontSize={isNarrow ? 10 : 11}
             fontWeight={600}
             className="fill-muted-foreground transition-colors duration-150 hover:fill-primary"
           >
             {label}
           </text>
-          {deltaLabel !== null && (
+          {deltaLabel !== null && !isNarrow && (
             <text
               y={13}
               textAnchor={anchor}
@@ -133,10 +135,10 @@ export default function RadarChart({ data, previousData, maxValue, className }: 
       <path
         d={path}
         fill="none"
-        stroke="hsl(var(--muted-foreground))"
-        strokeWidth={1.5}
+        stroke="hsl(var(--chart-tick))"
+        strokeWidth={2}
         strokeDasharray="5 4"
-        opacity={0.5}
+        opacity={0.75}
         aria-hidden="true"
       />
     );
@@ -149,29 +151,30 @@ export default function RadarChart({ data, previousData, maxValue, className }: 
         indexBy="label"
         keys={["score"]}
         maxValue={maxValue ?? 9}
-        margin={{ top: 50, right: 60, bottom: 30, left: 60 }}
+        margin={{ top: 44, right: isNarrow ? 40 : 60, bottom: 28, left: isNarrow ? 40 : 60 }}
         borderWidth={2}
-        borderColor={{ from: "color", modifiers: [["darker", 0.3]] }}
+        borderColor={{ from: "color" }}
         gridShape="circular"
         gridLabelOffset={12}
         gridLabel={GridLabel}
         layers={["grid", "layers", ComparisonLayer, "dots"]}
-        dotSize={6}
+        dotSize={8}
         dotColor={{ from: "color" }}
         dotBorderWidth={2}
-        dotBorderColor={{ from: "color", modifiers: [["darker", 0.3]] }}
+        dotBorderColor={{ from: "color" }}
         colors={["hsl(var(--primary))"]}
         fillOpacity={0.2}
-        blendMode="multiply"
         motionConfig="gentle"
         theme={{
           background: "transparent",
           text: {
             fill: "hsl(var(--muted-foreground))",
-            fontSize: 11,
+            fontSize: isNarrow ? 10 : 11,
             fontFamily: "Raleway, system-ui, sans-serif",
           },
-          grid: { line: { stroke: "hsl(var(--border))", strokeWidth: 1 } },
+          grid: {
+            line: { stroke: "hsl(var(--chart-grid))", strokeWidth: 1.5 },
+          },
           dots: { text: { fill: "hsl(var(--foreground))", fontSize: 10 } },
         }}
       />
