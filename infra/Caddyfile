@@ -11,11 +11,24 @@
     root * /srv
     encode gzip
 
+    # --- Общие security-заголовки (SPA + API) ---
+    header {
+        -Server
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        Cross-Origin-Opener-Policy same-origin
+        # HSTS игнорируется браузером на чистом HTTP, заработает после включения TLS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    }
+
     # 1. Обработка запросов к API (прокси на бэкенд)
     handle /api/* {
         uri strip_prefix /api
-        # Проксируем на ваш бэкенд, который слушает порт 3001 внутри контейнера
-        reverse_proxy localhost:3001 {
+        # Проксируем на бэкенд (IPv4, т.к. Fastify слушает 0.0.0.0:3001;
+        # localhost может резолвиться в ::1 и давать 503)
+        reverse_proxy 127.0.0.1:3001 {
             # Проверяем, что бэкенд жив, чтобы не было 502 ошибок
             health_uri /health
             health_interval 5s
@@ -25,6 +38,11 @@
 
     # 2. Обработка всех остальных запросов (SPA-маршрутизация)
     handle {
+        # CSP для SPA: Vite-бандл из 'self', инлайн-стили React/Tailwind,
+        # Google Fonts (fonts.googleapis.com / fonts.gstatic.com), data:/blob: картинки
+        header {
+            Content-Security-Policy "default-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+        }
         # Пытаемся найти файл. Если не найден - отдаём index.html
         # Это нужно для SPA, чтобы React/Vue обрабатывали маршруты сами
         try_files {path} /index.html
