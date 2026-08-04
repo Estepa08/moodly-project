@@ -281,3 +281,32 @@ describe("Creature feed", () => {
     expect(res.json().sourceBreakdown).toEqual({ gratitude: 1 });
   });
 });
+
+describe("Creature check-in — race safety", () => {
+  it("POST /creature/check-in — concurrent check-ins award only once", async () => {
+    const user = await registerAndLogin(app, "creature-checkin-race@example.com", "secret123", "Race");
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        app.inject({
+          method: "POST",
+          url: "/creature/check-in",
+          headers: { authorization: `Bearer ${user.token}` },
+        }),
+      ),
+    );
+
+    const ok = results.filter((r) => r.statusCode === 200);
+    const conflicted = results.filter((r) => r.statusCode === 409);
+    expect(ok.length).toBe(1);
+    expect(conflicted.length).toBe(4);
+
+    const completionCount = await prisma.practiceCompletion.count({
+      where: { userId: user.userId, source: "checkin" },
+    });
+    expect(completionCount).toBe(1);
+
+    const state = await prisma.creatureState.findUnique({ where: { userId: user.userId } });
+    expect(state?.streak).toBe(1);
+  });
+});

@@ -1,5 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { entryService } from "../services/entry.js";
+import { updateEntrySchema } from "../lib/validation.js";
+import { AppError } from "../lib/errors.js";
 
 interface EntryCreateBody {
   parameterId: string;
@@ -37,7 +39,12 @@ export default async function entryRoutes(fastify: FastifyInstance) {
     "/entries",
     { preHandler: [fastify.authenticate] },
     async (request) => {
-      return entryService.create({ userId: request.userId, ...request.body });
+      return entryService.create({
+        userId: request.userId,
+        parameterId: request.body.parameterId,
+        value: request.body.value,
+        note: request.body.note,
+      });
     },
   );
 
@@ -53,7 +60,11 @@ export default async function entryRoutes(fastify: FastifyInstance) {
     "/entries/:id",
     { preHandler: [fastify.authenticate] },
     async (request) => {
-      return entryService.update(request.params.id, request.userId, request.body);
+      const parsed = updateEntrySchema.safeParse(request.body);
+      if (!parsed.success) {
+        throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+      }
+      return entryService.update(request.params.id, request.userId, parsed.data);
     },
   );
 

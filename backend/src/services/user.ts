@@ -90,9 +90,11 @@ export const userService = {
   },
 
   async update(id: string, data: { name?: string }) {
+    const sanitized: { name?: string } = {};
+    if (data?.name !== undefined) sanitized.name = data.name;
     const user = await prisma.user.update({
       where: { id },
-      data,
+      data: sanitized,
     });
     return stripUser(user);
   },

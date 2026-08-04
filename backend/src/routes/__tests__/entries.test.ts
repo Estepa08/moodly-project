@@ -5,6 +5,7 @@ import type { FastifyInstance } from "fastify";
 
 let app: FastifyInstance;
 let token: string;
+let userId: string;
 let parameterId: string;
 let entryId: string;
 const prisma = new PrismaClient();
@@ -17,6 +18,7 @@ beforeAll(async () => {
 
   const result = await registerAndLogin(app, "entries-test@example.com", "secret123");
   token = result.token;
+  userId = result.userId;
 });
 
 afterAll(async () => {
@@ -35,6 +37,17 @@ describe("Entries", () => {
     expect(res.statusCode).toBe(200);
     expect(res.json().value).toBe(7);
     entryId = res.json().id;
+  });
+
+  it("POST /entries — ignores injected userId in body", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/entries",
+      headers: { authorization: `Bearer ${token}` },
+      payload: { parameterId, value: 6, userId: "00000000000000000000000000" },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().userId).toBe(userId);
   });
 
   it("GET /entries — lists user entries", async () => {
@@ -131,5 +144,30 @@ describe("Entries reward mood XP", () => {
       headers: { authorization: `Bearer ${user.token}` },
     });
     expect(state.json().experience).toBe(0);
+  });
+});
+
+describe("Entries daily limit — race safety", () => {
+  it("POST /entries — concurrent creates cannot exceed 100/day", async () => {
+    const user = await registerAndLogin(app, "entries-limit@example.com", "secret123", "Limit");
+
+    const requests = Array.from({ length: 130 }, () =>
+      app.inject({
+        method: "POST",
+        url: "/entries",
+        headers: { authorization: `Bearer ${user.token}` },
+        payload: { parameterId, value: 7 },
+      }),
+    );
+    const results = await Promise.all(requests);
+
+    const ok = results.filter((r) => r.statusCode === 200).length;
+    const limited = results.filter((r) => r.statusCode === 429).length;
+
+    expect(ok).toBe(100);
+    expect(limited).toBe(30);
+
+    const dbCount = await prisma.entry.count({ where: { userId: user.userId } });
+    expect(dbCount).toBe(100);
   });
 });

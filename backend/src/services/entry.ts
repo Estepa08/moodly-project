@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma.js";
 import { NotFoundError, AppError } from "../lib/errors.js";
+import { lockUser } from "../lib/user-lock.js";
 import { creatureService } from "./creature.js";
 
 export interface EntryCreateInput {
@@ -48,21 +49,27 @@ export const entryService = {
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
 
-    const todayCount = await prisma.entry.count({
-      where: { userId: input.userId, createdAt: { gte: startOfToday } },
-    });
+    // Проверка лимита и создание записи — в одной транзакции с блокировкой
+    // строки User: два параллельных запроса не смогут оба пройти count < 100.
+    const created = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, input.userId);
 
-    if (todayCount >= 100) {
-      throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
-    }
+      const todayCount = await tx.entry.count({
+        where: { userId: input.userId, createdAt: { gte: startOfToday } },
+      });
 
-    const created = await prisma.entry.create({
-      data: {
-        userId: input.userId,
-        parameterId: input.parameterId,
-        value: input.value,
-        note: input.note,
-      },
+      if (todayCount >= 100) {
+        throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+      }
+
+      return tx.entry.create({
+        data: {
+          userId: input.userId,
+          parameterId: input.parameterId,
+          value: input.value,
+          note: input.note,
+        },
+      });
     });
 
     await this.rewardMoodIfNeeded(input.userId, input.parameterId);
@@ -90,7 +97,10 @@ export const entryService = {
   async update(id: string, userId: string, data: EntryUpdateInput) {
     const entry = await prisma.entry.findFirst({ where: { id, userId } });
     if (!entry) throw new NotFoundError("Entry");
-    return prisma.entry.update({ where: { id }, data });
+    const sanitized: EntryUpdateInput = {};
+    if (data?.value !== undefined) sanitized.value = data.value;
+    if (data?.note !== undefined) sanitized.note = data.note;
+    return prisma.entry.update({ where: { id }, data: sanitized });
   },
 
   async delete(id: string, userId: string) {

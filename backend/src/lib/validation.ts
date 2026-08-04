@@ -26,3 +26,12 @@ export const resetPasswordSchema = z.object({
   token: z.string().min(1, "Token is required"),
   password: passwordSchema,
 });
+
+export const updateMeSchema = z.object({
+  name: z.string().max(100).optional(),
+});
+
+export const updateEntrySchema = z.object({
+  value: z.number().optional(),
+  note: z.string().max(2000).optional(),
+});

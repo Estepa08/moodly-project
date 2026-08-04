@@ -20,9 +20,13 @@ import digestRoutes from "./routes/digest.js";
 import notificationRoutes from "./routes/notifications.js";
 import syncRoutes from "./routes/sync.js";
 import adminRoutes from "./routes/admin.js";
+import clientErrorRoutes from "./routes/client-errors.js";
 import { setErrorHandler } from "./lib/handle-error.js";
+import { env } from "./lib/env.js";
 
-const fastify = Fastify({ logger: true });
+// Fail-fast валидация окружения (NODE_ENV, DATABASE_URL, JWT_SECRET,
+// в проде FRONTEND_URL) до старта HTTP-сервера.
+const fastify = Fastify({ logger: true, trustProxy: true });
 
 // This backend only ever serves JSON — it never renders scripts, styles, or
 // frames — so the policy can be maximally strict rather than the
@@ -38,17 +42,20 @@ await fastify.register(helmet, {
 await fastify.register(cors, { origin: getAllowedOrigins(), credentials: true });
 await fastify.register(cookie);
 
-const isProduction = process.env.NODE_ENV === "production";
-const readRateLimit = Number(process.env.RATE_LIMIT_MAX ?? (isProduction ? 100 : 1000));
-const writeRateLimit = Number(process.env.RATE_LIMIT_WRITE_MAX ?? (isProduction ? 10 : 1000));
+const isProduction = env.NODE_ENV === "production";
+const readRateLimit = env.RATE_LIMIT_MAX ?? (isProduction ? 100 : 1000);
+const writeRateLimit = env.RATE_LIMIT_WRITE_MAX ?? (isProduction ? 10 : 1000);
 await fastify.register(rateLimit, { max: readRateLimit, timeWindow: "1 minute" });
 
 fastify.addHook("onRoute", (routeOptions) => {
   const method = routeOptions.method;
   if (typeof method === "string" && ["POST", "PATCH", "PUT", "DELETE"].includes(method)) {
+    // Роут может задать собственный rateLimit (например, /client-errors
+    // собирает пучки ошибок и не должен резаться по 10/мин).
+    const existing = (routeOptions.config as { rateLimit?: object } | undefined)?.rateLimit;
     routeOptions.config = {
       ...(routeOptions.config as object),
-      rateLimit: { max: writeRateLimit, timeWindow: "1 minute" },
+      rateLimit: existing ?? { max: writeRateLimit, timeWindow: "1 minute" },
     };
   }
 });
@@ -72,6 +79,7 @@ await fastify.register(digestRoutes);
 await fastify.register(notificationRoutes);
 await fastify.register(syncRoutes);
 await fastify.register(adminRoutes);
+await fastify.register(clientErrorRoutes);
 
 setErrorHandler(fastify);
 
@@ -84,5 +92,5 @@ process.on("uncaughtException", (error) => {
   fastify.log.error(error, "uncaught exception");
 });
 
-const port = parseInt(process.env.PORT || "3001", 10);
+const port = env.PORT;
 await fastify.listen({ port, host: "0.0.0.0" });
