@@ -14,6 +14,7 @@
     "hidePassword": "Hide password",
     "cancel": "Cancel",
     "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try again",
     "date": "Date",
     "footerText": "Moodly is a self-assessment tool, not a medical device.",
     "footerPrivacy": "Privacy Policy",
@@ -218,9 +219,9 @@
   "tests": {
     "title": "Assessments",
     "abbreviation": {
-      "mood": "MA",
-      "wellbeing": "WA",
-      "cd": "CD"
+      "mood": "Anxiety",
+      "wellbeing": "Mood",
+      "cd": "Mind"
     }
   },
   "testDetail": {
@@ -1139,5 +1140,110 @@
       "error": "Sync error — tap to retry"
     },
     "pending": "{{count}} operations queued"
+  },
+  "landing": {
+    "navInside": "What's inside",
+    "navPets": "Pets",
+    "navTests": "Tests",
+    "navPrivacy": "Privacy",
+    "signIn": "Sign in",
+    "start": "Try for free",
+    "demo": "Watch demo",
+    "badge": "30 seconds a day is enough",
+    "hero": {
+      "titlePrefix": "A mood diary that",
+      "accent": "cares",
+      "titleSuffix": "about you",
+      "text": "Track your mood, energy, sleep and anxiety in half a minute. See trends, calm down with practices and raise your companion pet. Private, per 152-FZ.",
+      "mockCompanion": "Companion · lvl 7",
+      "mockStreak": "Streak: 12 days 🔥",
+      "mockMood": "Mood · this week",
+      "mockPractice": "Practice · Breathing",
+      "mockPracticeSub": "2 min of calm"
+    },
+    "stats": {
+      "pets": "companion pets",
+      "practices": "self-help practices",
+      "params": "wellbeing parameters",
+      "tests": "self-discovery tests"
+    },
+    "features": {
+      "kicker": "What's inside",
+      "title": "Not a diary, a daily companion",
+      "checkin": {
+        "title": "30-second check-in",
+        "text": "Mood, energy, sleep and anxiety — on one screen, no long forms."
+      },
+      "analytics": {
+        "title": "Smart analytics",
+        "text": "Thinking patterns radar, trends and periods — you see patterns, not chaos."
+      },
+      "pet": {
+        "title": "Companion pet",
+        "text": "Streaks, XP and 27 pets — motivation is built into the habit, not willpower."
+      },
+      "tests": {
+        "title": "Self-discovery tests",
+        "text": "Mood, anxiety and thinking habits tests — understand your states and thoughts."
+      }
+    },
+    "collection": {
+      "kicker": "Collection",
+      "title": "Collect all 27 pets",
+      "text": "Each pet is unlocked through achievements: streaks, practices, level."
+    },
+    "tests": {
+      "kicker": "Self-discovery tests",
+      "title": "Tests that help you understand yourself",
+      "duration": "{{minutes}} min",
+      "mood": {
+        "title": "Mood test",
+        "text": "Questions about your mood and wellbeing. Notice changes and track the trend.",
+        "foot": "Clear explanations and period trends"
+      },
+      "anxiety": {
+        "title": "Anxiety test",
+        "text": "Questions about anxiety and tension. Better understand what triggers yours.",
+        "foot": "Results with gentle interpretation"
+      },
+      "mind": {
+        "title": "Thinking habits test",
+        "text": "Questions about how you think about events. Notice your thinking habits in the moment.",
+        "foot": "Thinking patterns radar shows changes over periods"
+      }
+    },
+    "privacy": {
+      "kicker": "Privacy",
+      "title": "Your data is protected by law",
+      "servers": {
+        "title": "Servers in Russia",
+        "text": "art. 18 p. 5 of 152-FZ"
+      },
+      "consent": {
+        "title": "Consents at sign-up",
+        "text": "18+ and personal data processing, in writing"
+      },
+      "ads": {
+        "title": "No ads",
+        "text": "data is never sold or used for targeting"
+      },
+      "disclaimer": {
+        "title": "Clear disclaimer",
+        "text": "a self-assessment tool, not a medical service"
+      }
+    },
+    "cta": {
+      "title": "Start today — 30 seconds a day",
+      "text": "Free. No card. Your data stays yours.",
+      "button": "Try now"
+    },
+    "footer": {
+      "about": "A mood diary and self-help practices.",
+      "disclaimer": "Moodly is a self-assessment tool and does not replace professional advice. If you're not feeling well, please reach out to a professional."
+    },
+    "seo": {
+      "title": "Moodly — a mood diary that cares about you",
+      "description": "Track your mood, energy, sleep and anxiety in half a minute. Practices, self-discovery tests and a companion pet. Private, per 152-FZ."
+    }
   }
 }

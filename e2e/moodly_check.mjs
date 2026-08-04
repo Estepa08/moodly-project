@@ -19,9 +19,11 @@ await page.waitForTimeout(1800);
 await page.screenshot({ path: "/tmp/moodly-dashboard.png", fullPage: true });
 console.log("URL after login:", page.url());
 
-const petButtons = await page.locator("button[aria-label]").evaluateAll((els) =>
-  els.map((e) => ({ label: e.getAttribute("aria-label"), cls: e.className.slice(0, 90) })),
-);
+const petButtons = await page
+  .locator("button[aria-label]")
+  .evaluateAll((els) =>
+    els.map((e) => ({ label: e.getAttribute("aria-label"), cls: e.className.slice(0, 90) })),
+  );
 console.log("Buttons with aria-label:", JSON.stringify(petButtons, null, 1));
 console.log("Console errors:", errors.slice(0, 5));
 

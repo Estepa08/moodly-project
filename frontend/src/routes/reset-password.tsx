@@ -35,7 +35,7 @@ export default function ResetPasswordPage() {
     try {
       const res = await api.auth.resetPassword({ token, password });
       login(res.accessToken);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(getErrorMessage(err, t));
     } finally {

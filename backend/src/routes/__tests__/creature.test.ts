@@ -284,7 +284,12 @@ describe("Creature feed", () => {
 
 describe("Creature check-in — race safety", () => {
   it("POST /creature/check-in — concurrent check-ins award only once", async () => {
-    const user = await registerAndLogin(app, "creature-checkin-race@example.com", "secret123", "Race");
+    const user = await registerAndLogin(
+      app,
+      "creature-checkin-race@example.com",
+      "secret123",
+      "Race",
+    );
 
     const results = await Promise.all(
       Array.from({ length: 5 }, () =>

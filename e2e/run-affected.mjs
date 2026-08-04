@@ -126,30 +126,52 @@ const FULL = [
 const SPEC_RULES = [
   { match: /^backend\/src\/routes\/auth\.ts$/, specs: ["auth", "auth-register"] },
   { match: /^backend\/src\/routes\/users\.ts$/, specs: ["settings", "auth"] },
-  { match: /^backend\/src\/routes\/(entries|parameters|digest)\.ts$/, specs: ["dashboard", "missions"] },
-  { match: /^backend\/src\/routes\/(cba|journal)\.ts$/, specs: ["practices", "journey", "missions"] },
+  {
+    match: /^backend\/src\/routes\/(entries|parameters|digest)\.ts$/,
+    specs: ["dashboard", "missions"],
+  },
+  {
+    match: /^backend\/src\/routes\/(cba|journal)\.ts$/,
+    specs: ["practices", "journey", "missions"],
+  },
   { match: /^backend\/src\/routes\/(tests|test-results)\.ts$/, specs: ["tests", "missions"] },
-  { match: /^backend\/src\/routes\/(creature|achievements)\.ts$/, specs: ["missions", "dashboard"] },
+  {
+    match: /^backend\/src\/routes\/(creature|achievements)\.ts$/,
+    specs: ["missions", "dashboard"],
+  },
   { match: /^backend\/src\/routes\/onboarding-stories\.ts$/, specs: ["journey"] },
 
-  { match: /^frontend\/src\/routes\/(login|register|forgot-password|reset-password)\.tsx$/, specs: ["auth", "auth-register"] },
+  {
+    match: /^frontend\/src\/routes\/(login|register|forgot-password|reset-password)\.tsx$/,
+    specs: ["auth", "auth-register"],
+  },
   { match: /^frontend\/src\/routes\/dashboard\.tsx$/, specs: ["dashboard"] },
   { match: /^frontend\/src\/routes\/progress\.tsx$/, specs: ["dashboard", "missions"] },
   { match: /^frontend\/src\/routes\/settings\.tsx$/, specs: ["settings"] },
   { match: /^frontend\/src\/routes\/(tests|test-detail)\.tsx$/, specs: ["tests", "missions"] },
-  { match: /^frontend\/src\/routes\/(practices|breathing|gratitude-journal|thought-journal|distortions|sleep-hygiene|cost-benefit-analysis)\.tsx$/, specs: ["practices", "journey", "missions"] },
+  {
+    match:
+      /^frontend\/src\/routes\/(practices|breathing|gratitude-journal|thought-journal|distortions|sleep-hygiene|cost-benefit-analysis)\.tsx$/,
+    specs: ["practices", "journey", "missions"],
+  },
   { match: /^frontend\/src\/routes\/onboarding\.tsx$/, specs: ["journey", "auth"] },
 
   { match: /^frontend\/src\/features\/auth\//, specs: ["auth", "auth-register"] },
   { match: /^frontend\/src\/features\/mood-entry\//, specs: ["dashboard", "missions"] },
   { match: /^frontend\/src\/features\/gamification\//, specs: ["missions", "dashboard"] },
-  { match: /^frontend\/src\/features\/(breathing|journal|cost-benefit-analysis)\//, specs: ["practices", "journey", "missions"] },
+  {
+    match: /^frontend\/src\/features\/(breathing|journal|cost-benefit-analysis)\//,
+    specs: ["practices", "journey", "missions"],
+  },
   { match: /^frontend\/src\/features\/(check-in|dialogs)\//, specs: ["navigation", "dashboard"] },
   { match: /^frontend\/src\/features\/analytics\//, specs: ["dashboard"] },
 
   { match: /^frontend\/src\/components\/Layout\.tsx$/, specs: ["navigation", "mobile"] },
   { match: /^frontend\/src\/layout\//, specs: ["navigation", "mobile"] },
-  { match: /^frontend\/src\/widgets\/(WellbeingCard|ThinkingPatternsCard|FirstTimeHint)\.tsx$/, specs: ["dashboard", "navigation"] },
+  {
+    match: /^frontend\/src\/widgets\/(WellbeingCard|ThinkingPatternsCard|FirstTimeHint)\.tsx$/,
+    specs: ["dashboard", "navigation"],
+  },
   { match: /^frontend\/src\/widgets\/(MedicalDisclaimer|SkipLink)\.tsx$/, specs: ["navigation"] },
   { match: /^frontend\/src\/widgets\/TestsResultsSection\.tsx$/, specs: ["tests"] },
 

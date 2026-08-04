@@ -23,7 +23,8 @@ const chipVariants = cva(
 );
 
 export interface ChipProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof chipVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof chipVariants> {
   asChild?: boolean;
 }
 

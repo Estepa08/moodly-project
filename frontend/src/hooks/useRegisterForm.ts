@@ -37,7 +37,7 @@ export function useRegisterForm() {
         birthYear: birthYearNum ?? undefined,
       });
       login(res.accessToken);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(getErrorMessage(err, t));
     }

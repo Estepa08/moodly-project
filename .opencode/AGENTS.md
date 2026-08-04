@@ -69,6 +69,7 @@ Backend-тесты используют БД `moodly_test` (указана в `.
 ## API contract (api-contract/)
 
 3 файла:
+
 - `main.tsp` — точка входа: `@service`, `@useAuth(BearerAuth)` для всего API
 - `models.tsp` — модели данных
 - `routes.tsp` — интерфейсы (routes), сгруппированные по сущности
@@ -106,10 +107,12 @@ Parameter, Test, OnboardingStory, Achievement, CbaExample, CbaCommonItem не и
 ### Git workflow (develop/main)
 
 **Ветки:**
+
 - `develop` — основная ветка для ежедневной работы. Все коммиты и пуши — сюда.
 - `main` — прод. Защищён на GitHub (push запрещён, только через PR).
 
 **Работа:**
+
 - Все коммиты идут в `develop` (по команде пользователя).
 - Релиз в prod — только по команде «сделай PR в прод»: создаётся PR `develop → main` на GitHub.
 - Conventional Commits (`feat:`, `fix:`, `chore:`).
@@ -137,11 +140,13 @@ plugins/ →  Fastify plugins (auth/JWT)
 ```
 
 **Fastify 5 plugin system:**
+
 - Каждый plugin обёрнут в `fp()` (`fastify-plugin`) для доступа из дочерних скоупов.
 - Порядок регистрации строгий: `helmet → cors → cookie → rate-limit → authPlugin → routes → setErrorHandler` (`backend/src/index.ts:29-68`).
 - `setErrorHandler` регистрируется **последним** (Fastify применяет его только к routes, зарегистрированным после).
 
 **Route patterns:**
+
 - Асинхронные функции-фабрики: `export default async function entryRoutes(fastify)`.
 - `preHandler: [fastify.authenticate]` для защищённых эндпоинтов.
 - Типизация запроса через inline generic: `fastify.post<{ Body: EntryCreateBody }>("/entries", ...)`.
@@ -149,12 +154,14 @@ plugins/ →  Fastify plugins (auth/JWT)
 - Rate-limit: глобально 100 req/min, на мутирующие методы (POST/PATCH/PUT/DELETE) — 10 req/min, через `onRoute` hook (`index.ts:41-49`).
 
 **Service layer:**
+
 - Plain-object singletons: `export const entryService = { async create(input) { ... } }` — без классов и DI.
 - Все async методы, user-scoped queries (`where: { id, userId }`) — row-level security на уровне приложения.
 - Pagination: offset-based (`skip/take`), total count параллельно через `Promise.all([findMany, count])`.
 - Service-to-service вызовы: `achievementsService.check(userId).catch(() => {})` — fire-and-forget.
 
 **Dual-token auth:**
+
 - Access: JWT (15 min, Bearer header), via `@fastify/jwt`.
 - Refresh: opaque (SHA-256 hash в БД), httpOnly cookie, 7 days, one-time consumption (удаляется после использования).
 - `fastify.authenticate` — декоратор (`fastify.decorate`), вызывает `request.jwtVerify()`, на ошибку возвращает 401.
@@ -162,11 +169,13 @@ plugins/ →  Fastify plugins (auth/JWT)
 - Reset token: тот же opaque-hashed паттерн, 1 час жизни.
 
 **Кастомная иерархия ошибок** (`lib/errors.ts`):
+
 - `AppError(code, statusCode, message)` → `NotFoundError(404)`, `UnauthorizedError(401)`, `ConflictError(409)`, `ValidationError(400)`.
 - Все `AppError` перехватываются `setErrorHandler` и возвращают `{ code, message }` (без stack trace).
 - Неизвестные ошибки → `{ code: "INTERNAL", message: "Something went wrong" }` + лог через `request.log.error`.
 
 **Prisma patterns:**
+
 - Singleton PrismaClient в `lib/prisma.ts`.
 - `findMany + count` для offset pagination (параллельно).
 - `upsert` для UserPreference.
@@ -188,11 +197,13 @@ i18n/       →  i18next setup + locales (en/ru)
 ```
 
 **State management:**
+
 - **Server state**: TanStack Query v5 — `useQuery`/`useMutation`, всё (нет Redux/Zustand).
 - **Auth state**: React Context (`AuthProvider`), in-memory token, silent refresh on mount.
 - **Local UI state**: `useState`/`useMemo`/`useCallback`.
 
 **TanStack Query patterns:**
+
 - Query key naming: `["resource"]`, `["resource", id]`, `["resource", params]`.
 - `staleTime` varies: 30s (entries), 60s (tests/parameters), 300s (user profile).
 - On mutation success: `queryClient.invalidateQueries({ queryKey: ["resource"] })`.
@@ -200,6 +211,7 @@ i18n/       →  i18next setup + locales (en/ru)
 - Single-flight 401 refresh: `refreshPromise` singleton — последующие 401 ждут тот же промис.
 
 **Custom hooks conventions:**
+
 - Data-fetching: `use{Resource}` — `useQuery` wrapper.
 - Mutation: `use{Action}{Resource}` — `useMutation` + `invalidateQueries`.
 - Domain logic: `useTestFlow`, `useLowMoodDetection`, `useAuthForms`, `useDailyCheckIn`.
@@ -208,6 +220,7 @@ i18n/       →  i18next setup + locales (en/ru)
 - Сложные hooks комбинируют `useState` + `useCallback` + `useMemo`.
 
 **API client** (`lib/api.ts`):
+
 - Custom fetch-based (без axios), base URL `/api` (Vite proxy → :3002).
 - In-memory `accessToken: string | null = null`.
 - Центральная `request<T>(path, options)` — headers, 401 handle, error → `ApiError`.
@@ -217,6 +230,7 @@ i18n/       →  i18next setup + locales (en/ru)
 - `credentials: "include"` для httpOnly refresh cookie.
 
 **Feature module structure:**
+
 ```
 features/cost-benefit-analysis/
   index.ts           — barrel (реэкспорт компонентов, hooks, types)
@@ -230,6 +244,7 @@ features/cost-benefit-analysis/
 Каждый feature module экспортирует публичное API через `index.ts`. Внутренние детали не экспортируются.
 
 **Styling patterns:**
+
 - Tailwind CSS + `cn()` utility (clsx + tailwind-merge) — shadcn/ui стандарт.
 - CVA (`class-variance-authority`) для вариативных компонентов.
 - Все цвета через CSS custom properties (`hsl(var(--primary))`), в JSX только Tailwind classes.
@@ -238,24 +253,28 @@ features/cost-benefit-analysis/
 - Neumorphic shadows: dual shadow (light top-left, dark bottom-right), inset для инпутов.
 
 **i18n patterns:**
+
 - react-i18next, язык по умолчанию — `ru`, fallback — `en`.
 - Dot-separated keys by feature: `dashboard.anxiety`, `errors.notFound`, `nav.dashboard`.
 - Error messages mapped через `ERROR_CODE_MAP: Record<string, string>` → `getErrorMessage(error, t)`.
 - Тестовый контент — EN в seed, RU в `test-content.ts`.
 
 **Error handling frontend:**
+
 - `ApiError(code, message)` — кастомный класс в `lib/api-error.ts`.
 - Глобальный `onError` в QueryClient: `toast.error(getErrorMessage(error, t))`.
 - Локальный `onError` в useMutation для специфичных сообщений.
 - `getErrorMessage()`: instanceof ApiError → code → i18n key, иначе `Error.message`, иначе `"common.somethingWentWrong"`.
 
 **Routing:**
+
 - react-router-dom v7, lazy-loaded страницы через `React.lazy()` + `<Suspense>`.
 - `ProtectedRoute` — проверяет `isAuthenticated`, редирект на `/login`.
 - `PublicRoute` — редирект на `/` если уже авторизован.
 - Bootstrap spinner пока проверяется auth статус.
 
 **Styling компонентов:**
+
 - Lucide React для иконок (SVG, inherit `text-muted-foreground` / `text-primary`).
 - Sonner для toast-уведомлений (`toast`, `toast.custom` с CelebrationToast).
 - Lottie для анимаций (`lottie-react`, `breathing-creature.json`).
@@ -264,6 +283,7 @@ features/cost-benefit-analysis/
 #### Прекоммит-проверки
 
 Перед коммитом убедиться:
+
 - [package.json] `scripts` — `lint`, `format:check`, `typecheck` есть на обоих стеках
 - [спрашивать] `npm run typecheck` в backend и frontend — ts ошибки не допускаются
 - [backend] `npm run lint` — eslint
@@ -335,18 +355,18 @@ features/cost-benefit-analysis/
 
 ### Light palette
 
-| Роль | HEX | HSL | CSS-var |
-|---|---|---|---|
-| Background | `#f5f0ff` | `270 100% 98%` | `--background` |
-| Foreground | `#4C1D95` | `264 67% 35%` | `--foreground` |
-| Primary | `#8B5CF6` | `261 90% 66%` | `--primary` |
-| Secondary | `#d6c6f5` | `261 90% 85%` | `--secondary` |
-| Accent | `#059669` | `161 94% 30%` | `--accent` |
-| Card | `#ffffff` | `0 0% 100%` | `--card` |
-| Muted | `#f1f2f9` | `230 33% 96%` | `--muted` |
-| Muted fg | `#64748b` | `215 16% 45%` | `--muted-foreground` |
-| Border | `#e0d4f5` | `261 75% 90%` | `--border` |
-| Destructive | `#ea1515` | `0 84% 50%` | `--destructive` |
+| Роль        | HEX       | HSL            | CSS-var              |
+| ----------- | --------- | -------------- | -------------------- |
+| Background  | `#f5f0ff` | `270 100% 98%` | `--background`       |
+| Foreground  | `#4C1D95` | `264 67% 35%`  | `--foreground`       |
+| Primary     | `#8B5CF6` | `261 90% 66%`  | `--primary`          |
+| Secondary   | `#d6c6f5` | `261 90% 85%`  | `--secondary`        |
+| Accent      | `#059669` | `161 94% 30%`  | `--accent`           |
+| Card        | `#ffffff` | `0 0% 100%`    | `--card`             |
+| Muted       | `#f1f2f9` | `230 33% 96%`  | `--muted`            |
+| Muted fg    | `#64748b` | `215 16% 45%`  | `--muted-foreground` |
+| Border      | `#e0d4f5` | `261 75% 90%`  | `--border`           |
+| Destructive | `#ea1515` | `0 84% 50%`    | `--destructive`      |
 
 ### Typography
 
@@ -358,8 +378,10 @@ features/cost-benefit-analysis/
 
 ```css
 --shadow-neumorphic: 6px 6px 12px rgba(180, 160, 200, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.8);
---shadow-neumorphic-sm: 3px 3px 6px rgba(180, 160, 200, 0.25), -3px -3px 6px rgba(255, 255, 255, 0.8);
---shadow-neumorphic-inset: inset 3px 3px 6px rgba(180, 160, 200, 0.25), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+--shadow-neumorphic-sm:
+  3px 3px 6px rgba(180, 160, 200, 0.25), -3px -3px 6px rgba(255, 255, 255, 0.8);
+--shadow-neumorphic-inset:
+  inset 3px 3px 6px rgba(180, 160, 200, 0.25), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
 ```
 
 ### Conventions
@@ -384,18 +406,22 @@ features/cost-benefit-analysis/
 ### Backend тесты (Vitest + реальная БД)
 
 **Config** (`vitest.config.ts`):
+
 - `globals: true`, `environment: "node"`, `fileParallelism: false`, timeout 15s.
 - Тесты идут **последовательно** (shared test DB).
 
 **Setup** (`src/test/setup.ts`):
+
 - `beforeAll`: `prisma db push --force-reset --accept-data-loss` — schema recreation per suite.
 - DATABASE_URL = `moodly_test` (из `.env.test`), JWT_SECRET = `"test-secret"`.
 
 **Helpers** (`src/test/helpers.ts`):
+
 - `buildApp()` — создаёт `FastifyInstance` с теми же plugins/routes что production (без helmet/rate-limit/notificationRoutes).
 - `logger: false`, `cors: { origin: true }`.
 
 **Integration test pattern** (Fastify `inject`):
+
 ```typescript
 const app = await buildApp();
 const res = await app.inject({
@@ -405,6 +431,7 @@ const res = await app.inject({
 });
 const token = res.json().accessToken;
 ```
+
 - No mocking: реальные запросы к `moodly_test` БД.
 - PrismaClient `$disconnect()` в `afterAll`.
 - Нет `vi.mock()` / sinon.
@@ -412,9 +439,11 @@ const token = res.json().accessToken;
 ### Frontend тесты (Vitest + jsdom + Testing Library)
 
 **Config** (`vitest.config.ts`):
+
 - `globals: true`, `environment: "jsdom"`, setup: `@testing-library/jest-dom/vitest`.
 
 **Unit tests:**
+
 - Pure function testing: `isSevereInterpretation()` — без рендера.
 - API client: `vi.fn()` вместо fetch, тесты: token attachment, 401 refresh, single-flight, failed refresh.
 - No component rendering tests yet (преимущественно unit).
@@ -422,6 +451,7 @@ const token = res.json().accessToken;
 ## Domain patterns
 
 **Gamification:**
+
 - `CreatureState` (1:1 с User): `calmness`, `energy`, `level`, `experience`, `streak`, `sessionCount`, `petType`, `activeSkin`, `activeTitle`, `unlockedSkins/Titles/PetTypes` (String[]).
 - `PracticeCompletion`: `source` (PracticeSource enum), `xpAwarded`, `createdAt`.
 - `Achievement`: `key` unique, `criteria` (Json), rewards (skin/title/petType/XP), `category`.
@@ -432,29 +462,34 @@ const token = res.json().accessToken;
 - Фронтенд: 12 хуков в `useCreature.ts`, `CelebrationToast` через `toast.custom()`.
 
 **Low Mood Detection:**
+
 - 3+ consecutive days with avg mood value ≤ 3.
 - Session dedup: `sessionStorage` key `"moodly_low_mood_shown"`.
 - 3-second debounce before evaluation.
 - Looks back 7 days of entry data.
 
 **Stale Practices Detection:**
+
 - Compares `PracticeCompletion` sources vs all `PracticeSource` values.
 - Breathing special case: uses `lastExerciseAt` from creature state.
 - Used by `useNavHighlights` для подсветки навигации.
 
 **CBA (Cost-Benefit Analysis):**
+
 - `CbaEntry`: `thoughtText`, `prosWeight` + `consWeight` (sum to 100), items advantage/disadvantage.
 - `CbaExample`: обучающие примеры с persona, thought text, items, distortions.
 - `CbaCommonItem`: банк типовых пунктов.
 - Фронтенд: `CbaEntryForm`, `CbaHistory`, `CbaLibrary`, `CbaWeightSlider`.
 
 **Check-In (Daily):**
+
 - Определение: `!isToday(creature.lastCheckInAt)` — сравнение year/month/day.
 - Mutation: `api.creature.checkIn()`, invalidates `["creature"]`.
 - Local `dismissed` state — скрыть промпт после действия.
 - Компоненты: `SleepHygieneChecklist`, `SleepHygieneChart`, `DailyCheckInModal`.
 
 **Breathing:**
+
 - Techniques: Box (4-4-4-4), 4-7-8 (Quick), 4-7-8 (Classic).
 - Phases: Inhale → Hold → Exhale.
 - Логика на фронтенде (таймеры, фазы, счетчики).
@@ -462,6 +497,7 @@ const token = res.json().accessToken;
 - Анимация: Lottie (`breathing-creature.json`).
 
 **Навигация:**
+
 - `useNavHighlights` определяет подсветку пунктов меню:
   - Dashboard: не было check-in сегодня
   - Practices: есть stale практики
@@ -470,15 +506,18 @@ const token = res.json().accessToken;
 ## Infrastructure
 
 **Docker Compose** (3 services):
+
 - `postgres`: PostgreSQL 16, healthcheck.
 - `backend`: Fastify, `prisma migrate deploy` в entrypoint, depends_on postgres.
 - `edge`: Caddy reverse proxy — `/api/*` → backend, static SPA files, auto Let's Encrypt.
 
 **Docker files:**
+
 - Frontend: 3-stage build (contract build → frontend build → Caddy runtime).
 - Backend: 2-stage (builder → runtime).
 
 **CI/CD** (GitHub Actions, `infra/workflows/ci.yml`):
+
 - Triggers: PR to main, push to main.
 - 2 parallel jobs: `backend` + `frontend`.
 - Backend: Postgres service container → npm ci → prisma generate → tsc --noEmit → lint → format:check → test.

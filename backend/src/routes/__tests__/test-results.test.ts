@@ -13,7 +13,7 @@ beforeAll(async () => {
 
   const test = await prisma.test.create({
     data: {
-      title: "PHQ-9",
+      title: "Тест настроения",
       questions: [
         {
           id: "q1",

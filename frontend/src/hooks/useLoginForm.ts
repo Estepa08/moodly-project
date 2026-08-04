@@ -23,7 +23,7 @@ export function useLoginForm() {
     try {
       const res = await api.auth.login({ email, password });
       login(res.accessToken);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(getErrorMessage(err, t));
     }
@@ -36,7 +36,7 @@ export function useLoginForm() {
     try {
       const res = await api.auth.login({ email: "demo@moodly.app", password: "demo123" });
       login(res.accessToken);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(getErrorMessage(err, t));
     } finally {

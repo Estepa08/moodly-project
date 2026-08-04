@@ -64,11 +64,7 @@ export async function quickEntry(page: Page, paramLabel: string, note?: string):
   await expect(page.getByText("Сохранено")).toBeVisible();
 }
 
-export async function passTest(
-  page: Page,
-  questions: number,
-  option = "Нет",
-): Promise<void> {
+export async function passTest(page: Page, questions: number, option = "Нет"): Promise<void> {
   for (let i = 1; i <= questions; i++) {
     await page.getByRole("button", { name: option, exact: true }).click();
     if (i < questions) {

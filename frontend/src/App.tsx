@@ -11,6 +11,7 @@ import ForgotPasswordPage from "./routes/forgot-password";
 import ResetPasswordPage from "./routes/reset-password";
 import PrivacyPage from "./routes/privacy";
 import TermsPage from "./routes/terms";
+import LandingPage from "./routes/landing";
 import Dashboard from "./routes/dashboard";
 
 const OnboardingPage = lazy(() => import("./routes/onboarding"));
@@ -64,14 +65,14 @@ function ProtectedRoute() {
 function AdminRoute() {
   const { data: user, isLoading } = useCurrentUser();
   if (isLoading) return <BootstrapSpinner />;
-  if (user?.role !== "admin") return <Navigate to="/" replace />;
+  if (user?.role !== "admin") return <Navigate to="/dashboard" replace />;
   return <Outlet />;
 }
 
 function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
   if (isBootstrapping) return <BootstrapSpinner />;
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
   return <Outlet />;
 }
 
@@ -79,6 +80,7 @@ export default function App() {
   return (
     <Routes>
       <Route element={<PublicRoute />}>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -88,11 +90,11 @@ export default function App() {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/practices" element={<PracticesPage />} />
         <Route path="/tests" element={<TestsPage />} />
         <Route path="/tests/:testId" element={<TestDetailPage />} />
-        <Route path="/results" element={<Navigate to="/" replace />} />
+        <Route path="/results" element={<Navigate to="/dashboard" replace />} />
         <Route path="/practices/breathing" element={<BreathingPage />} />
         <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
         <Route path="/practices/distortions" element={<DistortionsPage />} />
