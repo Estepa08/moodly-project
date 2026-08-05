@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import Reveal from "../components/Reveal";
 import { useLoginForm } from "../hooks/useLoginForm";
 import { useSeo, withCanonical } from "../lib/seo";
 import { cn } from "../lib/utils";
@@ -159,10 +160,10 @@ function HeroMock() {
               <span
                 key={i}
                 className={cn(
-                  "w-full rounded-md",
+                  "w-full rounded-md animate-bar-grow",
                   i === 3 || i === 6 ? "bg-primary" : "bg-primary/30",
                 )}
-                style={{ height: `${h}px` }}
+                style={{ height: `${h}px`, animationDelay: `${i * 120}ms` }}
               />
             ))}
           </div>
@@ -200,36 +201,40 @@ function LandingHero() {
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-14 grid gap-10 lg:grid-cols-2 lg:items-center">
-        <div className="text-center lg:text-left">
-          <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-xs font-semibold px-3.5 py-1.5 mb-5">
-            ⏱ {t("landing.badge")}
-          </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-            {t("landing.hero.titlePrefix")}{" "}
-            <span className="text-primary">{t("landing.hero.accent")}</span>{" "}
-            {t("landing.hero.titleSuffix")}
-          </h1>
-          <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-            {t("landing.hero.text")}
-          </p>
+        <Reveal>
+          <div className="text-center lg:text-left">
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-xs font-semibold px-3.5 py-1.5 mb-5">
+              ⏱ {t("landing.badge")}
+            </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
+              {t("landing.hero.titlePrefix")}{" "}
+              <span className="text-primary">{t("landing.hero.accent")}</span>{" "}
+              {t("landing.hero.titleSuffix")}
+            </h1>
+            <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+              {t("landing.hero.text")}
+            </p>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-            <Button size="lg" asChild>
-              <Link to="/register">
-                {t("landing.start")}
-                <ArrowRight aria-hidden="true" className="w-5 h-5" />
-              </Link>
-            </Button>
-            {demoMode && (
-              <Button size="lg" variant="secondary" onClick={handleDemo} disabled={demoLoading}>
-                <Play aria-hidden="true" className="w-4 h-4" />
-                {demoLoading ? "..." : t("landing.demo")}
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+              <Button size="lg" asChild>
+                <Link to="/register">
+                  {t("landing.start")}
+                  <ArrowRight aria-hidden="true" className="w-5 h-5" />
+                </Link>
               </Button>
-            )}
+              {demoMode && (
+                <Button size="lg" variant="secondary" onClick={handleDemo} disabled={demoLoading}>
+                  <Play aria-hidden="true" className="w-4 h-4" />
+                  {demoLoading ? "..." : t("landing.demo")}
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        </Reveal>
 
-        <HeroMock />
+        <Reveal direction="right" delay={120}>
+          <HeroMock />
+        </Reveal>
       </div>
     </section>
   );
@@ -247,11 +252,13 @@ function LandingStats() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
       <Card className="p-6 sm:p-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        {stats.map((s) => (
-          <div key={s.label}>
-            <p className="text-3xl font-extrabold text-primary">{s.value}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{s.label}</p>
-          </div>
+        {stats.map((s, i) => (
+          <Reveal key={s.label} delay={i * 120}>
+            <div>
+              <p className="text-3xl font-extrabold text-primary">{s.value}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{s.label}</p>
+            </div>
+          </Reveal>
         ))}
       </Card>
     </div>
@@ -297,14 +304,18 @@ function LandingFeatures() {
       </h2>
 
       <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {features.map((f) => (
-          <Card key={f.title} className="p-6">
-            <span className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", f.color)}>
-              <f.icon aria-hidden="true" className="w-6 h-6" />
-            </span>
-            <h3 className="mt-4 text-base font-bold text-foreground">{f.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
-          </Card>
+        {features.map((f, i) => (
+          <Reveal key={f.title} delay={i * 120}>
+            <Card className="p-6 h-full">
+              <span
+                className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", f.color)}
+              >
+                <f.icon aria-hidden="true" className="w-6 h-6" />
+              </span>
+              <h3 className="mt-4 text-base font-bold text-foreground">{f.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
+            </Card>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -339,13 +350,17 @@ function LandingCollection() {
               </div>
             }
           >
-            {COLLECTION_PET_TYPES.map((type) => (
-              <PetAvatar key={type} petType={type} size="sm" plain ariaLabel={type} />
+            {COLLECTION_PET_TYPES.map((type, i) => (
+              <Reveal key={type} delay={i * 60} className="w-[48px]">
+                <PetAvatar petType={type} size="sm" plain ariaLabel={type} />
+              </Reveal>
             ))}
           </Suspense>
-          <span className="w-[60px] h-[60px] rounded-full bg-white flex items-center justify-center text-sm font-bold text-primary shadow-neumorphic-sm">
-            +15
-          </span>
+          <Reveal delay={COLLECTION_PET_TYPES.length * 60}>
+            <span className="w-[60px] h-[60px] rounded-full bg-white flex items-center justify-center text-sm font-bold text-primary shadow-neumorphic-sm">
+              +15
+            </span>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -388,26 +403,30 @@ function LandingTests() {
       </h2>
 
       <div className="mt-10 grid md:grid-cols-3 gap-4">
-        {tests.map((test) => (
-          <Card key={test.title} className="p-6 flex flex-col">
-            <div className="flex items-center gap-3">
-              <span className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                <test.icon aria-hidden="true" className="w-5 h-5 text-primary" />
-              </span>
-              <div>
-                <h3 className="text-base font-bold text-foreground">{test.title}</h3>
-                <p className="text-xs text-muted-foreground">{test.duration}</p>
+        {tests.map((test, i) => (
+          <Reveal key={test.title} delay={i * 120} className="h-full">
+            <Card className="p-6 flex flex-col h-full">
+              <div className="flex items-center gap-3">
+                <span className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <test.icon aria-hidden="true" className="w-5 h-5 text-primary" />
+                </span>
+                <div>
+                  <h3 className="text-base font-bold text-foreground">{test.title}</h3>
+                  <p className="text-xs text-muted-foreground">{test.duration}</p>
+                </div>
               </div>
-            </div>
-            <p className="mt-4 text-sm text-muted-foreground leading-relaxed flex-1">{test.text}</p>
-            <p className="mt-4 flex items-start gap-1.5 text-xs text-foreground/80">
-              <CheckCircle2
-                aria-hidden="true"
-                className="w-3.5 h-3.5 text-success shrink-0 mt-0.5"
-              />
-              {test.foot}
-            </p>
-          </Card>
+              <p className="mt-4 text-sm text-muted-foreground leading-relaxed flex-1">
+                {test.text}
+              </p>
+              <p className="mt-4 flex items-start gap-1.5 text-xs text-foreground/80">
+                <CheckCircle2
+                  aria-hidden="true"
+                  className="w-3.5 h-3.5 text-success shrink-0 mt-0.5"
+                />
+                {test.foot}
+              </p>
+            </Card>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -465,12 +484,14 @@ function LandingPrivacy() {
         </h2>
 
         <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {items.map((item) => (
-            <div key={item.title} className="rounded-xl bg-secondary/60 p-4">
-              <item.icon aria-hidden="true" className="w-5 h-5 text-primary" />
-              <h3 className="mt-2.5 text-sm font-bold text-foreground">{item.title}</h3>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.text}</p>
-            </div>
+          {items.map((item, i) => (
+            <Reveal key={item.title} delay={(i % 4) * 100}>
+              <div className="rounded-xl bg-secondary/60 p-4 h-full">
+                <item.icon aria-hidden="true" className="w-5 h-5 text-primary" />
+                <h3 className="mt-2.5 text-sm font-bold text-foreground">{item.title}</h3>
+                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.text}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -482,23 +503,25 @@ function LandingCta() {
   const { t } = useTranslation();
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
-      <div className="rounded-3xl bg-btn-gradient shadow-clay-lg p-8 sm:p-12 text-center">
-        <h2 className="text-2xl sm:text-[38px] font-extrabold text-white text-balance">
-          {t("landing.cta.title")}
-        </h2>
-        <p className="mt-3 text-sm sm:text-base text-white/85">{t("landing.cta.text")}</p>
-        <Button
-          size="lg"
-          variant="secondary"
-          className="mt-7 bg-white text-primary hover:bg-white/95"
-          asChild
-        >
-          <Link to="/register">
-            {t("landing.cta.button")}
-            <ArrowRight aria-hidden="true" className="w-5 h-5" />
-          </Link>
-        </Button>
-      </div>
+      <Reveal>
+        <div className="rounded-3xl bg-btn-gradient shadow-clay-lg p-8 sm:p-12 text-center">
+          <h2 className="text-2xl sm:text-[38px] font-extrabold text-white text-balance">
+            {t("landing.cta.title")}
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-white/85">{t("landing.cta.text")}</p>
+          <Button
+            size="lg"
+            variant="secondary"
+            className="mt-7 bg-white text-primary hover:bg-white/95"
+            asChild
+          >
+            <Link to="/register">
+              {t("landing.cta.button")}
+              <ArrowRight aria-hidden="true" className="w-5 h-5" />
+            </Link>
+          </Button>
+        </div>
+      </Reveal>
     </section>
   );
 }
