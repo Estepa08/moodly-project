@@ -15,6 +15,9 @@ import {
   FileText,
   Smile,
   KeyRound,
+  CalendarRange,
+  Check,
+  Plus,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -22,6 +25,7 @@ import Reveal from "../components/Reveal";
 import { useLoginForm } from "../hooks/useLoginForm";
 import { useSeo, withCanonical } from "../lib/seo";
 import { cn } from "../lib/utils";
+import { ACTIVITY_CATALOG } from "../lib/dayActivities";
 
 const PetAvatar = lazy(() =>
   import("../features/gamification/PetAvatar").then((m) => ({ default: m.default })),
@@ -322,6 +326,97 @@ function LandingFeatures() {
   );
 }
 
+function LandingDayActivities() {
+  const { t } = useTranslation();
+  const chipKeys = [
+    "movement_walk",
+    "movement_gym",
+    "work_meeting",
+    "rest_read",
+    "wellbeing_stress",
+  ];
+  const selectedChips = ["movement_walk", "movement_gym"];
+  const chips = chipKeys.map((k) => {
+    const def = ACTIVITY_CATALOG.find((a) => a.labelKey === `dayActivities.activities.${k}`);
+    return {
+      key: k,
+      label: def ? t(def.labelKey) : k,
+      active: selectedChips.includes(k),
+    };
+  });
+  const badges = [
+    { icon: CheckCircle2, text: t("landing.day.tag180") },
+    { icon: Plus, text: t("landing.day.tagCustom") },
+    { icon: BarChart3, text: t("landing.day.tagCorrelation") },
+  ];
+  const points = [t("landing.day.p1"), t("landing.day.p2"), t("landing.day.p3")];
+
+  return (
+    <section className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
+      <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
+        {t("landing.day.kicker")}
+      </p>
+      <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
+        {t("landing.day.title")}
+      </h2>
+      <p className="mt-3 text-center text-sm text-muted-foreground max-w-xl mx-auto">
+        {t("landing.day.subtitle")}
+      </p>
+
+      <div className="mt-10 grid lg:grid-cols-2 gap-8 items-center">
+        <Reveal>
+          <div className="rounded-3xl border border-border bg-card p-6 shadow-neumorphic">
+            <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+              <CalendarRange aria-hidden="true" className="w-4 h-4 text-accent" />
+              {t("dayActivities.title")}
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {chips.map((c) => (
+                <span
+                  key={c.key}
+                  className={cn(
+                    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+                    c.active
+                      ? "bg-accent/15 text-accent ring-1 ring-accent/40"
+                      : "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {c.active && <Check className="mr-1 w-3 h-3" aria-hidden="true" />}
+                  {c.label}
+                </span>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-2">
+              {badges.map((b) => (
+                <span
+                  key={b.text}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"
+                >
+                  <b.icon aria-hidden="true" className="w-3.5 h-3.5" />
+                  {b.text}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <ul className="space-y-4">
+            {points.map((p, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                  <CheckCircle2 aria-hidden="true" className="w-4 h-4 text-accent" />
+                </span>
+                <span className="text-sm text-muted-foreground leading-relaxed">{p}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 function LandingCollection() {
   const { t } = useTranslation();
   return (
@@ -582,6 +677,7 @@ export default function LandingPage() {
         <LandingHero />
         <LandingStats />
         <LandingFeatures />
+        <LandingDayActivities />
         <LandingCollection />
         <LandingTests />
         <LandingPrivacy />

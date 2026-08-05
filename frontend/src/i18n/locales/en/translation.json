@@ -1463,6 +1463,17 @@
         "text": "Mood, anxiety and thinking habits tests — understand your states and thoughts."
       }
     },
+    "day": {
+      "kicker": "My day",
+      "title": "Describe your day without typing a word",
+      "subtitle": "Over 180 activities & events, your own custom ones, and analytics that link them to your mood.",
+      "tag180": "180+ activities & events",
+      "tagCustom": "Custom activities",
+      "tagCorrelation": "Mood connections",
+      "p1": "Pick activities with taps instead of typing — a full day in 30 seconds",
+      "p2": "Edit your selection or create your own activity",
+      "p3": "Moodly shows what lifts your mood and what drains your energy"
+    },
     "collection": {
       "kicker": "Collection",
       "title": "Collect all 27 pets",
