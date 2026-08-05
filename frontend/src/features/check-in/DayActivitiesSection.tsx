@@ -44,10 +44,7 @@ function range(days: number) {
   return { from: start.toISOString(), to: new Date(end.getTime() + 86_400_000).toISOString() };
 }
 
-type View =
-  | { step: "home" }
-  | { step: "category"; category: ActivityCategory }
-  | { step: "mine" };
+type View = { step: "home" } | { step: "category"; category: ActivityCategory } | { step: "mine" };
 
 export default function DayActivitiesSection() {
   const { t } = useTranslation();
@@ -67,7 +64,7 @@ export default function DayActivitiesSection() {
     return todayEntries.find((e) => e.parameterId === paramId && isToday(e.createdAt));
   }, [paramId, todayEntries]);
 
-  const historyData = useMemo(() => (historyEntries ?? []), [historyEntries]);
+  const historyData = useMemo(() => historyEntries ?? [], [historyEntries]);
 
   const frequent = useMemo(() => pickFrequent(historyData, 6), [historyData]);
   const yesterday = useMemo(() => latestDayActivities(historyData), [historyData]);
@@ -166,9 +163,7 @@ export default function DayActivitiesSection() {
   const showFrequent =
     view.step === "home" && frequent.length > 0 && frequent.some((f) => !selectedKeys.has(f.key));
   const showYesterday =
-    view.step === "home" &&
-    yesterday.length > 0 &&
-    yesterday.some((y) => !selectedKeys.has(y.key));
+    view.step === "home" && yesterday.length > 0 && yesterday.some((y) => !selectedKeys.has(y.key));
 
   return (
     <div className="space-y-4">
@@ -212,7 +207,9 @@ export default function DayActivitiesSection() {
                           {Icon ? <Icon aria-hidden="true" className="w-4 h-4" /> : null}
                         </span>
                         <span className="truncate text-xs font-medium text-foreground">
-                          {f.custom ? f.label : t(`dayActivities.activities.${f.key.replace(".", "_")}`)}
+                          {f.custom
+                            ? f.label
+                            : t(`dayActivities.activities.${f.key.replace(".", "_")}`)}
                         </span>
                       </button>
                     );
@@ -389,7 +386,9 @@ export default function DayActivitiesSection() {
                       className="flex items-center gap-2 flex-1 min-w-0 py-1 text-left active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {active && <Check aria-hidden="true" className="w-3.5 h-3.5 text-primary" />}
-                      <span className="truncate text-xs font-medium text-foreground">{s.label}</span>
+                      <span className="truncate text-xs font-medium text-foreground">
+                        {s.label}
+                      </span>
                     </button>
                     <button
                       type="button"

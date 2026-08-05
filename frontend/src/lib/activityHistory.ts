@@ -11,7 +11,9 @@ function activityId(s: ActivitySelection): string {
   return s.key;
 }
 
-export function aggregateHistory(entries: { createdAt: string; activities?: ActivitySelection[] }[]) {
+export function aggregateHistory(
+  entries: { createdAt: string; activities?: ActivitySelection[] }[],
+) {
   const freq = new Map<string, { key: string; count: number; label?: string; custom?: boolean }>();
   const dayKeys = new Set<string>();
 
