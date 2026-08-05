@@ -11,6 +11,9 @@ export default defineConfig({
       srcDir: "src",
       filename: "sw.ts",
       strategies: "injectManifest",
+      devOptions: {
+        enabled: true,
+      },
       includeAssets: ["icons/*.svg", "icons/*.png"],
       manifest: {
         name: "Moodly — дневник настроения",

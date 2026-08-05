@@ -40,9 +40,13 @@ export function RemindersCard() {
 
   const toggleReminder = async (next: boolean) => {
     if (next) {
-      const ok = await subscribe();
-      if (!ok) {
-        setError(t("settings.pushSubscribeFailed"));
+      const result = await subscribe();
+      if (!result.ok) {
+        setError(
+          result.error === "no-vapid"
+            ? t("settings.pushNotConfigured")
+            : t("settings.pushSubscribeFailed"),
+        );
         return;
       }
     }
@@ -146,8 +150,15 @@ export function RemindersCard() {
           permission !== "denied" && (
             <button
               type="button"
-              onClick={() => {
-                void subscribe();
+              onClick={async () => {
+                const result = await subscribe();
+                if (!result.ok) {
+                  setError(
+                    result.error === "no-vapid"
+                      ? t("settings.pushNotConfigured")
+                      : t("settings.pushSubscribeFailed"),
+                  );
+                }
               }}
               disabled={subscribing}
               className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

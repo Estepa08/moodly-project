@@ -1,6 +1,15 @@
 import { useState, useCallback, useEffect } from "react";
 import { api } from "../lib/api";
 
+export type PushSubscribeError = "no-vapid" | "no-sw" | "denied" | "failed";
+
+export interface PushSubscribeResult {
+  ok: boolean;
+  error?: PushSubscribeError;
+}
+
+const SERVICE_WORKER_READY_TIMEOUT = 10_000;
+
 export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>(
     typeof Notification !== "undefined" ? Notification.permission : "denied",
@@ -28,20 +37,30 @@ export function usePushNotifications() {
     return result === "granted";
   }, []);
 
-  const subscribe = useCallback(async (): Promise<boolean> => {
-    if (typeof navigator === "undefined" || !navigator.serviceWorker) return false;
+  const subscribe = useCallback(async (): Promise<PushSubscribeResult> => {
+    if (typeof navigator === "undefined" || !navigator.serviceWorker) {
+      return { ok: false, error: "no-sw" };
+    }
 
     if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
       console.warn("[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна");
-      return false;
+      return { ok: false, error: "no-vapid" };
     }
 
     const allowed = await requestPermission();
-    if (!allowed) return false;
+    if (!allowed) return { ok: false, error: "denied" };
 
     setSubscribing(true);
     try {
-      const registration = await navigator.serviceWorker.ready;
+      const registration = await Promise.race([
+        navigator.serviceWorker.ready,
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error("service-worker-ready-timeout")),
+            SERVICE_WORKER_READY_TIMEOUT,
+          ),
+        ),
+      ]);
       const existing = await registration.pushManager.getSubscription();
       if (existing) {
         const sub = existing.toJSON();
@@ -50,7 +69,7 @@ export function usePushNotifications() {
           keys: sub.keys as { p256dh: string; auth: string },
         });
         setSubscribed(true);
-        return true;
+        return { ok: true };
       }
 
       const applicationServerKey = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY);
@@ -65,9 +84,9 @@ export function usePushNotifications() {
         keys: sub.keys as { p256dh: string; auth: string },
       });
       setSubscribed(true);
-      return true;
+      return { ok: true };
     } catch {
-      return false;
+      return { ok: false, error: "failed" };
     } finally {
       setSubscribing(false);
     }

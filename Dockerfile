@@ -16,6 +16,11 @@ RUN npm run build
 
 # Stage 3: Generate API types + build frontend
 FROM node:22-bookworm-slim AS frontend-build
+# Публичный VAPID-ключ для push-уведомлений — задаётся в build-переменных
+# DockHost. Vite инлайнит VITE_* на этапе сборки, поэтому ключ должен быть
+# доступен здесь, а не в runtime.
+ARG VITE_VAPID_PUBLIC_KEY
+ENV VITE_VAPID_PUBLIC_KEY=$VITE_VAPID_PUBLIC_KEY
 WORKDIR /workspace
 COPY --from=shared-build /workspace/shared /workspace/shared
 WORKDIR /workspace/frontend
