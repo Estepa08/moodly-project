@@ -6,7 +6,11 @@ import { enqueue } from "../lib/offline/sync";
 import { listLocalEntries } from "../lib/offline/db";
 import { uuidv7 } from "@moodly/shared";
 import type { components } from "../lib/api-types";
-import { decryptEntryPayload, encryptEntryPayload, type ActivitySelection } from "../lib/crypto/records";
+import {
+  decryptEntryPayload,
+  encryptEntryPayload,
+  type ActivitySelection,
+} from "../lib/crypto/records";
 
 type Entry = components["schemas"]["Entry"];
 

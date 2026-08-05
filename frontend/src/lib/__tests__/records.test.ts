@@ -42,10 +42,7 @@ describe("crypto/records encryption and decryption", () => {
     const payload: EntryCipherPayload = {
       value: 0,
       note: null,
-      activities: [
-        { key: "movement.walk" },
-        { key: "custom:abc", custom: true, label: "Ретрит" },
-      ],
+      activities: [{ key: "movement.walk" }, { key: "custom:abc", custom: true, label: "Ретрит" }],
     };
     const encrypted = await encryptEntryPayload(payload, dummyEntityId);
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);

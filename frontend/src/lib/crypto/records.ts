@@ -53,9 +53,7 @@ export async function decryptEntryPayload(
   }
   const activities = (raw as { activities?: unknown }).activities;
   const parsedActivities = Array.isArray(activities)
-    ? (activities as ActivitySelection[]).filter(
-        (a) => a && typeof a.key === "string",
-      )
+    ? (activities as ActivitySelection[]).filter((a) => a && typeof a.key === "string")
     : [];
   return {
     value,

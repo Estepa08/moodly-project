@@ -156,11 +156,7 @@ export default function DayActivitiesSection() {
         {filteredCatalog.map((a) => {
           const active = selectedKeys.has(a.key);
           return (
-            <Chip
-              key={a.key}
-              variant={active ? "active" : "outline"}
-              onClick={() => toggle(a.key)}
-            >
+            <Chip key={a.key} variant={active ? "active" : "outline"} onClick={() => toggle(a.key)}>
               {active && <Check aria-hidden="true" className="mr-1" />}
               {t(a.labelKey)}
             </Chip>
