@@ -927,7 +927,11 @@
       "wellbeing_slept_early": "Лёг спать рано",
       "wellbeing_mood_swing": "Перепады настроения",
       "wellbeing_confidence": "Уверенность в себе"
-    }
+    },
+    "allActivities": "Все занятия",
+    "frequent": "Часто используемые",
+    "likeYesterday": "Повторить вчерашний день",
+    "back": "Назад"
   },
   "dailyCheckIn": {
     "greetingMorning": "Доброе утро",

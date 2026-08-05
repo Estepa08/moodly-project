@@ -4,7 +4,7 @@ import { CalendarRange, Pencil, Plus } from "lucide-react";
 import { useParameters } from "../../hooks/useParameters";
 import { useEntries } from "../../hooks/useEntries";
 import { ParameterName } from "../../lib/constants";
-import { ACTIVITY_CATALOG } from "../../lib/dayActivities";
+import { ACTIVITY_CATALOG, ACTIVITY_ICONS } from "../../lib/dayActivities";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { ModalShell } from "../../components/ui/modal-shell";
@@ -63,7 +63,7 @@ export default function DayActivitiesCard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CalendarRange aria-hidden="true" className="w-4 h-4 text-accent" />
+            <CalendarRange aria-hidden="true" className="w-4 h-4 text-primary" />
             {t("dayActivities.title")}
           </CardTitle>
         </CardHeader>
@@ -72,14 +72,18 @@ export default function DayActivitiesCard() {
             <p className="text-sm text-muted-foreground">{t("dayActivities.empty")}</p>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {activities.map((a) => (
-                <span
-                  key={a.key}
-                  className="inline-flex items-center rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent"
-                >
-                  {labelFor(a.key)}
-                </span>
-              ))}
+              {activities.map((a) => {
+                const Icon = ACTIVITY_ICONS[a.key];
+                return (
+                  <span
+                    key={a.key}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
+                  >
+                    {Icon ? <Icon aria-hidden="true" className="w-3.5 h-3.5" /> : null}
+                    {labelFor(a.key)}
+                  </span>
+                );
+              })}
             </div>
           )}
           <Button variant="outline" size="sm" className="mt-3" onClick={() => setOpen(true)}>
@@ -98,8 +102,8 @@ export default function DayActivitiesCard() {
         onOpenChange={setOpen}
         icon={CalendarRange}
         iconSize={ComponentSize.Md}
-        iconBg="bg-accent/10"
-        iconColor="text-accent"
+        iconBg="bg-primary/10"
+        iconColor="text-primary"
         title={t("dayActivities.sectionHeading")}
         description={t("dayActivities.subtitle")}
       >

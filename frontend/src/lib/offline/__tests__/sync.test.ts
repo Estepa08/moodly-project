@@ -8,13 +8,7 @@ beforeEach(async () => {
   const db = getDb();
   await db.transaction(
     "rw",
-    db.outbox,
-    db.entries,
-    db.testResults,
-    db.feedback,
-    db.creature,
-    db.achievements,
-    db.syncMeta,
+    [db.outbox, db.entries, db.testResults, db.feedback, db.creature, db.achievements, db.syncMeta],
     () =>
       Promise.all([
         db.outbox.clear(),
