@@ -1,11 +1,20 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { api } from "../lib/api";
 
 export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>(
     typeof Notification !== "undefined" ? Notification.permission : "denied",
   );
+  const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !navigator.serviceWorker) return;
+    navigator.serviceWorker.ready
+      .then((registration) => registration.pushManager.getSubscription())
+      .then((sub) => setSubscribed(Boolean(sub)))
+      .catch(() => {});
+  }, []);
 
   const requestPermission = useCallback(async (): Promise<boolean> => {
     if (typeof Notification === "undefined") return false;
@@ -22,6 +31,11 @@ export function usePushNotifications() {
   const subscribe = useCallback(async (): Promise<boolean> => {
     if (typeof navigator === "undefined" || !navigator.serviceWorker) return false;
 
+    if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
+      console.warn("[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна");
+      return false;
+    }
+
     const allowed = await requestPermission();
     if (!allowed) return false;
 
@@ -35,12 +49,11 @@ export function usePushNotifications() {
           endpoint: sub.endpoint!,
           keys: sub.keys as { p256dh: string; auth: string },
         });
+        setSubscribed(true);
         return true;
       }
 
-      const applicationServerKey = urlBase64ToUint8Array(
-        import.meta.env.VITE_VAPID_PUBLIC_KEY || "",
-      );
+      const applicationServerKey = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY);
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: applicationServerKey as unknown as BufferSource,
@@ -51,6 +64,7 @@ export function usePushNotifications() {
         endpoint: sub.endpoint!,
         keys: sub.keys as { p256dh: string; auth: string },
       });
+      setSubscribed(true);
       return true;
     } catch {
       return false;
@@ -71,6 +85,7 @@ export function usePushNotifications() {
           await api.push.unsubscribe({ endpoint });
         }
       }
+      setSubscribed(false);
     } catch {
       // ignore
     }
@@ -78,6 +93,7 @@ export function usePushNotifications() {
 
   return {
     permission,
+    subscribed,
     subscribing,
     requestPermission,
     subscribe,

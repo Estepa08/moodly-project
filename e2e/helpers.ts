@@ -17,6 +17,14 @@ export async function dismissCheckIn(page: Page): Promise<void> {
   }
 }
 
+export async function skipOnboarding(page: Page): Promise<void> {
+  if (!page.url().includes("/onboarding")) return;
+  const skip = page.getByRole("button", { name: "Пропустить" });
+  await skip.waitFor({ state: "visible", timeout: 10_000 });
+  await skip.click();
+  await expect(page).toHaveURL(/\/dashboard/);
+}
+
 export async function gotoApp(page: Page, path: string): Promise<void> {
   await page.goto(path);
   await dismissCheckIn(page);
@@ -36,6 +44,7 @@ export async function register(
   await checkboxes.nth(1).check();
   await page.getByRole("button", { name: "Зарегистрироваться" }).click();
   await expect(page).not.toHaveURL(/\/register/);
+  await skipOnboarding(page);
   await dismissCheckIn(page);
   return email;
 }
@@ -46,6 +55,7 @@ export async function login(page: Page, email: string, password = E2E_PASSWORD):
   await page.locator("#password").fill(password);
   await page.getByRole("button", { name: "Войти" }).click();
   await expect(page).not.toHaveURL(/\/login/);
+  await skipOnboarding(page);
   await dismissCheckIn(page);
 }
 

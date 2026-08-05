@@ -4,6 +4,7 @@ import { useAuth } from "./hooks/useAuth";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import SyncCoordinator from "./lib/offline/SyncCoordinator";
 import Layout from "./components/Layout";
+import OnboardingGate from "./components/OnboardingGate";
 import Spinner from "./components/ui/spinner";
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
@@ -56,7 +57,9 @@ function ProtectedRoute() {
     <Layout>
       <SyncCoordinator />
       <ProtectedSuspense>
-        <Outlet />
+        <OnboardingGate>
+          <Outlet />
+        </OnboardingGate>
       </ProtectedSuspense>
     </Layout>
   );

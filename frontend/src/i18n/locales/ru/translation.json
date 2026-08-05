@@ -816,6 +816,7 @@
     "pushDenied": "Уведомления заблокированы",
     "pushDeniedDesc": "Разрешите уведомления в настройках браузера",
     "pushUnsupported": "Браузер не поддерживает push",
+    "pushSubscribeFailed": "Не удалось включить push-уведомления",
     "remindersSaveFailed": "Не удалось сохранить настройки",
     "comingSoon": "Скоро",
     "companionSection": "Питомец",

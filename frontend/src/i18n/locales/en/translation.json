@@ -812,6 +812,7 @@
     "pushDenied": "Notifications blocked",
     "pushDeniedDesc": "Allow notifications in your browser settings",
     "pushUnsupported": "This browser doesn't support push",
+    "pushSubscribeFailed": "Couldn't enable push notifications",
     "remindersSaveFailed": "Failed to save settings",
     "comingSoon": "Coming soon",
     "language": "Language",
