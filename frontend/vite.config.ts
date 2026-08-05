@@ -12,7 +12,7 @@ export default defineConfig({
       filename: "sw.ts",
       strategies: "injectManifest",
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
       includeAssets: ["icons/*.svg", "icons/*.png"],
       manifest: {
