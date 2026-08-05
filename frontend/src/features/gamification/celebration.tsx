@@ -1,6 +1,8 @@
+import { lazy } from "react";
 import { toast } from "sonner";
-import RewardMoment from "./RewardMoment";
 import i18n from "../../i18n/i18n";
+
+const RewardMoment = lazy(() => import("./RewardMoment"));
 
 const PRACTICE_REWARD_XP: Record<string, number> = {
   breathing: 10,

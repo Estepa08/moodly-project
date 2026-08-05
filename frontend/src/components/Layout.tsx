@@ -1,16 +1,18 @@
+import { lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 import { SyncStatusIndicator } from "./SyncStatusIndicator";
-import { SkipLink } from "../widgets";
+import SkipLink from "../widgets/SkipLink";
 import { Button } from "../components/ui/button";
 import Sidebar from "../layout/Sidebar";
-import LayoutModals from "../layout/LayoutModals";
 import BottomNav from "../layout/BottomNav";
-import FloatingCompanion from "../features/gamification/FloatingCompanion";
 import Breadcrumbs from "../components/ui/breadcrumbs";
+
+const FloatingCompanion = lazy(() => import("../features/gamification/FloatingCompanion"));
+const LayoutModals = lazy(() => import("../layout/LayoutModals"));
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
@@ -86,8 +88,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <BottomNav />
         </div>
 
-        <FloatingCompanion />
-        <LayoutModals />
+        <Suspense fallback={null}>
+          <FloatingCompanion />
+        </Suspense>
+        <Suspense fallback={null}>
+          <LayoutModals />
+        </Suspense>
       </div>
     </div>
   );

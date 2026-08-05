@@ -6,10 +6,12 @@
 
 ## Стек
 
-- Backend: Go 1.22+
-- Frontend: React + TypeScript + Vite
+- Backend: Fastify + TypeScript (Node 22), Prisma ORM
+- Frontend: React + TypeScript + Vite (PWA, i18n, vitest)
 - Database: PostgreSQL + Prisma
-- Infrastructure: SST (Serverless Stack) на AWS
+- Shared: `shared/` — пакет `@moodly/shared` (типы/утилиты для backend и frontend)
+- API-контракт: `api-contract/` — TypeSpec → OpenAPI (источник истины)
+- Infrastructure: Docker (монолитный `Dockerfile`: frontend + backend + Caddy), деплой на RU-хостинге DockHost (ветка `russia`), CI/CD — GitHub Actions (`ci.yml`, `e2e.yml`)
 
 ## Скиллы
 

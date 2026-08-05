@@ -12,8 +12,8 @@ import ResetPasswordPage from "./routes/reset-password";
 import PrivacyPage from "./routes/privacy";
 import TermsPage from "./routes/terms";
 import LandingPage from "./routes/landing";
-import Dashboard from "./routes/dashboard";
 
+const Dashboard = lazy(() => import("./routes/dashboard"));
 const OnboardingPage = lazy(() => import("./routes/onboarding"));
 const TestsPage = lazy(() => import("./routes/tests"));
 const TestDetailPage = lazy(() => import("./routes/test-detail"));

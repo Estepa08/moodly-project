@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -17,9 +17,12 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import PetAvatar from "../features/gamification/PetAvatar";
 import { useLoginForm } from "../hooks/useLoginForm";
 import { cn } from "../lib/utils";
+
+const PetAvatar = lazy(() =>
+  import("../features/gamification/PetAvatar").then((m) => ({ default: m.default })),
+);
 
 const COLLECTION_PET_TYPES = [
   "puff",
@@ -56,7 +59,7 @@ function useLandingSeo() {
 }
 
 function LangSwitch({ className }: { className?: string }) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const items = ["ru", "en"] as const;
   return (
     <div className={cn("flex items-center gap-1 text-xs", className)}>
@@ -142,7 +145,9 @@ function HeroMock() {
         </div>
 
         <div className="flex items-center gap-4">
-          <PetAvatar petType="puff" size="lg" plain interactive ariaLabel="Moodly companion" />
+          <Suspense fallback={<div className="w-[96px] h-[96px]" aria-hidden="true" />}>
+            <PetAvatar petType="puff" size="lg" plain interactive ariaLabel="Moodly companion" />
+          </Suspense>
           <div className="space-y-1">
             <p className="text-sm font-semibold text-foreground">
               {t("landing.hero.mockCompanion")}
@@ -328,9 +333,22 @@ function LandingCollection() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-          {COLLECTION_PET_TYPES.map((type) => (
-            <PetAvatar key={type} petType={type} size="sm" plain ariaLabel={type} />
-          ))}
+          <Suspense
+            fallback={
+              <div
+                className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+                aria-hidden="true"
+              >
+                {COLLECTION_PET_TYPES.map((type) => (
+                  <div key={type} className="w-[48px] h-[48px]" />
+                ))}
+              </div>
+            }
+          >
+            {COLLECTION_PET_TYPES.map((type) => (
+              <PetAvatar key={type} petType={type} size="sm" plain ariaLabel={type} />
+            ))}
+          </Suspense>
           <span className="w-[60px] h-[60px] rounded-full bg-white flex items-center justify-center text-sm font-bold text-primary shadow-neumorphic-sm">
             +15
           </span>
@@ -511,6 +529,7 @@ function LandingFooter() {
 }
 
 export default function LandingPage() {
+  const { t } = useTranslation();
   useLandingSeo();
   return (
     <div className="min-h-screen bg-background">
