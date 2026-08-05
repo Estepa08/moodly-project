@@ -17,6 +17,7 @@ import {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  setKeysSchema,
 } from "../lib/validation.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
@@ -106,6 +107,19 @@ export default async function authRoutes(fastify: FastifyInstance) {
     await authService.revokeAllUserTokens(request.userId);
     clearRefreshCookie(reply);
   });
+
+  fastify.post(
+    "/auth/set-keys",
+    { preHandler: [fastify.authenticate] },
+    async (request, reply) => {
+      const parsed = setKeysSchema.safeParse(request.body);
+      if (!parsed.success) {
+        throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+      }
+      const result = await userService.setE2EKeys(request.userId, parsed.data);
+      return reply.code(200).send(result);
+    },
+  );
 
   fastify.post("/auth/forgot-password", async (request) => {
     const parsed = forgotPasswordSchema.safeParse(request.body);

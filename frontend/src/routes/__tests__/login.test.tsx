@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, type Mock } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { renderWithProviders, screen, waitFor } from "../../test/test-utils";
 import LoginPage from "../login";
 import userEvent from "@testing-library/user-event";
+import { createRegistrationKeys } from "../../lib/crypto/auth-keys";
+import { clearSessionKey } from "../../lib/crypto/session";
 
 vi.mock("../../lib/api", () => ({
   api: {
@@ -10,6 +12,7 @@ vi.mock("../../lib/api", () => ({
       register: vi.fn(),
       logout: vi.fn(),
       refresh: vi.fn().mockRejectedValue(new Error("no session")),
+      setKeys: vi.fn(),
     },
   },
   setToken: vi.fn(),
@@ -21,6 +24,7 @@ import { api } from "../../lib/api";
 describe("LoginPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    clearSessionKey();
   });
 
   it("renders the login form", () => {
@@ -45,7 +49,13 @@ describe("LoginPage", () => {
   });
 
   it("submits form and navigates on success", async () => {
-    (api.auth.login as Mock).mockResolvedValueOnce({ accessToken: "token123", user: { id: "1" } });
+    const keys = await createRegistrationKeys("secret", "CODE-1234");
+    (api.auth.login as Mock).mockResolvedValueOnce({
+      accessToken: "token123",
+      user: { id: "1" },
+      wrappedKey: keys.wrappedKey,
+      keySalt: keys.keySalt,
+    });
 
     const user = userEvent.setup();
     renderWithProviders(<LoginPage />);
@@ -62,6 +72,28 @@ describe("LoginPage", () => {
         password: "secret",
       });
     });
+  });
+
+  it("migrates a legacy account (no E2E keys) and shows the recovery screen", async () => {
+    (api.auth.login as Mock).mockResolvedValueOnce({
+      accessToken: "token123",
+      user: { id: "1" },
+    });
+    (api.auth.setKeys as Mock).mockResolvedValue({ ok: true });
+
+    const user = userEvent.setup();
+    renderWithProviders(<LoginPage />);
+
+    await user.type(screen.getByLabelText("Email"), "legacy@example.com");
+    await user.type(screen.getByLabelText("Password"), "secret");
+    await user.click(screen.getByRole("button", { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(api.auth.setKeys).toHaveBeenCalledTimes(1);
+    });
+    expect(
+      screen.getByText(/your account has been upgraded/i),
+    ).toBeInTheDocument();
   });
 
   it("shows error message on failure", async () => {

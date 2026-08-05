@@ -110,6 +110,22 @@ model ResetInfoResponse {
   recoverySalt: string | null;
 }
 
+@doc("E2E-ключи для миграции legacy-учётки (созданной до внедрения шифрования)")
+model SetKeysRequest {
+  @doc("DEK, зашифрованный ключом из пароля")
+  wrappedKey: string;
+  @doc("Соль для вывода KEK из пароля")
+  keySalt: string;
+  @doc("DEK, зашифрованный ключом из recovery-кода")
+  recoveryWrappedKey: string;
+  @doc("Соль для вывода KEK из recovery-кода")
+  recoverySalt: string;
+}
+
+model SetKeysOk {
+  ok: boolean;
+}
+
 // ---------- Parameter ----------
 
 @doc("Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.")

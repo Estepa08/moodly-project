@@ -21,6 +21,13 @@ export interface ResetPasswordBody {
   keySalt: string;
 }
 
+export interface SetKeysBody {
+  wrappedKey: string;
+  keySalt: string;
+  recoveryWrappedKey: string;
+  recoverySalt: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
   user: User;
@@ -284,6 +291,11 @@ export const api = {
         "/auth/reset-info",
         { method: "POST", body: JSON.stringify(body) },
       ),
+    setKeys: (body: SetKeysBody) =>
+      request<{ ok: boolean }>("/auth/set-keys", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
   },
   users: {
     me: () => request<User>("/users/me"),

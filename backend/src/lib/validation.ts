@@ -36,6 +36,13 @@ export const resetPasswordSchema = z.object({
   keySalt: keyField,
 });
 
+export const setKeysSchema = z.object({
+  wrappedKey: keyField,
+  keySalt: keyField,
+  recoveryWrappedKey: keyField,
+  recoverySalt: keyField,
+});
+
 export const updateMeSchema = z.object({
   name: z.string().max(100).optional(),
 });

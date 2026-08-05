@@ -168,6 +168,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/set-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Сохранить E2E-ключи для legacy-учётки (только если ключей ещё нет); требователен к авторизации */
+        post: operations["Auth_setKeys"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/cba/common-items": {
         parameters: {
             query?: never;
@@ -991,6 +1008,20 @@ export interface components {
             /** @description Был ли достигнут новый уровень */
             leveledUp: boolean;
         };
+        SetKeysOk: {
+            ok: boolean;
+        };
+        /** @description E2E-ключи для миграции legacy-учётки (созданной до внедрения шифрования) */
+        SetKeysRequest: {
+            /** @description DEK, зашифрованный ключом из пароля */
+            wrappedKey: string;
+            /** @description Соль для вывода KEK из пароля */
+            keySalt: string;
+            /** @description DEK, зашифрованный ключом из recovery-кода */
+            recoveryWrappedKey: string;
+            /** @description Соль для вывода KEK из recovery-кода */
+            recoverySalt: string;
+        };
         /** @description Психологический тест, построенный на справочниках/книгах по психологии. Шаблон: вопросы + правила подсчёта баллов. */
         Test: {
             id: string;
@@ -1318,6 +1349,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResetPasswordResponse"];
+                };
+            };
+        };
+    };
+    Auth_setKeys: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetKeysRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetKeysOk"];
                 };
             };
         };

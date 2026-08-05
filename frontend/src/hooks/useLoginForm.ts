@@ -4,10 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { api } from "../lib/api";
 import { getErrorMessage } from "../lib/error-messages";
-import { unlockDataKeyFromLogin } from "../lib/crypto/auth-keys";
+import { unlockDataKeyFromLogin, createRegistrationKeys } from "../lib/crypto/auth-keys";
+import { generateRecoveryCode } from "../lib/crypto/keys";
 import { setSessionUserId } from "../lib/crypto/session";
 
 const DEMO_MODE = import.meta.env.DEV;
+
+export type LoginStep = "form" | "recovery";
 
 export function useLoginForm() {
   const { t } = useTranslation();
@@ -18,27 +21,39 @@ export function useLoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [demoLoading, setDemoLoading] = useState(false);
+  const [step, setStep] = useState<LoginStep>("form");
+  const [recoveryCode, setRecoveryCode] = useState("");
 
-  async function authenticate(loginPassword: string, loginEmail: string): Promise<boolean> {
+  async function authenticate(loginPassword: string, loginEmail: string, isDemo: boolean) {
     const res = await api.auth.login({ email: loginEmail, password: loginPassword });
+    // Токен нужен для последующего авторизованного set-keys (миграция legacy).
+    login(res.accessToken);
+    setSessionUserId(res.user.id);
+
     if (res.wrappedKey && res.keySalt) {
       await unlockDataKeyFromLogin(loginPassword, res.wrappedKey, res.keySalt);
-      setSessionUserId(res.user.id);
-    } else {
-      // Аккаунты без E2E-ключей (старые) — работаем без локального шифрования.
-      setError(t("login.legacyAccount"));
-      return false;
+      navigate("/dashboard");
+      return;
     }
-    login(res.accessToken);
-    navigate("/dashboard");
-    return true;
+
+    // Legacy-учётка (создана до E2E-шифрования): генерируем DEK и recovery-код,
+    // сохраняем ключи на сервере. Демо проходит без экрана recovery.
+    const code = generateRecoveryCode();
+    const keys = await createRegistrationKeys(loginPassword, code);
+    await api.auth.setKeys(keys);
+    if (isDemo) {
+      navigate("/dashboard");
+    } else {
+      setRecoveryCode(code);
+      setStep("recovery");
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
-      await authenticate(password, email);
+      await authenticate(password, email, false);
     } catch (err) {
       setError(getErrorMessage(err, t));
     }
@@ -49,12 +64,16 @@ export function useLoginForm() {
     setDemoLoading(true);
     setError("");
     try {
-      await authenticate("demo123", "demo@moodly.app");
+      await authenticate("demo123", "demo@moodly.app", true);
     } catch (err) {
       setError(getErrorMessage(err, t));
     } finally {
       setDemoLoading(false);
     }
+  };
+
+  const handleRecoveryConfirmed = () => {
+    navigate("/dashboard");
   };
 
   return {
@@ -65,7 +84,10 @@ export function useLoginForm() {
     error,
     demoMode: DEMO_MODE,
     demoLoading,
+    step,
+    recoveryCode,
     handleSubmit,
     handleDemo,
+    handleRecoveryConfirmed,
   };
 }

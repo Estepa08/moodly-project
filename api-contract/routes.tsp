@@ -36,6 +36,11 @@ interface Auth {
   @post
   @route("/reset-password")
   resetPassword(@body body: ResetPasswordRequest): ResetPasswordResponse;
+
+  @post
+  @route("/set-keys")
+  @doc("Сохранить E2E-ключи для legacy-учётки (только если ключей ещё нет); требователен к авторизации")
+  setKeys(@body body: SetKeysRequest): SetKeysOk;
 }
 
 @tag("Users")

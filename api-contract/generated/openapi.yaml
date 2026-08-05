@@ -177,6 +177,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ResetPasswordRequest'
+  /auth/set-keys:
+    post:
+      operationId: Auth_setKeys
+      description: Сохранить E2E-ключи для legacy-учётки (только если ключей ещё нет); требователен к авторизации
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetKeysOk'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetKeysRequest'
   /cba/common-items:
     get:
       operationId: Cba_listCommonItems
@@ -1529,6 +1549,34 @@ components:
           type: boolean
           description: Был ли достигнут новый уровень
       description: Результат награды за практику
+    SetKeysOk:
+      type: object
+      required:
+        - ok
+      properties:
+        ok:
+          type: boolean
+    SetKeysRequest:
+      type: object
+      required:
+        - wrappedKey
+        - keySalt
+        - recoveryWrappedKey
+        - recoverySalt
+      properties:
+        wrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом из пароля
+        keySalt:
+          type: string
+          description: Соль для вывода KEK из пароля
+        recoveryWrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом из recovery-кода
+        recoverySalt:
+          type: string
+          description: Соль для вывода KEK из recovery-кода
+      description: E2E-ключи для миграции legacy-учётки (созданной до внедрения шифрования)
     Test:
       type: object
       required:

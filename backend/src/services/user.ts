@@ -22,6 +22,13 @@ export interface LoginInput {
   password: string;
 }
 
+export interface SetKeysInput {
+  wrappedKey: string;
+  keySalt: string;
+  recoveryWrappedKey: string;
+  recoverySalt: string;
+}
+
 function stripUser(user: {
   id: string;
   email: string;
@@ -93,6 +100,26 @@ export const userService = {
       wrappedKey: user.wrappedKey,
       keySalt: user.keySalt,
     };
+  },
+
+  // Миграция legacy-учёток (созданных до E2E-шифрования): задаём E2E-ключи,
+  // только если их ещё нет. Предотвращает перезапись существующих ключей.
+  async setE2EKeys(userId: string, input: SetKeysInput) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundError("User");
+    if (user.wrappedKey) {
+      throw new AppError("KEYS_ALREADY_SET", 409, "Encryption keys already configured");
+    }
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        wrappedKey: input.wrappedKey,
+        keySalt: input.keySalt,
+        recoveryWrappedKey: input.recoveryWrappedKey,
+        recoverySalt: input.recoverySalt,
+      },
+    });
+    return { ok: true as const };
   },
 
   async findById(id: string) {
