@@ -20,6 +20,7 @@ import notificationRoutes from "./routes/notifications.js";
 import syncRoutes from "./routes/sync.js";
 import adminRoutes from "./routes/admin.js";
 import clientErrorRoutes from "./routes/client-errors.js";
+import { ensureDefaultParameters } from "./services/parameter.js";
 import { setErrorHandler } from "./lib/handle-error.js";
 import { env } from "./lib/env.js";
 import { reminderScheduler } from "./jobs/reminder-scheduler.js";
@@ -81,6 +82,16 @@ await fastify.register(adminRoutes);
 await fastify.register(clientErrorRoutes);
 
 setErrorHandler(fastify);
+
+// Гарантируем наличие базовых параметров (Anxiety, Mood, Energy, Sleep,
+// Gratitude, Sleep Hygiene, Distortion Quiz, Thought Release, Day Activities)
+// в любой БД — idempotent, без деструктивного ре-сида. Ошибка не должна
+// ронять старт HTTP-сервера на уже существующей БД.
+try {
+  await ensureDefaultParameters();
+} catch (err) {
+  fastify.log.error({ err }, "failed to ensure default parameters");
+}
 
 // Логируем необработанные отказы/исключения, чтобы тихое падение процесса
 // было видно в логах Render вместо внезапного 502 без причин.
