@@ -1,8 +1,5 @@
 {
   "common": {
-    "login": {
-      "legacyAccount": "Legacy account detected. Please log in with your credentials."
-    },
     "register": {
       "recoveryEmailSent": "Recovery email has been sent.",
       "recoveryCodeInvalid": "Recovery code is invalid.",
@@ -88,7 +85,10 @@
     "disclaimerAccept": "I understand",
     "forgotPassword": "Forgot password?",
     "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service"
+    "termsOfService": "Terms of Service",
+    "legacyAccount": "Legacy account detected. Please log in with your credentials.",
+    "legacyIntro": "Your account has been upgraded: your data is now encrypted on your device. Please save your recovery code.",
+    "legacyRecoveryNote": "This recovery code is used to regain access to your data if you forget your password. Keep it somewhere safe."
   },
   "register": {
     "title": "Create Account",
@@ -1296,11 +1296,623 @@
     },
     "footer": {
       "about": "A mood diary and self-help practices.",
-      "disclaimer": "Moodly is a self-assessment tool and does not replace professional advice. If you're not feeling well, please reach out to a professional."
+      "disclaimer": "Moodly is a self-assessment tool and does not replace professional advice. If you're not feeling well, please reach out to a professional.",
+      "diary": "Mood diary",
+      "anxiety": "Anxiety test"
     },
     "seo": {
       "title": "Moodly — a mood diary that cares about you",
       "description": "Track your mood, energy, sleep and anxiety in half a minute. Practices, self-discovery tests and a companion pet. Private, per 152-FZ."
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page doesn't exist or has been moved.",
+    "home": "Go home",
+    "signIn": "Sign in"
+  },
+  "seo": {
+    "nav": {
+      "moodDiary": "Mood diary",
+      "anxietyTest": "Anxiety test",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "start": "Start free",
+      "blog": "Blog"
+    },
+    "footer": {
+      "about": "A mood diary that cares about you — 30 seconds a day.",
+      "product": "Product",
+      "company": "Company"
+    }
+  },
+  "seoPages": {
+    "moodDiary": {
+      "meta": {
+        "title": "Mood Diary — Moodly",
+        "description": "Track mood, energy, sleep and anxiety in 30 seconds a day and see what really affects them. Private, data stored in RU per 152-FZ."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Mood diary"
+      },
+      "hero": {
+        "title": "Mood diary",
+        "accent": "understand your state in 30 seconds a day",
+        "sub1": "Track mood, energy, sleep and anxiety — and see what really affects them.",
+        "sub2": "Your entries are encrypted and stored in RU per 152-FZ.",
+        "ctaPrimary": "Start journaling free",
+        "ctaSecondary": "How it works"
+      },
+      "mock": {
+        "title": "Today",
+        "subtitle": "Mood 8 · Energy 7",
+        "row1": "Mood: calm, slightly joyful",
+        "row2": "What helped: a walk in fresh air",
+        "row3": "Streak growing — 5 days"
+      },
+      "stats": {
+        "1": {
+          "value": "30 sec",
+          "label": "per daily check-in"
+        },
+        "2": {
+          "value": "4",
+          "label": "metrics: mood, energy, sleep, anxiety"
+        },
+        "3": {
+          "value": "27",
+          "label": "companion pets"
+        },
+        "4": {
+          "value": "152-FZ",
+          "label": "data stored in RU"
+        }
+      },
+      "why": {
+        "kicker": "Why",
+        "title": "Why keep a mood diary",
+        "text1": "A paper diary shows no trends, and memory loses context.",
+        "text2": "Moodly spots patterns for you — calmly and privately.",
+        "steps": {
+          "1": {
+            "title": "Fill it in 30 sec",
+            "text": "Log your state. No long texts needed — even a single word works."
+          },
+          "2": {
+            "title": "Moodly sees trends",
+            "text": "What affects you: sleep, load, time of day. Trends and periods at a glance."
+          },
+          "3": {
+            "title": "Keep the habit",
+            "text": "A pet, streaks and XP make regularity desirable — you won't quit after week two."
+          }
+        }
+      },
+      "params": {
+        "kicker": "What to track",
+        "title": "4 metrics of your state",
+        "1": {
+          "title": "Mood",
+          "sub": "emotional background"
+        },
+        "2": {
+          "title": "Energy",
+          "sub": "charge and activity"
+        },
+        "3": {
+          "title": "Sleep",
+          "sub": "sleep quality"
+        },
+        "4": {
+          "title": "Anxiety",
+          "sub": "tension level"
+        }
+      },
+      "how": {
+        "kicker": "Get started",
+        "title": "How to start a mood diary",
+        "cta": "Start free — it takes 30 seconds",
+        "steps": {
+          "1": {
+            "title": "Register",
+            "text": "no email confirmation, frictionless sign-up"
+          },
+          "2": {
+            "title": "Choose your pet",
+            "text": "a companion that levels up with you"
+          },
+          "3": {
+            "title": "First check-in",
+            "text": "30 seconds — and your state is captured"
+          }
+        }
+      },
+      "faq": {
+        "1": {
+          "q": "Is it free?",
+          "a": "Yes, the core diary and all practices are free. Premium features come later, with no paywall at launch."
+        },
+        "2": {
+          "q": "How private are my entries?",
+          "a": "Entries are encrypted on your device, the key stays with you. Data is stored on servers in Russia per 152-FZ."
+        },
+        "3": {
+          "q": "Do I need internet?",
+          "a": "No. The app works offline and syncs when you're back online."
+        },
+        "title": "Frequently asked questions"
+      },
+      "cta": {
+        "title": "Start spotting patterns",
+        "text": "Most diaries forget about trends — we won't let you lose them.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service. It does not diagnose or replace professional care.",
+        "2": "If your mood stays low or anxiety bothers you, reach out to a doctor or psychologist."
+      }
+    },
+    "anxietyTest": {
+      "meta": {
+        "title": "Anxiety test — assess your level in 3 minutes",
+        "description": "Take a verified 33-question anxiety test. Get a clear result and guidance. Private."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Anxiety test"
+      },
+      "hero": {
+        "title": "Anxiety test",
+        "accent": "assess your anxiety level in 3 minutes",
+        "sub1": "33 questions about tension, worry and physical signs.",
+        "sub2": "It takes about 3 minutes, and your result is stored encrypted.",
+        "ctaPrimary": "Take the test free",
+        "ctaSecondary": "What the result shows"
+      },
+      "mock": {
+        "title": "Question 5 of 33",
+        "progress": "progress 4/33",
+        "question": "Over the last 2 weeks, how often…",
+        "option": {
+          "1": "did you feel anxious or tense?",
+          "2": "was it hard to relax?",
+          "3": "did physical signs bother you?"
+        },
+        "selected": "A bit more often than usual"
+      },
+      "about": {
+        "kicker": "About",
+        "title": "What it is and how it works",
+        "text1": "A verified self-assessment tool for anxiety. It is a self-discovery test, not a medical diagnosis.",
+        "text2": "The result is a guide, not a diagnosis — and never replaces a professional."
+      },
+      "scale": {
+        "title": "What the result means",
+        "range": {
+          "1": "Low level",
+          "2": "Moderate (normal)",
+          "3": "Elevated — consider seeing a professional"
+        }
+      },
+      "how": {
+        "kicker": "How it goes",
+        "title": "How the test works",
+        "steps": {
+          "1": {
+            "title": "Answer the questions",
+            "text": "Rate symptom frequency over the last 2 weeks. There are no wrong answers."
+          },
+          "2": {
+            "title": "Get your result",
+            "text": "An anxiety level and range description. Gentle wording, no diagnoses."
+          },
+          "3": {
+            "title": "Track your dynamics",
+            "text": "Retake later and see how your level changes."
+          }
+        }
+      },
+      "trust": {
+        "private": {
+          "title": "Private and confidential",
+          "text": "Your result is stored encrypted, the key stays with you. Data in RU per 152-FZ."
+        },
+        "care": {
+          "title": "No pressure, no diagnoses",
+          "text": "Gentle wording and care, not “you have anxiety.” This is a self-help tool."
+        }
+      },
+      "faq": {
+        "1": {
+          "q": "Is this a medical test?",
+          "a": "No. It is a self-assessment tool — it helps you notice your state but does not diagnose or replace a doctor."
+        },
+        "2": {
+          "q": "How long does it take?",
+          "a": "About 3 minutes. You can review answers before saving the result."
+        },
+        "title": "Frequently asked questions"
+      },
+      "cta": {
+        "title": "Learn your anxiety level",
+        "text": "3 minutes — and you get a clear picture instead of vague worry.",
+        "button": "Take the test free"
+      },
+      "disclaimer": {
+        "1": "The anxiety test is a self-check tool, not a medical diagnosis. It does not diagnose or replace a professional.",
+        "2": "If anxiety bothers you constantly or gets in the way of life, see a doctor or psychologist."
+      }
+    },
+    "thinkingHabits": {
+      "meta": {
+        "title": "Thinking habits test — discover your patterns",
+        "description": "Take a self-discovery test and learn your thinking habits. The “Thinking Profile” radar shows which patterns are typical for you. Private."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Thinking habits test"
+      },
+      "hero": {
+        "title": "Thinking habits test",
+        "accent": "discover your thinking patterns",
+        "sub1": "A short self-discovery test about how you think about yourself and events.",
+        "sub2": "The result is a “Thinking Profile” radar with your patterns. No diagnoses — just self-understanding."
+      },
+      "mock": {
+        "title": "Thinking profile",
+        "subtitle": "how you tend to think",
+        "axis": {
+          "1": {
+            "name": "Catastrophizing",
+            "desc": "tendency to blow things out of proportion"
+          },
+          "2": {
+            "name": "All-or-nothing",
+            "desc": "everything or nothing"
+          },
+          "3": {
+            "name": "Fortune telling",
+            "desc": "expecting the worst outcome"
+          },
+          "4": {
+            "name": "Overgeneralizing",
+            "desc": "applying one case to everything"
+          }
+        }
+      },
+      "about": {
+        "kicker": "About",
+        "title": "What is the thinking habits test",
+        "text1": "Thinking habits are stable ways of interpreting events. Knowing them makes it easier to notice and change them.",
+        "text2": "It is a self-discovery tool: it shows tendencies, not a diagnosis."
+      },
+      "patterns": {
+        "1": {
+          "title": "Catastrophizing",
+          "text": "Expecting the worst and blowing up the scale of a problem."
+        },
+        "2": {
+          "title": "All-or-nothing",
+          "text": "Judging in extremes, without the middle ground."
+        },
+        "3": {
+          "title": "Fortune telling",
+          "text": "Expecting a negative outcome before it happens."
+        },
+        "4": {
+          "title": "Overgeneralizing",
+          "text": "Applying one bad case to everything at once."
+        }
+      },
+      "how": {
+        "kicker": "How it goes",
+        "title": "How the test works",
+        "steps": {
+          "1": {
+            "title": "Answer the questions",
+            "text": "Rate how typical different thinking patterns are for you."
+          },
+          "2": {
+            "title": "Get your radar",
+            "text": "The “Thinking Profile” shows your leading habits at a glance."
+          },
+          "3": {
+            "title": "Track your progress",
+            "text": "Retake later and see how your profile changes."
+          }
+        }
+      },
+      "trust": {
+        "private": {
+          "title": "Private and confidential",
+          "text": "Your result is stored encrypted, the key stays with you. Data in RU per 152-FZ."
+        },
+        "care": {
+          "title": "No diagnoses, no pressure",
+          "text": "Gentle wording and care. This is self-discovery, not a verdict."
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "1": {
+          "q": "Is this a medical test?",
+          "a": "No. It is a self-discovery test — it helps you see your thinking habits but does not diagnose or replace a professional."
+        },
+        "2": {
+          "q": "How long does it take?",
+          "a": "About 4 minutes. You can review answers before saving the result."
+        }
+      },
+      "cta": {
+        "title": "Discover your thinking profile",
+        "text": "Understanding yourself is the first step to a calmer relationship with your thoughts.",
+        "button": "Take the test free"
+      },
+      "disclaimer": {
+        "1": "The thinking habits test is a self-discovery tool, not a medical diagnosis.",
+        "2": "If you are concerned about your state, see a doctor or psychologist."
+      }
+    },
+    "sleepHygiene": {
+      "meta": {
+        "title": "Sleep hygiene: how sleep affects mood and anxiety",
+        "description": "Simple sleep hygiene rules: regularity, light, screens and relaxation. Learn how to improve sleep and wellbeing."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Sleep hygiene"
+      },
+      "hero": {
+        "title": "Sleep hygiene",
+        "accent": "how sleep affects mood and anxiety",
+        "text": "Lack of sleep directly affects mood, energy and anxiety. Simple habits help you sleep better within days.",
+        "ctaPrimary": "Improve sleep with Moodly",
+        "ctaSecondary": "Mood diary"
+      },
+      "mock": {
+        "title": "Sleep hygiene plan",
+        "item": {
+          "1": "Go to bed and wake up at the same time",
+          "2": "Keep the phone out of bed",
+          "3": "Skip caffeine after lunch",
+          "4": "Relax 30 minutes before bed"
+        }
+      },
+      "why": {
+        "kicker": "Why",
+        "title": "Why sleep matters",
+        "text1": "Sleep restores emotions and energy. Poor sleep fuels irritability and anxiety.",
+        "text2": "Tracking sleep alongside mood makes the link easier to see.",
+        "points": {
+          "1": {
+            "title": "Mood",
+            "text": "When sleep-deprived, even small problems feel bigger."
+          },
+          "2": {
+            "title": "Energy",
+            "text": "Sleep quality determines your charge for the whole day."
+          },
+          "3": {
+            "title": "Anxiety",
+            "text": "Enough sleep helps you respond to stress more calmly."
+          }
+        }
+      },
+      "habits": {
+        "kicker": "Rules",
+        "title": "Simple sleep hygiene rules",
+        "items": {
+          "1": {
+            "title": "Regularity",
+            "text": "Go to bed and wake at the same time, even on weekends."
+          },
+          "2": {
+            "title": "Light",
+            "text": "Dim bright lights in the evening, especially before bed."
+          },
+          "3": {
+            "title": "Screens",
+            "text": "Avoid the phone or laptop right before sleep."
+          },
+          "4": {
+            "title": "Caffeine",
+            "text": "Limit caffeine and energy drinks in the afternoon."
+          },
+          "5": {
+            "title": "Relaxation",
+            "text": "Breathing or a thought journal help you slow down before bed."
+          },
+          "6": {
+            "title": "Dark, quiet, cool",
+            "text": "Your bedroom should be dark, quiet and cool."
+          }
+        }
+      },
+      "how": {
+        "kicker": "How Moodly helps",
+        "title": "How Moodly helps you sleep better",
+        "steps": {
+          "1": {
+            "title": "Track your sleep",
+            "text": "Log sleep quality alongside mood in 30 seconds."
+          },
+          "2": {
+            "title": "See the link",
+            "text": "Trends show how sleep affects your state."
+          },
+          "3": {
+            "title": "Practice",
+            "text": "The “sleep hygiene” practice with reminders helps build the habit."
+          }
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "1": {
+          "q": "How many days until sleep improves?",
+          "a": "First changes often appear within a few days of regularity. Consistency matters more than perfection."
+        },
+        "2": {
+          "q": "Should I keep a sleep diary?",
+          "a": "Yes. Logging sleep and mood reveals patterns you can't see by eye."
+        },
+        "3": {
+          "q": "Is this a substitute for a doctor?",
+          "a": "No. It is a self-help tool. For persistent sleep problems, see a professional."
+        }
+      },
+      "cta": {
+        "title": "Improve sleep and wellbeing",
+        "text": "Start tracking sleep and mood — and notice what really helps.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service.",
+        "2": "If you have persistent sleep problems, see a doctor."
+      }
+    },
+    "anxietySelfHelp": {
+      "meta": {
+        "title": "Anxiety self-help — simple practices",
+        "description": "Simple practices to cope with anxiety: breathing, grounding, a thought journal and sleep hygiene. Calm and private."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Anxiety self-help"
+      },
+      "hero": {
+        "title": "Anxiety",
+        "accent": "simple practices to cope with it",
+        "sub1": "Anxiety is a signal, not a verdict. Gentle practices help you start coping calmly and without pressure.",
+        "sub2": "Breathing, grounding and a thought journal are short, genuinely useful tools."
+      },
+      "mock": {
+        "title": "Practice: breathing",
+        "text": "A simple exercise to switch your nervous system toward calm:",
+        "stepTitle": "4 steps",
+        "step": {
+          "1": "Inhale — count to 4",
+          "2": "Hold — count to 4",
+          "3": "Exhale — count to 6",
+          "4": "Repeat 5 times"
+        }
+      },
+      "practices": {
+        "kicker": "Practices",
+        "title": "4 self-help practices for anxiety",
+        "items": {
+          "1": {
+            "title": "Breathing",
+            "text": "Slow breathing eases tension in the moment. Moodly has a guided timer."
+          },
+          "2": {
+            "title": "Thought journal",
+            "text": "Write anxious thoughts down — they often lose their power when spoken."
+          },
+          "3": {
+            "title": "Gratitude",
+            "text": "A few notes of gratitude each day gently shift focus away from threat."
+          },
+          "4": {
+            "title": "Sleep hygiene",
+            "text": "Sleep directly affects anxiety. Get your sleep routine in order."
+          }
+        }
+      },
+      "help": {
+        "kicker": "Support",
+        "title": "When to see a professional",
+        "text1": "Self-help is a great first step, but not a substitute for professional support.",
+        "text2": "Talk to a professional if anxiety gets in the way of life or won't ease.",
+        "signs": {
+          "1": {
+            "title": "Often and intense",
+            "text": "Anxiety rarely lets go and interferes with daily life."
+          },
+          "2": {
+            "title": "Physical",
+            "text": "Sleep, appetite or physical signs are affected."
+          },
+          "3": {
+            "title": "Long-lasting",
+            "text": "Symptoms last for weeks and don't ease over time."
+          }
+        }
+      },
+      "how": {
+        "kicker": "How Moodly helps",
+        "title": "How Moodly supports you",
+        "steps": {
+          "1": {
+            "title": "Log your state",
+            "text": "Anxiety is tracked next to mood — you see its dynamics."
+          },
+          "2": {
+            "title": "Practice",
+            "text": "Built-in practices and tests give structure without pressure."
+          },
+          "3": {
+            "title": "Track progress",
+            "text": "Trends show what actually works for you."
+          }
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "1": {
+          "q": "Is this treatment for anxiety?",
+          "a": "No. Moodly is a self-help and self-discovery tool. It helps you notice and gently work with your state."
+        },
+        "2": {
+          "q": "What if my anxiety is strong?",
+          "a": "See a professional. Self-help practices do not replace professional support."
+        },
+        "3": {
+          "q": "How long does a practice take?",
+          "a": "Even a minute or two of breathing or one journal entry already helps."
+        }
+      },
+      "cta": {
+        "title": "Start caring for yourself",
+        "text": "Calm is a skill trained in small steps. Start today.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service. It does not treat or diagnose.",
+        "2": "For strong or prolonged anxiety, see a doctor or psychologist."
+      }
+    },
+    "blog": {
+      "meta": {
+        "title": "Mood & self-help blog",
+        "description": "Articles about mood diaries, anxiety, sleep and self-help. Simple practices and understanding your state."
+      },
+      "shortTitle": "Blog",
+      "kicker": "ARTICLES",
+      "breadcrumb": {
+        "home": "Home",
+        "blog": "Blog",
+        "current": "Blog"
+      },
+      "all": "All posts",
+      "categories": {
+        "journal": "Mood diary",
+        "anxiety": "Anxiety",
+        "sleep": "Sleep"
+      },
+      "backToBlog": "Back to all posts",
+      "related": "Read next",
+      "notFound": "Post not found",
+      "cta": {
+        "title": "Try Moodly free",
+        "text": "Articles help you understand — the product helps you keep a diary and see trends.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service. Articles do not replace professional care.",
+        "2": "For persistent symptoms, see a doctor or psychologist."
+      }
     }
   }
 }

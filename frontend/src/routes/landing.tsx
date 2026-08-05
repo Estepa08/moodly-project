@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,6 +19,7 @@ import {
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { useLoginForm } from "../hooks/useLoginForm";
+import { useSeo, withCanonical } from "../lib/seo";
 import { cn } from "../lib/utils";
 
 const PetAvatar = lazy(() =>
@@ -43,20 +44,12 @@ const COLLECTION_PET_TYPES = [
 const MOOD_BAR_HEIGHTS = [86, 106, 86, 124, 100, 66, 134];
 
 function useLandingSeo() {
-  const { t, i18n } = useTranslation();
-  useEffect(() => {
-    const prevTitle = document.title;
-    const prevDescription = document
-      .querySelector('meta[name="description"]')
-      ?.getAttribute("content");
-    document.title = t("landing.seo.title");
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", t("landing.seo.description"));
-    return () => {
-      document.title = prevTitle;
-      if (meta && prevDescription != null) meta.setAttribute("content", prevDescription);
-    };
-  }, [t, i18n.language]);
+  const { t } = useTranslation();
+  useSeo({
+    title: t("landing.seo.title"),
+    description: t("landing.seo.description"),
+    canonical: withCanonical("/"),
+  });
 }
 
 function LangSwitch({ className }: { className?: string }) {
@@ -528,6 +521,12 @@ function LandingFooter() {
             </div>
           </div>
           <div className="flex items-center gap-5 text-xs text-muted-foreground">
+            <Link to="/mood-diary" className="hover:text-primary transition-colors duration-150">
+              {t("landing.footer.diary")}
+            </Link>
+            <Link to="/anxiety-test" className="hover:text-primary transition-colors duration-150">
+              {t("landing.footer.anxiety")}
+            </Link>
             <Link to="/privacy" className="hover:text-primary transition-colors duration-150">
               {t("nav.privacy")}
             </Link>

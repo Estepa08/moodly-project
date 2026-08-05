@@ -28,6 +28,15 @@ const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysi
 const SettingsPage = lazy(() => import("./routes/settings"));
 const ProgressPage = lazy(() => import("./routes/progress"));
 const AdminPanelPage = lazy(() => import("./routes/admin-panel"));
+const NotFoundPage = lazy(() => import("./routes/not-found"));
+const MoodDiaryPage = lazy(() => import("./routes/seo/mood-diary"));
+const AnxietyTestPage = lazy(() => import("./routes/seo/anxiety-test"));
+const ThinkingHabitsTestPage = lazy(() => import("./routes/seo/thinking-habits-test"));
+const SleepHygieneGuidePage = lazy(() => import("./routes/seo/sleep-hygiene-guide"));
+const AnxietySelfHelpPage = lazy(() => import("./routes/seo/anxiety-self-help"));
+const BlogPage = lazy(() => import("./routes/blog/BlogPage"));
+const BlogCategoryPage = lazy(() => import("./routes/blog/BlogCategoryPage"));
+const BlogPostPage = lazy(() => import("./routes/blog/BlogPostPage"));
 
 function SuspenseFallback() {
   return (
@@ -91,6 +100,14 @@ export default function App() {
       </Route>
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route path="/mood-diary" element={<MoodDiaryPage />} />
+      <Route path="/anxiety-test" element={<AnxietyTestPage />} />
+      <Route path="/thinking-habits-test" element={<ThinkingHabitsTestPage />} />
+      <Route path="/sleep-hygiene-guide" element={<SleepHygieneGuidePage />} />
+      <Route path="/anxiety-self-help" element={<AnxietySelfHelpPage />} />
+      <Route path="/blog" element={<BlogPage />} />
+      <Route path="/blog/category/:category" element={<BlogCategoryPage />} />
+      <Route path="/blog/:slug" element={<BlogPostPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -124,7 +141,7 @@ export default function App() {
           <Route path="/admin" element={<AdminPanelPage />} />
         </Route>
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

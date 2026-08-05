@@ -7,6 +7,7 @@ import { useReducedMotion } from "../hooks/useReducedMotion";
 import { SyncStatusIndicator } from "./SyncStatusIndicator";
 import SkipLink from "../widgets/SkipLink";
 import { Button } from "../components/ui/button";
+import { useSeo } from "../lib/seo";
 import Sidebar from "../layout/Sidebar";
 import BottomNav from "../layout/BottomNav";
 import Breadcrumbs from "../components/ui/breadcrumbs";
@@ -19,6 +20,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const { isAuthenticated, isBootstrapping, logout } = useAuth();
   const isReducedMotion = useReducedMotion();
+
+  useSeo({ noindex: true });
 
   const handleLogout = async () => {
     await logout();
