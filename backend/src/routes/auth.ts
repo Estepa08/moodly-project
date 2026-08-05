@@ -11,6 +11,7 @@ import {
 import { AppError, UnauthorizedError } from "../lib/errors.js";
 import { sendEmail } from "../lib/email.js";
 import { resetPasswordEmailHtml } from "../emails/reset-password-email.js";
+import { welcomeEmailHtml, detectLang } from "../emails/welcome-email.js";
 import {
   registerSchema,
   loginSchema,
@@ -39,6 +40,16 @@ export default async function authRoutes(fastify: FastifyInstance) {
     );
     const refreshToken = await authService.createRefreshToken(user.id);
     setRefreshCookie(reply, refreshToken);
+
+    const lang = detectLang(request.headers["accept-language"]);
+    void sendEmail({
+      to: user.email,
+      subject: lang === "ru" ? "Ваш первый день с Moodly" : "Your first day with Moodly",
+      html: welcomeEmailHtml({ name: user.name ?? "", lang }),
+    }).catch((err: unknown) => {
+      request.log.error({ err }, "welcome email failed");
+    });
+
     return { accessToken, user };
   });
 

@@ -10,6 +10,9 @@ const envSchema = z.object({
   RATE_LIMIT_MAX: z.coerce.number().int().positive().optional(),
   RATE_LIMIT_WRITE_MAX: z.coerce.number().int().positive().optional(),
   COOKIE_SAMESITE: z.enum(["lax", "strict", "none"]).default("lax"),
+  VAPID_PUBLIC_KEY: z.string().min(1).optional(),
+  VAPID_PRIVATE_KEY: z.string().min(1).optional(),
+  VAPID_SUBJECT: z.string().min(1).optional(),
 });
 
 function parseEnv(raw: NodeJS.ProcessEnv): z.infer<typeof envSchema> {

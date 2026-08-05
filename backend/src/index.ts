@@ -23,6 +23,7 @@ import adminRoutes from "./routes/admin.js";
 import clientErrorRoutes from "./routes/client-errors.js";
 import { setErrorHandler } from "./lib/handle-error.js";
 import { env } from "./lib/env.js";
+import { reminderScheduler } from "./jobs/reminder-scheduler.js";
 
 // Fail-fast валидация окружения (NODE_ENV, DATABASE_URL, JWT_SECRET,
 // в проде FRONTEND_URL) до старта HTTP-сервера.
@@ -94,3 +95,10 @@ process.on("uncaughtException", (error) => {
 
 const port = env.PORT;
 await fastify.listen({ port, host: "0.0.0.0" });
+
+// Часовой планировщик push-напоминаний (dailyReminder + reminderTime).
+// Только production: в dev/test VAPID-ключи обычно не настроены, а тесты
+// вызывают reminderScheduler.runOnce() напрямую.
+if (env.NODE_ENV === "production") {
+  reminderScheduler.start();
+}

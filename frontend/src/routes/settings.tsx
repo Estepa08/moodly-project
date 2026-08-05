@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import ReviewForm from "../features/review/ReviewForm";
+import { RemindersCard } from "../features/reminders/RemindersCard";
 import {
   isCompanionHidden,
   setCompanionHidden,
@@ -128,11 +129,11 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell aria-hidden="true" className="w-4 h-4" />
-            {t("settings.notifications")}
+            {t("settings.remindersTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">{t("settings.comingSoon")}</p>
+          <RemindersCard />
         </CardContent>
       </Card>
 
