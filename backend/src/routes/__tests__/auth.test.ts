@@ -4,6 +4,13 @@ import type { FastifyInstance } from "fastify";
 
 let app: FastifyInstance;
 
+const E2E_KEYS = {
+  wrappedKey: "dGVzdC13cmFwcGVkLWtleQ==",
+  keySalt: "dGVzdC1zYWx0",
+  recoveryWrappedKey: "dGVzdC1yZWNvdmVyeQ==",
+  recoverySalt: "dGVzdC1yZWNvdmVyeS1zYWx0",
+};
+
 beforeAll(async () => {
   app = await buildApp();
 });
@@ -24,6 +31,7 @@ describe("Auth", () => {
         ageConfirmed: true,
         pdpConsent: true,
         birthYear: 1998,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(200);
@@ -41,6 +49,7 @@ describe("Auth", () => {
         password: "secret123",
         ageConfirmed: true,
         pdpConsent: false,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(400);
@@ -57,6 +66,7 @@ describe("Auth", () => {
         ageConfirmed: true,
         pdpConsent: true,
         birthYear: 2010,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(400);
@@ -72,6 +82,7 @@ describe("Auth", () => {
         password: "secret123",
         ageConfirmed: true,
         pdpConsent: true,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(409);
@@ -115,6 +126,7 @@ describe("Auth", () => {
         password: "secret123",
         ageConfirmed: true,
         pdpConsent: true,
+        ...E2E_KEYS,
       },
     });
     expect(reg.statusCode).toBe(200);

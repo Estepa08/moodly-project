@@ -10,6 +10,9 @@ let parameterId: string;
 let entryId: string;
 const prisma = new PrismaClient();
 
+let seq = 0;
+const entryIdFor = (label: string) => `entry-${label}-${Date.now()}-${seq++}`;
+
 beforeAll(async () => {
   app = await buildApp();
 
@@ -32,10 +35,11 @@ describe("Entries", () => {
       method: "POST",
       url: "/entries",
       headers: { authorization: `Bearer ${token}` },
-      payload: { parameterId, value: 7, note: "Feeling great" },
+      payload: { id: entryIdFor("one"), parameterId, encryptedData: "ENC:1" },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().value).toBe(7);
+    expect(res.json().encryptedData).toBe("ENC:1");
+    expect(res.json().value).toBeNull();
     entryId = res.json().id;
   });
 
@@ -44,7 +48,12 @@ describe("Entries", () => {
       method: "POST",
       url: "/entries",
       headers: { authorization: `Bearer ${token}` },
-      payload: { parameterId, value: 6, userId: "00000000000000000000000000" },
+      payload: {
+        id: entryIdFor("two"),
+        parameterId,
+        encryptedData: "ENC:2",
+        userId: "00000000000000000000000000",
+      },
     });
     expect(res.statusCode).toBe(200);
     expect(res.json().userId).toBe(userId);
@@ -68,7 +77,7 @@ describe("Entries", () => {
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().value).toBe(7);
+    expect(res.json().encryptedData).toBe("ENC:1");
   });
 
   it("PATCH /entries/:id — updates entry", async () => {
@@ -76,10 +85,10 @@ describe("Entries", () => {
       method: "PATCH",
       url: `/entries/${entryId}`,
       headers: { authorization: `Bearer ${token}` },
-      payload: { value: 8 },
+      payload: { encryptedData: "ENC:3" },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().value).toBe(8);
+    expect(res.json().encryptedData).toBe("ENC:3");
   });
 
   it("DELETE /entries/:id — deletes entry", async () => {
@@ -113,7 +122,11 @@ describe("Entries reward mood XP", () => {
         method: "POST",
         url: "/entries",
         headers: { authorization: `Bearer ${user.token}` },
-        payload: { parameterId: moodParam.id, value: 7 },
+        payload: {
+          id: entryIdFor(`mood-${i}`),
+          parameterId: moodParam.id,
+          encryptedData: "ENC:xp",
+        },
       });
       expect(res.statusCode).toBe(200);
     }
@@ -123,7 +136,7 @@ describe("Entries reward mood XP", () => {
       method: "POST",
       url: "/entries",
       headers: { authorization: `Bearer ${user.token}` },
-      payload: { parameterId: moodParam.id, value: 7 },
+      payload: { id: entryIdFor("mood-x"), parameterId: moodParam.id, encryptedData: "ENC:xp" },
     });
     expect(res.statusCode).toBe(200);
     expect(await getXp()).toBe(15);
@@ -135,7 +148,7 @@ describe("Entries reward mood XP", () => {
       method: "POST",
       url: "/entries",
       headers: { authorization: `Bearer ${user.token}` },
-      payload: { parameterId, value: 7 },
+      payload: { id: entryIdFor("nonmood"), parameterId, encryptedData: "ENC:xp" },
     });
     expect(res.statusCode).toBe(200);
     const state = await app.inject({
@@ -156,7 +169,7 @@ describe("Entries daily limit — race safety", () => {
         method: "POST",
         url: "/entries",
         headers: { authorization: `Bearer ${user.token}` },
-        payload: { parameterId, value: 7 },
+        payload: { id: entryIdFor("limit"), parameterId, encryptedData: "ENC:xp" },
       }),
     );
     const results = await Promise.all(requests);

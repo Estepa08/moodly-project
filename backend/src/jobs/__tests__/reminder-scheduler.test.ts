@@ -19,6 +19,10 @@ beforeAll(async () => {
     name: "Remind 1",
     ageConfirmed: true,
     pdpConsent: true,
+    wrappedKey: "dGVzdC13cmFwcGVkLWtleQ==",
+    keySalt: "dGVzdC1zYWx0",
+    recoveryWrappedKey: "dGVzdC1yZWNvdmVyeQ==",
+    recoverySalt: "dGVzdC1yZWNvdmVyeS1zYWx0",
   });
   const u2 = await userService.register({
     email: `reminder2-${Date.now()}@example.com`,
@@ -26,6 +30,10 @@ beforeAll(async () => {
     name: "Remind 2",
     ageConfirmed: true,
     pdpConsent: true,
+    wrappedKey: "dGVzdC13cmFwcGVkLWtleQ==",
+    keySalt: "dGVzdC1zYWx0",
+    recoveryWrappedKey: "dGVzdC1yZWNvdmVyeQ==",
+    recoverySalt: "dGVzdC1yZWNvdmVyeS1zYWx0",
   });
   userId1 = u1.user.id;
   userId2 = u2.user.id;

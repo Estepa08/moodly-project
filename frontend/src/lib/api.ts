@@ -1,12 +1,34 @@
 import { ApiError } from "./api-error";
 import type { components } from "./api-types";
 
-type AuthResponse = components["schemas"]["AuthResponse"];
-type RegisterResponse = components["schemas"]["AuthResponse"];
+export interface RegisterBody {
+  email: string;
+  password: string;
+  name?: string;
+  ageConfirmed: boolean;
+  pdpConsent: boolean;
+  birthYear?: number;
+  wrappedKey: string;
+  keySalt: string;
+  recoveryWrappedKey: string;
+  recoverySalt: string;
+}
+
+export interface ResetPasswordBody {
+  token: string;
+  password: string;
+  wrappedKey: string;
+  keySalt: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  user: User;
+  wrappedKey?: string | null;
+  keySalt?: string | null;
+}
 type RefreshResponse = components["schemas"]["RefreshResponse"];
-type ResetPasswordResponse = components["schemas"]["ResetPasswordResponse"];
 type Entry = components["schemas"]["Entry"];
-type EntryCreate = components["schemas"]["EntryCreate"];
 type Parameter = components["schemas"]["Parameter"];
 type Test = components["schemas"]["Test"];
 type TestResult = components["schemas"]["TestResult"];
@@ -58,18 +80,6 @@ export interface PullResult {
   cursorId: string;
   hasMore: boolean;
   changes: SyncChange[];
-}
-
-export interface WeeklyDigest {
-  startDate: string;
-  endDate: string;
-  totalEntries: number;
-  averages: Record<string, number>;
-  checkInDays: number;
-  testsTaken: { testId: string; title: string; score: number; interpretation: string }[];
-  practicesCompleted: Record<string, number>;
-  creatureXpGained: number;
-  creatureLevel: number;
 }
 
 export interface CreatureState {
@@ -241,15 +251,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   auth: {
-    register: (body: {
-      email: string;
-      password: string;
-      name?: string;
-      ageConfirmed: boolean;
-      pdpConsent: boolean;
-      birthYear?: number;
-    }) =>
-      request<RegisterResponse>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
+    register: (body: RegisterBody) =>
+      request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify(body) }),
     login: (body: { email: string; password: string }) =>
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
@@ -271,11 +274,16 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    resetPassword: (body: { token: string; password: string }) =>
-      request<ResetPasswordResponse>("/auth/reset-password", {
+    resetPassword: (body: ResetPasswordBody) =>
+      request<AuthResponse>("/auth/reset-password", {
         method: "POST",
         body: JSON.stringify(body),
       }),
+    recoveryInfo: (body: { token: string }) =>
+      request<{ recoveryWrappedKey: string | null; recoverySalt: string | null }>(
+        "/auth/reset-info",
+        { method: "POST", body: JSON.stringify(body) },
+      ),
   },
   users: {
     me: () => request<User>("/users/me"),
@@ -301,18 +309,16 @@ export const api = {
       const qs = q.toString();
       return request<Entry[]>(`/entries${qs ? `?${qs}` : ""}`);
     },
-    create: (body: EntryCreate) =>
+    create: (body: { id: string; parameterId: string; encryptedData: string }) =>
       request<Entry>("/entries", { method: "POST", body: JSON.stringify(body) }),
     get: (id: string) => request<Entry>(`/entries/${id}`),
-    update: (id: string, body: { value?: number; note?: string }) =>
+    update: (id: string, body: { encryptedData: string }) =>
       request<Entry>(`/entries/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
     delete: (id: string) => request<void>(`/entries/${id}`, { method: "DELETE" }),
   },
   tests: {
     list: () => request<Pick<Test, "id" | "title" | "description">[]>("/tests"),
     get: (id: string) => request<Test>(`/tests/${id}`),
-    submitResult: (id: string, body: { answers: { questionId: string; optionId: string }[] }) =>
-      request<TestResult>(`/tests/${id}/results`, { method: "POST", body: JSON.stringify(body) }),
   },
   testResults: {
     list: (testId?: string) => {
@@ -325,9 +331,6 @@ export const api = {
     create: (body: FeedbackCreate) =>
       request<Feedback>("/feedback", { method: "POST", body: JSON.stringify(body) }),
     listMine: () => request<Feedback[]>("/feedback/me"),
-  },
-  digest: {
-    weekly: () => request<WeeklyDigest>("/digest/weekly"),
   },
   onboarding: {
     list: () => request<OnboardingStory[]>("/onboarding-stories"),

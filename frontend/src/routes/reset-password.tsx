@@ -4,8 +4,10 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { api } from "../lib/api";
 import { getErrorMessage } from "../lib/error-messages";
+import { rewrapDataKeyWithRecovery, createFreshDataKey } from "../lib/crypto/auth-keys";
 import { Button } from "../components/ui/button";
 import { PasswordInput } from "../components/ui/password-input";
+import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
 
@@ -17,6 +19,8 @@ export default function ResetPasswordPage() {
   const token = searchParams.get("token") || "";
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [recoveryCode, setRecoveryCode] = useState("");
+  const [dataLossAccepted, setDataLossAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -30,10 +34,37 @@ export default function ResetPasswordPage() {
       setError(t("resetPassword.tooShort"));
       return;
     }
+    if (!recoveryCode.trim() && !dataLossAccepted) {
+      setError(t("resetPassword.recoveryRequired"));
+      return;
+    }
     setLoading(true);
     setError("");
     try {
-      const res = await api.auth.resetPassword({ token, password });
+      let wrappedKey: string;
+      let keySalt: string;
+      if (recoveryCode.trim()) {
+        // Сервер возвращает recoveryWrappedKey/recoverySalt через login-эндпоинт
+        // недоступен (пароль забыт), поэтому fetch recovery-материала отдельно.
+        const info = await api.auth.recoveryInfo({ token });
+        if (!info.recoveryWrappedKey || !info.recoverySalt) {
+          throw new Error(t("resetPassword.noRecoveryStored"));
+        }
+        const rewrapped = await rewrapDataKeyWithRecovery(
+          recoveryCode.trim(),
+          info.recoveryWrappedKey,
+          info.recoverySalt,
+          password,
+        );
+        wrappedKey = rewrapped.wrappedKey;
+        keySalt = rewrapped.keySalt;
+      } else {
+        // Без recovery-кода — новый ключ, старые данные не расшифровываются.
+        const fresh = await createFreshDataKey(password);
+        wrappedKey = fresh.wrappedKey;
+        keySalt = fresh.keySalt;
+      }
+      const res = await api.auth.resetPassword({ token, password, wrappedKey, keySalt });
       login(res.accessToken);
       navigate("/dashboard");
     } catch (err) {
@@ -90,13 +121,37 @@ export default function ResetPasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
-                enterKeyHint="go"
+                enterKeyHint="next"
                 required
                 minLength={6}
                 showLabel={t("common.showPassword")}
                 hideLabel={t("common.hidePassword")}
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="recoveryCode">{t("resetPassword.recoveryCode")}</Label>
+              <Input
+                id="recoveryCode"
+                value={recoveryCode}
+                onChange={(e) => setRecoveryCode(e.target.value.toUpperCase())}
+                autoComplete="off"
+                enterKeyHint="go"
+                placeholder={t("resetPassword.recoveryPlaceholder")}
+                spellCheck={false}
+              />
+              <p className="text-xs text-muted-foreground">{t("resetPassword.recoveryHint")}</p>
+            </div>
+            {!recoveryCode.trim() && (
+              <Label className="flex items-start gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={dataLossAccepted}
+                  onChange={(e) => setDataLossAccepted(e.target.checked)}
+                  className="mt-1"
+                />
+                <span>{t("resetPassword.dataLossWarning")}</span>
+              </Label>
+            )}
             {error && (
               <p className="text-sm text-destructive" role="alert">
                 {error}

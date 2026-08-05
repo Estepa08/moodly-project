@@ -173,3 +173,12 @@ export async function listLocalEntries(filter: LocalEntryFilter = {}): Promise<L
     .filter((e) => !e.deletedAt)
     .sort((a, b) => (a.createdAt ?? "").localeCompare(b.createdAt ?? ""));
 }
+
+/** Локальное чтение результатов тестов (без удалённых), новые сверху. */
+export async function listLocalTestResults(testId?: string): Promise<LocalTestResult[]> {
+  let results = await getDb().testResults.toArray();
+  if (testId) results = results.filter((r) => r.testId === testId);
+  return results
+    .filter((r) => !r.deletedAt)
+    .sort((a, b) => (b.completedAt ?? "").localeCompare(a.completedAt ?? ""));
+}

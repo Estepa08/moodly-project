@@ -135,6 +135,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/reset-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Отдать recovery-материал (wrappedKey/salt) по токену сброса пароля */
+        post: operations["Auth_resetInfo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/reset-password": {
         parameters: {
             query?: never;
@@ -331,23 +348,6 @@ export interface paths {
         put?: never;
         /** @description Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba) */
         post: operations["Creature_reward"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/digest/weekly": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Недельный дайджест активности пользователя */
-        get: operations["Digest_getWeekly"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -562,22 +562,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tests/{id}/results": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Tests_submitResult"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/users/me": {
         parameters: {
             query?: never;
@@ -652,6 +636,10 @@ export interface components {
         AuthResponse: {
             accessToken: string;
             user: components["schemas"]["User"];
+            /** @description DEK, зашифрованный ключом из пароля — нужен клиенту для разблокировки данных при логине */
+            wrappedKey?: string;
+            /** @description Соль для вывода KEK из пароля */
+            keySalt?: string;
         };
         /** @description Результат завершённого дыхательного упражнения */
         BreathingCompleteRequest: {
@@ -832,22 +820,26 @@ export interface components {
             id: string;
             userId: string;
             parameterId: string;
-            /** Format: double */
-            value: number;
-            note?: string;
+            /**
+             * Format: double
+             * @description Открытое значение — всегда null при E2E-шифровании (данные лежат в encryptedData)
+             */
+            value: number | null;
+            /** @description Открытая заметка — всегда null при E2E-шифровании */
+            note?: string | null;
+            /** @description Шифротекст {value, note}: base64(version | iv | ciphertext+tag) */
+            encryptedData?: string;
             /** Format: date-time */
             createdAt: string;
         };
         EntryCreate: {
+            /** @description id генерирует клиент (uuidv7) — используется как entityId в AAD шифрования */
+            id: string;
             parameterId: string;
-            /** Format: double */
-            value: number;
-            note?: string;
+            encryptedData: string;
         };
         EntryUpdate: {
-            /** Format: double */
-            value?: number;
-            note?: string;
+            encryptedData?: string;
         };
         Error: {
             code: string;
@@ -968,9 +960,22 @@ export interface components {
          * @enum {string}
          */
         ReportStatus: "pending" | "ready" | "failed";
+        /** @description Проверка recovery-материала по токену сброса */
+        ResetInfoRequest: {
+            token: string;
+        };
+        /** @description Recovery-ключ (DEK, зашифрованный KEK_recovery) и соль — для восстановления доступа без пароля */
+        ResetInfoResponse: {
+            recoveryWrappedKey: string | null;
+            recoverySalt: string | null;
+        };
         ResetPasswordRequest: {
             token: string;
             password: string;
+            /** @description DEK, зашифрованный ключом из нового пароля */
+            wrappedKey: string;
+            /** @description Соль для вывода KEK из нового пароля */
+            keySalt: string;
         };
         ResetPasswordResponse: {
             accessToken: string;
@@ -993,6 +998,10 @@ export interface components {
             description?: string;
             active: boolean;
             questions: components["schemas"]["TestQuestion"][];
+            /** @description Тип подсчёта: standard (баллы) / computed (профиль когнитивных искажений) */
+            type: string;
+            /** @description Полосы интерпретации для standard-тестов (клиент считает результат локально) */
+            scoreBands: components["schemas"]["TestScoreBand"][];
         };
         TestAnswer: {
             questionId: string;
@@ -1015,29 +1024,34 @@ export interface components {
             /** Format: int32 */
             score: number;
         };
-        /** @description Конкретная попытка прохождения теста пользователем: ответы, посчитанный балл и рекомендация */
+        /** @description Конкретная попытка прохождения теста пользователем: результат в E2E-шифротексте */
         TestResult: {
             id: string;
             testId: string;
             userId: string;
-            /** Format: int32 */
-            score: number;
-            interpretation: string;
-            recommendation: string;
-            /** @description Дополнительные флаги/профили (например, per-distortion scores для теста когнитивных искажений) */
+            /**
+             * Format: int32
+             * @description Открытый балл — всегда null при E2E-шифровании (данные лежат в encryptedData)
+             */
+            score: number | null;
+            /** @description Открытая интерпретация — всегда null при E2E-шифровании */
+            interpretation: string | null;
+            /** @description Открытая рекомендация — всегда null при E2E-шифровании */
+            recommendation: string | null;
+            /** @description Открытые флаги/профили — всегда null при E2E-шифровании */
             flags?: unknown;
+            /** @description Шифротекст {score, interpretation, recommendation, flags} */
+            encryptedData?: string;
             /** Format: date-time */
             completedAt: string;
         };
-        TestResultDigest: {
-            testId: string;
-            title: string;
+        /** @description Полоса баллов с интерпретацией для теста */
+        TestScoreBand: {
             /** Format: int32 */
-            score: number;
+            maxScore: number;
+            key: string;
             interpretation: string;
-        };
-        TestResultSubmit: {
-            answers: components["schemas"]["TestAnswer"][];
+            recommendation: string;
         };
         /** @description Пользователь приложения */
         User: {
@@ -1056,6 +1070,14 @@ export interface components {
             pdpConsent: boolean;
             /** Format: int32 */
             birthYear?: number;
+            /** @description DEK, зашифрованный ключом, выведенным из пароля (AES-GCM) */
+            wrappedKey: string;
+            /** @description Соль для вывода KEK из пароля */
+            keySalt: string;
+            /** @description DEK, зашифрованный ключом, выведенным из recovery-кода */
+            recoveryWrappedKey: string;
+            /** @description Соль для вывода KEK_recovery из recovery-кода */
+            recoverySalt: string;
         };
         /** @description Настройки и предпочтения пользователя */
         UserPreference: {
@@ -1074,24 +1096,6 @@ export interface components {
         };
         UserUpdate: {
             name?: string;
-        };
-        /** @description Результаты тестирования за неделю */
-        WeeklyDigest: {
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            /** Format: int32 */
-            totalEntries: number;
-            averages: unknown;
-            /** Format: int32 */
-            checkInDays: number;
-            testsTaken: components["schemas"]["TestResultDigest"][];
-            practicesCompleted: unknown;
-            /** Format: int32 */
-            creatureXpGained: number;
-            /** Format: int32 */
-            creatureLevel: number;
         };
     };
     responses: never;
@@ -1266,6 +1270,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+        };
+    };
+    Auth_resetInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResetInfoRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResetInfoResponse"];
                 };
             };
         };
@@ -1548,26 +1576,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RewardResponse"];
-                };
-            };
-        };
-    };
-    Digest_getWeekly: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WeeklyDigest"];
                 };
             };
         };
@@ -1962,32 +1970,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Test"];
-                };
-            };
-        };
-    };
-    Tests_submitResult: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TestResultSubmit"];
-            };
-        };
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TestResult"];
                 };
             };
         };

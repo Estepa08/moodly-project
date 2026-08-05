@@ -11,6 +11,10 @@ export interface RegisterInput {
   ageConfirmed: boolean;
   pdpConsent: boolean;
   birthYear?: number;
+  wrappedKey: string;
+  keySalt: string;
+  recoveryWrappedKey: string;
+  recoverySalt: string;
 }
 
 export interface LoginInput {
@@ -68,6 +72,10 @@ export const userService = {
         consentAcceptedAt: new Date(),
         consentVersion: CONSENT_VERSION,
         emailVerified: true,
+        wrappedKey: input.wrappedKey,
+        keySalt: input.keySalt,
+        recoveryWrappedKey: input.recoveryWrappedKey,
+        recoverySalt: input.recoverySalt,
       },
     });
     return { user: stripUser(user) };
@@ -80,7 +88,11 @@ export const userService = {
     const valid = await bcrypt.compare(input.password, user.password);
     if (!valid) throw new AppError("INVALID_CREDENTIALS", 401, "Invalid email or password");
 
-    return stripUser(user);
+    return {
+      user: stripUser(user),
+      wrappedKey: user.wrappedKey,
+      keySalt: user.keySalt,
+    };
   },
 
   async findById(id: string) {

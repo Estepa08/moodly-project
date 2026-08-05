@@ -1,4 +1,4 @@
--- AlterTable: add email verification fields to User
+aitunnel-- AlterTable: add email verification fields to User
 ALTER TABLE "User" ADD COLUMN "emailVerified" BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE "User" ADD COLUMN "emailVerificationToken" TEXT;
 ALTER TABLE "User" ADD COLUMN "emailVerificationSentAt" TIMESTAMP(3);

@@ -5,12 +5,35 @@ import { useTranslation } from "react-i18next";
 import { enqueue } from "../lib/offline/sync";
 import { listLocalEntries } from "../lib/offline/db";
 import { uuidv7 } from "@moodly/shared";
+import type { components } from "../lib/api-types";
+import { decryptEntryPayload, encryptEntryPayload } from "../lib/crypto/records";
+
+type Entry = components["schemas"]["Entry"];
+
+export interface DecryptedEntry extends Entry {
+  value: number;
+  note: string | null;
+}
+
+async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
+  if (!e.encryptedData) {
+    // Легаси-запись без шифротекста (миграция не тронула) — вернём как есть.
+    return { ...e, value: e.value ?? 0, note: e.note ?? null };
+  }
+  const payload = await decryptEntryPayload(e.encryptedData, e.id);
+  return { ...e, value: payload.value, note: payload.note };
+}
 
 export function useEntries(params?: { parameterId?: string; from?: string; to?: string }) {
   return useQuery({
     queryKey: ["entries", params],
     // offline-first: при офлайне читаем локальный кэш из IndexedDB (наполняется через pull)
-    queryFn: () => (navigator.onLine ? api.entries.list(params) : listLocalEntries(params)),
+    queryFn: async () => {
+      const raw = navigator.onLine
+        ? await api.entries.list(params)
+        : await listLocalEntries(params);
+      return Promise.all((raw as Entry[]).map(decryptEntry));
+    },
     staleTime: 30_000,
   });
 }
@@ -21,23 +44,26 @@ export function useCreateEntry(onSuccess?: () => void) {
 
   return useMutation({
     mutationFn: async (data: { parameterId: string; value: number; note?: string }) => {
+      const id = uuidv7();
+      const encryptedData = await encryptEntryPayload(
+        { value: data.value, note: data.note ?? null },
+        id,
+      );
       if (!navigator.onLine) {
-        const id = uuidv7();
         await enqueue("entry", "upsert", id, {
           parameterId: data.parameterId,
-          value: data.value,
-          note: data.note ?? null,
+          encryptedData,
         });
         return {
           id,
           userId: "",
           parameterId: data.parameterId,
           value: data.value,
-          note: data.note,
+          note: data.note ?? null,
           createdAt: new Date().toISOString(),
         };
       }
-      return api.entries.create(data);
+      return api.entries.create({ id, parameterId: data.parameterId, encryptedData });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
@@ -76,18 +102,19 @@ export function useUpdateEntry() {
 
   return useMutation({
     mutationFn: async ({ id, value, note }: { id: string; value: number; note?: string }) => {
+      const encryptedData = await encryptEntryPayload({ value, note: note ?? null }, id);
       if (!navigator.onLine) {
-        await enqueue("entry", "upsert", id, { value, note: note ?? null });
+        await enqueue("entry", "upsert", id, { encryptedData });
         return {
           id,
           userId: "",
           parameterId: "",
           value,
-          note,
+          note: note ?? null,
           createdAt: new Date().toISOString(),
         };
       }
-      return api.entries.update(id, { value, note });
+      return api.entries.update(id, { encryptedData });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });

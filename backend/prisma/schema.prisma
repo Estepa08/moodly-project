@@ -30,6 +30,14 @@ model User {
   // Email verification
   emailVerified Boolean @default(false)
 
+  // E2E-шифрование: DEK, зашифрованный KEK (из пароля) и KEK_recovery (из recovery-кода).
+  // Ключи генерируются на клиенте; сервер хранит только wrappedKey и соли и не может
+  // расшифровать данные пользователя.
+  wrappedKey        String?
+  keySalt           String?
+  recoveryWrappedKey String?
+  recoverySalt      String?
+
   entries     Entry[]
   testResults TestResult[]
   feedback    Feedback[]
@@ -58,14 +66,17 @@ model Parameter {
 }
 
 model Entry {
-  id          String   @id @default(cuid())
-  userId      String
-  parameterId String
-  value       Float
-  note        String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+  id             String   @id @default(cuid())
+  userId         String
+  parameterId    String
+  value          Float?
+  note           String?
+  // E2E: шифротекст {value, note}. value/note ниже nullable — только для миграции
+  // существующих данных; новые записи хранят значение только в encryptedData.
+  encryptedData  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  deletedAt      DateTime?
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parameter Parameter @relation(fields: [parameterId], references: [id])
@@ -105,10 +116,13 @@ model TestResult {
   id             String   @id @default(cuid())
   testId         String
   userId         String
-  score          Int
-  interpretation String
-  recommendation String
+  score          Int?
+  interpretation String?
+  recommendation String?
   flags          Json?
+  // E2E: шифротекст {score, interpretation, recommendation, flags}.
+  // Открытые поля выше nullable — только для миграции существующих данных.
+  encryptedData  String?
   completedAt    DateTime @default(now())
   updatedAt      DateTime @updatedAt
   deletedAt      DateTime?
@@ -208,6 +222,8 @@ model CreatureState {
   petType          String   @default("puff")
   unlockedPetTypes String[] @default(["puff"])
   petName          String?
+  // E2E: настроение питомца считает клиент (сервер больше не видит entry.value).
+  petMood          String?
   feedCount        Int      @default(0)
   feedCounts       Json     @default("{}")
   createdAt        DateTime @default(now())

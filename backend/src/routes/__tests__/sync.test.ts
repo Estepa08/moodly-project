@@ -25,13 +25,13 @@ function pull(query = "", t = token) {
   });
 }
 
-function entryAction(id: string, parameterId: string, value: number): unknown {
+function entryAction(id: string, parameterId: string, marker: string): unknown {
   return {
     entity: "entry",
     action: "upsert",
     id,
     occurredAt: new Date().toISOString(),
-    payload: { parameterId, value, note: "sync note" },
+    payload: { parameterId, encryptedData: `ENC:${marker}` },
   };
 }
 
@@ -50,7 +50,7 @@ describe("Sync push", () => {
   it("creates entries idempotently by id", async () => {
     const parameterId = (await prisma.parameter.create({ data: { name: "SyncEnergy" } })).id;
     const id = uuidv7();
-    const action = entryAction(id, parameterId, 6);
+    const action = entryAction(id, parameterId, "a1");
 
     const first = await push([action]);
     expect(first.statusCode).toBe(200);
@@ -63,13 +63,14 @@ describe("Sync push", () => {
     const count = await prisma.entry.count({ where: { parameterId } });
     expect(count).toBe(1);
     const updated = await prisma.entry.findUnique({ where: { id } });
-    expect(updated?.value).toBe(6);
+    expect(updated?.encryptedData).toBe("ENC:a1");
+    expect(updated?.value).toBeNull();
   });
 
   it("applies a delete as a cached tombstone (soft delete)", async () => {
     const parameter = (await prisma.parameter.create({ data: { name: "SyncDelete" } })).id;
     const id = uuidv7();
-    await push([entryAction(id, parameter, 3)]);
+    await push([entryAction(id, parameter, "d1")]);
 
     const del = await push([
       { entity: "entry", action: "delete", id, occurredAt: new Date().toISOString(), payload: {} },
@@ -122,7 +123,7 @@ describe("Sync pull", () => {
 
     // создаём запись напрямую в БД (симуляция второй device/онлайн-фичи)
     await prisma.entry.create({
-      data: { id, userId: user.userId, parameterId: parameter, value: 9 },
+      data: { id, userId: user.userId, parameterId: parameter, encryptedData: "ENC:pull1" },
     });
 
     const res = await pull("", user.token);
@@ -130,7 +131,7 @@ describe("Sync pull", () => {
     const change = res.json().changes.find((c: { id: string }) => c.id === id);
     expect(change.entity).toBe("entry");
     expect(change.action).toBe("upsert");
-    expect(change.data.value).toBe(9);
+    expect(change.data.encryptedData).toBe("ENC:pull1");
 
     // курсор сохранён — повторный pull не вернёт ту же запись
     const again = await pull("", user.token);
@@ -184,12 +185,12 @@ describe("Sync push daily limit", () => {
     const user = await registerAndLogin(app, "sync-limit@example.com", "secret123");
     const parameter = (await prisma.parameter.create({ data: { name: "SyncLimit" } })).id;
 
-    const batch = Array.from({ length: 100 }, () => entryAction(uuidv7(), parameter, 5));
+    const batch = Array.from({ length: 100 }, () => entryAction(uuidv7(), parameter, "l1"));
     const res = await push(batch, user.token);
     expect(res.statusCode).toBe(200);
     expect(res.json().applied).toBe(100);
 
-    const over = await push([entryAction(uuidv7(), parameter, 5)], user.token);
+    const over = await push([entryAction(uuidv7(), parameter, "l1")], user.token);
     expect(over.statusCode).toBe(429);
   });
 
@@ -198,12 +199,12 @@ describe("Sync push daily limit", () => {
     const parameter = (await prisma.parameter.create({ data: { name: "SyncLimit2" } })).id;
     const id = uuidv7();
 
-    const first = await push([entryAction(id, parameter, 5)], user.token);
+    const first = await push([entryAction(id, parameter, "e1")], user.token);
     expect(first.statusCode).toBe(200);
 
     // повторная отправка двух "новых" батчей на существующий id и один новый
     const again = await push(
-      [entryAction(id, parameter, 6), entryAction(uuidv7(), parameter, 7)],
+      [entryAction(id, parameter, "e2"), entryAction(uuidv7(), parameter, "e3")],
       user.token,
     );
     expect(again.statusCode).toBe(200);

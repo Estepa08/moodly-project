@@ -35,7 +35,7 @@ export default function TestDetailPage() {
   const {
     test,
     isLoading,
-    submitMutation,
+    isSubmitting,
     questionIndex,
     currentAnswer,
     answers,
@@ -227,7 +227,7 @@ export default function TestDetailPage() {
                   if (currentAnswer?.optionId === option.id && hasAnswer) return;
                   handleAnswer(option.id);
                 }}
-                disabled={submitMutation.isPending}
+                disabled={isSubmitting}
               >
                 {option.text}
                 {isSelected && (
@@ -266,8 +266,8 @@ export default function TestDetailPage() {
         </p>
 
         {hasAnswer && questionIndex === test.questions.length - 1 ? (
-          <Button size="sm" onClick={handleSubmit} disabled={submitMutation.isPending}>
-            {submitMutation.isPending ? t("common.sending") : t("testDetail.submitTest")}
+          <Button size="sm" onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? t("common.sending") : t("testDetail.submitTest")}
           </Button>
         ) : hasAnswer ? (
           <Button size="sm" onClick={handleNextFeed}>

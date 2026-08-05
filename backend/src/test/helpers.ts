@@ -13,7 +13,6 @@ import onboardingRoutes from "../routes/onboarding-stories.js";
 import creatureRoutes from "../routes/creature.js";
 import achievementRoutes from "../routes/achievements.js";
 import cbaRoutes from "../routes/cba.js";
-import digestRoutes from "../routes/digest.js";
 import syncRoutes from "../routes/sync.js";
 import adminRoutes from "../routes/admin.js";
 import { setErrorHandler } from "../lib/handle-error.js";
@@ -35,7 +34,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(creatureRoutes);
   await fastify.register(achievementRoutes);
   await fastify.register(cbaRoutes);
-  await fastify.register(digestRoutes);
   await fastify.register(syncRoutes);
   await fastify.register(adminRoutes);
 
@@ -54,7 +52,17 @@ export async function registerAndLogin(
   const reg = await app.inject({
     method: "POST",
     url: "/auth/register",
-    payload: { email, password, name, ageConfirmed: true, pdpConsent: true },
+    payload: {
+      email,
+      password,
+      name,
+      ageConfirmed: true,
+      pdpConsent: true,
+      wrappedKey: "dGVzdC13cmFwcGVkLWtleQ==",
+      keySalt: "dGVzdC1zYWx0",
+      recoveryWrappedKey: "dGVzdC1yZWNvdmVyeQ==",
+      recoverySalt: "dGVzdC1yZWNvdmVyeS1zYWx0",
+    },
   });
   const body = reg.json();
   return { token: body.accessToken, userId: body.user.id };

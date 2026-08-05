@@ -1,5 +1,17 @@
 {
   "common": {
+    "login": {
+      "legacyAccount": "Legacy account detected. Please log in with your credentials."
+    },
+    "register": {
+      "recoveryEmailSent": "Recovery email has been sent.",
+      "recoveryCodeInvalid": "Recovery code is invalid.",
+      "recoveryCodeExpired": "Recovery code expired. Please request a new one."
+    },
+    "resetPassword": {
+      "resetSuccess": "Your password has been reset successfully.",
+      "resetFailed": "Password reset failed. Please try again."
+    },
     "moodly": "Moodly",
     "back": "Back",
     "logout": "Logout",
@@ -1263,6 +1275,18 @@
       "disclaimer": {
         "title": "Clear disclaimer",
         "text": "a self-assessment tool, not a medical service"
+      },
+      "encryption": {
+        "title": "End-to-end encryption",
+        "text": "entries and tests are encrypted on your device — even we cannot read them"
+      },
+      "keyOnly": {
+        "title": "Key stays with you",
+        "text": "your encryption key never leaves your device"
+      },
+      "recovery": {
+        "title": "Recovery code",
+        "text": "save it at sign-up — without it your data cannot be restored"
       }
     },
     "cta": {

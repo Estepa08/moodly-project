@@ -38,7 +38,7 @@ const content: Record<"ru" | "en", WelcomeContent> = {
     cta: "Открыть Moodly",
     ctaLink: FRONTEND_URL,
     privacy:
-      "Ваши данные защищены: обработка персональных данных — по 152-ФЗ. Подробности в политике конфиденциальности.",
+      "Ваши данные доступны только вам: записи настроения и результаты тестов зашифрованы на устройстве (сквозное шифрование) — ключ никто не видит, кроме вас. Обязательно сохраните recovery-код: без него восстановить данные после сброса пароля невозможно. Обработка персональных данных — по 152-ФЗ. Подробности в политике конфиденциальности.",
   },
   en: {
     preheader: "Your first day with Moodly: 30 seconds a day to notice how you feel.",
@@ -65,7 +65,8 @@ const content: Record<"ru" | "en", WelcomeContent> = {
     ],
     cta: "Open Moodly",
     ctaLink: FRONTEND_URL,
-    privacy: "Your data is protected: personal data processing per GDPR-aligned policy.",
+    privacy:
+      "Your data is available only to you: mood entries and test results are encrypted on your device (end-to-end encryption) — no one sees your key except you. Be sure to save your recovery code: without it, your data cannot be restored if you reset your password. Personal data processing is GDPR-aligned. See the privacy policy for details.",
   },
 };
 

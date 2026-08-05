@@ -4,15 +4,14 @@ import { lockUser } from "../lib/user-lock.js";
 import { creatureService } from "./creature.js";
 
 export interface EntryCreateInput {
+  id: string;
   userId: string;
   parameterId: string;
-  value: number;
-  note?: string;
+  encryptedData: string;
 }
 
 export interface EntryUpdateInput {
-  value?: number;
-  note?: string;
+  encryptedData: string;
 }
 
 export interface EntryListParams {
@@ -64,10 +63,10 @@ export const entryService = {
 
       return tx.entry.create({
         data: {
+          id: input.id,
           userId: input.userId,
           parameterId: input.parameterId,
-          value: input.value,
-          note: input.note,
+          encryptedData: input.encryptedData,
         },
       });
     });
@@ -97,10 +96,7 @@ export const entryService = {
   async update(id: string, userId: string, data: EntryUpdateInput) {
     const entry = await prisma.entry.findFirst({ where: { id, userId } });
     if (!entry) throw new NotFoundError("Entry");
-    const sanitized: EntryUpdateInput = {};
-    if (data?.value !== undefined) sanitized.value = data.value;
-    if (data?.note !== undefined) sanitized.note = data.note;
-    return prisma.entry.update({ where: { id }, data: sanitized });
+    return prisma.entry.update({ where: { id }, data });
   },
 
   async delete(id: string, userId: string) {

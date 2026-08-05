@@ -14,6 +14,7 @@ import {
   Lock,
   FileText,
   Smile,
+  KeyRound,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -442,6 +443,21 @@ function LandingPrivacy() {
       icon: CheckCircle2,
       title: t("landing.privacy.disclaimer.title"),
       text: t("landing.privacy.disclaimer.text"),
+    },
+    {
+      icon: Lock,
+      title: t("landing.privacy.encryption.title"),
+      text: t("landing.privacy.encryption.text"),
+    },
+    {
+      icon: KeyRound,
+      title: t("landing.privacy.keyOnly.title"),
+      text: t("landing.privacy.keyOnly.text"),
+    },
+    {
+      icon: ShieldCheck,
+      title: t("landing.privacy.recovery.title"),
+      text: t("landing.privacy.recovery.text"),
     },
   ];
 

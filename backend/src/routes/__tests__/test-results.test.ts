@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { buildApp, registerAndLogin } from "../../test/helpers.js";
 import { PrismaClient } from "@prisma/client";
+import { uuidv7 } from "@moodly/shared";
 import type { FastifyInstance } from "fastify";
 
 let app: FastifyInstance;
 let token: string;
 let resultId: string;
+let testId: string;
 const prisma = new PrismaClient();
 
 beforeAll(async () => {
@@ -26,17 +28,30 @@ beforeAll(async () => {
       ],
     },
   });
+  testId = test.id;
 
   const result = await registerAndLogin(app, "results-test@example.com", "secret123");
   token = result.token;
 
-  const resultRes = await app.inject({
+  // E2E: результат теста клиент считает и пушит зашифрованным через sync.
+  resultId = uuidv7();
+  const push = await app.inject({
     method: "POST",
-    url: `/tests/${test.id}/results`,
+    url: "/sync/push",
     headers: { authorization: `Bearer ${token}` },
-    payload: { answers: [{ questionId: "q1", optionId: "q1b" }] },
+    payload: {
+      actions: [
+        {
+          entity: "testResult",
+          action: "upsert",
+          id: resultId,
+          occurredAt: new Date().toISOString(),
+          payload: { testId: test.id, encryptedData: "ENC:result1" },
+        },
+      ],
+    },
   });
-  resultId = resultRes.json().id;
+  expect(push.statusCode).toBe(200);
 });
 
 afterAll(async () => {
@@ -62,6 +77,7 @@ describe("TestResults", () => {
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty("score");
+    expect(res.json().encryptedData).toBe("ENC:result1");
+    expect(res.json().score).toBeNull();
   });
 });

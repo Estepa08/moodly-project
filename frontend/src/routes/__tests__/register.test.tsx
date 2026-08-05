@@ -18,6 +18,23 @@ vi.mock("../../lib/api", () => ({
 
 import { api, setToken } from "../../lib/api";
 
+vi.mock("../../lib/crypto/auth-keys", () => ({
+  createRegistrationKeys: vi.fn(async () => ({
+    keySalt: "salt-1",
+    recoverySalt: "salt-2",
+    wrappedKey: "wrapped-1",
+    recoveryWrappedKey: "wrapped-2",
+  })),
+}));
+
+vi.mock("../../lib/crypto/keys", () => ({
+  generateRecoveryCode: vi.fn(async () => "CODE-1234"),
+}));
+
+vi.mock("../../lib/crypto/session", () => ({
+  setSessionUserId: vi.fn(),
+}));
+
 describe("RegisterPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -78,6 +95,10 @@ describe("RegisterPage", () => {
         ageConfirmed: true,
         pdpConsent: true,
         birthYear: 1998,
+        keySalt: "salt-1",
+        recoverySalt: "salt-2",
+        wrappedKey: "wrapped-1",
+        recoveryWrappedKey: "wrapped-2",
       });
     });
     expect(setToken).toHaveBeenCalledWith("access-token");

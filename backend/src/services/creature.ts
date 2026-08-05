@@ -12,33 +12,11 @@ import {
   MAX_ENERGY,
   MOOD_ENTRY_XP,
   MOOD_ENTRY_DAILY_LIMIT,
-  MOOD_PARAM_NAME,
   FEED_XP,
   FEED_XP_DAILY_LIMIT,
   STARTER_PET_TYPES,
   MS_PER_DAY,
 } from "@moodly/shared";
-
-async function computePetMood(userId: string, calmness: number): Promise<string> {
-  const since = new Date();
-  since.setDate(since.getDate() - 7);
-  since.setHours(0, 0, 0, 0);
-  const entries = await prisma.entry.findMany({
-    where: {
-      userId,
-      createdAt: { gte: since },
-      parameter: { name: MOOD_PARAM_NAME },
-    },
-    select: { value: true },
-  });
-  if (entries.length === 0) {
-    return calmness >= 70 ? "happy" : "calm";
-  }
-  const avg = entries.reduce((sum, e) => sum + e.value, 0) / entries.length;
-  if (avg >= 7) return "happy";
-  if (avg >= 5) return calmness >= 70 ? "happy" : "calm";
-  return "support";
-}
 
 export const creatureService = {
   async getState(userId: string) {
@@ -51,7 +29,9 @@ export const creatureService = {
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
     const energy = state.energy ?? 100;
     const level = state.level ?? 1;
-    const petMood = await computePetMood(userId, state.calmness ?? 50);
+    // E2E: настроение питомца считает клиент (сервер не видит entry.value).
+    // Fallback для старых аккаунтов без значения.
+    const petMood = (state.petMood ?? (state.calmness ?? 50) >= 70) ? "happy" : "calm";
     return {
       ...state,
       energy,

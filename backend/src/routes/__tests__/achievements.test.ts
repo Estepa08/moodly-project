@@ -181,9 +181,7 @@ describe("Achievements new criteria", () => {
       data: Array.from({ length: 2 }).map(() => ({
         testId: test.id,
         userId,
-        score: 10,
-        interpretation: "ok",
-        recommendation: "keep going",
+        encryptedData: "ENC:ach",
       })),
     });
     await checkAndExpect("know_thyself");
