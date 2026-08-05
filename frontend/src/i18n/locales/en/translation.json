@@ -923,7 +923,11 @@
       "wellbeing_slept_early": "Slept early",
       "wellbeing_mood_swing": "Mood swings",
       "wellbeing_confidence": "Confidence"
-    }
+    },
+    "allActivities": "All activities",
+    "frequent": "Often used",
+    "likeYesterday": "Repeat yesterday",
+    "back": "Back"
   },
   "dailyCheckIn": {
     "greetingMorning": "Good morning",

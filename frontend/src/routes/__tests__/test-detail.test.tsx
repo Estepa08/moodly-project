@@ -49,7 +49,7 @@ vi.mock("../../features/analytics", () => ({
 }));
 
 vi.mock("../../lib/crypto/session", () => ({
-  getSessionKey: vi.fn(async () => ({ kind: "fake" }) as CryptoKey),
+  getSessionKey: vi.fn(async () => ({ kind: "fake" }) as unknown as CryptoKey),
   getSessionUserId: vi.fn(() => "user-1"),
 }));
 

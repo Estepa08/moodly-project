@@ -185,15 +185,6 @@ function HeroMock() {
           </div>
         </div>
       </div>
-
-      <div className="absolute -left-6 top-24 hidden sm:flex items-center gap-1.5 bg-card rounded-full px-3 py-1.5 shadow-neumorphic text-xs text-foreground border border-border">
-        <Smile aria-hidden="true" className="w-3.5 h-3.5 text-primary" />
-        Настроение 8
-      </div>
-      <div className="absolute -right-4 bottom-10 hidden sm:flex items-center gap-1.5 bg-card rounded-full px-3 py-1.5 shadow-neumorphic text-xs text-foreground border border-border">
-        <CheckCircle2 aria-hidden="true" className="w-3.5 h-3.5 text-success" />
-        Серия растёт
-      </div>
     </div>
   );
 }
