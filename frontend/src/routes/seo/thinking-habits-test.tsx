@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Brain, Lock, ShieldCheck } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
+import Reveal from "../../components/Reveal";
 import { useSeo, withCanonical } from "../../lib/seo";
 import {
   SeoHeader,
@@ -40,49 +41,55 @@ export default function ThinkingHabitsTestPage() {
       <main>
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-14 grid gap-10 lg:grid-cols-2 lg:items-center">
-          <div>
-            <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-              {t("seoPages.thinkingHabits.hero.title")}{" "}
-              <span className="text-primary">{t("seoPages.thinkingHabits.hero.accent")}</span>
-            </h1>
-            <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
-              {t("seoPages.thinkingHabits.hero.sub1")}
-            </p>
-            <p className="mt-2 text-muted-foreground text-base leading-relaxed max-w-xl">
-              {t("seoPages.thinkingHabits.hero.sub2")}
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Button size="lg" asChild>
-                <Link to="/tests">
-                  {t("seoPages.thinkingHabits.hero.ctaPrimary")}
-                  <ArrowRight aria-hidden="true" className="w-5 h-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="secondary" asChild>
-                <Link to="/mood-diary">{t("seoPages.thinkingHabits.hero.ctaSecondary")}</Link>
-              </Button>
+          <Reveal>
+            <div>
+              <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
+                {t("seoPages.thinkingHabits.hero.title")}{" "}
+                <span className="text-primary">{t("seoPages.thinkingHabits.hero.accent")}</span>
+              </h1>
+              <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
+                {t("seoPages.thinkingHabits.hero.sub1")}
+              </p>
+              <p className="mt-2 text-muted-foreground text-base leading-relaxed max-w-xl">
+                {t("seoPages.thinkingHabits.hero.sub2")}
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Button size="lg" asChild>
+                  <Link to="/tests">
+                    {t("seoPages.thinkingHabits.hero.ctaPrimary")}
+                    <ArrowRight aria-hidden="true" className="w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="secondary" asChild>
+                  <Link to="/mood-diary">{t("seoPages.thinkingHabits.hero.ctaSecondary")}</Link>
+                </Button>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
-          <Card className="p-6 bg-card-gradient shadow-clay-lg">
-            <div className="flex items-center gap-2">
-              <Brain aria-hidden="true" className="w-5 h-5 text-primary" />
-              <p className="font-bold text-foreground">{t("seoPages.thinkingHabits.mock.title")}</p>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("seoPages.thinkingHabits.mock.subtitle")}
-            </p>
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="mt-3 rounded-xl bg-secondary/60 p-3">
-                <p className="text-sm font-semibold text-foreground">
-                  {t(`seoPages.thinkingHabits.mock.axis.${i}.name`)}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {t(`seoPages.thinkingHabits.mock.axis.${i}.desc`)}
+          <Reveal direction="right" delay={120}>
+            <Card className="p-6 bg-card-gradient shadow-clay-lg">
+              <div className="flex items-center gap-2">
+                <Brain aria-hidden="true" className="w-5 h-5 text-primary" />
+                <p className="font-bold text-foreground">
+                  {t("seoPages.thinkingHabits.mock.title")}
                 </p>
               </div>
-            ))}
-          </Card>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("seoPages.thinkingHabits.mock.subtitle")}
+              </p>
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="mt-3 rounded-xl bg-secondary/60 p-3">
+                  <p className="text-sm font-semibold text-foreground">
+                    {t(`seoPages.thinkingHabits.mock.axis.${i}.name`)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t(`seoPages.thinkingHabits.mock.axis.${i}.desc`)}
+                  </p>
+                </div>
+              ))}
+            </Card>
+          </Reveal>
         </section>
 
         {/* About */}
@@ -97,14 +104,16 @@ export default function ThinkingHabitsTestPage() {
           />
           <div className="mt-8 grid md:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="rounded-2xl bg-primary/5 border border-primary/10 p-5">
-                <h3 className="font-bold text-foreground text-sm">
-                  {t(`seoPages.thinkingHabits.patterns.${i}.title`)}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {t(`seoPages.thinkingHabits.patterns.${i}.text`)}
-                </p>
-              </div>
+              <Reveal key={i} delay={(i - 1) * 80} className="h-full">
+                <div className="rounded-2xl bg-primary/5 border border-primary/10 p-5 h-full">
+                  <h3 className="font-bold text-foreground text-sm">
+                    {t(`seoPages.thinkingHabits.patterns.${i}.title`)}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {t(`seoPages.thinkingHabits.patterns.${i}.text`)}
+                  </p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -117,41 +126,47 @@ export default function ThinkingHabitsTestPage() {
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="p-6">
-                <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-extrabold text-primary">
-                  {i}
-                </span>
-                <h3 className="mt-4 font-bold text-foreground">
-                  {t(`seoPages.thinkingHabits.how.steps.${i}.title`)}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {t(`seoPages.thinkingHabits.how.steps.${i}.text`)}
-                </p>
-              </Card>
+              <Reveal key={i} delay={(i - 1) * 100} className="h-full">
+                <Card className="p-6 h-full">
+                  <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-extrabold text-primary">
+                    {i}
+                  </span>
+                  <h3 className="mt-4 font-bold text-foreground">
+                    {t(`seoPages.thinkingHabits.how.steps.${i}.title`)}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {t(`seoPages.thinkingHabits.how.steps.${i}.text`)}
+                  </p>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </section>
 
         {/* Trust */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 grid md:grid-cols-2 gap-4">
-          <Card className="p-6">
-            <Lock aria-hidden="true" className="w-5 h-5 text-primary" />
-            <h3 className="mt-3 font-bold text-foreground">
-              {t("seoPages.thinkingHabits.trust.private.title")}
-            </h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {t("seoPages.thinkingHabits.trust.private.text")}
-            </p>
-          </Card>
-          <Card className="p-6">
-            <ShieldCheck aria-hidden="true" className="w-5 h-5 text-primary" />
-            <h3 className="mt-3 font-bold text-foreground">
-              {t("seoPages.thinkingHabits.trust.care.title")}
-            </h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {t("seoPages.thinkingHabits.trust.care.text")}
-            </p>
-          </Card>
+          <Reveal>
+            <Card className="p-6 h-full">
+              <Lock aria-hidden="true" className="w-5 h-5 text-primary" />
+              <h3 className="mt-3 font-bold text-foreground">
+                {t("seoPages.thinkingHabits.trust.private.title")}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                {t("seoPages.thinkingHabits.trust.private.text")}
+              </p>
+            </Card>
+          </Reveal>
+          <Reveal delay={100}>
+            <Card className="p-6 h-full">
+              <ShieldCheck aria-hidden="true" className="w-5 h-5 text-primary" />
+              <h3 className="mt-3 font-bold text-foreground">
+                {t("seoPages.thinkingHabits.trust.care.title")}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                {t("seoPages.thinkingHabits.trust.care.text")}
+              </p>
+            </Card>
+          </Reveal>
         </section>
 
         {/* FAQ */}

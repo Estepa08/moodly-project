@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useParams, Navigate } from "react-router-dom";
+import Reveal from "../../components/Reveal";
 import { useSeo, withCanonical } from "../../lib/seo";
 import {
   SeoHeader,
@@ -73,8 +74,8 @@ export default function BlogPostPage() {
               {t("seoPages.blog.related")}
             </h2>
             <div className="mt-6 grid sm:grid-cols-2 gap-4">
-              {related.map((p) => (
-                <PostCard key={p.slug} post={p} />
+              {related.map((p, i) => (
+                <PostCard key={p.slug} post={p} delay={i * 100} />
               ))}
             </div>
           </section>

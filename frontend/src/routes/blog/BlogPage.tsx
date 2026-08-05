@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import Reveal from "../../components/Reveal";
 import { useSeo, withCanonical } from "../../lib/seo";
 import {
   SeoHeader,
@@ -46,15 +47,17 @@ export default function BlogPage() {
 
       <main>
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-8 text-center">
-          <p className="text-xs font-bold text-primary uppercase tracking-wider">
-            {t("seoPages.blog.kicker")}
-          </p>
-          <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
-            {t("seoPages.blog.meta.title")}
-          </h1>
-          <p className="mt-3 mx-auto max-w-2xl text-muted-foreground leading-relaxed">
-            {t("seoPages.blog.meta.description")}
-          </p>
+          <Reveal>
+            <p className="text-xs font-bold text-primary uppercase tracking-wider">
+              {t("seoPages.blog.kicker")}
+            </p>
+            <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
+              {t("seoPages.blog.meta.title")}
+            </h1>
+            <p className="mt-3 mx-auto max-w-2xl text-muted-foreground leading-relaxed">
+              {t("seoPages.blog.meta.description")}
+            </p>
+          </Reveal>
         </section>
 
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12">
@@ -81,8 +84,8 @@ export default function BlogPage() {
           </div>
 
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
-            {POSTS.map((post) => (
-              <PostCard key={post.slug} post={post} />
+            {POSTS.map((post, i) => (
+              <PostCard key={post.slug} post={post} delay={i * 100} />
             ))}
           </div>
         </section>

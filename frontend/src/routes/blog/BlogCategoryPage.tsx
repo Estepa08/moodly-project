@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link, useParams, Navigate } from "react-router-dom";
+import Reveal from "../../components/Reveal";
 import { useSeo, withCanonical } from "../../lib/seo";
 import { SeoHeader, SeoBreadcrumbs, SeoFooter } from "../seo/seo-components";
 import { PostCard } from "./PostCard";
@@ -41,15 +42,17 @@ export default function BlogCategoryPage() {
 
       <main>
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-12">
-          <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary">
-            ← {t("seoPages.blog.backToBlog")}
-          </Link>
-          <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
-            {t(CATEGORY_KEYS[category])}
-          </h1>
+          <Reveal>
+            <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary">
+              ← {t("seoPages.blog.backToBlog")}
+            </Link>
+            <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
+              {t(CATEGORY_KEYS[category])}
+            </h1>
+          </Reveal>
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
-            {posts.map((post) => (
-              <PostCard key={post.slug} post={post} />
+            {posts.map((post, i) => (
+              <PostCard key={post.slug} post={post} delay={i * 100} />
             ))}
           </div>
         </section>

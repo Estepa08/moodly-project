@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Lock, ShieldCheck } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
+import Reveal from "../../components/Reveal";
 import { useSeo, withCanonical } from "../../lib/seo";
 import {
   SeoHeader,
@@ -40,51 +41,55 @@ export default function AnxietyTestPage() {
       <main>
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-14 grid gap-10 lg:grid-cols-2 lg:items-center">
-          <div>
-            <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-              {t("seoPages.anxietyTest.hero.title")}{" "}
-              <span className="text-primary">{t("seoPages.anxietyTest.hero.accent")}</span>
-            </h1>
-            <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
-              {t("seoPages.anxietyTest.hero.sub1")}
-            </p>
-            <p className="mt-2 text-muted-foreground text-base leading-relaxed max-w-xl">
-              {t("seoPages.anxietyTest.hero.sub2")}
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Button size="lg" asChild>
-                <Link to="/tests">
-                  {t("seoPages.anxietyTest.hero.ctaPrimary")}
-                  <ArrowRight aria-hidden="true" className="w-5 h-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="secondary" asChild>
-                <Link to="/mood-diary">{t("seoPages.anxietyTest.hero.ctaSecondary")}</Link>
-              </Button>
+          <Reveal>
+            <div>
+              <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
+                {t("seoPages.anxietyTest.hero.title")}{" "}
+                <span className="text-primary">{t("seoPages.anxietyTest.hero.accent")}</span>
+              </h1>
+              <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
+                {t("seoPages.anxietyTest.hero.sub1")}
+              </p>
+              <p className="mt-2 text-muted-foreground text-base leading-relaxed max-w-xl">
+                {t("seoPages.anxietyTest.hero.sub2")}
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                <Button size="lg" asChild>
+                  <Link to="/tests">
+                    {t("seoPages.anxietyTest.hero.ctaPrimary")}
+                    <ArrowRight aria-hidden="true" className="w-5 h-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="secondary" asChild>
+                  <Link to="/mood-diary">{t("seoPages.anxietyTest.hero.ctaSecondary")}</Link>
+                </Button>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
-          <Card className="p-6 bg-card-gradient shadow-clay-lg">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-bold text-foreground">
-                {t("seoPages.anxietyTest.mock.title")}
+          <Reveal direction="right" delay={120}>
+            <Card className="p-6 bg-card-gradient shadow-clay-lg">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-bold text-foreground">
+                  {t("seoPages.anxietyTest.mock.title")}
+                </p>
+                <span className="text-xs text-muted-foreground">
+                  {t("seoPages.anxietyTest.mock.progress")}
+                </span>
+              </div>
+              <p className="mt-3 text-sm text-foreground">
+                {t("seoPages.anxietyTest.mock.question")}
               </p>
-              <span className="text-xs text-muted-foreground">
-                {t("seoPages.anxietyTest.mock.progress")}
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-foreground">
-              {t("seoPages.anxietyTest.mock.question")}
-            </p>
-            {[1, 2, 3].map((i) => (
-              <p key={i} className="mt-1 text-xs text-muted-foreground">
-                {t(`seoPages.anxietyTest.mock.option.${i}`)}
-              </p>
-            ))}
-            <div className="mt-4 rounded-xl bg-secondary/70 px-3 py-2 text-sm font-semibold text-primary">
-              {t("seoPages.anxietyTest.mock.selected")}
-            </div>
-          </Card>
+              {[1, 2, 3].map((i) => (
+                <p key={i} className="mt-1 text-xs text-muted-foreground">
+                  {t(`seoPages.anxietyTest.mock.option.${i}`)}
+                </p>
+              ))}
+              <div className="mt-4 rounded-xl bg-secondary/70 px-3 py-2 text-sm font-semibold text-primary">
+                {t("seoPages.anxietyTest.mock.selected")}
+              </div>
+            </Card>
+          </Reveal>
         </section>
 
         {/* About test */}
@@ -119,41 +124,47 @@ export default function AnxietyTestPage() {
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="p-6">
-                <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-extrabold text-primary">
-                  {i}
-                </span>
-                <h3 className="mt-4 font-bold text-foreground">
-                  {t(`seoPages.anxietyTest.how.steps.${i}.title`)}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {t(`seoPages.anxietyTest.how.steps.${i}.text`)}
-                </p>
-              </Card>
+              <Reveal key={i} delay={(i - 1) * 100} className="h-full">
+                <Card className="p-6 h-full">
+                  <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-extrabold text-primary">
+                    {i}
+                  </span>
+                  <h3 className="mt-4 font-bold text-foreground">
+                    {t(`seoPages.anxietyTest.how.steps.${i}.title`)}
+                  </h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {t(`seoPages.anxietyTest.how.steps.${i}.text`)}
+                  </p>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </section>
 
         {/* Trust cards */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 grid md:grid-cols-2 gap-4">
-          <Card className="p-6">
-            <Lock aria-hidden="true" className="w-5 h-5 text-primary" />
-            <h3 className="mt-3 font-bold text-foreground">
-              {t("seoPages.anxietyTest.trust.private.title")}
-            </h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {t("seoPages.anxietyTest.trust.private.text")}
-            </p>
-          </Card>
-          <Card className="p-6">
-            <ShieldCheck aria-hidden="true" className="w-5 h-5 text-primary" />
-            <h3 className="mt-3 font-bold text-foreground">
-              {t("seoPages.anxietyTest.trust.care.title")}
-            </h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {t("seoPages.anxietyTest.trust.care.text")}
-            </p>
-          </Card>
+          <Reveal>
+            <Card className="p-6 h-full">
+              <Lock aria-hidden="true" className="w-5 h-5 text-primary" />
+              <h3 className="mt-3 font-bold text-foreground">
+                {t("seoPages.anxietyTest.trust.private.title")}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                {t("seoPages.anxietyTest.trust.private.text")}
+              </p>
+            </Card>
+          </Reveal>
+          <Reveal delay={100}>
+            <Card className="p-6 h-full">
+              <ShieldCheck aria-hidden="true" className="w-5 h-5 text-primary" />
+              <h3 className="mt-3 font-bold text-foreground">
+                {t("seoPages.anxietyTest.trust.care.title")}
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                {t("seoPages.anxietyTest.trust.care.text")}
+              </p>
+            </Card>
+          </Reveal>
         </section>
 
         {/* FAQ */}

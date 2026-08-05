@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Heart, ChevronDown, ArrowRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
+import Reveal from "../../components/Reveal";
 import { cn } from "../../lib/utils";
 
 function SeoHeader() {
@@ -91,7 +92,7 @@ function SeoSectionHeading({
   center?: boolean;
 }) {
   return (
-    <div className={cn(center && "text-center")}>
+    <Reveal className={cn(center && "text-center")}>
       <p className="text-xs font-bold text-primary uppercase tracking-wider">{kicker}</p>
       <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-balance">
         {title}
@@ -101,7 +102,7 @@ function SeoSectionHeading({
           {line}
         </p>
       ))}
-    </div>
+    </Reveal>
   );
 }
 
@@ -126,13 +127,15 @@ function StepsGrid({
       )}
       <div className="mt-8 grid md:grid-cols-3 gap-4">
         {steps.map((step, i) => (
-          <Card key={i} className="p-6 relative">
-            <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-extrabold text-primary">
-              {i + 1}
-            </span>
-            <h3 className="mt-4 text-base font-bold text-foreground">{step.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.text}</p>
-          </Card>
+          <Reveal key={i} delay={i * 100} className="h-full">
+            <Card className="p-6 relative h-full">
+              <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-extrabold text-primary">
+                {i + 1}
+              </span>
+              <h3 className="mt-4 text-base font-bold text-foreground">{step.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.text}</p>
+            </Card>
+          </Reveal>
         ))}
       </div>
     </section>
@@ -148,34 +151,37 @@ function FaqAccordion({ title, items }: { title: string; items: FaqItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
-      <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-foreground">{title}</h2>
+      <Reveal>
+        <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-foreground">{title}</h2>
+      </Reveal>
       <div className="mt-8 space-y-3 max-w-3xl mx-auto">
         {items.map((item, i) => {
           const isOpen = open === i;
           return (
-            <div
-              key={i}
-              className="rounded-2xl border border-border bg-card shadow-neumorphic-sm overflow-hidden"
-            >
-              <button
-                type="button"
-                onClick={() => setOpen(isOpen ? null : i)}
-                aria-expanded={isOpen}
-                className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
-              >
-                <span className="font-semibold text-foreground text-sm">{item.q}</span>
-                <ChevronDown
-                  aria-hidden="true"
-                  className={cn(
-                    "w-5 h-5 shrink-0 text-primary transition-transform",
-                    isOpen && "rotate-180",
-                  )}
-                />
-              </button>
-              {isOpen && (
-                <p className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">{item.a}</p>
-              )}
-            </div>
+            <Reveal key={i} delay={i * 80}>
+              <div className="rounded-2xl border border-border bg-card shadow-neumorphic-sm overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
+                >
+                  <span className="font-semibold text-foreground text-sm">{item.q}</span>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn(
+                      "w-5 h-5 shrink-0 text-primary transition-transform",
+                      isOpen && "rotate-180",
+                    )}
+                  />
+                </button>
+                {isOpen && (
+                  <p className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    {item.a}
+                  </p>
+                )}
+              </div>
+            </Reveal>
           );
         })}
       </div>
@@ -196,21 +202,25 @@ function CtaBanner({
 }) {
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
-      <div className="rounded-3xl bg-btn-gradient shadow-clay-lg p-8 sm:p-12 text-center">
-        <h2 className="text-2xl sm:text-[34px] font-extrabold text-white text-balance">{title}</h2>
-        {text && <p className="mt-3 text-sm sm:text-base text-white/85">{text}</p>}
-        <Button
-          size="lg"
-          variant="secondary"
-          className="mt-7 bg-white text-primary hover:bg-white/95"
-          asChild
-        >
-          <Link to={to}>
-            {button}
-            <ArrowRight aria-hidden="true" className="w-5 h-5" />
-          </Link>
-        </Button>
-      </div>
+      <Reveal>
+        <div className="rounded-3xl bg-btn-gradient shadow-clay-lg p-8 sm:p-12 text-center">
+          <h2 className="text-2xl sm:text-[34px] font-extrabold text-white text-balance">
+            {title}
+          </h2>
+          {text && <p className="mt-3 text-sm sm:text-base text-white/85">{text}</p>}
+          <Button
+            size="lg"
+            variant="secondary"
+            className="mt-7 bg-white text-primary hover:bg-white/95"
+            asChild
+          >
+            <Link to={to}>
+              {button}
+              <ArrowRight aria-hidden="true" className="w-5 h-5" />
+            </Link>
+          </Button>
+        </div>
+      </Reveal>
     </section>
   );
 }
