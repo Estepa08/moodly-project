@@ -91,9 +91,7 @@ describe("LoginPage", () => {
     await waitFor(() => {
       expect(api.auth.setKeys).toHaveBeenCalledTimes(1);
     });
-    expect(
-      screen.getByText(/your account has been upgraded/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/your account has been upgraded/i)).toBeInTheDocument();
   });
 
   it("shows error message on failure", async () => {

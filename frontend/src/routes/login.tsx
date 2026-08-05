@@ -33,9 +33,7 @@ export default function LoginPage() {
       <AuthPage>
         <AuthHeader title={t("register.recoveryTitle")} />
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {t("login.legacyIntro")}
-          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t("login.legacyIntro")}</p>
           <div className="rounded-lg bg-muted p-4">
             <div className="flex items-center gap-2 mb-2">
               <KeyRound aria-hidden="true" className="w-4 h-4 text-primary" />
