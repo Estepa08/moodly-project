@@ -35,6 +35,32 @@ describe("crypto/records encryption and decryption", () => {
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
     expect(decrypted.value).toBe(entryPayload.value);
     expect(decrypted.note).toBe(entryPayload.note);
+    expect(decrypted.activities).toEqual([]);
+  });
+
+  it("should encrypt and decrypt day activities in EntryCipherPayload", async () => {
+    const payload: EntryCipherPayload = {
+      value: 0,
+      note: null,
+      activities: [
+        { key: "movement.walk" },
+        { key: "custom:abc", custom: true, label: "Ретрит" },
+      ],
+    };
+    const encrypted = await encryptEntryPayload(payload, dummyEntityId);
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.activities).toEqual(payload.activities);
+  });
+
+  it("should ignore malformed activities list in EntryCipherPayload", async () => {
+    const key = await getSessionKey();
+    const encrypted = await encryptJson(
+      key,
+      { value: 0, note: null, activities: [{ bad: "x" }, null, { key: "ok" }] },
+      { userId: dummyUserId, entityId: dummyEntityId },
+    );
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.activities).toEqual([{ key: "ok" }]);
   });
 
   it("should encrypt and decrypt TestResultCipherPayload correctly", async () => {

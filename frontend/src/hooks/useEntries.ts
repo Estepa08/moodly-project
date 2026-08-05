@@ -6,22 +6,23 @@ import { enqueue } from "../lib/offline/sync";
 import { listLocalEntries } from "../lib/offline/db";
 import { uuidv7 } from "@moodly/shared";
 import type { components } from "../lib/api-types";
-import { decryptEntryPayload, encryptEntryPayload } from "../lib/crypto/records";
+import { decryptEntryPayload, encryptEntryPayload, type ActivitySelection } from "../lib/crypto/records";
 
 type Entry = components["schemas"]["Entry"];
 
 export interface DecryptedEntry extends Entry {
   value: number;
   note: string | null;
+  activities?: ActivitySelection[];
 }
 
 async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
   if (!e.encryptedData) {
     // Легаси-запись без шифротекста (миграция не тронула) — вернём как есть.
-    return { ...e, value: e.value ?? 0, note: e.note ?? null };
+    return { ...e, value: e.value ?? 0, note: e.note ?? null, activities: [] };
   }
   const payload = await decryptEntryPayload(e.encryptedData, e.id);
-  return { ...e, value: payload.value, note: payload.note };
+  return { ...e, value: payload.value, note: payload.note, activities: payload.activities };
 }
 
 export function useEntries(params?: { parameterId?: string; from?: string; to?: string }) {
@@ -43,10 +44,15 @@ export function useCreateEntry(onSuccess?: () => void) {
   const { t } = useTranslation();
 
   return useMutation({
-    mutationFn: async (data: { parameterId: string; value: number; note?: string }) => {
+    mutationFn: async (data: {
+      parameterId: string;
+      value: number;
+      note?: string;
+      activities?: ActivitySelection[];
+    }) => {
       const id = uuidv7();
       const encryptedData = await encryptEntryPayload(
-        { value: data.value, note: data.note ?? null },
+        { value: data.value, note: data.note ?? null, activities: data.activities },
         id,
       );
       if (!navigator.onLine) {
@@ -60,6 +66,7 @@ export function useCreateEntry(onSuccess?: () => void) {
           parameterId: data.parameterId,
           value: data.value,
           note: data.note ?? null,
+          activities: data.activities ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -101,8 +108,21 @@ export function useUpdateEntry() {
   const { t } = useTranslation();
 
   return useMutation({
-    mutationFn: async ({ id, value, note }: { id: string; value: number; note?: string }) => {
-      const encryptedData = await encryptEntryPayload({ value, note: note ?? null }, id);
+    mutationFn: async ({
+      id,
+      value,
+      note,
+      activities,
+    }: {
+      id: string;
+      value: number;
+      note?: string;
+      activities?: ActivitySelection[];
+    }) => {
+      const encryptedData = await encryptEntryPayload(
+        { value, note: note ?? null, activities },
+        id,
+      );
       if (!navigator.onLine) {
         await enqueue("entry", "upsert", id, { encryptedData });
         return {
@@ -111,6 +131,7 @@ export function useUpdateEntry() {
           parameterId: "",
           value,
           note: note ?? null,
+          activities: activities ?? [],
           createdAt: new Date().toISOString(),
         };
       }

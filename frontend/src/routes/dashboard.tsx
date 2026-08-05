@@ -7,6 +7,7 @@ import { Period } from "../lib/constants";
 import { filterByPeriod } from "../lib/utils";
 import { ParameterTrendsChart } from "../features/analytics";
 import { QuickEntryIcons } from "../features/mood-entry";
+import DayActivitiesCard from "../features/check-in/DayActivitiesCard";
 import { WellbeingCard, FirstTimeHint } from "../widgets";
 import TestsResultsSection from "../widgets/TestsResultsSection";
 import ThinkingPatternsCard from "../widgets/ThinkingPatternsCard";
@@ -123,6 +124,8 @@ export default function Dashboard() {
   return (
     <div className="space-y-4">
       <CompanionCard />
+
+      <DayActivitiesCard />
 
       <FirstTimeHint visible={isFirstTime} />
 

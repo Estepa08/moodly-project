@@ -16,6 +16,7 @@ const parameters = [
   { name: "Sleep Hygiene", description: "Ночной чек-лист гигиены сна", unit: null },
   { name: "Distortion Quiz", description: "Баллы теста когнитивных искажений", unit: null },
   { name: "Thought Release", description: "Журнал ритуала отпускания мыслей", unit: null },
+  { name: "Day Activities", description: "Занятия и события дня", unit: null },
 ];
 
 const baiOptions = [

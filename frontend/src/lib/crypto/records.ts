@@ -1,9 +1,16 @@
 import { encryptJson, decryptJson } from "./codec";
 import { getSessionKey, getSessionUserId } from "./session";
 
+export interface ActivitySelection {
+  key: string;
+  custom?: boolean;
+  label?: string;
+}
+
 export interface EntryCipherPayload {
   value: number;
   note: string | null;
+  activities?: ActivitySelection[];
 }
 
 export interface TestResultCipherPayload {
@@ -44,7 +51,17 @@ export async function decryptEntryPayload(
   if (typeof value !== "number") {
     throw new Error("Decrypted entry payload is malformed");
   }
-  return { value, note: typeof note === "string" ? note : null };
+  const activities = (raw as { activities?: unknown }).activities;
+  const parsedActivities = Array.isArray(activities)
+    ? (activities as ActivitySelection[]).filter(
+        (a) => a && typeof a.key === "string",
+      )
+    : [];
+  return {
+    value,
+    note: typeof note === "string" ? note : null,
+    activities: parsedActivities,
+  };
 }
 
 export async function encryptTestResultPayload(

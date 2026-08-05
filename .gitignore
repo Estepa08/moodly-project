@@ -25,3 +25,6 @@ infra/certs/*.bak
 !infra/certs/README.md
 e2e/test-results/
 e2e/playwright-report/
+
+# opencode editor config (contains secrets)
+.vscode/settings.json
