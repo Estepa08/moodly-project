@@ -50,13 +50,15 @@ export default function BlogPostPage() {
 
       <main>
         <article className="mx-auto max-w-3xl px-4 sm:px-6 pt-10 pb-12">
-          <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-            {getCategoryName(post.category)}
-          </span>
-          <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
-            {post.title}
-          </h1>
-          <p className="mt-3 text-sm text-muted-foreground">{formatDate(post.date)}</p>
+          <Reveal>
+            <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              {getCategoryName(post.category)}
+            </span>
+            <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
+              {post.title}
+            </h1>
+            <p className="mt-3 text-sm text-muted-foreground">{formatDate(post.date)}</p>
+          </Reveal>
 
           <div className="mt-8 space-y-6">
             {post.content.map((block, i) => (
