@@ -33,6 +33,14 @@ model UserCreate {
   ageConfirmed: boolean;
   pdpConsent: boolean;
   birthYear?: int32;
+  @doc("DEK, зашифрованный ключом, выведенным из пароля (AES-GCM)")
+  wrappedKey: string;
+  @doc("Соль для вывода KEK из пароля")
+  keySalt: string;
+  @doc("DEK, зашифрованный ключом, выведенным из recovery-кода")
+  recoveryWrappedKey: string;
+  @doc("Соль для вывода KEK_recovery из recovery-кода")
+  recoverySalt: string;
 }
 
 model UserUpdate {
@@ -55,27 +63,6 @@ model UserPreferenceUpdate {
   reminderTime?: string;
   onboardingDone?: boolean;
 }
-
-@doc("Результаты тестирования за неделю")
-model WeeklyDigest {
-  startDate: utcDateTime;
-  endDate: utcDateTime;
-  totalEntries: int32;
-  averages: unknown;
-  checkInDays: int32;
-  testsTaken: TestResultDigest[];
-  practicesCompleted: unknown;
-  creatureXpGained: int32;
-  creatureLevel: int32;
-}
-
-model TestResultDigest {
-  testId: string;
-  title: string;
-  score: int32;
-  interpretation: string;
-}
-
 model LoginRequest {
   email: string;
   password: string;
@@ -84,6 +71,10 @@ model LoginRequest {
 model AuthResponse {
   accessToken: string;
   user: User;
+  @doc("DEK, зашифрованный ключом из пароля — нужен клиенту для разблокировки данных при логине")
+  wrappedKey?: string;
+  @doc("Соль для вывода KEK из пароля")
+  keySalt?: string;
 }
 
 model RefreshResponse {
@@ -97,11 +88,42 @@ model ForgotPasswordRequest {
 model ResetPasswordRequest {
   token: string;
   password: string;
+  @doc("DEK, зашифрованный ключом из нового пароля")
+  wrappedKey: string;
+  @doc("Соль для вывода KEK из нового пароля")
+  keySalt: string;
 }
 
 model ResetPasswordResponse {
   accessToken: string;
   message: string;
+}
+
+@doc("Проверка recovery-материала по токену сброса")
+model ResetInfoRequest {
+  token: string;
+}
+
+@doc("Recovery-ключ (DEK, зашифрованный KEK_recovery) и соль — для восстановления доступа без пароля")
+model ResetInfoResponse {
+  recoveryWrappedKey: string | null;
+  recoverySalt: string | null;
+}
+
+@doc("E2E-ключи для миграции legacy-учётки (созданной до внедрения шифрования)")
+model SetKeysRequest {
+  @doc("DEK, зашифрованный ключом из пароля")
+  wrappedKey: string;
+  @doc("Соль для вывода KEK из пароля")
+  keySalt: string;
+  @doc("DEK, зашифрованный ключом из recovery-кода")
+  recoveryWrappedKey: string;
+  @doc("Соль для вывода KEK из recovery-кода")
+  recoverySalt: string;
+}
+
+model SetKeysOk {
+  ok: boolean;
 }
 
 // ---------- Parameter ----------
@@ -121,20 +143,24 @@ model Entry {
   id: string;
   userId: string;
   parameterId: string;
-  value: float64;
-  note?: string;
+  @doc("Открытое значение — всегда null при E2E-шифровании (данные лежат в encryptedData)")
+  value: float64 | null;
+  @doc("Открытая заметка — всегда null при E2E-шифровании")
+  note?: string | null;
+  @doc("Шифротекст {value, note}: base64(version | iv | ciphertext+tag)")
+  encryptedData?: string;
   createdAt: utcDateTime;
 }
 
 model EntryCreate {
+  @doc("id генерирует клиент (uuidv7) — используется как entityId в AAD шифрования")
+  id: string;
   parameterId: string;
-  value: float64;
-  note?: string;
+  encryptedData: string;
 }
 
 model EntryUpdate {
-  value?: float64;
-  note?: string;
+  encryptedData?: string;
 }
 
 // ---------- Test / TestResult ----------
@@ -158,6 +184,10 @@ model Test {
   description?: string;
   active: boolean;
   questions: TestQuestion[];
+  @doc("Тип подсчёта: standard (баллы) / computed (профиль когнитивных искажений)")
+  type: string;
+  @doc("Полосы интерпретации для standard-тестов (клиент считает результат локально)")
+  scoreBands: TestScoreBand[];
 }
 
 model TestDigest {
@@ -172,20 +202,29 @@ model TestAnswer {
   optionId: string;
 }
 
-model TestResultSubmit {
-  answers: TestAnswer[];
+@doc("Полоса баллов с интерпретацией для теста")
+model TestScoreBand {
+  maxScore: int32;
+  key: string;
+  interpretation: string;
+  recommendation: string;
 }
 
-@doc("Конкретная попытка прохождения теста пользователем: ответы, посчитанный балл и рекомендация")
+@doc("Конкретная попытка прохождения теста пользователем: результат в E2E-шифротексте")
 model TestResult {
   id: string;
   testId: string;
   userId: string;
-  score: int32;
-  interpretation: string;
-  recommendation: string;
-  @doc("Дополнительные флаги/профили (например, per-distortion scores для теста когнитивных искажений)")
+  @doc("Открытый балл — всегда null при E2E-шифровании (данные лежат в encryptedData)")
+  score: int32 | null;
+  @doc("Открытая интерпретация — всегда null при E2E-шифровании")
+  interpretation: string | null;
+  @doc("Открытая рекомендация — всегда null при E2E-шифровании")
+  recommendation: string | null;
+  @doc("Открытые флаги/профили — всегда null при E2E-шифровании")
   flags?: unknown;
+  @doc("Шифротекст {score, interpretation, recommendation, flags}")
+  encryptedData?: string;
   completedAt: utcDateTime;
 }
 

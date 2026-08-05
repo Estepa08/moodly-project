@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "../components/ui/button";
@@ -21,9 +21,13 @@ import {
   AlertTriangle,
   ChevronRight,
   PawPrint,
+  FileText,
+  Mail,
+  ScrollText,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import ReviewForm from "../features/review/ReviewForm";
+import { RemindersCard } from "../features/reminders/RemindersCard";
 import {
   isCompanionHidden,
   setCompanionHidden,
@@ -37,6 +41,9 @@ export default function SettingsPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [companionHidden, setCompanionHiddenState] = useState(isCompanionHidden());
+  const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [withdrawError, setWithdrawError] = useState("");
 
   const toggleCompanion = () => {
     const next = !companionHidden;
@@ -55,6 +62,20 @@ export default function SettingsPage() {
       setDeleteError(err instanceof Error ? err.message : t("settings.deleteFailed"));
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    setWithdrawing(true);
+    setWithdrawError("");
+    try {
+      await api.users.delete();
+      logout();
+      navigate("/login");
+    } catch (err) {
+      setWithdrawError(err instanceof Error ? err.message : t("settings.consentFailed"));
+    } finally {
+      setWithdrawing(false);
     }
   };
 
@@ -128,11 +149,76 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Bell aria-hidden="true" className="w-4 h-4" />
-            {t("settings.notifications")}
+            {t("settings.remindersTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">{t("settings.comingSoon")}</p>
+          <RemindersCard />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText aria-hidden="true" className="w-4 h-4" />
+            {t("settings.rightsSection")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-1">
+          <Link
+            to="/privacy"
+            className="flex items-center gap-3 py-2.5 rounded-lg hover:bg-muted/50 px-2 -mx-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Shield aria-hidden="true" className="w-4 h-4 text-primary shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium">{t("settings.privacyLink")}</p>
+              <p className="text-xs text-muted-foreground">{t("settings.privacyLinkDesc")}</p>
+            </div>
+            <ChevronRight aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0" />
+          </Link>
+          <Link
+            to="/terms"
+            className="flex items-center gap-3 py-2.5 rounded-lg hover:bg-muted/50 px-2 -mx-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ScrollText aria-hidden="true" className="w-4 h-4 text-primary shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium">{t("settings.termsLink")}</p>
+              <p className="text-xs text-muted-foreground">{t("settings.termsLinkDesc")}</p>
+            </div>
+            <ChevronRight aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0" />
+          </Link>
+          <a
+            href="mailto:privacy@moodly.app"
+            className="flex items-center gap-3 py-2.5 rounded-lg hover:bg-muted/50 px-2 -mx-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Mail aria-hidden="true" className="w-4 h-4 text-primary shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium">{t("settings.privacyContact")}</p>
+              <p className="text-xs text-muted-foreground">{t("settings.privacyContactDesc")}</p>
+            </div>
+            <ChevronRight aria-hidden="true" className="w-4 h-4 text-muted-foreground shrink-0" />
+          </a>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ScrollText aria-hidden="true" className="w-4 h-4" />
+            {t("settings.consentSection")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">{t("settings.consentDesc")}</p>
+          {withdrawError && (
+            <p className="text-sm text-destructive" role="alert">
+              {withdrawError}
+            </p>
+          )}
+          <Button variant="destructive" size="sm" onClick={() => setShowWithdrawConfirm(true)}>
+            {t("settings.consentWithdrawButton")}
+          </Button>
+          <p className="text-xs text-muted-foreground">{t("settings.consentNote")}</p>
         </CardContent>
       </Card>
 
@@ -235,6 +321,43 @@ export default function SettingsPage() {
               disabled={deleting}
             >
               {deleting ? t("settings.deleting") : t("settings.confirmDelete")}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showWithdrawConfirm}
+        onOpenChange={(v) => {
+          if (!v) setShowWithdrawConfirm(false);
+        }}
+      >
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <AlertTriangle aria-hidden="true" className="w-5 h-5 text-destructive" />
+              <DialogTitle className="text-lg">{t("settings.consentConfirmTitle")}</DialogTitle>
+            </div>
+            <DialogDescription className="text-sm">
+              {t("settings.consentConfirmDesc")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2 pt-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setShowWithdrawConfirm(false)}
+              disabled={withdrawing}
+            >
+              {t("settings.consentConfirmCancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              className="flex-1"
+              onClick={handleWithdraw}
+              disabled={withdrawing}
+            >
+              {withdrawing ? t("settings.withdrawing") : t("settings.consentConfirmWithdraw")}
             </Button>
           </div>
         </DialogContent>

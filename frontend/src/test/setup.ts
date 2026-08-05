@@ -43,6 +43,16 @@ class ResizeObserverMock {
 }
 window.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
 
+class IntersectionObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return [];
+  }
+}
+window.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver;
+
 // jsdom does not implement pointer-capture APIs; Radix UI (Select, etc.)
 // calls hasPointerCapture during pointer handling, which would throw.
 if (!window.HTMLElement.prototype.hasPointerCapture) {

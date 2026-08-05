@@ -16,6 +16,11 @@ RUN npm run build
 
 # Stage 3: Generate API types + build frontend
 FROM node:22-bookworm-slim AS frontend-build
+# Публичный VAPID-ключ для push-уведомлений — задаётся в build-переменных
+# DockHost. Vite инлайнит VITE_* на этапе сборки, поэтому ключ должен быть
+# доступен здесь, а не в runtime.
+ARG VITE_VAPID_PUBLIC_KEY
+ENV VITE_VAPID_PUBLIC_KEY=$VITE_VAPID_PUBLIC_KEY
 WORKDIR /workspace
 COPY --from=shared-build /workspace/shared /workspace/shared
 WORKDIR /workspace/frontend
@@ -44,16 +49,22 @@ RUN npm run build
 
 # Stage 5: Runtime — Caddy serves frontend, proxies /api to backend
 FROM node:22-alpine
-RUN apk add --no-cache caddy openssl
+# libcap — setcap для не-root привязки Caddy к привилегированному порту 80
+RUN apk add --no-cache caddy openssl libcap \
+ && setcap cap_net_bind_service=+ep /usr/sbin/caddy
 
 COPY --from=frontend-build /workspace/frontend/dist /srv
 COPY --from=backend-build /workspace/backend/dist /app/dist
 COPY --from=backend-build /workspace/backend/node_modules /app/node_modules
 COPY --from=backend-build /workspace/backend/prisma /app/prisma
 COPY --from=backend-build /workspace/backend/docker-entrypoint.sh /app/entrypoint.sh
-# node_modules/@moodly/shared — relative symlink на ../../../shared; кладём пакет на ту же глубину
+COPY --from=backend-build /workspace/backend/package.json /workspace/backend/package-lock.json /app/
 COPY --from=shared-build /workspace/shared /app/shared
-RUN rm -f /app/node_modules/@moodly/shared && ln -s /app/shared /app/node_modules/@moodly/shared
+# Удаляем dev-зависимости из прод-образа (prisma CLI — регулярная зависимость,
+# остаётся доступным для `prisma migrate deploy`), затем кладём @moodly/shared
+# поверх установленного file:-пакета.
+RUN cd /app && npm prune --omit=dev \
+ && rm -f /app/node_modules/@moodly/shared && ln -s /app/shared /app/node_modules/@moodly/shared
 COPY infra/Caddyfile /etc/caddy/Caddyfile
 
 ENV BACKEND_UPSTREAM=127.0.0.1:3001
@@ -61,6 +72,16 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh \
+ && chown -R node:node /app
+
+# Здоровье проверяется по внутреннему эндпоинту бэкенда (health_uri Caddy = /health)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:3001/health >/dev/null 2>&1 || exit 1
+
+# Контейнер не работает от root: Caddy получает порт 80 через file-capability,
+# бэкенд слушает непривилегированный порт 3001
+USER node
+WORKDIR /app
 
 CMD (cd /app && PORT=3001 /app/entrypoint.sh) & caddy run --config /etc/caddy/Caddyfile

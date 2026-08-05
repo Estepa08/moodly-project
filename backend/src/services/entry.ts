@@ -1,17 +1,17 @@
 import { prisma } from "../lib/prisma.js";
 import { NotFoundError, AppError } from "../lib/errors.js";
+import { lockUser } from "../lib/user-lock.js";
 import { creatureService } from "./creature.js";
 
 export interface EntryCreateInput {
+  id: string;
   userId: string;
   parameterId: string;
-  value: number;
-  note?: string;
+  encryptedData: string;
 }
 
 export interface EntryUpdateInput {
-  value?: number;
-  note?: string;
+  encryptedData: string;
 }
 
 export interface EntryListParams {
@@ -48,21 +48,27 @@ export const entryService = {
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
 
-    const todayCount = await prisma.entry.count({
-      where: { userId: input.userId, createdAt: { gte: startOfToday } },
-    });
+    // Проверка лимита и создание записи — в одной транзакции с блокировкой
+    // строки User: два параллельных запроса не смогут оба пройти count < 100.
+    const created = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, input.userId);
 
-    if (todayCount >= 100) {
-      throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
-    }
+      const todayCount = await tx.entry.count({
+        where: { userId: input.userId, createdAt: { gte: startOfToday } },
+      });
 
-    const created = await prisma.entry.create({
-      data: {
-        userId: input.userId,
-        parameterId: input.parameterId,
-        value: input.value,
-        note: input.note,
-      },
+      if (todayCount >= 100) {
+        throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+      }
+
+      return tx.entry.create({
+        data: {
+          id: input.id,
+          userId: input.userId,
+          parameterId: input.parameterId,
+          encryptedData: input.encryptedData,
+        },
+      });
     });
 
     await this.rewardMoodIfNeeded(input.userId, input.parameterId);

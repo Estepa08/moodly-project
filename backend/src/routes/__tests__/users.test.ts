@@ -37,6 +37,25 @@ describe("Users", () => {
     expect(res.json().name).toBe("Updated");
   });
 
+  it("PATCH /users/me — ignores privileged fields (no role escalation)", async () => {
+    const res = await app.inject({
+      method: "PATCH",
+      url: "/users/me",
+      headers: { authorization: `Bearer ${token}` },
+      payload: { name: "Hacker", role: "admin", email: "evil@example.com", password: "hacked" },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().role).toBe("user");
+    expect(res.json().email).toBe("user-test@example.com");
+    const me = await app.inject({
+      method: "GET",
+      url: "/users/me",
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(me.json().role).toBe("user");
+    expect(me.json().email).toBe("user-test@example.com");
+  });
+
   it("DELETE /users/me — deletes user", async () => {
     const { token: token2 } = await registerAndLogin(app, "delete-me@example.com", "secret123");
     const res = await app.inject({

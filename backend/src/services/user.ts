@@ -11,11 +11,22 @@ export interface RegisterInput {
   ageConfirmed: boolean;
   pdpConsent: boolean;
   birthYear?: number;
+  wrappedKey: string;
+  keySalt: string;
+  recoveryWrappedKey: string;
+  recoverySalt: string;
 }
 
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface SetKeysInput {
+  wrappedKey: string;
+  keySalt: string;
+  recoveryWrappedKey: string;
+  recoverySalt: string;
 }
 
 function stripUser(user: {
@@ -68,6 +79,10 @@ export const userService = {
         consentAcceptedAt: new Date(),
         consentVersion: CONSENT_VERSION,
         emailVerified: true,
+        wrappedKey: input.wrappedKey,
+        keySalt: input.keySalt,
+        recoveryWrappedKey: input.recoveryWrappedKey,
+        recoverySalt: input.recoverySalt,
       },
     });
     return { user: stripUser(user) };
@@ -80,7 +95,31 @@ export const userService = {
     const valid = await bcrypt.compare(input.password, user.password);
     if (!valid) throw new AppError("INVALID_CREDENTIALS", 401, "Invalid email or password");
 
-    return stripUser(user);
+    return {
+      user: stripUser(user),
+      wrappedKey: user.wrappedKey,
+      keySalt: user.keySalt,
+    };
+  },
+
+  // Миграция legacy-учёток (созданных до E2E-шифрования): задаём E2E-ключи,
+  // только если их ещё нет. Предотвращает перезапись существующих ключей.
+  async setE2EKeys(userId: string, input: SetKeysInput) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundError("User");
+    if (user.wrappedKey) {
+      throw new AppError("KEYS_ALREADY_SET", 409, "Encryption keys already configured");
+    }
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        wrappedKey: input.wrappedKey,
+        keySalt: input.keySalt,
+        recoveryWrappedKey: input.recoveryWrappedKey,
+        recoverySalt: input.recoverySalt,
+      },
+    });
+    return { ok: true as const };
   },
 
   async findById(id: string) {
@@ -90,9 +129,11 @@ export const userService = {
   },
 
   async update(id: string, data: { name?: string }) {
+    const sanitized: { name?: string } = {};
+    if (data?.name !== undefined) sanitized.name = data.name;
     const user = await prisma.user.update({
       where: { id },
-      data,
+      data: sanitized,
     });
     return stripUser(user);
   },

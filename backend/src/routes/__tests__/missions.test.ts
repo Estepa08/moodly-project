@@ -108,7 +108,7 @@ describe("Creature missions", () => {
       method: "POST",
       url: "/entries",
       headers: { authorization: `Bearer ${token}` },
-      payload: { parameterId: param.id, value: 7 },
+      payload: { id: `mission-entry-${Date.now()}`, parameterId: param.id, encryptedData: "ENC:1" },
     });
 
     const res = await app.inject({
@@ -130,9 +130,7 @@ describe("Creature missions", () => {
       data: {
         testId: test.id,
         userId,
-        score: 5,
-        interpretation: "ok",
-        recommendation: "keep going",
+        encryptedData: "ENC:mission",
       },
     });
 

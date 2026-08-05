@@ -11,7 +11,10 @@ export default defineConfig({
       srcDir: "src",
       filename: "sw.ts",
       strategies: "injectManifest",
-      includeAssets: ["icons/*.svg"],
+      devOptions: {
+        enabled: false,
+      },
+      includeAssets: ["icons/*.svg", "icons/*.png"],
       manifest: {
         name: "Moodly — дневник настроения",
         short_name: "Moodly",
@@ -35,6 +38,12 @@ export default defineConfig({
             sizes: "512x512",
             type: "image/svg+xml",
             purpose: "any maskable",
+          },
+          {
+            src: "/icons/icon-180.png",
+            sizes: "180x180",
+            type: "image/png",
+            purpose: "any",
           },
         ],
         categories: ["health", "lifestyle", "productivity"],
@@ -63,10 +72,19 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          "vendor-react": ["react", "react-dom", "react-router-dom", "@tanstack/react-query"],
-          "vendor-charts": ["recharts", "@nivo/radar", "@nivo/core"],
-          "vendor-anim": ["lottie-react"],
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("recharts") || id.includes("@nivo/")) return "vendor-charts";
+          if (id.includes("lottie-react")) return "vendor-anim";
+          if (id.includes("clsx") || id.includes("tailwind-merge")) return "vendor-ui";
+          if (
+            id.includes("react") ||
+            id.includes("react-dom") ||
+            id.includes("react-router") ||
+            id.includes("@tanstack/react-query")
+          ) {
+            return "vendor-react";
+          }
         },
       },
     },

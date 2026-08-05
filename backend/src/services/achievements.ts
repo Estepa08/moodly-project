@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.js";
+import { lockUser } from "../lib/user-lock.js";
 
 export const achievementsService = {
   async getAll(userId: string) {
@@ -101,59 +102,71 @@ export const achievementsService = {
 
     if (newlyUnlocked.length === 0) return [];
 
-    await prisma.userAchievement.createMany({
-      data: newlyUnlocked.map((a) => ({
-        userId,
-        achievementId: a.id,
-      })),
-      skipDuplicates: true,
+    // Начисление наград — в транзакции с блокировкой User. Поточечный
+    // createMany со skipDuplicates и проверкой count гарантирует, что XP/скины/
+    // титулы/питомцы начисляются ровно один раз даже при параллельных check().
+    const result = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
+
+      const actuallyUnlocked: typeof all = [];
+      for (const a of newlyUnlocked) {
+        const inserted = await tx.userAchievement.createMany({
+          data: [{ userId, achievementId: a.id }],
+          skipDuplicates: true,
+        });
+        if (inserted.count > 0) actuallyUnlocked.push(a);
+      }
+
+      if (actuallyUnlocked.length === 0) return null;
+
+      let xpBonus = 0;
+      const skins: string[] = [];
+      const titles: string[] = [];
+      const petTypes: string[] = [];
+
+      for (const a of actuallyUnlocked) {
+        xpBonus += a.xpReward;
+        if (a.skinReward) skins.push(a.skinReward);
+        if (a.titleReward) titles.push(a.titleReward);
+        if (a.petTypeReward) petTypes.push(a.petTypeReward);
+      }
+
+      if (xpBonus > 0 || skins.length > 0 || titles.length > 0 || petTypes.length > 0) {
+        const updateData: Record<string, unknown> = {};
+        if (xpBonus > 0) {
+          updateData.experience = { increment: xpBonus };
+        }
+        if (skins.length > 0) {
+          updateData.unlockedSkins = { push: skins };
+        }
+        if (titles.length > 0) {
+          updateData.unlockedTitles = { push: titles };
+        }
+        if (petTypes.length > 0) {
+          updateData.unlockedPetTypes = { push: petTypes };
+        }
+        await tx.creatureState.update({
+          where: { userId },
+          data: updateData as never,
+        });
+      }
+
+      return actuallyUnlocked.map((a) => ({
+        id: a.id,
+        key: a.key,
+        category: a.category,
+        titleKey: a.titleKey,
+        descKey: a.descKey,
+        iconName: a.iconName,
+        skinReward: a.skinReward,
+        titleReward: a.titleReward,
+        petTypeReward: a.petTypeReward,
+        xpReward: a.xpReward,
+        sortOrder: a.sortOrder,
+      }));
     });
 
-    let xpBonus = 0;
-    const skins: string[] = [];
-    const titles: string[] = [];
-    const petTypes: string[] = [];
-
-    for (const a of newlyUnlocked) {
-      xpBonus += a.xpReward;
-      if (a.skinReward) skins.push(a.skinReward);
-      if (a.titleReward) titles.push(a.titleReward);
-      if (a.petTypeReward) petTypes.push(a.petTypeReward);
-    }
-
-    if (xpBonus > 0 || skins.length > 0 || titles.length > 0 || petTypes.length > 0) {
-      const updateData: Record<string, unknown> = {};
-      if (xpBonus > 0) {
-        updateData.experience = { increment: xpBonus };
-      }
-      if (skins.length > 0) {
-        updateData.unlockedSkins = { push: skins };
-      }
-      if (titles.length > 0) {
-        updateData.unlockedTitles = { push: titles };
-      }
-      if (petTypes.length > 0) {
-        updateData.unlockedPetTypes = { push: petTypes };
-      }
-      await prisma.creatureState.update({
-        where: { userId },
-        data: updateData as never,
-      });
-    }
-
-    return newlyUnlocked.map((a) => ({
-      id: a.id,
-      key: a.key,
-      category: a.category,
-      titleKey: a.titleKey,
-      descKey: a.descKey,
-      iconName: a.iconName,
-      skinReward: a.skinReward,
-      titleReward: a.titleReward,
-      petTypeReward: a.petTypeReward,
-      xpReward: a.xpReward,
-      sortOrder: a.sortOrder,
-    }));
+    return result ?? [];
   },
 
   async getSkins(userId: string) {

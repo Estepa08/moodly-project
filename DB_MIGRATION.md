@@ -51,6 +51,7 @@ make db-backup
 
 Neon: console.neon.tech → New Project → БД `moodly`. Из раздела Connection
 details скопировать:
+
 - **Pooled**: `...-pooler...neon.tech/neondb?sslmode=require` → `DATABASE_URL`
 - **Direct**: `...neon.tech/neondb` (без `-pooler`) → `DIRECT_URL`
 
@@ -91,6 +92,7 @@ DIRECT_URL="postgres://...direct..." DATABASE_URL="postgres://...direct..." \
 curl -s https://moodly-oyew.onrender.com/api/health
 make db-prod-users
 ```
+
 Проверить вход в приложение и пару сценариев записи данных.
 
 ### 7. Выключение старой БД

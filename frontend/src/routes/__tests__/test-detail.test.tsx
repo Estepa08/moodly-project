@@ -12,7 +12,6 @@ vi.mock("../../lib/api", () => ({
     tests: {
       list: vi.fn(),
       get: vi.fn(),
-      submitResult: vi.fn(),
     },
     creature: {
       getPets: vi.fn().mockResolvedValue({
@@ -49,6 +48,19 @@ vi.mock("../../features/analytics", () => ({
   ),
 }));
 
+vi.mock("../../lib/crypto/session", () => ({
+  getSessionKey: vi.fn(async () => ({ kind: "fake" }) as CryptoKey),
+  getSessionUserId: vi.fn(() => "user-1"),
+}));
+
+vi.mock("../../lib/crypto/records", () => ({
+  encryptTestResultPayload: vi.fn(async (data: unknown, id: string) => `enc:${id}`),
+}));
+
+vi.mock("../../lib/offline/sync", () => ({
+  enqueue: vi.fn(async () => {}),
+}));
+
 describe("TestDetailPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -74,6 +86,8 @@ describe("TestDetailPage", () => {
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "1",
       title: "Emotional State",
+      type: "ratio",
+      scoreBands: [],
       active: true,
       questions: [
         {
@@ -111,6 +125,8 @@ describe("TestDetailPage", () => {
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "3",
       title: "Feed Test",
+      type: "ratio",
+      scoreBands: [],
       active: true,
       questions: [
         {
@@ -154,6 +170,8 @@ describe("TestDetailPage", () => {
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "1",
       title: "Emotional State",
+      type: "ratio",
+      scoreBands: [],
       active: true,
       questions: [
         {
@@ -165,11 +183,6 @@ describe("TestDetailPage", () => {
           ],
         },
       ],
-    });
-    (api.tests.submitResult as Mock).mockResolvedValueOnce({
-      score: 1,
-      interpretation: "Low score",
-      recommendation: "Keep monitoring.",
     });
 
     const user = userEvent.setup();
@@ -183,9 +196,8 @@ describe("TestDetailPage", () => {
     await user.click(screen.getByRole("button", { name: /submit/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Low score")).toBeInTheDocument();
+      expect(screen.getByText("Повышенный результат")).toBeInTheDocument();
     });
-    expect(screen.getByText("Keep monitoring.")).toBeInTheDocument();
   });
 
   it("shows cognitive distortion profile when flags.distortions present", async () => {
@@ -193,29 +205,19 @@ describe("TestDetailPage", () => {
     (api.tests.get as Mock).mockResolvedValueOnce({
       id: "2",
       title: "Cognitive Distortions Assessment",
+      type: "computed",
+      scoreBands: [],
       active: true,
       questions: [
         {
-          id: "q1",
+          id: "cd-1-1",
           text: "Test question 1?",
           options: [
-            { id: "a1", text: "Not at all", score: 0 },
-            { id: "a2", text: "Moderately", score: 2 },
+            { id: "cd-1-1-0", text: "Not at all", score: 0 },
+            { id: "cd-1-1-2", text: "Moderately", score: 2 },
           ],
         },
       ],
-    });
-    (api.tests.submitResult as Mock).mockResolvedValueOnce({
-      score: 2,
-      interpretation: "Some distortions detected",
-      recommendation: "Consider CBT techniques.",
-      flags: {
-        distortions: {
-          allOrNothing: { score: 8, level: "high" },
-          shouldStatements: { score: 6, level: "moderate" },
-          personalization: { score: 1, level: "low" },
-        },
-      },
     });
 
     const user = userEvent.setup();
@@ -229,7 +231,5 @@ describe("TestDetailPage", () => {
       expect(screen.getByText("Your Thinking Patterns")).toBeInTheDocument();
     });
     expect(screen.getByText("allOrNothing")).toBeInTheDocument();
-    expect(screen.getByText("shouldStatements")).toBeInTheDocument();
-    expect(screen.getByText("personalization")).toBeInTheDocument();
   });
 });

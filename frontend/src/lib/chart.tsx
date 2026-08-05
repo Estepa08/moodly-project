@@ -136,7 +136,7 @@ export function Chart({
                     dataKey={s.dataKey}
                     stroke={s.color}
                     strokeWidth={2}
-                    dot={showDots ? { r: 3 } : false}
+                    dot={showDots ? { r: 4 } : false}
                     connectNulls={connectNulls}
                   />
                 ))}

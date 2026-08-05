@@ -1,5 +1,14 @@
 {
   "common": {
+    "register": {
+      "recoveryEmailSent": "Recovery email has been sent.",
+      "recoveryCodeInvalid": "Recovery code is invalid.",
+      "recoveryCodeExpired": "Recovery code expired. Please request a new one."
+    },
+    "resetPassword": {
+      "resetSuccess": "Your password has been reset successfully.",
+      "resetFailed": "Password reset failed. Please try again."
+    },
     "moodly": "Moodly",
     "back": "Back",
     "logout": "Logout",
@@ -14,6 +23,7 @@
     "hidePassword": "Hide password",
     "cancel": "Cancel",
     "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try again",
     "date": "Date",
     "footerText": "Moodly is a self-assessment tool, not a medical device.",
     "footerPrivacy": "Privacy Policy",
@@ -75,7 +85,10 @@
     "disclaimerAccept": "I understand",
     "forgotPassword": "Forgot password?",
     "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service"
+    "termsOfService": "Terms of Service",
+    "legacyAccount": "Legacy account detected. Please log in with your credentials.",
+    "legacyIntro": "Your account has been upgraded: your data is now encrypted on your device. Please save your recovery code.",
+    "legacyRecoveryNote": "This recovery code is used to regain access to your data if you forget your password. Keep it somewhere safe."
   },
   "register": {
     "title": "Create Account",
@@ -218,9 +231,9 @@
   "tests": {
     "title": "Assessments",
     "abbreviation": {
-      "mood": "MA",
-      "wellbeing": "WA",
-      "cd": "CD"
+      "mood": "Anxiety",
+      "wellbeing": "Mood",
+      "cd": "Mind"
     }
   },
   "testDetail": {
@@ -681,6 +694,237 @@
     "actionBreathingSub": "2 minutes · no setup",
     "actionRecord": "Check in with yourself"
   },
+  "dayActivities": {
+    "title": "My day",
+    "sectionHeading": "What made today special?",
+    "subtitle": "Pick your activities — no typing needed",
+    "searchPlaceholder": "Search activities…",
+    "selectedCount": "{{count}} selected",
+    "selectedCount_plural": "{{count}} selected",
+    "createOwn": "Create your own",
+    "save": "Save",
+    "saved": "Saved",
+    "addCustom": "Add",
+    "customPlaceholder": "Your own activity…",
+    "myActivities": "My activities",
+    "removeFromCatalog": "Remove from my catalog",
+    "empty": "Nothing recorded yet",
+    "edit": "Edit",
+    "correlationTitle": "My day & my mood",
+    "correlationSubtitle": "What supports you and what drains you — over 30 days",
+    "correlationUp": "Supports you",
+    "correlationDown": "Drains you",
+    "correlationInsufficient": "Record your activities for a few days and you'll see how they link to your mood here",
+    "correlationDays": "{{count}}d × {{value}}",
+    "correlationDays_plural": "{{count}}d × {{value}}",
+    "categories": {
+      "work": "Work",
+      "study": "Study",
+      "health": "Health",
+      "movement": "Movement",
+      "rest": "Rest",
+      "social": "Social",
+      "hobby": "Hobby",
+      "events": "Events",
+      "wellbeing": "Wellbeing"
+    },
+    "activities": {
+      "work_worked": "Worked",
+      "work_meeting": "Meeting",
+      "work_deadline": "Deadline",
+      "work_presentation": "Presentation",
+      "work_overtime": "Overtime",
+      "work_day_off": "Day off",
+      "work_remote": "Worked from home",
+      "work_stressful_day": "Stressful day",
+      "work_success": "Work success",
+      "work_new_project": "New project",
+      "work_salary": "Payday",
+      "work_business_trip": "Business trip",
+      "work_employee_review": "Performance review",
+      "work_hired": "Job interview",
+      "work_quitting": "Leaving a job",
+      "work_promotion": "Promotion",
+      "work_bad_boss": "Difficult boss",
+      "work_fired": "Lost a job",
+      "work_lunch_with_colleagues": "Lunch with colleagues",
+      "work_focus_day": "Deep work day",
+      "work_remote_stress": "Remote fatigue",
+      "work_team_success": "Team success",
+      "study_studied": "Studied",
+      "study_exam": "Exam",
+      "study_homework": "Homework",
+      "study_course": "Course",
+      "study_listened_lecture": "Attended a lecture",
+      "study_failed_exam": "Failed an exam",
+      "study_passed_exam": "Passed an exam",
+      "study_learned_skill": "Learned a skill",
+      "study_read_textbook": "Read a textbook",
+      "study_conference": "Conference",
+      "study_workshop": "Workshop",
+      "study_language_lesson": "Language lesson",
+      "study_research": "Research",
+      "health_doctor_visit": "Doctor visit",
+      "health_therapy_session": "Therapy session",
+      "health_medication": "Took medication",
+      "health_sick": "Sick",
+      "health_headache": "Headache",
+      "health_good_health": "Feeling healthy",
+      "health_bad_sleep": "Slept badly",
+      "health_good_sleep": "Slept well",
+      "health_toothache": "Toothache",
+      "health_flu": "Cold/flu",
+      "health_dental_visit": "Dentist visit",
+      "health_eye_strain": "Eye strain",
+      "health_digestion": "Digestion issues",
+      "health_allergy": "Allergy",
+      "health_massage": "Massage",
+      "health_gratitude_health": "Grateful for health",
+      "health_energy_drop": "Energy slump",
+      "health_caffeine": "Had caffeine",
+      "health_alcohol": "Drank alcohol",
+      "movement_walk": "Walk",
+      "movement_gym": "Gym",
+      "movement_run": "Run",
+      "movement_yoga": "Yoga",
+      "movement_cycling": "Cycling",
+      "movement_sport_game": "Sports game",
+      "movement_home_workout": "Home workout",
+      "movement_stretching": "Stretching",
+      "movement_dance": "Dancing",
+      "movement_swimming": "Swimming",
+      "movement_hiking": "Hiking",
+      "movement_pilates": "Pilates",
+      "movement_boxing": "Boxing",
+      "movement_tennis": "Tennis",
+      "movement_basketball": "Basketball",
+      "movement_football": "Football",
+      "movement_skateboard": "Skateboarding",
+      "movement_ski": "Skiing",
+      "movement_climbing": "Climbing",
+      "movement_sports_outdoor": "Outdoor activity",
+      "rest_read": "Reading",
+      "rest_watched_movie": "Watched a movie",
+      "rest_watched_tv": "Watched a show",
+      "rest_played_games": "Played games",
+      "rest_listened_music": "Listened to music",
+      "rest_nap": "Daytime nap",
+      "rest_relaxed": "Relaxed",
+      "rest_mobile_scroll": "Scrolled my phone",
+      "rest_walked_leisure": "Leisurely walk",
+      "rest_stay_in": "Did nothing",
+      "rest_hot_bath": "Warm bath",
+      "rest_meditation": "Meditation",
+      "rest_quiet_morning": "Quiet morning",
+      "rest_social_media": "Browsed social media",
+      "social_friends": "Friends",
+      "social_family": "Family",
+      "social_partner": "Partner",
+      "social_helped_others": "Helped others",
+      "social_phone_call": "Called a loved one",
+      "social_conflict": "Conflict",
+      "social_date": "Date",
+      "social_kids": "Time with kids",
+      "social_parents": "Saw parents",
+      "social_colleagues": "Socialized with colleagues",
+      "social_new_acquaintance": "New acquaintance",
+      "social_reunion": "Gathering with old friends",
+      "social_neighbors": "Talked with neighbors",
+      "social_party": "Party",
+      "social_networking": "Networking",
+      "social_support_group": "Support group",
+      "social_lonely": "Felt lonely",
+      "social_good_communication": "Great conversation",
+      "hobby_drawing": "Drawing",
+      "hobby_music_playing": "Playing an instrument",
+      "hobby_cooking": "Cooking",
+      "hobby_gaming": "Video games",
+      "hobby_photography": "Photography",
+      "hobby_writing": "Writing / blog",
+      "hobby_diy": "DIY",
+      "hobby_knitting": "Knitting",
+      "hobby_gardening": "Gardening",
+      "hobby_puzzle": "Puzzles",
+      "hobby_board_games": "Board games",
+      "hobby_collecting": "Collecting",
+      "hobby_pottery": "Pottery",
+      "hobby_painting": "Painting",
+      "hobby_singing": "Singing",
+      "hobby_rebuild_car": "Tinkering",
+      "hobby_build_model": "Model building",
+      "hobby_crafts": "Crafts",
+      "events_celebration": "Celebration",
+      "events_holiday": "Holiday",
+      "events_travel": "Travel",
+      "events_concert": "Concert",
+      "events_wedding": "Wedding",
+      "events_shopping": "Shopping",
+      "events_birthday": "Birthday",
+      "events_anniversary": "Anniversary",
+      "events_graduation": "Graduation",
+      "events_sport_event": "Sports event",
+      "events_theater": "Theater",
+      "events_museum": "Museum / exhibition",
+      "events_city_trip": "City trip",
+      "events_market": "Market / fair",
+      "events_religious_day": "Religious day",
+      "events_special_meal": "Special meal",
+      "wellbeing_stress": "Stress",
+      "wellbeing_anxiety": "Anxiety",
+      "wellbeing_good_mood": "Good mood",
+      "wellbeing_low_mood": "Low mood",
+      "wellbeing_grateful": "Grateful",
+      "wellbeing_peaceful": "Peaceful",
+      "wellbeing_overwhelmed": "Overwhelmed",
+      "wellbeing_energetic": "Energetic",
+      "wellbeing_tired": "Tired",
+      "wellbeing_rainy_day": "Rainy day",
+      "wellbeing_sunny_day": "Sunny day",
+      "wellbeing_motivated": "Motivated",
+      "wellbeing_hopeful": "Hopeful",
+      "wellbeing_sad": "Sad",
+      "wellbeing_angry": "Angry",
+      "wellbeing_irritated": "Irritated",
+      "wellbeing_calm": "Calm",
+      "wellbeing_stress_relief": "Relieved stress",
+      "wellbeing_breakthrough": "Personal breakthrough",
+      "wellbeing_self_care": "Self-care",
+      "wellbeing_rush": "Rushed",
+      "wellbeing_satisfied": "Satisfied",
+      "wellbeing_lonely_day": "Quietly alone",
+      "wellbeing_wild_day": "Wild day",
+      "wellbeing_routine_day": "Routine day",
+      "work_telework_balance": "Balanced day",
+      "work_boring_day": "Boring workday",
+      "work_insight_work": "Great idea at work",
+      "study_online_lesson": "Online lesson",
+      "study_self_education": "Self-education",
+      "study_group_project": "Group project",
+      "health_vitamins": "Took vitamins",
+      "health_sleep_eight": "Slept 8 hours",
+      "health_hydration": "Stayed hydrated",
+      "health_fresh_air": "Got fresh air",
+      "movement_morning_run": "Morning run",
+      "movement_stairs": "Walked a lot",
+      "movement_team_sport": "Team sport",
+      "rest_sat_outdoors": "Sat outside",
+      "rest_tea_ceremony": "Tea time",
+      "rest_silence": "Silence",
+      "social_cooked_for_others": "Cooked for loved ones",
+      "social_thanks_text": "Sent thanks",
+      "social_visit": "Visited someone",
+      "hobby_baking": "Baking",
+      "hobby_fishing": "Fishing",
+      "hobby_birdwatching": "Birdwatching",
+      "events_city_festival": "City festival",
+      "events_first_snow": "First snow",
+      "events_moved": "Moved",
+      "wellbeing_fresh_start": "Fresh start",
+      "wellbeing_slept_early": "Slept early",
+      "wellbeing_mood_swing": "Mood swings",
+      "wellbeing_confidence": "Confidence"
+    }
+  },
   "dailyCheckIn": {
     "greetingMorning": "Good morning",
     "greetingAfternoon": "Good afternoon",
@@ -751,7 +995,7 @@
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: August 2026",
     "operator": "Data Controller",
-    "operatorText": "Personal data is processed by the operator of Moodly: [Company name / Individual entrepreneur full name], address: [address], INN: [INN], OGRN: [OGRN]. Official contact email: privacy@moodly.app.",
+    "operatorText": "Personal data is processed by the operator of Moodly: Individual Entrepreneur Stepanova K.S., address: [address], INN: [INN], OGRNIP: [OGRNIP]. Official contact email: privacy@moodly.app.",
     "legalBasis": "Legal Basis for Processing",
     "legalBasisText": "Processing is based on: (a) your consent given at registration, including consent to the processing of special category data concerning mental health (Article 9 GDPR / Article 10 of Russian Federal Law No. 152-FZ); (b) performance of the contract (terms of service) to which you are a party (Art. 6(1)(b) GDPR); (c) legal obligations.",
     "dataWeCollect": "Data We Collect",
@@ -798,6 +1042,22 @@
     "email": "Email",
     "password": "Change Password",
     "notifications": "Notifications",
+    "remindersTitle": "Reminders",
+    "remindersSwitchLabel": "Daily reminder",
+    "remindersSwitchDesc": "Log your mood every day",
+    "remindersTimeLabel": "Time",
+    "pushAllowed": "Push enabled",
+    "pushAllowedDesc": "The browser will remind you to log your mood",
+    "pushAllow": "Allow",
+    "pushDisable": "Disable",
+    "pushEnable": "Allow notifications",
+    "pushEnableDesc": "Moodly will remind you to log your mood",
+    "pushDenied": "Notifications blocked",
+    "pushDeniedDesc": "Allow notifications in your browser settings",
+    "pushUnsupported": "This browser doesn't support push",
+    "pushSubscribeFailed": "Couldn't enable push notifications",
+    "pushNotConfigured": "Push notifications are temporarily unavailable — try again later",
+    "remindersSaveFailed": "Failed to save settings",
     "comingSoon": "Coming soon",
     "language": "Language",
     "companionSection": "Pet",
@@ -811,7 +1071,24 @@
     "confirmDesc": "All your entries, test results, and personal data will be permanently removed. This action cannot be undone.",
     "confirmCancel": "Cancel",
     "confirmDelete": "Delete",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "rightsSection": "Rights & documents",
+    "privacyLink": "Privacy Policy",
+    "privacyLinkDesc": "data processing, 152-FZ",
+    "termsLink": "Terms of Service",
+    "termsLinkDesc": "service rules, governing law",
+    "privacyContact": "privacy@moodly.app",
+    "privacyContactDesc": "data subject rights requests",
+    "consentSection": "Data processing consent",
+    "consentDesc": "Withdrawing consent stops processing of personal data and deletes your account and all associated data. This action is irreversible.",
+    "consentWithdrawButton": "Withdraw consent",
+    "consentNote": "Same as \"Delete Account\" — identical result.",
+    "consentConfirmTitle": "Withdraw consent?",
+    "consentConfirmDesc": "Your account and all data will be permanently deleted.",
+    "consentConfirmCancel": "Cancel",
+    "consentConfirmWithdraw": "Withdraw",
+    "consentFailed": "Failed to withdraw consent",
+    "withdrawing": "Withdrawing..."
   },
   "review": {
     "title": "App review",
@@ -1139,5 +1416,745 @@
       "error": "Sync error — tap to retry"
     },
     "pending": "{{count}} operations queued"
+  },
+  "landing": {
+    "navInside": "What's inside",
+    "navPets": "Pets",
+    "navTests": "Tests",
+    "navPrivacy": "Privacy",
+    "signIn": "Sign in",
+    "start": "Try for free",
+    "demo": "Watch demo",
+    "badge": "30 seconds a day is enough",
+    "hero": {
+      "titlePrefix": "A mood diary that",
+      "accent": "cares",
+      "titleSuffix": "about you",
+      "text": "Track your mood, energy, sleep and anxiety in half a minute. See trends, calm down with practices and raise your companion pet. Private, per 152-FZ.",
+      "mockCompanion": "Companion · lvl 7",
+      "mockStreak": "Streak: 12 days 🔥",
+      "mockMood": "Mood · this week",
+      "mockPractice": "Practice · Breathing",
+      "mockPracticeSub": "2 min of calm"
+    },
+    "stats": {
+      "pets": "companion pets",
+      "practices": "self-help practices",
+      "params": "wellbeing parameters",
+      "tests": "self-discovery tests"
+    },
+    "features": {
+      "kicker": "What's inside",
+      "title": "Not a diary, a daily companion",
+      "checkin": {
+        "title": "30-second check-in",
+        "text": "Mood, energy, sleep and anxiety — on one screen, no long forms."
+      },
+      "analytics": {
+        "title": "Smart analytics",
+        "text": "Thinking patterns radar, trends and periods — you see patterns, not chaos."
+      },
+      "pet": {
+        "title": "Companion pet",
+        "text": "Streaks, XP and 27 pets — motivation is built into the habit, not willpower."
+      },
+      "tests": {
+        "title": "Self-discovery tests",
+        "text": "Mood, anxiety and thinking habits tests — understand your states and thoughts."
+      }
+    },
+    "day": {
+      "kicker": "My day",
+      "title": "Describe your day without typing a word",
+      "subtitle": "Over 180 activities & events, your own custom ones, and analytics that link them to your mood.",
+      "tag180": "180+ activities & events",
+      "tagCustom": "Custom activities",
+      "tagCorrelation": "Mood connections",
+      "p1": "Pick activities with taps instead of typing — a full day in 30 seconds",
+      "p2": "Edit your selection or create your own activity",
+      "p3": "Moodly shows what lifts your mood and what drains your energy"
+    },
+    "collection": {
+      "kicker": "Collection",
+      "title": "Collect all 27 pets",
+      "text": "Each pet is unlocked through achievements: streaks, practices, level."
+    },
+    "tests": {
+      "kicker": "Self-discovery tests",
+      "title": "Tests that help you understand yourself",
+      "duration": "{{minutes}} min",
+      "mood": {
+        "title": "Mood test",
+        "text": "Questions about your mood and wellbeing. Notice changes and track the trend.",
+        "foot": "Clear explanations and period trends"
+      },
+      "anxiety": {
+        "title": "Anxiety test",
+        "text": "Questions about anxiety and tension. Better understand what triggers yours.",
+        "foot": "Results with gentle interpretation"
+      },
+      "mind": {
+        "title": "Thinking habits test",
+        "text": "Questions about how you think about events. Notice your thinking habits in the moment.",
+        "foot": "Thinking patterns radar shows changes over periods"
+      }
+    },
+    "privacy": {
+      "kicker": "Privacy",
+      "title": "Your data is protected by law",
+      "servers": {
+        "title": "Servers in Russia",
+        "text": "art. 18 p. 5 of 152-FZ"
+      },
+      "consent": {
+        "title": "Consents at sign-up",
+        "text": "18+ and personal data processing, in writing"
+      },
+      "ads": {
+        "title": "No ads",
+        "text": "data is never sold or used for targeting"
+      },
+      "disclaimer": {
+        "title": "Clear disclaimer",
+        "text": "a self-assessment tool, not a medical service"
+      },
+      "encryption": {
+        "title": "End-to-end encryption",
+        "text": "entries and tests are encrypted on your device — even we cannot read them"
+      },
+      "keyOnly": {
+        "title": "Key stays with you",
+        "text": "your encryption key never leaves your device"
+      },
+      "recovery": {
+        "title": "Recovery code",
+        "text": "save it at sign-up — without it your data cannot be restored"
+      }
+    },
+    "cta": {
+      "title": "Start today — 30 seconds a day",
+      "text": "Free. No card. Your data stays yours.",
+      "button": "Try now"
+    },
+    "footer": {
+      "about": "A mood diary and self-help practices.",
+      "disclaimer": "Moodly is a self-assessment tool and does not replace professional advice. If you're not feeling well, please reach out to a professional.",
+      "diary": "Mood diary",
+      "anxiety": "Anxiety test"
+    },
+    "seo": {
+      "title": "Moodly — a mood diary that cares about you",
+      "description": "Track your mood, energy, sleep and anxiety in half a minute. Practices, self-discovery tests and a companion pet. Private, per 152-FZ."
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page doesn't exist or has been moved.",
+    "home": "Go home",
+    "signIn": "Sign in"
+  },
+  "seo": {
+    "nav": {
+      "moodDiary": "Mood diary",
+      "anxietyTest": "Anxiety test",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "start": "Start free",
+      "blog": "Blog"
+    },
+    "footer": {
+      "about": "A mood diary that cares about you — 30 seconds a day.",
+      "product": "Product",
+      "company": "Company"
+    }
+  },
+  "seoPages": {
+    "moodDiary": {
+      "meta": {
+        "title": "Mood Diary — Moodly",
+        "description": "Track mood, energy, sleep and anxiety in 30 seconds a day and see what really affects them. Private, data stored in RU per 152-FZ."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Mood diary"
+      },
+      "hero": {
+        "title": "Mood diary",
+        "accent": "understand your state in 30 seconds a day",
+        "sub1": "Track mood, energy, sleep and anxiety — and see what really affects them.",
+        "sub2": "Your entries are encrypted and stored in RU per 152-FZ.",
+        "ctaPrimary": "Start journaling free",
+        "ctaSecondary": "How it works"
+      },
+      "mock": {
+        "title": "Today",
+        "subtitle": "Mood 8 · Energy 7",
+        "row1": "Mood: calm, slightly joyful",
+        "row2": "What helped: a walk in fresh air",
+        "row3": "Streak growing — 5 days"
+      },
+      "stats": {
+        "1": {
+          "value": "30 sec",
+          "label": "per daily check-in"
+        },
+        "2": {
+          "value": "4",
+          "label": "metrics: mood, energy, sleep, anxiety"
+        },
+        "3": {
+          "value": "27",
+          "label": "companion pets"
+        },
+        "4": {
+          "value": "152-FZ",
+          "label": "data stored in RU"
+        }
+      },
+      "why": {
+        "kicker": "Why",
+        "title": "Why keep a mood diary",
+        "text1": "A paper diary shows no trends, and memory loses context.",
+        "text2": "Moodly spots patterns for you — calmly and privately.",
+        "steps": {
+          "1": {
+            "title": "Fill it in 30 sec",
+            "text": "Log your state. No long texts needed — even a single word works."
+          },
+          "2": {
+            "title": "Moodly sees trends",
+            "text": "What affects you: sleep, load, time of day. Trends and periods at a glance."
+          },
+          "3": {
+            "title": "Keep the habit",
+            "text": "A pet, streaks and XP make regularity desirable — you won't quit after week two."
+          }
+        }
+      },
+      "params": {
+        "kicker": "What to track",
+        "title": "4 metrics of your state",
+        "1": {
+          "title": "Mood",
+          "sub": "emotional background"
+        },
+        "2": {
+          "title": "Energy",
+          "sub": "charge and activity"
+        },
+        "3": {
+          "title": "Sleep",
+          "sub": "sleep quality"
+        },
+        "4": {
+          "title": "Anxiety",
+          "sub": "tension level"
+        }
+      },
+      "how": {
+        "kicker": "Get started",
+        "title": "How to start a mood diary",
+        "cta": "Start free — it takes 30 seconds",
+        "steps": {
+          "1": {
+            "title": "Register",
+            "text": "no email confirmation, frictionless sign-up"
+          },
+          "2": {
+            "title": "Choose your pet",
+            "text": "a companion that levels up with you"
+          },
+          "3": {
+            "title": "First check-in",
+            "text": "30 seconds — and your state is captured"
+          }
+        }
+      },
+      "faq": {
+        "1": {
+          "q": "Is it free?",
+          "a": "Yes, the core diary and all practices are free. Premium features come later, with no paywall at launch."
+        },
+        "2": {
+          "q": "How private are my entries?",
+          "a": "Entries are encrypted on your device, the key stays with you. Data is stored on servers in Russia per 152-FZ."
+        },
+        "3": {
+          "q": "Do I need internet?",
+          "a": "No. The app works offline and syncs when you're back online."
+        },
+        "title": "Frequently asked questions"
+      },
+      "cta": {
+        "title": "Start spotting patterns",
+        "text": "Most diaries forget about trends — we won't let you lose them.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service. It does not diagnose or replace professional care.",
+        "2": "If your mood stays low or anxiety bothers you, reach out to a doctor or psychologist."
+      }
+    },
+    "anxietyTest": {
+      "meta": {
+        "title": "Anxiety test — assess your level in 3 minutes",
+        "description": "Take a verified 33-question anxiety test. Get a clear result and guidance. Private."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Anxiety test"
+      },
+      "hero": {
+        "title": "Anxiety test",
+        "accent": "assess your anxiety level in 3 minutes",
+        "sub1": "33 questions about tension, worry and physical signs.",
+        "sub2": "It takes about 3 minutes, and your result is stored encrypted.",
+        "ctaPrimary": "Take the test free",
+        "ctaSecondary": "What the result shows"
+      },
+      "mock": {
+        "title": "Question 5 of 33",
+        "progress": "progress 4/33",
+        "question": "Over the last 2 weeks, how often…",
+        "option": {
+          "1": "did you feel anxious or tense?",
+          "2": "was it hard to relax?",
+          "3": "did physical signs bother you?"
+        },
+        "selected": "A bit more often than usual"
+      },
+      "about": {
+        "kicker": "About",
+        "title": "What it is and how it works",
+        "text1": "A verified self-assessment tool for anxiety. It is a self-discovery test, not a medical diagnosis.",
+        "text2": "The result is a guide, not a diagnosis — and never replaces a professional."
+      },
+      "scale": {
+        "title": "What the result means",
+        "range": {
+          "1": "Low level",
+          "2": "Moderate (normal)",
+          "3": "Elevated — consider seeing a professional"
+        }
+      },
+      "how": {
+        "kicker": "How it goes",
+        "title": "How the test works",
+        "steps": {
+          "1": {
+            "title": "Answer the questions",
+            "text": "Rate symptom frequency over the last 2 weeks. There are no wrong answers."
+          },
+          "2": {
+            "title": "Get your result",
+            "text": "An anxiety level and range description. Gentle wording, no diagnoses."
+          },
+          "3": {
+            "title": "Track your dynamics",
+            "text": "Retake later and see how your level changes."
+          }
+        }
+      },
+      "trust": {
+        "private": {
+          "title": "Private and confidential",
+          "text": "Your result is stored encrypted, the key stays with you. Data in RU per 152-FZ."
+        },
+        "care": {
+          "title": "No pressure, no diagnoses",
+          "text": "Gentle wording and care, not “you have anxiety.” This is a self-help tool."
+        }
+      },
+      "faq": {
+        "1": {
+          "q": "Is this a medical test?",
+          "a": "No. It is a self-assessment tool — it helps you notice your state but does not diagnose or replace a doctor."
+        },
+        "2": {
+          "q": "How long does it take?",
+          "a": "About 3 minutes. You can review answers before saving the result."
+        },
+        "title": "Frequently asked questions"
+      },
+      "cta": {
+        "title": "Learn your anxiety level",
+        "text": "3 minutes — and you get a clear picture instead of vague worry.",
+        "button": "Take the test free"
+      },
+      "disclaimer": {
+        "1": "The anxiety test is a self-check tool, not a medical diagnosis. It does not diagnose or replace a professional.",
+        "2": "If anxiety bothers you constantly or gets in the way of life, see a doctor or psychologist."
+      }
+    },
+    "thinkingHabits": {
+      "meta": {
+        "title": "Thinking habits test — discover your patterns",
+        "description": "Take a self-discovery test and learn your thinking habits. The “Thinking Profile” radar shows which patterns are typical for you. Private."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Thinking habits test"
+      },
+      "hero": {
+        "title": "Thinking habits test",
+        "accent": "discover your thinking patterns",
+        "sub1": "A short self-discovery test about how you think about yourself and events.",
+        "sub2": "The result is a “Thinking Profile” radar with your patterns. No diagnoses — just self-understanding."
+      },
+      "mock": {
+        "title": "Thinking profile",
+        "subtitle": "how you tend to think",
+        "axis": {
+          "1": {
+            "name": "Catastrophizing",
+            "desc": "tendency to blow things out of proportion"
+          },
+          "2": {
+            "name": "All-or-nothing",
+            "desc": "everything or nothing"
+          },
+          "3": {
+            "name": "Fortune telling",
+            "desc": "expecting the worst outcome"
+          },
+          "4": {
+            "name": "Overgeneralizing",
+            "desc": "applying one case to everything"
+          }
+        }
+      },
+      "about": {
+        "kicker": "About",
+        "title": "What is the thinking habits test",
+        "text1": "Thinking habits are stable ways of interpreting events. Knowing them makes it easier to notice and change them.",
+        "text2": "It is a self-discovery tool: it shows tendencies, not a diagnosis."
+      },
+      "patterns": {
+        "1": {
+          "title": "Catastrophizing",
+          "text": "Expecting the worst and blowing up the scale of a problem."
+        },
+        "2": {
+          "title": "All-or-nothing",
+          "text": "Judging in extremes, without the middle ground."
+        },
+        "3": {
+          "title": "Fortune telling",
+          "text": "Expecting a negative outcome before it happens."
+        },
+        "4": {
+          "title": "Overgeneralizing",
+          "text": "Applying one bad case to everything at once."
+        }
+      },
+      "how": {
+        "kicker": "How it goes",
+        "title": "How the test works",
+        "steps": {
+          "1": {
+            "title": "Answer the questions",
+            "text": "Rate how typical different thinking patterns are for you."
+          },
+          "2": {
+            "title": "Get your radar",
+            "text": "The “Thinking Profile” shows your leading habits at a glance."
+          },
+          "3": {
+            "title": "Track your progress",
+            "text": "Retake later and see how your profile changes."
+          }
+        }
+      },
+      "trust": {
+        "private": {
+          "title": "Private and confidential",
+          "text": "Your result is stored encrypted, the key stays with you. Data in RU per 152-FZ."
+        },
+        "care": {
+          "title": "No diagnoses, no pressure",
+          "text": "Gentle wording and care. This is self-discovery, not a verdict."
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "1": {
+          "q": "Is this a medical test?",
+          "a": "No. It is a self-discovery test — it helps you see your thinking habits but does not diagnose or replace a professional."
+        },
+        "2": {
+          "q": "How long does it take?",
+          "a": "About 4 minutes. You can review answers before saving the result."
+        }
+      },
+      "cta": {
+        "title": "Discover your thinking profile",
+        "text": "Understanding yourself is the first step to a calmer relationship with your thoughts.",
+        "button": "Take the test free"
+      },
+      "disclaimer": {
+        "1": "The thinking habits test is a self-discovery tool, not a medical diagnosis.",
+        "2": "If you are concerned about your state, see a doctor or psychologist."
+      }
+    },
+    "sleepHygiene": {
+      "meta": {
+        "title": "Sleep hygiene: how sleep affects mood and anxiety",
+        "description": "Simple sleep hygiene rules: regularity, light, screens and relaxation. Learn how to improve sleep and wellbeing."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Sleep hygiene"
+      },
+      "hero": {
+        "title": "Sleep hygiene",
+        "accent": "how sleep affects mood and anxiety",
+        "text": "Lack of sleep directly affects mood, energy and anxiety. Simple habits help you sleep better within days.",
+        "ctaPrimary": "Improve sleep with Moodly",
+        "ctaSecondary": "Mood diary"
+      },
+      "mock": {
+        "title": "Sleep hygiene plan",
+        "item": {
+          "1": "Go to bed and wake up at the same time",
+          "2": "Keep the phone out of bed",
+          "3": "Skip caffeine after lunch",
+          "4": "Relax 30 minutes before bed"
+        }
+      },
+      "why": {
+        "kicker": "Why",
+        "title": "Why sleep matters",
+        "text1": "Sleep restores emotions and energy. Poor sleep fuels irritability and anxiety.",
+        "text2": "Tracking sleep alongside mood makes the link easier to see.",
+        "points": {
+          "1": {
+            "title": "Mood",
+            "text": "When sleep-deprived, even small problems feel bigger."
+          },
+          "2": {
+            "title": "Energy",
+            "text": "Sleep quality determines your charge for the whole day."
+          },
+          "3": {
+            "title": "Anxiety",
+            "text": "Enough sleep helps you respond to stress more calmly."
+          }
+        }
+      },
+      "habits": {
+        "kicker": "Rules",
+        "title": "Simple sleep hygiene rules",
+        "items": {
+          "1": {
+            "title": "Regularity",
+            "text": "Go to bed and wake at the same time, even on weekends."
+          },
+          "2": {
+            "title": "Light",
+            "text": "Dim bright lights in the evening, especially before bed."
+          },
+          "3": {
+            "title": "Screens",
+            "text": "Avoid the phone or laptop right before sleep."
+          },
+          "4": {
+            "title": "Caffeine",
+            "text": "Limit caffeine and energy drinks in the afternoon."
+          },
+          "5": {
+            "title": "Relaxation",
+            "text": "Breathing or a thought journal help you slow down before bed."
+          },
+          "6": {
+            "title": "Dark, quiet, cool",
+            "text": "Your bedroom should be dark, quiet and cool."
+          }
+        }
+      },
+      "how": {
+        "kicker": "How Moodly helps",
+        "title": "How Moodly helps you sleep better",
+        "steps": {
+          "1": {
+            "title": "Track your sleep",
+            "text": "Log sleep quality alongside mood in 30 seconds."
+          },
+          "2": {
+            "title": "See the link",
+            "text": "Trends show how sleep affects your state."
+          },
+          "3": {
+            "title": "Practice",
+            "text": "The “sleep hygiene” practice with reminders helps build the habit."
+          }
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "1": {
+          "q": "How many days until sleep improves?",
+          "a": "First changes often appear within a few days of regularity. Consistency matters more than perfection."
+        },
+        "2": {
+          "q": "Should I keep a sleep diary?",
+          "a": "Yes. Logging sleep and mood reveals patterns you can't see by eye."
+        },
+        "3": {
+          "q": "Is this a substitute for a doctor?",
+          "a": "No. It is a self-help tool. For persistent sleep problems, see a professional."
+        }
+      },
+      "cta": {
+        "title": "Improve sleep and wellbeing",
+        "text": "Start tracking sleep and mood — and notice what really helps.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service.",
+        "2": "If you have persistent sleep problems, see a doctor."
+      }
+    },
+    "anxietySelfHelp": {
+      "meta": {
+        "title": "Anxiety self-help — simple practices",
+        "description": "Simple practices to cope with anxiety: breathing, grounding, a thought journal and sleep hygiene. Calm and private."
+      },
+      "breadcrumb": {
+        "home": "Home",
+        "current": "Anxiety self-help"
+      },
+      "hero": {
+        "title": "Anxiety",
+        "accent": "simple practices to cope with it",
+        "sub1": "Anxiety is a signal, not a verdict. Gentle practices help you start coping calmly and without pressure.",
+        "sub2": "Breathing, grounding and a thought journal are short, genuinely useful tools."
+      },
+      "mock": {
+        "title": "Practice: breathing",
+        "text": "A simple exercise to switch your nervous system toward calm:",
+        "stepTitle": "4 steps",
+        "step": {
+          "1": "Inhale — count to 4",
+          "2": "Hold — count to 4",
+          "3": "Exhale — count to 6",
+          "4": "Repeat 5 times"
+        }
+      },
+      "practices": {
+        "kicker": "Practices",
+        "title": "4 self-help practices for anxiety",
+        "items": {
+          "1": {
+            "title": "Breathing",
+            "text": "Slow breathing eases tension in the moment. Moodly has a guided timer."
+          },
+          "2": {
+            "title": "Thought journal",
+            "text": "Write anxious thoughts down — they often lose their power when spoken."
+          },
+          "3": {
+            "title": "Gratitude",
+            "text": "A few notes of gratitude each day gently shift focus away from threat."
+          },
+          "4": {
+            "title": "Sleep hygiene",
+            "text": "Sleep directly affects anxiety. Get your sleep routine in order."
+          }
+        }
+      },
+      "help": {
+        "kicker": "Support",
+        "title": "When to see a professional",
+        "text1": "Self-help is a great first step, but not a substitute for professional support.",
+        "text2": "Talk to a professional if anxiety gets in the way of life or won't ease.",
+        "signs": {
+          "1": {
+            "title": "Often and intense",
+            "text": "Anxiety rarely lets go and interferes with daily life."
+          },
+          "2": {
+            "title": "Physical",
+            "text": "Sleep, appetite or physical signs are affected."
+          },
+          "3": {
+            "title": "Long-lasting",
+            "text": "Symptoms last for weeks and don't ease over time."
+          }
+        }
+      },
+      "how": {
+        "kicker": "How Moodly helps",
+        "title": "How Moodly supports you",
+        "steps": {
+          "1": {
+            "title": "Log your state",
+            "text": "Anxiety is tracked next to mood — you see its dynamics."
+          },
+          "2": {
+            "title": "Practice",
+            "text": "Built-in practices and tests give structure without pressure."
+          },
+          "3": {
+            "title": "Track progress",
+            "text": "Trends show what actually works for you."
+          }
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "1": {
+          "q": "Is this treatment for anxiety?",
+          "a": "No. Moodly is a self-help and self-discovery tool. It helps you notice and gently work with your state."
+        },
+        "2": {
+          "q": "What if my anxiety is strong?",
+          "a": "See a professional. Self-help practices do not replace professional support."
+        },
+        "3": {
+          "q": "How long does a practice take?",
+          "a": "Even a minute or two of breathing or one journal entry already helps."
+        }
+      },
+      "cta": {
+        "title": "Start caring for yourself",
+        "text": "Calm is a skill trained in small steps. Start today.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service. It does not treat or diagnose.",
+        "2": "For strong or prolonged anxiety, see a doctor or psychologist."
+      }
+    },
+    "blog": {
+      "meta": {
+        "title": "Mood & self-help blog",
+        "description": "Articles about mood diaries, anxiety, sleep and self-help. Simple practices and understanding your state."
+      },
+      "shortTitle": "Blog",
+      "kicker": "ARTICLES",
+      "breadcrumb": {
+        "home": "Home",
+        "blog": "Blog",
+        "current": "Blog"
+      },
+      "all": "All posts",
+      "categories": {
+        "journal": "Mood diary",
+        "anxiety": "Anxiety",
+        "sleep": "Sleep"
+      },
+      "backToBlog": "Back to all posts",
+      "related": "Read next",
+      "notFound": "Post not found",
+      "cta": {
+        "title": "Try Moodly free",
+        "text": "Articles help you understand — the product helps you keep a diary and see trends.",
+        "button": "Start free"
+      },
+      "disclaimer": {
+        "1": "Moodly is a self-assessment and self-help tool, not a medical service. Articles do not replace professional care.",
+        "2": "For persistent symptoms, see a doctor or psychologist."
+      }
+    }
   }
 }

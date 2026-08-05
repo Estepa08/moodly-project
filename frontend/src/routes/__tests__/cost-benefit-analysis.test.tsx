@@ -56,13 +56,20 @@ describe("CostBenefitAnalysisPage", () => {
   });
 
   it("submits a new entry from the form tab", async () => {
+    console.log("Mock example:", mockExample());
+    console.log(
+      "Mock common item:",
+      mockCommonItem({ itemType: "advantage", itemText: "Common pro" }),
+    );
+    console.log("Starting new entry submission test");
     (api.cba.examples as Mock).mockResolvedValueOnce([mockExample()]);
-    (api.cba.commonItems as Mock).mockResolvedValue([
+    (api.cba.commonItems as Mock).mockResolvedValueOnce([
       mockCommonItem({ itemType: "advantage", itemText: "Common pro" }),
       mockCommonItem({ id: "c2", itemType: "disadvantage", itemText: "Common con" }),
     ]);
     (api.cba.entries.list as Mock).mockResolvedValue([]);
     (api.cba.entries.create as Mock).mockResolvedValueOnce({
+      // Mocking the entry creation
       id: "e1",
       thoughtText: "New thought",
       prosWeight: 50,
@@ -75,12 +82,13 @@ describe("CostBenefitAnalysisPage", () => {
     renderWithProviders(<CostBenefitAnalysisPage />);
 
     await user.click(await screen.findByText("New Entry"));
+    console.log("Elements present:", screen.debug());
 
     const textarea = await screen.findByPlaceholderText(
       'e.g. "If I make a mistake, everyone will think I\'m incompetent"',
     );
     await user.type(textarea, "New thought");
-    await user.click(screen.getByText("Common pro"));
+    await user.click(await screen.findByText(/Common pro/i));
     await user.click(screen.getByText("Common con"));
     await user.click(screen.getByText("Save entry"));
 

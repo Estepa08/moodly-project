@@ -117,11 +117,7 @@ export interface SelectedMission {
   sortOrder: number;
 }
 
-export function selectDailyMissions(
-  userId: string,
-  date: Date,
-  count = 3,
-): SelectedMission[] {
+export function selectDailyMissions(userId: string, date: Date, count = 3): SelectedMission[] {
   const seed = fnv1a(`${userId}:${dateKey(date)}`);
   const rnd = mulberry32(seed);
   const pool = MISSION_DEFINITIONS.map((m) => ({ ...m }));
@@ -131,5 +127,10 @@ export function selectDailyMissions(
   }
   return pool
     .slice(0, count)
-    .map((m, i) => ({ missionKey: m.key, labelKey: m.labelKey, xpReward: m.xpReward, sortOrder: i }));
+    .map((m, i) => ({
+      missionKey: m.key,
+      labelKey: m.labelKey,
+      xpReward: m.xpReward,
+      sortOrder: i,
+    }));
 }

@@ -54,6 +54,19 @@ export const authService = {
     return rawToken;
   },
 
+  // Валидирует reset-токен и возвращает userId, не сжигая токен
+  // (используется /auth/reset-info; consumeResetToken — только в reset-password).
+  async resolveResetToken(rawToken: string): Promise<string> {
+    const tokenHash = hashToken(rawToken);
+    const stored = await prisma.resetToken.findUnique({ where: { tokenHash } });
+    if (!stored) throw new AppError("INVALID_RESET_TOKEN", 400, "Invalid or expired reset token");
+    if (stored.expiresAt < new Date()) {
+      await prisma.resetToken.delete({ where: { id: stored.id } });
+      throw new AppError("RESET_TOKEN_EXPIRED", 400, "Reset token expired");
+    }
+    return stored.userId;
+  },
+
   async consumeResetToken(rawToken: string): Promise<string> {
     const tokenHash = hashToken(rawToken);
     const stored = await prisma.resetToken.findUnique({ where: { tokenHash } });

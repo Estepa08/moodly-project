@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma.js";
 import { AppError } from "../lib/errors.js";
+import { lockUser } from "../lib/user-lock.js";
 import { achievementsService } from "./achievements.js";
 import {
   applyLevelUp,
@@ -11,33 +12,11 @@ import {
   MAX_ENERGY,
   MOOD_ENTRY_XP,
   MOOD_ENTRY_DAILY_LIMIT,
-  MOOD_PARAM_NAME,
   FEED_XP,
   FEED_XP_DAILY_LIMIT,
   STARTER_PET_TYPES,
   MS_PER_DAY,
 } from "@moodly/shared";
-
-async function computePetMood(userId: string, calmness: number): Promise<string> {
-  const since = new Date();
-  since.setDate(since.getDate() - 7);
-  since.setHours(0, 0, 0, 0);
-  const entries = await prisma.entry.findMany({
-    where: {
-      userId,
-      createdAt: { gte: since },
-      parameter: { name: MOOD_PARAM_NAME },
-    },
-    select: { value: true },
-  });
-  if (entries.length === 0) {
-    return calmness >= 70 ? "happy" : "calm";
-  }
-  const avg = entries.reduce((sum, e) => sum + e.value, 0) / entries.length;
-  if (avg >= 7) return "happy";
-  if (avg >= 5) return calmness >= 70 ? "happy" : "calm";
-  return "support";
-}
 
 export const creatureService = {
   async getState(userId: string) {
@@ -50,7 +29,9 @@ export const creatureService = {
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
     const energy = state.energy ?? 100;
     const level = state.level ?? 1;
-    const petMood = await computePetMood(userId, state.calmness ?? 50);
+    // E2E: настроение питомца считает клиент (сервер не видит entry.value).
+    // Fallback для старых аккаунтов без значения.
+    const petMood = (state.petMood ?? (state.calmness ?? 50) >= 70) ? "happy" : "calm";
     return {
       ...state,
       energy,
@@ -294,35 +275,46 @@ export const creatureService = {
   },
 
   async claimMission(userId: string, missionId: string) {
-    const mission = await prisma.dailyMission.findUnique({ where: { id: missionId } });
-    if (!mission || mission.userId !== userId) {
-      throw new AppError("NOT_FOUND", 404, "Mission not found");
-    }
-    if (mission.claimed) {
-      throw new AppError("ALREADY_CLAIMED", 409, "Mission already claimed");
-    }
+    // Вся операция (проверка claimed + начисление XP) в транзакции с
+    // блокировкой User: параллельный claim не даст двойного начисления.
+    return prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
 
-    const evaluated = await this.getMissions(userId);
-    const match = evaluated.find((m) => m.id === missionId);
-    if (!match || match.progress < 1) {
-      throw new AppError("NOT_COMPLETED", 400, "Mission not yet completed");
-    }
+      const mission = await tx.dailyMission.findUnique({ where: { id: missionId } });
+      if (!mission || mission.userId !== userId) {
+        throw new AppError("NOT_FOUND", 404, "Mission not found");
+      }
+      if (mission.claimed) {
+        throw new AppError("ALREADY_CLAIMED", 409, "Mission already claimed");
+      }
 
-    const state = await this.getState(userId);
-    const { experience, level, leveledUp } = applyLevelUp(state, mission.xpReward);
+      const evaluated = await this.getMissions(userId);
+      const match = evaluated.find((m) => m.id === missionId);
+      if (!match || match.progress < 1) {
+        throw new AppError("NOT_COMPLETED", 400, "Mission not yet completed");
+      }
 
-    await Promise.all([
-      prisma.dailyMission.update({
-        where: { id: missionId },
-        data: { claimed: true },
-      }),
-      prisma.creatureState.update({
-        where: { userId },
-        data: { experience, level },
-      }),
-    ]);
+      let state = await tx.creatureState.findUnique({ where: { userId } });
+      if (!state) {
+        state = await tx.creatureState.create({
+          data: { userId, calmness: 50 },
+        });
+      }
+      const { experience, level, leveledUp } = applyLevelUp(state, mission.xpReward);
 
-    return { claimed: true, xpAwarded: mission.xpReward, leveledUp };
+      await Promise.all([
+        tx.dailyMission.update({
+          where: { id: missionId },
+          data: { claimed: true },
+        }),
+        tx.creatureState.update({
+          where: { userId },
+          data: { experience, level },
+        }),
+      ]);
+
+      return { claimed: true, xpAwarded: mission.xpReward, leveledUp };
+    });
   },
 
   async completeExercise(userId: string, duration: number) {
@@ -357,33 +349,43 @@ export const creatureService = {
   },
 
   async checkIn(userId: string) {
-    const state = await this.getState(userId);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const lastCheckIn = state.lastCheckInAt ? new Date(state.lastCheckInAt) : null;
+    // Чтение lastCheckInAt, расчёт streak и начисление XP — атомарно под
+    // блокировкой User: два параллельных check-in не дадут двойного начисления.
+    const result = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
 
-    if (lastCheckIn) {
-      const lastDate = new Date(lastCheckIn);
-      lastDate.setHours(0, 0, 0, 0);
-      if (lastDate.getTime() === today.getTime()) {
-        throw new AppError("ALREADY_CHECKED_IN", 409, "Already checked in today");
+      let state = await tx.creatureState.findUnique({ where: { userId } });
+      if (!state) {
+        state = await tx.creatureState.create({
+          data: { userId, calmness: 50 },
+        });
       }
-    }
 
-    let newStreak = 1;
-    if (lastCheckIn) {
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-      const lastDate = new Date(lastCheckIn);
-      lastDate.setHours(0, 0, 0, 0);
-      newStreak = lastDate.getTime() === yesterday.getTime() ? state.streak + 1 : 1;
-    }
+      const lastCheckIn = state.lastCheckInAt ? new Date(state.lastCheckInAt) : null;
 
-    const { experience, level, leveledUp } = applyLevelUp(state, CHECKIN_EXP);
+      if (lastCheckIn) {
+        const lastDate = new Date(lastCheckIn);
+        lastDate.setHours(0, 0, 0, 0);
+        if (lastDate.getTime() === today.getTime()) {
+          throw new AppError("ALREADY_CHECKED_IN", 409, "Already checked in today");
+        }
+      }
 
-    const [updated] = await Promise.all([
-      prisma.creatureState.update({
+      let newStreak = 1;
+      if (lastCheckIn) {
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const lastDate = new Date(lastCheckIn);
+        lastDate.setHours(0, 0, 0, 0);
+        newStreak = lastDate.getTime() === yesterday.getTime() ? (state.streak ?? 0) + 1 : 1;
+      }
+
+      const { experience, level, leveledUp } = applyLevelUp(state, CHECKIN_EXP);
+
+      const updated = await tx.creatureState.update({
         where: { userId },
         data: {
           energy: MAX_ENERGY,
@@ -392,19 +394,21 @@ export const creatureService = {
           streak: newStreak,
           lastCheckInAt: new Date(),
         },
-      }),
-      prisma.practiceCompletion.create({
+      });
+      await tx.practiceCompletion.create({
         data: { userId, source: "checkin", xpAwarded: CHECKIN_EXP },
-      }),
-    ]);
+      });
+
+      return { updated, leveledUp };
+    });
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
 
     achievementsService.check(userId).catch(() => {});
 
     return {
-      state: { ...updated, sessionCount },
-      leveledUp,
+      state: { ...result.updated, sessionCount },
+      leveledUp: result.leveledUp,
     };
   },
 

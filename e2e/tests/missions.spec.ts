@@ -124,7 +124,7 @@ async function breathing(page: Page, sessions: number): Promise<void> {
 
 async function completeTest(page: Page): Promise<void> {
   await gotoApp(page, "/tests");
-  await page.getByRole("link", { name: "Оценка эмоционального состояния" }).click();
+  await page.getByRole("link", { name: "Тест на тревогу" }).click();
   await passTest(page, 33);
   await expect(page.getByText(/— Результат/)).toBeVisible();
 }
@@ -192,25 +192,29 @@ async function pickMission(page: Page): Promise<string> {
   return candidates[0];
 }
 
-test("миссия засчитывает выполнение, claim начисляет XP", { tag: "@missions" }, async ({ page }) => {
-  await register(page, uniqueEmail("missions"));
+test(
+  "миссия засчитывает выполнение, claim начисляет XP",
+  { tag: "@missions" },
+  async ({ page }) => {
+    await register(page, uniqueEmail("missions"));
 
-  const missionKey = await pickMission(page);
+    const missionKey = await pickMission(page);
 
-  await runMission(page, missionKey);
+    await runMission(page, missionKey);
 
-  await gotoApp(page, "/progress");
-  const card = page.getByTestId(`mission-${missionKey}`);
-  const claimButton = card.getByRole("button", { name: "Забрать награду" });
-  await expect(claimButton).toBeVisible();
-  await expect(card.getByText("100%")).toBeVisible();
+    await gotoApp(page, "/progress");
+    const card = page.getByTestId(`mission-${missionKey}`);
+    const claimButton = card.getByRole("button", { name: "Забрать награду" });
+    await expect(claimButton).toBeVisible();
+    await expect(card.getByText("100%")).toBeVisible();
 
-  const xpText = page.getByText(/\d+\/\d+ XP/).first();
-  const before = await xpText.textContent();
+    const xpText = page.getByText(/\d+\/\d+ XP/).first();
+    const before = await xpText.textContent();
 
-  await claimButton.click();
-  await expect(claimButton).not.toBeVisible();
-  await expect(card.locator(".text-success")).toBeVisible();
+    await claimButton.click();
+    await expect(claimButton).not.toBeVisible();
+    await expect(card.locator(".text-success")).toBeVisible();
 
-  await expect.poll(async () => (await xpText.textContent()) ?? "").not.toBe(before);
-});
+    await expect.poll(async () => (await xpText.textContent()) ?? "").not.toBe(before);
+  },
+);

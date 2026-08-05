@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParameters } from "./useParameters";
-import { useEntries, useCreateEntry } from "./useEntries";
+import { useEntries, useCreateEntry, type DecryptedEntry } from "./useEntries";
 import { useCreatureState } from "../features/gamification";
-import type { components } from "../lib/api-types";
 import { TEXT_PARAMS, Period, Trend, ParameterName } from "../lib/constants";
 import { isWithinLastDays, formatChartDate, getDateRange } from "../lib/utils";
 
-type Entry = components["schemas"]["Entry"];
+type Entry = DecryptedEntry;
 
 const DASHBOARD_EXCLUDED_PARAMS = new Set<string>(["Thought Journal Mood"]);
 

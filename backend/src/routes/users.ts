@@ -1,5 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { userService } from "../services/user.js";
+import { updateMeSchema } from "../lib/validation.js";
+import { AppError } from "../lib/errors.js";
 
 interface UpdateMeBody {
   name?: string;
@@ -23,7 +25,11 @@ export default async function userRoutes(fastify: FastifyInstance) {
     "/users/me",
     { preHandler: [fastify.authenticate] },
     async (request) => {
-      return userService.update(request.userId, request.body);
+      const parsed = updateMeSchema.safeParse(request.body);
+      if (!parsed.success) {
+        throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+      }
+      return userService.update(request.userId, parsed.data);
     },
   );
 

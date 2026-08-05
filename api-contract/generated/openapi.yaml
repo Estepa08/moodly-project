@@ -13,7 +13,6 @@ tags:
   - name: OnboardingStories
   - name: Reports
   - name: Breathing
-  - name: Digest
   - name: Cba
   - name: Admin
 paths:
@@ -139,6 +138,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserCreate'
+  /auth/reset-info:
+    post:
+      operationId: Auth_resetInfo
+      description: Отдать recovery-материал (wrappedKey/salt) по токену сброса пароля
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetInfoResponse'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetInfoRequest'
   /auth/reset-password:
     post:
       operationId: Auth_resetPassword
@@ -158,6 +177,26 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ResetPasswordRequest'
+  /auth/set-keys:
+    post:
+      operationId: Auth_setKeys
+      description: Сохранить E2E-ключи для legacy-учётки (только если ключей ещё нет); требователен к авторизации
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetKeysOk'
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetKeysRequest'
   /cba/common-items:
     get:
       operationId: Cba_listCommonItems
@@ -363,20 +402,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RewardRequest'
-  /digest/weekly:
-    get:
-      operationId: Digest_getWeekly
-      description: Недельный дайджест активности пользователя
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WeeklyDigest'
-      tags:
-        - Digest
   /entries:
     get:
       operationId: Entries_list
@@ -703,30 +728,6 @@ paths:
                 $ref: '#/components/schemas/Test'
       tags:
         - Tests
-  /tests/{id}/results:
-    post:
-      operationId: Tests_submitResult
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TestResult'
-      tags:
-        - Tests
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TestResultSubmit'
   /users/me:
     get:
       operationId: Users_getMe
@@ -883,6 +884,12 @@ components:
           type: string
         user:
           $ref: '#/components/schemas/User'
+        wrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом из пароля — нужен клиенту для разблокировки данных при логине
+        keySalt:
+          type: string
+          description: Соль для вывода KEK из пароля
     BreathingCompleteRequest:
       type: object
       required:
@@ -1211,8 +1218,15 @@ components:
         value:
           type: number
           format: double
+          nullable: true
+          description: Открытое значение — всегда null при E2E-шифровании (данные лежат в encryptedData)
         note:
           type: string
+          nullable: true
+          description: Открытая заметка — всегда null при E2E-шифровании
+        encryptedData:
+          type: string
+          description: 'Шифротекст {value, note}: base64(version | iv | ciphertext+tag)'
         createdAt:
           type: string
           format: date-time
@@ -1220,23 +1234,21 @@ components:
     EntryCreate:
       type: object
       required:
+        - id
         - parameterId
-        - value
+        - encryptedData
       properties:
+        id:
+          type: string
+          description: id генерирует клиент (uuidv7) — используется как entityId в AAD шифрования
         parameterId:
           type: string
-        value:
-          type: number
-          format: double
-        note:
+        encryptedData:
           type: string
     EntryUpdate:
       type: object
       properties:
-        value:
-          type: number
-          format: double
-        note:
+        encryptedData:
           type: string
     Error:
       type: object
@@ -1468,16 +1480,45 @@ components:
         - ready
         - failed
       description: Статус генерации отчёта
+    ResetInfoRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+      description: Проверка recovery-материала по токену сброса
+    ResetInfoResponse:
+      type: object
+      required:
+        - recoveryWrappedKey
+        - recoverySalt
+      properties:
+        recoveryWrappedKey:
+          type: string
+          nullable: true
+        recoverySalt:
+          type: string
+          nullable: true
+      description: Recovery-ключ (DEK, зашифрованный KEK_recovery) и соль — для восстановления доступа без пароля
     ResetPasswordRequest:
       type: object
       required:
         - token
         - password
+        - wrappedKey
+        - keySalt
       properties:
         token:
           type: string
         password:
           type: string
+        wrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом из нового пароля
+        keySalt:
+          type: string
+          description: Соль для вывода KEK из нового пароля
     ResetPasswordResponse:
       type: object
       required:
@@ -1508,6 +1549,34 @@ components:
           type: boolean
           description: Был ли достигнут новый уровень
       description: Результат награды за практику
+    SetKeysOk:
+      type: object
+      required:
+        - ok
+      properties:
+        ok:
+          type: boolean
+    SetKeysRequest:
+      type: object
+      required:
+        - wrappedKey
+        - keySalt
+        - recoveryWrappedKey
+        - recoverySalt
+      properties:
+        wrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом из пароля
+        keySalt:
+          type: string
+          description: Соль для вывода KEK из пароля
+        recoveryWrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом из recovery-кода
+        recoverySalt:
+          type: string
+          description: Соль для вывода KEK из recovery-кода
+      description: E2E-ключи для миграции legacy-учётки (созданной до внедрения шифрования)
     Test:
       type: object
       required:
@@ -1515,6 +1584,8 @@ components:
         - title
         - active
         - questions
+        - type
+        - scoreBands
       properties:
         id:
           type: string
@@ -1528,6 +1599,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TestQuestion'
+        type:
+          type: string
+          description: 'Тип подсчёта: standard (баллы) / computed (профиль когнитивных искажений)'
+        scoreBands:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestScoreBand'
+          description: Полосы интерпретации для standard-тестов (клиент считает результат локально)
       description: 'Психологический тест, построенный на справочниках/книгах по психологии. Шаблон: вопросы + правила подсчёта баллов.'
     TestAnswer:
       type: object
@@ -1603,42 +1682,43 @@ components:
         score:
           type: integer
           format: int32
+          nullable: true
+          description: Открытый балл — всегда null при E2E-шифровании (данные лежат в encryptedData)
+        interpretation:
+          type: string
+          nullable: true
+          description: Открытая интерпретация — всегда null при E2E-шифровании
+        recommendation:
+          type: string
+          nullable: true
+          description: Открытая рекомендация — всегда null при E2E-шифровании
+        flags:
+          description: Открытые флаги/профили — всегда null при E2E-шифровании
+        encryptedData:
+          type: string
+          description: Шифротекст {score, interpretation, recommendation, flags}
+        completedAt:
+          type: string
+          format: date-time
+      description: 'Конкретная попытка прохождения теста пользователем: результат в E2E-шифротексте'
+    TestScoreBand:
+      type: object
+      required:
+        - maxScore
+        - key
+        - interpretation
+        - recommendation
+      properties:
+        maxScore:
+          type: integer
+          format: int32
+        key:
+          type: string
         interpretation:
           type: string
         recommendation:
           type: string
-        flags:
-          description: Дополнительные флаги/профили (например, per-distortion scores для теста когнитивных искажений)
-        completedAt:
-          type: string
-          format: date-time
-      description: 'Конкретная попытка прохождения теста пользователем: ответы, посчитанный балл и рекомендация'
-    TestResultDigest:
-      type: object
-      required:
-        - testId
-        - title
-        - score
-        - interpretation
-      properties:
-        testId:
-          type: string
-        title:
-          type: string
-        score:
-          type: integer
-          format: int32
-        interpretation:
-          type: string
-    TestResultSubmit:
-      type: object
-      required:
-        - answers
-      properties:
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/TestAnswer'
+      description: Полоса баллов с интерпретацией для теста
     User:
       type: object
       required:
@@ -1666,6 +1746,10 @@ components:
         - password
         - ageConfirmed
         - pdpConsent
+        - wrappedKey
+        - keySalt
+        - recoveryWrappedKey
+        - recoverySalt
       properties:
         email:
           type: string
@@ -1680,6 +1764,18 @@ components:
         birthYear:
           type: integer
           format: int32
+        wrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом, выведенным из пароля (AES-GCM)
+        keySalt:
+          type: string
+          description: Соль для вывода KEK из пароля
+        recoveryWrappedKey:
+          type: string
+          description: DEK, зашифрованный ключом, выведенным из recovery-кода
+        recoverySalt:
+          type: string
+          description: Соль для вывода KEK_recovery из recovery-кода
     UserPreference:
       type: object
       required:
@@ -1721,44 +1817,6 @@ components:
       properties:
         name:
           type: string
-    WeeklyDigest:
-      type: object
-      required:
-        - startDate
-        - endDate
-        - totalEntries
-        - averages
-        - checkInDays
-        - testsTaken
-        - practicesCompleted
-        - creatureXpGained
-        - creatureLevel
-      properties:
-        startDate:
-          type: string
-          format: date-time
-        endDate:
-          type: string
-          format: date-time
-        totalEntries:
-          type: integer
-          format: int32
-        averages: {}
-        checkInDays:
-          type: integer
-          format: int32
-        testsTaken:
-          type: array
-          items:
-            $ref: '#/components/schemas/TestResultDigest'
-        practicesCompleted: {}
-        creatureXpGained:
-          type: integer
-          format: int32
-        creatureLevel:
-          type: integer
-          format: int32
-      description: Результаты тестирования за неделю
   securitySchemes:
     BearerAuth:
       type: http

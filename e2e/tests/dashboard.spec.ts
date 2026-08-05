@@ -28,11 +28,15 @@ test("период дашборда переключается", { tag: "@dashbo
   );
 });
 
-test("пустое состояние прогресса и статистика отображаются", { tag: "@dashboard" }, async ({ page }) => {
-  await register(page);
+test(
+  "пустое состояние прогресса и статистика отображаются",
+  { tag: "@dashboard" },
+  async ({ page }) => {
+    await register(page);
 
-  await gotoApp(page, "/progress");
-  await expect(page.getByRole("heading", { name: "Мой прогресс" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Статистика" })).toBeVisible();
-  await expect(page.getByText(/XP/).first()).toBeVisible();
-});
+    await gotoApp(page, "/progress");
+    await expect(page.getByRole("heading", { name: "Мой прогресс" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Статистика" })).toBeVisible();
+    await expect(page.getByText(/XP/).first()).toBeVisible();
+  },
+);

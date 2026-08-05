@@ -21,7 +21,7 @@ export default function TestsPage() {
       <header className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-foreground font-serif">{t("tests.title")}</h1>
         <Button variant="ghost" asChild>
-          <Link to="/">{t("common.back")}</Link>
+          <Link to="/dashboard">{t("common.back")}</Link>
         </Button>
       </header>
 

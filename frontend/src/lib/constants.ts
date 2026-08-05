@@ -9,6 +9,7 @@ export enum ParameterName {
   SleepHygiene = "Sleep Hygiene",
   DistortionQuiz = "Distortion Quiz",
   ThoughtRelease = "Thought Release",
+  DayActivities = "Day Activities",
   Wellbeing = "Wellbeing",
 }
 
@@ -21,6 +22,7 @@ export const PARAM_NAME_KEYS: Record<ParameterName, string> = {
   [ParameterName.SleepHygiene]: "dashboard.sleepHygiene",
   [ParameterName.DistortionQuiz]: "dashboard.distortionQuiz",
   [ParameterName.ThoughtRelease]: "distortions.tabLetGo",
+  [ParameterName.DayActivities]: "dayActivities.title",
   [ParameterName.Wellbeing]: "dashboard.wellbeing",
 };
 
@@ -29,6 +31,7 @@ export const TEXT_PARAMS = new Set<ParameterName>([
   ParameterName.SleepHygiene,
   ParameterName.DistortionQuiz,
   ParameterName.ThoughtRelease,
+  ParameterName.DayActivities,
 ]);
 
 export const PARAM_COLORS: Partial<Record<ParameterName, string>> = {

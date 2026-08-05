@@ -70,21 +70,19 @@ function isoDate(v: unknown): Date | undefined {
   return Number.isNaN(d.getTime()) ? undefined : d;
 }
 
-function nullableStr(v: unknown): string | null | undefined {
-  return v === null ? null : typeof v === "string" ? v : undefined;
-}
-
 // Валидация mutable-полей сущности. Возвращает объект для prisma create/update
 // (без id/userId/updatedAt/deletedAt — ими управляет сервер).
 function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<string, unknown> {
   switch (entity) {
     case "entry": {
       const parameterId = str(payload.parameterId);
-      const value = num(payload.value);
-      if (!parameterId || value === undefined) {
-        throw new AppError("INVALID_PAYLOAD", 400, "entry requires parameterId and value");
+      const encryptedData = str(payload.encryptedData);
+      if (!parameterId || !encryptedData) {
+        throw new AppError("INVALID_PAYLOAD", 400, "entry requires parameterId and encryptedData");
       }
-      return { parameterId, value, note: nullableStr(payload.note) };
+      // E2E: сервер не хранит открытые значения — только шифротекст.
+      // value/note зануляются навсегда (миграция старых записей).
+      return { parameterId, encryptedData, value: null, note: null };
     }
     case "feedback": {
       const rating = num(payload.rating);
@@ -96,23 +94,18 @@ function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<
     }
     case "testResult": {
       const testId = str(payload.testId);
-      const score = num(payload.score);
-      const interpretation = str(payload.interpretation);
-      const recommendation = str(payload.recommendation);
-      if (
-        !testId ||
-        score === undefined ||
-        interpretation === undefined ||
-        recommendation === undefined
-      ) {
-        throw new AppError("INVALID_PAYLOAD", 400, "testResult payload incomplete");
+      const encryptedData = str(payload.encryptedData);
+      if (!testId || !encryptedData) {
+        throw new AppError("INVALID_PAYLOAD", 400, "testResult requires testId and encryptedData");
       }
+      // E2E: сервер не хранит score/interpretation/recommendation — только шифротекст.
       return {
         testId,
-        score: Math.trunc(score),
-        interpretation,
-        recommendation,
-        flags: payload.flags ?? null,
+        encryptedData,
+        score: null,
+        interpretation: null,
+        recommendation: null,
+        flags: null,
         completedAt: isoDate(payload.completedAt) ?? new Date(),
       };
     }
@@ -202,6 +195,8 @@ function sanitizeCreatureState(payload: Record<string, unknown>): Record<string,
   if (payload.petName !== undefined) {
     out.petName = payload.petName === null ? null : (str(payload.petName) ?? null);
   }
+  const petMood = str(payload.petMood);
+  if (petMood !== undefined) out.petMood = petMood;
   if (payload.activeTitle !== undefined) {
     out.activeTitle = payload.activeTitle === null ? null : (str(payload.activeTitle) ?? null);
   }

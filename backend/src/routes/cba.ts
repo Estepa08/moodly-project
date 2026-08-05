@@ -23,7 +23,10 @@ export default async function cbaRoutes(fastify: FastifyInstance) {
     async (request) => {
       return cbaService.createEntry({
         userId: request.userId,
-        ...request.body,
+        thoughtText: request.body.thoughtText,
+        prosWeight: request.body.prosWeight,
+        consWeight: request.body.consWeight,
+        items: request.body.items,
       });
     },
   );

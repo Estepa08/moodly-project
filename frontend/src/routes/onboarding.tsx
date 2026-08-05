@@ -57,7 +57,7 @@ export default function OnboardingPage() {
   }
 
   if (!needsOnboarding) {
-    navigate("/", { replace: true });
+    navigate("/dashboard", { replace: true });
     return null;
   }
 
@@ -65,7 +65,7 @@ export default function OnboardingPage() {
     setGoals((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]));
   };
 
-  const handleFinish = async (destination = "/") => {
+  const handleFinish = async (destination = "/dashboard") => {
     setSaving(true);
     try {
       await complete({ goals, experienceLevel: expLevel, dailyReminder, reminderTime });
@@ -81,7 +81,7 @@ export default function OnboardingPage() {
   const handleSkip = async () => {
     setSaving(true);
     await complete({ goals: [], experienceLevel: ExpLevel.Beginner, dailyReminder: false });
-    navigate("/", { replace: true });
+    navigate("/dashboard", { replace: true });
   };
 
   return (

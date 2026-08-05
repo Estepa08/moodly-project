@@ -58,16 +58,13 @@ describe("Tests", () => {
     expect(res.json().questions).toBeDefined();
   });
 
-  it("POST /tests/:id/results — submits answers and returns score", async () => {
+  it("POST /tests/:id/results — no longer exists (E2E scoring is client-side)", async () => {
     const res = await app.inject({
       method: "POST",
       url: `/tests/${testId}/results`,
       headers: { authorization: `Bearer ${token}` },
       payload: { answers: [{ questionId: "q1", optionId: "q1b" }] },
     });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toHaveProperty("score");
-    expect(res.json()).toHaveProperty("interpretation");
-    expect(res.json()).toHaveProperty("recommendation");
+    expect(res.statusCode).toBe(404);
   });
 });

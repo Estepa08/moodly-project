@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ClipboardList, ChevronDown } from "lucide-react";
 import { useTests } from "../hooks/useTests";
 import { useTestResultText } from "../hooks/useTestResultText";
+import type { DecryptedTestResult } from "../hooks/useTests";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { LoadingCard } from "../components/ui/loading-card";
 import EmptyState from "../components/ui/empty-state";
@@ -12,9 +13,8 @@ import { WellnessDisclaimer } from "../widgets";
 import PeriodSelect from "../components/ui/PeriodSelect";
 import { Period } from "../lib/constants";
 import { cn } from "../lib/utils";
-import type { components } from "../lib/api-types";
 
-type TestResult = components["schemas"]["TestResult"];
+type TestResult = DecryptedTestResult;
 
 interface TestsResultsSectionProps {
   results: TestResult[];

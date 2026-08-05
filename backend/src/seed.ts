@@ -16,6 +16,7 @@ const parameters = [
   { name: "Sleep Hygiene", description: "Ночной чек-лист гигиены сна", unit: null },
   { name: "Distortion Quiz", description: "Баллы теста когнитивных искажений", unit: null },
   { name: "Thought Release", description: "Журнал ритуала отпускания мыслей", unit: null },
+  { name: "Day Activities", description: "Занятия и события дня", unit: null },
 ];
 
 const baiOptions = [
@@ -35,9 +36,9 @@ const bdcOptions = [
 
 const tests = [
   {
-    title: "Оценка эмоционального состояния",
+    title: "Тест на тревогу",
     description:
-      "Опросник для оценки эмоционального состояния и уровня напряжения. 33 пункта: чувства, мысли и физические ощущения.",
+      "Помогает понять свой уровень тревоги и напряжения. 33 коротких вопроса о чувствах, мыслях и ощущениях.",
     type: "standard",
     questions: [
       { id: "bai-1", text: "Тревога, нервозность, беспокойство или страх", options: baiOptions },
@@ -120,9 +121,9 @@ const tests = [
     ],
   },
   {
-    title: "Оценка самочувствия",
+    title: "Тест настроения",
     description:
-      "Опросник для оценки общего самочувствия и эмоционального фона. 22 пункта: мысли, активность и физические ощущения.",
+      "Помогает заметить своё настроение и эмоциональный фон. 22 коротких вопроса о мыслях, активности и ощущениях.",
     type: "standard",
     questions: [
       { id: "bdc-1", text: "Грусть или уныние", options: bdcOptions },
@@ -158,9 +159,9 @@ const tests = [
     ],
   },
   {
-    title: "Определение когнитивных искажений",
+    title: "Тест привычек мышления",
     description:
-      "Определяет, какие из 10 когнитивных искажений (по Дэвиду Бернсу) наиболее выражены в вашем мышлении. 30 вопросов по всем типам искажений.",
+      "Определяет, какие привычки мышления наиболее заметны в вашей жизни. 30 вопросов про то, как вы думаете о событиях.",
     type: "computed",
     questions: [
       {
@@ -321,7 +322,7 @@ const scoreBandsByTitle: Record<
   string,
   { maxScore: number; key: string; interpretation: string; recommendation: string }[]
 > = {
-  "Оценка эмоционального состояния": [
+  "Тест на тревогу": [
     {
       maxScore: 4,
       key: "low",
@@ -355,7 +356,7 @@ const scoreBandsByTitle: Record<
         "Рекомендуется обратиться за поддержкой к близким или профессиональному консультанту.",
     },
   ],
-  "Оценка самочувствия": [
+  "Тест настроения": [
     {
       maxScore: 5,
       key: "good",
@@ -1108,9 +1109,9 @@ async function seed() {
     const allTests = await prisma.test.findMany();
     const allParams = await prisma.parameter.findMany();
 
-    const moodTest = allTests.find((t) => t.title === "Оценка эмоционального состояния")!;
-    const wellbeingTest = allTests.find((t) => t.title === "Оценка самочувствия")!;
-    const cd = allTests.find((t) => t.title === "Определение когнитивных искажений")!;
+    const moodTest = allTests.find((t) => t.title === "Тест на тревогу")!;
+    const wellbeingTest = allTests.find((t) => t.title === "Тест настроения")!;
+    const cd = allTests.find((t) => t.title === "Тест привычек мышления")!;
 
     const paramMap = new Map(allParams.map((p) => [p.name, p.id]));
 

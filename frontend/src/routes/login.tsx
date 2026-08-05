@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
+import { ShieldCheck, KeyRound } from "lucide-react";
 import { AuthPage, AuthHeader, AuthDisclaimer } from "../features/auth";
 
 export default function LoginPage() {
@@ -20,9 +21,47 @@ export default function LoginPage() {
     error,
     demoMode,
     demoLoading,
+    step,
+    recoveryCode,
     handleSubmit,
     handleDemo,
+    handleRecoveryConfirmed,
   } = useLoginForm();
+
+  if (step === "recovery") {
+    return (
+      <AuthPage>
+        <AuthHeader title={t("register.recoveryTitle")} />
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">{t("login.legacyIntro")}</p>
+          <div className="rounded-lg bg-muted p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <KeyRound aria-hidden="true" className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">
+                {t("register.recoveryLabel")}
+              </span>
+            </div>
+            <p className="font-mono text-lg tracking-wider break-all text-center select-all">
+              {recoveryCode}
+            </p>
+          </div>
+          <div className="rounded-lg border border-amber-300/50 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+            <div className="flex items-center gap-2 mb-1">
+              <ShieldCheck aria-hidden="true" className="w-4 h-4 shrink-0" />
+              <span className="font-medium">{t("register.recoveryWarningTitle")}</span>
+            </div>
+            <p>{t("register.recoveryWarning")}</p>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {t("login.legacyRecoveryNote")}
+          </p>
+          <Button className="w-full" onClick={handleRecoveryConfirmed}>
+            {t("register.recoveryConfirmed")}
+          </Button>
+        </div>
+      </AuthPage>
+    );
+  }
 
   return (
     <AuthPage>

@@ -7,7 +7,7 @@ test("прохождение BAI-теста приводит к результа
   await register(page, uniqueEmail("test-bai"));
 
   await gotoApp(page, "/tests");
-  await page.getByRole("link", { name: "Оценка эмоционального состояния" }).click();
+  await page.getByRole("link", { name: "Тест на тревогу" }).click();
 
   await passTest(page, 33);
 
@@ -19,7 +19,7 @@ test("результат теста можно раскрыть и перейт�
   await register(page, uniqueEmail("test-result"));
 
   await gotoApp(page, "/tests");
-  await page.getByRole("link", { name: "Оценка эмоционального состояния" }).click();
+  await page.getByRole("link", { name: "Тест на тревогу" }).click();
   await passTest(page, 33);
 
   await page.getByRole("button", { name: "Показать баллы" }).click();
@@ -34,9 +34,9 @@ test("история результатов показывает пройден�
   await register(page, uniqueEmail("test-history"));
 
   await gotoApp(page, "/tests");
-  await page.getByRole("link", { name: "Оценка эмоционального состояния" }).click();
+  await page.getByRole("link", { name: "Тест на тревогу" }).click();
   await passTest(page, 33);
 
   await gotoApp(page, "/results");
-  await expect(page.getByText("Оценка эмоционального состояния")).toBeVisible();
+  await expect(page.getByText("Тест на тревогу")).toBeVisible();
 });

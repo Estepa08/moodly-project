@@ -21,7 +21,11 @@ test("все ключевые маршруты открываются после
   }
 });
 
-test("неавторизованный пользователь перенаправляется на вход", { tag: "@navigation" }, async ({ page }) => {
-  await page.goto("/");
-  await expect(page).toHaveURL(/\/login/);
-});
+test(
+  "неавторизованный пользователь перенаправляется на вход",
+  { tag: "@navigation" },
+  async ({ page }) => {
+    await page.goto("/");
+    await expect(page).toHaveURL(/\/login/);
+  },
+);

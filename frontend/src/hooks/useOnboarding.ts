@@ -35,7 +35,7 @@ export function useOnboarding() {
         await savePrefs.mutateAsync({ ...data, onboardingDone: true });
         localStorage.setItem(ONBOARDING_DONE_KEY, "true");
         if (data.dailyReminder) {
-          push.subscribe();
+          void push.subscribe();
         }
       } finally {
         setSaving(false);

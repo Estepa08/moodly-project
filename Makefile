@@ -134,7 +134,7 @@ db-create-user:
 db-prod-create-user:
 	cd backend && node --env-file=.env.prod --import tsx src/scripts/db-create-user.ts $(ARGS)
 
-# RU-прод (Docker Host + Amvera). DATABASE_URL берётся из backend/.env.prod.ru.local.
+# RU-прод (Docker Host — my.dockhost.ru). DATABASE_URL берётся из backend/.env.prod.ru.local.
 # Пример: make db-prod-ru-users
 # Пример: make db-prod-ru-create-user ARGS="--email=user@example.com --password=<пароль> --admin"
 
@@ -166,8 +166,12 @@ PSQL ?= $(shell test -x /opt/homebrew/opt/libpq/bin/psql && echo /opt/homebrew/o
 db-backup:
 	@mkdir -p backups
 	@set -a; . backend/.env.prod; set +a; \
-	  $(PG_DUMP) "$$DATABASE_URL" --no-owner > "backups/moodly-$$(date +%Y%m%d-%H%M%S).sql"
-	@echo "Backup saved to backups/"
+	  STAMP="$$(date +%Y%m%d-%H%M%S)"; \
+	  TMP="backups/.moodly-$$STAMP.tmp"; \
+	  $(PG_DUMP) "$$DATABASE_URL" --no-owner > "$$TMP" && test -s "$$TMP" \
+	    && mv "$$TMP" "backups/moodly-$$STAMP.sql" \
+	    && echo "Backup saved to backups/moodly-$$STAMP.sql ($$(wc -c < backups/moodly-$$STAMP.sql) bytes)" \
+	    || { echo "ERROR: dump failed or is empty, no file written" >&2; rm -f "$$TMP"; exit 1; }
 
 db-restore:
 	@test -n "$(FILE)" || (echo "Usage: make db-restore FILE=path.sql"; exit 1)

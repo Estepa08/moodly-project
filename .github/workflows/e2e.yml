@@ -2,7 +2,7 @@ name: E2E
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, russia]
     paths:
       - "backend/**"
       - "frontend/src/**"

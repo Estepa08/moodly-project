@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Авторизованные страницы приложения не индексируем
+Disallow: /onboarding
+Disallow: /dashboard
+Disallow: /practices
+Disallow: /tests
+Disallow: /settings
+Disallow: /progress
+Disallow: /admin
+
+Sitemap: https://mymoodly.ru/sitemap.xml

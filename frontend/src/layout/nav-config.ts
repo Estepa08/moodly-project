@@ -25,7 +25,7 @@ export interface NavItem {
 export const DASHBOARD_ITEM: NavItem = {
   labelKey: "nav.dashboard",
   shortLabelKey: "nav.short.dashboard",
-  path: "/",
+  path: "/dashboard",
   icon: LayoutDashboard,
 };
 

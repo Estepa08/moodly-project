@@ -1,6 +1,8 @@
+import { lazy } from "react";
 import { toast } from "sonner";
-import RewardMoment from "./RewardMoment";
 import i18n from "../../i18n/i18n";
+
+const RewardMoment = lazy(() => import("./RewardMoment"));
 
 const PRACTICE_REWARD_XP: Record<string, number> = {
   breathing: 10,
@@ -34,8 +36,8 @@ export function celebrateReward(
 ) {
   const t = i18n.t.bind(i18n);
 
-  if (data.leveledUp) {
-    lastRewardAt = Date.now();
+  if (data.leveledUp && Date.now() - lastRewardAt >= REWARD_COOLDOWN_MS) {
+    lastRewardAt = Date.now(); // Устанавливаем временную метку последнего уведомления
     celebrate(t("dailyCheckIn.levelUpBody", { level: data.state?.level }), {
       title: t("dailyCheckIn.levelUpTitle"),
     });

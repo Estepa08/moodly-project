@@ -1,11 +1,60 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../lib/api";
+import { api, CreatureState } from "../../lib/api";
 import { PracticeSource } from "./practice.enums";
 import { celebrateReward } from "./celebration";
 import { enqueue } from "../../lib/offline/sync";
 import { getLocalCreature, saveLocalCreature, listLocalAchievements } from "../../lib/offline/db";
+import { EXP_PER_LEVEL, ParameterName } from "../../lib/constants";
+import { useParameters } from "../../hooks/useParameters";
+import { useEntries } from "../../hooks/useEntries";
 
+// ===== Функция для коррекции уровня и XP =====
+function correctLevelAndXP(state: CreatureState): { corrected: CreatureState; leveledUp: boolean } {
+  let { level, experience } = state;
+  let leveledUp = false;
+
+  // Пока XP больше или равно порогу для следующего уровня
+  while (experience >= level * EXP_PER_LEVEL) {
+    experience -= level * EXP_PER_LEVEL;
+    level += 1;
+    leveledUp = true;
+  }
+
+  return {
+    corrected: {
+      ...state,
+      level,
+      experience,
+    },
+    leveledUp,
+  };
+}
+
+const MOOD_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+// E2E: сервер не видит entry.value, поэтому настроение питомца считает клиент
+// из локальных расшифрованных записей «Mood» за последние 7 дней.
+function computePetMood(
+  moodEntries: { value: number; createdAt: string }[] | undefined,
+  calmness: number,
+): "happy" | "calm" | "support" | null {
+  if (!moodEntries) return null;
+  const since = Date.now() - MOOD_WINDOW_MS;
+  const recent = moodEntries.filter((e) => new Date(e.createdAt).getTime() >= since);
+  if (recent.length === 0) return null; // нет данных — используем fallback сервера
+  const avg = recent.reduce((s, e) => s + e.value, 0) / recent.length;
+  if (avg >= 7) return "happy";
+  if (avg >= 5) return calmness >= 70 ? "happy" : "calm";
+  return "support";
+}
+
+// ===== useCreatureState - получение состояния с корректировкой уровня и XP =====
 export function useCreatureState() {
+  const queryClient = useQueryClient();
+  const { data: params } = useParameters();
+  const moodParam = params?.find((p) => p.name === ParameterName.Mood);
+  const { data: moodEntries } = useEntries(moodParam ? { parameterId: moodParam.id } : undefined);
+
   return useQuery({
     queryKey: ["creature"],
     // offline-first: при офлайне читаем локальное зеркало из IndexedDB
@@ -14,36 +63,87 @@ export function useCreatureState() {
         const local = await getLocalCreature();
         return local as never;
       }
-      return api.creature.getState();
+      const data = await api.creature.getState(); // Получаем текущее состояние питомца
+
+      // E2E: пересчитываем настроение и пушим в creatureState, если изменилось
+      const petMood = computePetMood(moodEntries, data.calmness ?? 50);
+      if (petMood && petMood !== data.petMood) {
+        data.petMood = petMood;
+        await enqueue("creatureState", "upsert", "creature-profile", { petMood });
+      }
+
+      // Корректируем уровень и XP
+      const { corrected, leveledUp } = correctLevelAndXP(data);
+
+      // Обновление кэша и показ уведомления о повышении уровня
+      if (leveledUp) {
+        queryClient.setQueryData(["creature"], corrected);
+        setTimeout(() => {
+          celebrateReward("load", {
+            // Уведомление о повышении уровня
+            leveledUp: true,
+            state: { level: corrected.level },
+          });
+        }, 100);
+      }
+
+      return corrected;
     },
     staleTime: 30_000,
   });
 }
 
+// ===== useCompleteExercise - завершение упражнения и корректировка уровня =====
 export function useCompleteExercise() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (duration: number) => api.creature.completeExercise(duration),
     onSuccess: (data) => {
+      const { corrected, leveledUp } = correctLevelAndXP(data.state);
+
+      queryClient.setQueryData(["creature"], corrected);
+
+      if (leveledUp) {
+        celebrateReward("breathing", {
+          leveledUp: true,
+          state: { level: corrected.level },
+        });
+      } else {
+        celebrateReward("breathing", data);
+      }
+
       queryClient.invalidateQueries({ queryKey: ["creature"] });
-      celebrateReward("breathing", data);
     },
   });
 }
 
+// ===== useRewardPractice - получение награды и коррекция уровня =====
 export function useRewardPractice() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (source: PracticeSource) => api.creature.reward(source),
     onSuccess: (data, source) => {
+      const { corrected, leveledUp } = correctLevelAndXP(data.state);
+
+      queryClient.setQueryData(["creature"], corrected);
+
+      if (leveledUp) {
+        celebrateReward(source, {
+          leveledUp: true,
+          state: { level: corrected.level },
+        });
+      } else {
+        celebrateReward(source, data);
+      }
+
       queryClient.invalidateQueries({ queryKey: ["creature"] });
-      celebrateReward(source, data);
     },
   });
 }
 
+// ===== useFeed - кормление питомца и корректировка уровня =====
 export function useFeed() {
   const queryClient = useQueryClient();
 
@@ -66,7 +166,7 @@ export function useFeed() {
           feedCounts,
         });
         return {
-          state: { ...local, petType, feedCount, feedCounts },
+          state: { ...local, petType, feedCount, feedCounts } as CreatureState,
           leveledUp: false,
           xpAwarded: 0,
           feedCount,
@@ -75,7 +175,22 @@ export function useFeed() {
       }
       return api.creature.feed();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Проверяем, что data.state существует и имеет level и experience
+      if (data?.state && "level" in data.state && "experience" in data.state) {
+        const { corrected, leveledUp } = correctLevelAndXP(data.state);
+
+        queryClient.setQueryData(["creature"], corrected);
+
+        if (leveledUp) {
+          // Проверка на повышение уровня
+          celebrateReward("feed", {
+            leveledUp: true,
+            state: { level: corrected.level },
+          });
+        }
+      }
+
       queryClient.invalidateQueries({ queryKey: ["creature"] });
       queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
       queryClient.invalidateQueries({ queryKey: ["creature", "stats"] });
@@ -83,6 +198,7 @@ export function useFeed() {
   });
 }
 
+// Остальные хуки остаются прежними
 export function useCompletions(days = 30) {
   return useQuery({
     queryKey: ["creature", "completions", days],
@@ -165,7 +281,22 @@ export function useClaimMission() {
 
   return useMutation({
     mutationFn: (id: string) => api.creature.claimMission(id),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data.leveledUp) {
+        const currentCreature = queryClient.getQueryData<{ level: number }>(["creature"]);
+        if (currentCreature) {
+          celebrateReward("mission", {
+            leveledUp: true,
+            state: { level: currentCreature.level + 1 },
+          });
+        } else {
+          celebrateReward("mission", {
+            leveledUp: true,
+            state: { level: 0 },
+          });
+        }
+      }
+
       queryClient.invalidateQueries({ queryKey: ["creature", "missions"] });
       queryClient.invalidateQueries({ queryKey: ["creature"] });
     },

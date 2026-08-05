@@ -1,8 +1,17 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import bcrypt from "bcryptjs";
 import { buildApp, registerAndLogin } from "../../test/helpers.js";
+import { prisma } from "../../lib/prisma.js";
 import type { FastifyInstance } from "fastify";
 
 let app: FastifyInstance;
+
+const E2E_KEYS = {
+  wrappedKey: "dGVzdC13cmFwcGVkLWtleQ==",
+  keySalt: "dGVzdC1zYWx0",
+  recoveryWrappedKey: "dGVzdC1yZWNvdmVyeQ==",
+  recoverySalt: "dGVzdC1yZWNvdmVyeS1zYWx0",
+};
 
 beforeAll(async () => {
   app = await buildApp();
@@ -24,6 +33,7 @@ describe("Auth", () => {
         ageConfirmed: true,
         pdpConsent: true,
         birthYear: 1998,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(200);
@@ -41,6 +51,7 @@ describe("Auth", () => {
         password: "secret123",
         ageConfirmed: true,
         pdpConsent: false,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(400);
@@ -57,6 +68,7 @@ describe("Auth", () => {
         ageConfirmed: true,
         pdpConsent: true,
         birthYear: 2010,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(400);
@@ -72,6 +84,7 @@ describe("Auth", () => {
         password: "secret123",
         ageConfirmed: true,
         pdpConsent: true,
+        ...E2E_KEYS,
       },
     });
     expect(res.statusCode).toBe(409);
@@ -115,6 +128,7 @@ describe("Auth", () => {
         password: "secret123",
         ageConfirmed: true,
         pdpConsent: true,
+        ...E2E_KEYS,
       },
     });
     expect(reg.statusCode).toBe(200);
@@ -132,5 +146,72 @@ describe("Auth", () => {
     expect(codes[0]).toBe(200);
     expect(codes[1]).toBe(401);
     expect(codes).not.toContain(500);
+  });
+});
+
+describe("Auth /auth/set-keys — legacy account migration", () => {
+  const email = `legacy-${Date.now()}@example.com`;
+  const password = "secret123";
+
+  async function createLegacyUser(): Promise<{ id: string; token: string }> {
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: { email, password: hashed, emailVerified: true, ageConfirmed: true },
+    });
+    const login = await app.inject({
+      method: "POST",
+      url: "/auth/login",
+      payload: { email, password },
+    });
+    return { id: user.id, token: login.json().accessToken };
+  }
+
+  it("login for a legacy user returns no keys, then set-keys works once and rejects re-set", async () => {
+    const legacy = await createLegacyUser();
+
+    const loginRes = await app.inject({
+      method: "POST",
+      url: "/auth/login",
+      payload: { email, password },
+    });
+    expect(loginRes.statusCode).toBe(200);
+    expect(loginRes.json().wrappedKey).toBeNull();
+    expect(loginRes.json().keySalt).toBeNull();
+
+    const setRes = await app.inject({
+      method: "POST",
+      url: "/auth/set-keys",
+      headers: { authorization: `Bearer ${legacy.token}` },
+      payload: E2E_KEYS,
+    });
+    expect(setRes.statusCode).toBe(200);
+    expect(setRes.json()).toEqual({ ok: true });
+
+    const setAgain = await app.inject({
+      method: "POST",
+      url: "/auth/set-keys",
+      headers: { authorization: `Bearer ${legacy.token}` },
+      payload: E2E_KEYS,
+    });
+    expect(setAgain.statusCode).toBe(409);
+    expect(setAgain.json().code).toBe("KEYS_ALREADY_SET");
+
+    const loginAfter = await app.inject({
+      method: "POST",
+      url: "/auth/login",
+      payload: { email, password },
+    });
+    expect(loginAfter.json().wrappedKey).toBe(E2E_KEYS.wrappedKey);
+
+    await prisma.user.delete({ where: { id: legacy.id } });
+  });
+
+  it("rejects set-keys without auth token", async () => {
+    const res = await app.inject({
+      method: "POST",
+      url: "/auth/set-keys",
+      payload: E2E_KEYS,
+    });
+    expect(res.statusCode).toBe(401);
   });
 });

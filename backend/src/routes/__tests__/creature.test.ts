@@ -100,20 +100,31 @@ describe("Creature mood and stage", () => {
     expect(res.json().stage).toBe("baby");
   });
 
-  it("GET /creature — petMood is happy on high recent mood entries", async () => {
-    const moodParam = await prisma.parameter.create({ data: { name: "Mood" } });
+  it("GET /creature — petMood comes from creatureState (client-computed under E2E)", async () => {
     const user = await registerAndLogin(
       app,
       "creature-mood-high@example.com",
       "secret123",
       "Happy",
     );
-    await prisma.entry.createMany({
-      data: [
-        { userId: user.userId, parameterId: moodParam.id, value: 9 },
-        { userId: user.userId, parameterId: moodParam.id, value: 8 },
-      ],
+    const push = await app.inject({
+      method: "POST",
+      url: "/sync/push",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload: {
+        actions: [
+          {
+            entity: "creatureState",
+            action: "upsert",
+            id: "creature-profile",
+            occurredAt: new Date().toISOString(),
+            payload: { petMood: "happy", calmness: 80 },
+          },
+        ],
+      },
     });
+    expect(push.statusCode).toBe(200);
+
     const res = await app.inject({
       method: "GET",
       url: "/creature",
@@ -122,21 +133,14 @@ describe("Creature mood and stage", () => {
     expect(res.json().petMood).toBe("happy");
   });
 
-  it("GET /creature — petMood is support on low recent mood entries", async () => {
-    const moodParam = await prisma.parameter.create({ data: { name: "Mood" } });
+  it("GET /creature — petMood falls back to calm when not pushed", async () => {
     const user = await registerAndLogin(app, "creature-mood-low@example.com", "secret123", "Low");
-    await prisma.entry.createMany({
-      data: [
-        { userId: user.userId, parameterId: moodParam.id, value: 3 },
-        { userId: user.userId, parameterId: moodParam.id, value: 4 },
-      ],
-    });
     const res = await app.inject({
       method: "GET",
       url: "/creature",
       headers: { authorization: `Bearer ${user.token}` },
     });
-    expect(res.json().petMood).toBe("support");
+    expect(res.json().petMood).toBe("calm");
   });
 
   it("GET /creature — stage grows with level", async () => {
@@ -279,5 +283,39 @@ describe("Creature feed", () => {
     });
     expect(res.json().totalPractices).toBe(1);
     expect(res.json().sourceBreakdown).toEqual({ gratitude: 1 });
+  });
+});
+
+describe("Creature check-in — race safety", () => {
+  it("POST /creature/check-in — concurrent check-ins award only once", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-checkin-race@example.com",
+      "secret123",
+      "Race",
+    );
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () =>
+        app.inject({
+          method: "POST",
+          url: "/creature/check-in",
+          headers: { authorization: `Bearer ${user.token}` },
+        }),
+      ),
+    );
+
+    const ok = results.filter((r) => r.statusCode === 200);
+    const conflicted = results.filter((r) => r.statusCode === 409);
+    expect(ok.length).toBe(1);
+    expect(conflicted.length).toBe(4);
+
+    const completionCount = await prisma.practiceCompletion.count({
+      where: { userId: user.userId, source: "checkin" },
+    });
+    expect(completionCount).toBe(1);
+
+    const state = await prisma.creatureState.findUnique({ where: { userId: user.userId } });
+    expect(state?.streak).toBe(1);
   });
 });

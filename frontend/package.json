@@ -10,6 +10,7 @@
     "generate:api": "openapi-typescript ../api-contract/generated/openapi.yaml -o src/lib/api-types.ts",
     "generate": "npm run generate:api",
     "test": "vitest run",
+    "bundle:check": "node scripts/check-bundle.mjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
@@ -30,7 +31,6 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@tanstack/react-query": "^5.0.0",
-    "@tanstack/react-router": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dexie": "^4.4.4",
@@ -47,6 +47,7 @@
     "tailwind-merge": "^2.5.0",
     "tailwindcss-animate": "^1.0.0",
     "workbox-precaching": "^7.4.1",
+    "workbox-routing": "^7.4.1",
     "zod": "^3.23.0"
   },
   "devDependencies": {
@@ -56,7 +57,6 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/three": "^0.160.0",
     "@vitejs/plugin-react": "^4.3.0",
     "@vitest/coverage-v8": "^4.1.10",
     "autoprefixer": "^10.4.0",

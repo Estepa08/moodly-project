@@ -29,8 +29,18 @@ interface Auth {
   forgotPassword(@body body: ForgotPasswordRequest): void;
 
   @post
+  @route("/reset-info")
+  @doc("Отдать recovery-материал (wrappedKey/salt) по токену сброса пароля")
+  resetInfo(@body body: ResetInfoRequest): ResetInfoResponse;
+
+  @post
   @route("/reset-password")
   resetPassword(@body body: ResetPasswordRequest): ResetPasswordResponse;
+
+  @post
+  @route("/set-keys")
+  @doc("Сохранить E2E-ключи для legacy-учётки (только если ключей ещё нет); требователен к авторизации")
+  setKeys(@body body: SetKeysRequest): SetKeysOk;
 }
 
 @tag("Users")
@@ -95,10 +105,6 @@ interface Tests {
   @get
   @route("/{id}")
   get(@path id: string): Test;
-
-  @post
-  @route("/{id}/results")
-  submitResult(@path id: string, @body body: TestResultSubmit): TestResult;
 }
 
 @tag("TestResults")
@@ -188,15 +194,6 @@ interface Creature {
   @route("/pet")
   @doc("Активировать питомца и/или задать имя")
   setPet(@body body: PetUpdateRequest): PetCollection;
-}
-
-@tag("Digest")
-@route("/digest")
-interface Digest {
-  @get
-  @route("/weekly")
-  @doc("Недельный дайджест активности пользователя")
-  getWeekly(): WeeklyDigest;
 }
 
 @tag("Cba")
