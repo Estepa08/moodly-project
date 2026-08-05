@@ -63,7 +63,7 @@ export default function DayActivitiesCard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <CalendarRange aria-hidden="true" className="w-4 h-4 text-accent" />
+            <CalendarRange aria-hidden="true" className="w-4 h-4 text-primary" />
             {t("dayActivities.title")}
           </CardTitle>
         </CardHeader>
@@ -77,7 +77,7 @@ export default function DayActivitiesCard() {
                 return (
                   <span
                     key={a.key}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary"
                   >
                     {Icon ? <Icon aria-hidden="true" className="w-3.5 h-3.5" /> : null}
                     {labelFor(a.key)}
@@ -102,8 +102,8 @@ export default function DayActivitiesCard() {
         onOpenChange={setOpen}
         icon={CalendarRange}
         iconSize={ComponentSize.Md}
-        iconBg="bg-accent/10"
-        iconColor="text-accent"
+        iconBg="bg-primary/10"
+        iconColor="text-primary"
         title={t("dayActivities.sectionHeading")}
         description={t("dayActivities.subtitle")}
       >
