@@ -706,6 +706,8 @@
     "saved": "Saved",
     "addCustom": "Add",
     "customPlaceholder": "Your own activity…",
+    "myActivities": "My activities",
+    "removeFromCatalog": "Remove from my catalog",
     "empty": "Nothing recorded yet",
     "edit": "Edit",
     "correlationTitle": "My day & my mood",

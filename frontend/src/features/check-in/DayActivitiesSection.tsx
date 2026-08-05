@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Check, Plus, Search } from "lucide-react";
+import { Check, Plus, Search, X } from "lucide-react";
 import { Chip } from "../../components/ui/chip";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -14,6 +14,12 @@ import {
   DEFAULT_ACTIVITY_CATEGORY,
   type ActivityCategory,
 } from "../../lib/dayActivities";
+import {
+  loadMyActivities,
+  createMyActivity,
+  removeMyActivity,
+  type MyActivity,
+} from "../../lib/myActivities";
 import type { ActivitySelection } from "../../lib/crypto/records";
 
 const DAY_ACTIVITIES_NAME = ParameterName.DayActivities;
@@ -55,6 +61,7 @@ export default function DayActivitiesSection() {
   const [query, setQuery] = useState("");
   const [customText, setCustomText] = useState("");
   const [saved, setSaved] = useState(false);
+  const [myActivities, setMyActivities] = useState<MyActivity[]>(() => loadMyActivities());
 
   useEffect(() => {
     if (existing?.activities?.length) {
@@ -67,6 +74,26 @@ export default function DayActivitiesSection() {
     [selected],
   );
 
+  const selectedCustomKeys = useMemo(
+    () => new Set(selected.filter((s) => s.custom).map((s) => s.key)),
+    [selected],
+  );
+
+  const allCustom = useMemo(() => {
+    const map = new Map<string, ActivitySelection>();
+    for (const m of myActivities) map.set(m.key, { key: m.key, custom: true, label: m.label });
+    for (const s of selected) {
+      if (s.custom) map.set(s.key, s);
+    }
+    return Array.from(map.values());
+  }, [myActivities, selected]);
+
+  const filteredCustom = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return allCustom;
+    return allCustom.filter((s) => s.label?.toLowerCase().includes(q));
+  }, [allCustom, query]);
+
   const filteredCatalog = useMemo(() => {
     const q = query.trim().toLowerCase();
     return ACTIVITY_CATALOG.filter((a) => {
@@ -77,27 +104,33 @@ export default function DayActivitiesSection() {
     });
   }, [category, query, t]);
 
-  const toggle = (key: string) => {
+  const toggle = (item: { key: string; custom?: boolean; label?: string }) => {
     setSaved(false);
     setSelected((prev) => {
-      if (selectedKeys.has(key)) return prev.filter((s) => s.key !== key);
-      return [...prev, { key }];
+      if (prev.some((s) => s.key === item.key)) return prev.filter((s) => s.key !== item.key);
+      return [...prev, item];
     });
   };
 
   const addCustom = () => {
     const text = customText.trim();
     if (!text) return;
+    const item = createMyActivity(text);
+    setMyActivities((prev) => [...prev, item]);
     setSaved(false);
-    setSelected((prev) => [
-      ...prev,
-      { key: `custom:${Date.now().toString(36)}`, custom: true, label: text },
-    ]);
+    setSelected((prev) => [...prev, { key: item.key, custom: true, label: text }]);
     setCustomText("");
   };
 
   const customExists = (text: string) =>
-    selected.some((s) => s.custom && s.label?.toLowerCase() === text.toLowerCase());
+    allCustom.some((s) => s.label?.toLowerCase() === text.toLowerCase());
+
+  const removeFromCatalog = (key: string) => {
+    removeMyActivity(key);
+    setMyActivities(loadMyActivities());
+    setSaved(false);
+    setSelected((prev) => prev.filter((s) => s.key !== key));
+  };
 
   const save = () => {
     if (!paramId) return;
@@ -156,23 +189,46 @@ export default function DayActivitiesSection() {
         {filteredCatalog.map((a) => {
           const active = selectedKeys.has(a.key);
           return (
-            <Chip key={a.key} variant={active ? "active" : "outline"} onClick={() => toggle(a.key)}>
+            <Chip key={a.key} variant={active ? "active" : "outline"} onClick={() => toggle(a)}>
               {active && <Check aria-hidden="true" className="mr-1" />}
               {t(a.labelKey)}
             </Chip>
           );
         })}
-        {selected
-          .filter((s) => s.custom)
-          .map((s) => (
-            <Chip key={s.key} variant="active" onClick={() => toggle(s.key)}>
-              <Check aria-hidden="true" className="mr-1" />
-              {s.label}
-            </Chip>
-          ))}
+        {filteredCustom.length > 0 && (
+          <div className="w-full mt-0.5">
+            <p className="text-[11px] font-semibold text-muted-foreground mb-1.5">
+              {t("dayActivities.myActivities")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {filteredCustom.map((s) => {
+                const active = selectedCustomKeys.has(s.key);
+                return (
+                  <span key={s.key} className="inline-flex items-center gap-0.5">
+                    <Chip
+                      variant={active ? "active" : "outline"}
+                      onClick={() => toggle({ key: s.key, custom: true, label: s.label })}
+                    >
+                      {active && <Check aria-hidden="true" className="mr-1" />}
+                      {s.label}
+                    </Chip>
+                    <button
+                      type="button"
+                      onClick={() => removeFromCatalog(s.key)}
+                      aria-label={t("dayActivities.removeFromCatalog")}
+                      className="inline-flex items-center justify-center w-4 h-4 rounded-full text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <X aria-hidden="true" className="w-3 h-3" />
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
-      {query && filteredCatalog.length === 0 && (
+      {query && filteredCatalog.length === 0 && filteredCustom.length === 0 && (
         <p className="text-xs text-muted-foreground">{t("dayActivities.empty")}</p>
       )}
 
