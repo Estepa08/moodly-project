@@ -36,7 +36,26 @@ export default function PetGreeterCard({ onCheckIn }: { onCheckIn: () => void })
         </span>
       </div>
 
-      <div className="flex justify-center py-1">
+      <div className="relative flex justify-center pt-8 pb-1">
+        <div className="absolute right-0 top-0 z-10 w-full max-w-[15rem]">
+          <div className="relative ml-auto rounded-2xl bg-card shadow-neumorphic-sm px-4 py-3">
+            <span
+              aria-hidden="true"
+              className="absolute right-8 -bottom-1.5 w-3.5 h-3.5 bg-card rotate-45"
+            />
+            <p className="text-sm font-semibold text-foreground leading-snug">
+              {t(`petGreeter.question.${phase}`)}
+            </p>
+            {message?.text && (
+              <p className="mt-1 text-xs text-muted-foreground leading-snug">{message.text}</p>
+            )}
+            {message?.question && (
+              <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                {message.question}
+              </p>
+            )}
+          </div>
+        </div>
         <PetAvatar
           petType={activePetType}
           size="lg"
@@ -44,22 +63,6 @@ export default function PetGreeterCard({ onCheckIn }: { onCheckIn: () => void })
           ariaLabel={displayName}
           emotion={petMood === "happy" ? "happy" : "idle"}
         />
-      </div>
-
-      <div className="relative rounded-2xl bg-card shadow-neumorphic-sm px-4 py-3">
-        <span
-          aria-hidden="true"
-          className="absolute left-6 -top-1.5 w-3.5 h-3.5 bg-card rotate-45"
-        />
-        <p className="text-sm font-semibold text-foreground leading-snug">
-          {t(`petGreeter.question.${phase}`, { name: displayName })}
-        </p>
-        {message?.text && (
-          <p className="mt-1 text-xs text-muted-foreground leading-snug">{message.text}</p>
-        )}
-        {message?.question && (
-          <p className="mt-0.5 text-xs text-muted-foreground leading-snug">{message.question}</p>
-        )}
       </div>
 
       <button

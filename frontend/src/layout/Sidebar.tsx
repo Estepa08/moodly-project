@@ -5,7 +5,7 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useNavHighlights } from "../hooks/useNavHighlights";
 import { useStalePractices } from "../hooks/useStalePractices";
 import { PracticeSource } from "../features/gamification/practice.enums";
-import { User, Sparkles, ChevronDown } from "lucide-react";
+import { User, Sparkles, ChevronDown, ClipboardList } from "lucide-react";
 import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS, ADMIN_ITEM } from "./nav-config";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
@@ -116,6 +116,19 @@ export default function Sidebar() {
               </Link>
             );
           })}
+          <Link
+            to="/tests"
+            className={navButtonClass(
+              location.pathname === "/tests" || location.pathname.startsWith("/tests/"),
+            )}
+            aria-current={location.pathname === "/tests" ? "page" : undefined}
+          >
+            <ClipboardList
+              aria-hidden="true"
+              className={`w-4 h-4 shrink-0 ${highlights.tests ? "text-primary" : ""}`}
+            />
+            <span className="text-sm font-medium truncate">{t("nav.short.tests")}</span>
+          </Link>
         </div>
       )}
 

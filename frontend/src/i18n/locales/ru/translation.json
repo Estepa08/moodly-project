@@ -80,9 +80,9 @@
   },
   "petGreeter": {
     "question": {
-      "morning": "Доброе утро, {{name}}! Как спалось?",
-      "day": "Как проходит день, {{name}}?",
-      "evening": "Как прошёл день, {{name}}? Давай подведём итог"
+      "morning": "Доброе утро! Как спалось?",
+      "day": "Как проходит день?",
+      "evening": "Как прошёл день? Давай подведём итог"
     },
     "cta": "Отметиться — 30 секунд",
     "hint": "Компаньон отвечает реакциями после каждого тапа"
@@ -94,7 +94,13 @@
     "thanksText": "Я всё запомнил и буду рядом — загляни позже, чтобы подвести итог дня.",
     "done": "Готово",
     "skip": "Пропустить",
-    "markActivities": "Отметить занятия дня"
+    "markActivities": "Отметить занятия дня",
+    "rewardXp": "+20 XP",
+    "rewardEnergy": "Энергия +100",
+    "rewardStreak_one": "{{count}} день подряд",
+    "rewardStreak_few": "{{count}} дня подряд",
+    "rewardStreak_many": "{{count}} дней подряд",
+    "rewardStreak_other": "{{count}} дней подряд"
   },
   "statistics": {
     "subtitle": "Динамика состояния и результаты за период"
@@ -976,22 +982,8 @@
     "back": "Назад"
   },
   "dailyCheckIn": {
-    "greetingMorning": "Доброе утро",
-    "greetingAfternoon": "Добрый день",
-    "greetingEvening": "Добрый вечер",
-    "body": "Уделите минутку, чтобы отметить своё состояние сегодня.",
-    "petGreeting": "{{name}} рад вас видеть",
-    "button": "Отметиться",
-    "checkingIn": "Отмечаюсь...",
     "streak": "{{count}} день подряд",
     "streak_plural": "{{count}} дней подряд",
-    "streakDays": "{{count}} день подряд",
-    "streakDays_plural": "{{count}} дней подряд",
-    "expGained": "+20 XP",
-    "expSub": "за чек-ин",
-    "energyRestored": "Энергия +100",
-    "energySub": "компаньон заряжен",
-    "remindLater": "Напомнить позже",
     "levelUpTitle": "Новый уровень!",
     "levelUpBody": "Существо выросло до {{level}} уровня!"
   },

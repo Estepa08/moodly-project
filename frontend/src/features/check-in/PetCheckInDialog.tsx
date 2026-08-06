@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Flame } from "lucide-react";
 import { Dialog, DialogContent } from "../../components/ui/dialog";
 import PetAvatar from "../gamification/PetAvatar";
-import { usePets, useCreatureState } from "../gamification";
+import { usePets, useCreatureState, celebrate } from "../gamification";
 import { PET_DEFINITIONS } from "../gamification/pets";
+import { api } from "../../lib/api";
 import { useParameters } from "../../hooks/useParameters";
 import { useCreateEntry } from "../../hooks/useEntries";
 import { useDayPhase, getDayPhase, type DayPhase } from "../../hooks/useDayPhase";
@@ -32,6 +35,7 @@ export default function PetCheckInDialog({
   const phase = useDayPhase();
   const flow = FLOWS[phase];
 
+  const queryClient = useQueryClient();
   const { data: params } = useParameters();
   const createEntry = useCreateEntry();
   const { data: pets } = usePets();
@@ -40,12 +44,32 @@ export default function PetCheckInDialog({
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
   const [feedSignal, setFeedSignal] = useState(0);
+  // Результат дневного чек-ина (награда XP/энергия/streak), показываем при завершении флоу.
+  const [checkIn, setCheckIn] = useState<{ streak: number; leveledUp: boolean } | null>(null);
+
+  const checkInMutation = useMutation({
+    mutationFn: () => api.creature.checkIn(),
+    onSuccess: (data) => {
+      setCheckIn({ streak: data.state.streak ?? 0, leveledUp: data.leveledUp });
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+      if (data.leveledUp) {
+        celebrate(t("dailyCheckIn.levelUpBody", { level: data.state.level }), {
+          title: t("dailyCheckIn.levelUpTitle"),
+        });
+      }
+    },
+    onError: () => {
+      // Например, ALREADY_CHECKED_IN (409) — второй чек-ин за день: награду не показываем.
+      setCheckIn(null);
+    },
+  });
 
   useEffect(() => {
     if (open) {
       setStep(0);
       setDone(false);
       setFeedSignal(0);
+      setCheckIn(null);
     }
   }, [open]);
 
@@ -73,6 +97,8 @@ export default function PetCheckInDialog({
           setFeedSignal((s) => s + 1);
           if (step >= flow.length - 1) {
             setDone(true);
+            // Завершение флоу = дневной чек-ин (сервер сам защищает от повтора в день).
+            checkInMutation.mutate(undefined);
           } else {
             setStep((s) => s + 1);
           }
@@ -107,8 +133,34 @@ export default function PetCheckInDialog({
               {t("petCheckIn.thanksTitle")}
             </p>
             <p className="text-sm text-muted-foreground leading-snug">
-              {t("petCheckIn.thanksText", { name: petName })}
+              {t("petCheckIn.thanksText")}
             </p>
+
+            {checkIn && (
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-accent/10 py-2.5">
+                    <span className="text-sm font-bold text-accent">
+                      {t("petCheckIn.rewardXp")}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-primary/10 py-2.5">
+                    <span className="text-sm font-bold text-primary">
+                      {t("petCheckIn.rewardEnergy")}
+                    </span>
+                  </div>
+                </div>
+                {checkIn.streak > 0 && (
+                  <div className="flex items-center justify-center gap-1.5 rounded-2xl bg-card shadow-neumorphic-sm py-2">
+                    <Flame aria-hidden="true" className="w-4 h-4 text-accent" />
+                    <span className="text-xs font-semibold text-foreground">
+                      {t("petCheckIn.rewardStreak", { count: checkIn.streak })}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
             <button
               type="button"
               onClick={close}
@@ -121,7 +173,7 @@ export default function PetCheckInDialog({
           <div className="space-y-3">
             <div className="rounded-2xl bg-card shadow-neumorphic-sm px-4 py-3">
               <p className="text-sm font-semibold text-foreground leading-snug">
-                {t(`petGreeter.question.${phase}`, { name: petName })}
+                {t(`petGreeter.question.${phase}`)}
               </p>
               <p className="mt-0.5 text-xs text-muted-foreground">{t("petCheckIn.instantHint")}</p>
             </div>
