@@ -85,7 +85,7 @@
       "evening": "How was your day, {{name}}? Let's wrap it up"
     },
     "cta": "Check in — 30 seconds",
-    "hint": "The pet replies with reactions after every tap"
+    "hint": "Your companion replies with reactions after every tap"
   },
   "petCheckIn": {
     "instantHint": "Tap — it saves instantly, no typing needed",
@@ -293,7 +293,7 @@
   "testResults": {
     "title": "Test Results",
     "noResults": "No results yet — take your first test when you feel ready.",
-    "noResultsPet": "{{name}} is here: take your first test and your pet will help you understand it.",
+    "noResultsPet": "{{name}} is here: take your first test and your companion will help you understand it.",
     "defaultPetName": "Pet",
     "takeTest": "Take a test",
     "showFull": "Show full",
@@ -984,7 +984,7 @@
     "expGained": "+20 XP",
     "expSub": "per check-in",
     "energyRestored": "Energy +100",
-    "energySub": "pet is charged",
+    "energySub": "companion is charged",
     "remindLater": "Remind me later",
     "levelUpTitle": "Level Up!",
     "levelUpBody": "Your creature grew to level {{level}}!"
@@ -1010,11 +1010,11 @@
     "reminderTitle": "Daily reminder?",
     "reminderDesc": "Get a gentle nudge to check in each day.",
     "petTitle": "Meet your companion",
-    "petDesc": "It just hatched! Give it a name and pick who'll be by your side.",
-    "petNameLabel": "What's your pet's name?",
+    "petDesc": "They just arrived! Give them a name and pick who'll be by your side.",
+    "petNameLabel": "What's your companion's name?",
     "petNamePlaceholder": "e.g. Puff",
-    "petChooseTitle": "Choose your first pet",
-    "petMoreHint": "3 more pets unlock through achievements — watch your progress.",
+    "petChooseTitle": "Choose your first companion",
+    "petMoreHint": "3 more companions unlock through achievements — watch your progress.",
     "actionTitle": "Ready to begin",
     "actionDesc": "Pick your first step:"
   },
@@ -1108,9 +1108,9 @@
     "remindersSaveFailed": "Failed to save settings",
     "comingSoon": "Coming soon",
     "language": "Language",
-    "companionSection": "Pet",
-    "companionToggleLabel": "Floating pet",
-    "companionToggleDesc": "Show the pet in the bottom-right corner of the screen",
+    "companionSection": "Companion",
+    "companionToggleLabel": "Floating companion",
+    "companionToggleDesc": "Show the companion in the bottom-right corner of the screen",
     "deleteAccount": "Delete Account",
     "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteButton": "Delete my account",
@@ -1208,11 +1208,11 @@
     "completions250": "Relentless",
     "completions250Desc": "Complete 250 practices",
     "feed50": "Caring Owner",
-    "feed50Desc": "Feed your pet 50 times",
+    "feed50Desc": "Feed your companion 50 times",
     "feed200": "Generous Friend",
-    "feed200Desc": "Feed your pet 200 times",
+    "feed200Desc": "Feed your companion 200 times",
     "feed1000": "Best Owner",
-    "feed1000Desc": "Feed your pet 1000 times",
+    "feed1000Desc": "Feed your companion 1000 times",
     "streak25": "A Quarter of the Way",
     "streak25Desc": "Reach a 25-day streak",
     "xp5000": "XP Benchmark",
@@ -1394,6 +1394,15 @@
     "lev": "Lev",
     "mark": "Mark",
     "timur": "Timur",
+    "girl": "Girl",
+    "girl2": "Girl 2",
+    "girl3": "Girl 3",
+    "rabbit": "Rabbit",
+    "monk": "Monk",
+    "man": "Man",
+    "man2": "Man 2",
+    "panda": "Panda",
+    "robot3": "Robot 3",
     "active": "Active",
     "fedCount": "×{{count}}",
     "showAll": "Show all ({{count}})"
@@ -1502,7 +1511,7 @@
   },
   "landing": {
     "navInside": "What's inside",
-    "navPets": "Pets",
+    "navPets": "Companions",
     "navTests": "Tests",
     "navPrivacy": "Privacy",
     "signIn": "Sign in",
@@ -1513,7 +1522,7 @@
       "titlePrefix": "A mood diary that",
       "accent": "cares",
       "titleSuffix": "about you",
-      "text": "Track your mood, energy, sleep and anxiety in half a minute. See trends, calm down with practices and raise your companion pet. Private, per 152-FZ.",
+      "text": "Track your mood, energy, sleep and anxiety in half a minute. See trends, calm down with practices and raise your companion. Private, per 152-FZ.",
       "mockCompanion": "Companion · lvl 7",
       "mockStreak": "Streak: 12 days 🔥",
       "mockMood": "Mood · this week",
@@ -1521,7 +1530,7 @@
       "mockPracticeSub": "2 min of calm"
     },
     "stats": {
-      "pets": "companion pets",
+      "pets": "companions",
       "practices": "self-help practices",
       "params": "wellbeing parameters",
       "tests": "self-discovery tests"
@@ -1538,8 +1547,8 @@
         "text": "Thinking patterns radar, trends and periods — you see patterns, not chaos."
       },
       "pet": {
-        "title": "Companion pet",
-        "text": "Streaks, XP and 27 pets — motivation is built into the habit, not willpower."
+        "title": "A companion that grows",
+        "text": "Streaks, XP and a companion collection — motivation is built into the habit, not willpower."
       },
       "tests": {
         "title": "Self-discovery tests",
@@ -1559,8 +1568,8 @@
     },
     "collection": {
       "kicker": "Collection",
-      "title": "Collect all 27 pets",
-      "text": "Each pet is unlocked through achievements: streaks, practices, level."
+      "title": "Collect your full companion collection",
+      "text": "Each companion is unlocked through achievements: streaks, practices, level."
     },
     "tests": {
       "kicker": "Self-discovery tests",
@@ -1627,7 +1636,7 @@
     },
     "seo": {
       "title": "Moodly — a mood diary that cares about you",
-      "description": "Track your mood, energy, sleep and anxiety in half a minute. Practices, self-discovery tests and a companion pet. Private, per 152-FZ."
+      "description": "Track your mood, energy, sleep and anxiety in half a minute. Practices, self-discovery tests and a companion always by your side. Private, per 152-FZ."
     }
   },
   "notFound": {
@@ -1686,8 +1695,8 @@
           "label": "metrics: mood, energy, sleep, anxiety"
         },
         "3": {
-          "value": "27",
-          "label": "companion pets"
+          "value": "36",
+          "label": "companions"
         },
         "4": {
           "value": "152-FZ",
@@ -1710,7 +1719,7 @@
           },
           "3": {
             "title": "Keep the habit",
-            "text": "A pet, streaks and XP make regularity desirable — you won't quit after week two."
+            "text": "A companion, streaks and XP make regularity desirable — you won't quit after week two."
           }
         }
       },
@@ -1744,7 +1753,7 @@
             "text": "no email confirmation, frictionless sign-up"
           },
           "2": {
-            "title": "Choose your pet",
+            "title": "Choose your companion",
             "text": "a companion that levels up with you"
           },
           "3": {

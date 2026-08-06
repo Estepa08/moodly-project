@@ -42,6 +42,15 @@ const KNOWN_ORDER = [
   "lev",
   "mark",
   "timur",
+  "girl",
+  "girl2",
+  "girl3",
+  "rabbit",
+  "monk",
+  "man",
+  "man2",
+  "panda",
+  "robot3",
 ];
 
 const PET_META: Record<string, PetMeta> = {
@@ -72,6 +81,15 @@ const PET_META: Record<string, PetMeta> = {
   lev: { labelKey: "pets.lev", color: "bg-pet-10", emoji: "👨", feed: ["🥥"] },
   mark: { labelKey: "pets.mark", color: "bg-pet-11", emoji: "👨🏻", feed: ["🍈"] },
   timur: { labelKey: "pets.timur", color: "bg-pet-12", emoji: "👨🏼", feed: ["🍅"] },
+  girl: { labelKey: "pets.girl", color: "bg-pet-13", emoji: "👩", feed: ["🍏"] },
+  girl2: { labelKey: "pets.girl2", color: "bg-pet-14", emoji: "👩🏻", feed: ["🍌"] },
+  girl3: { labelKey: "pets.girl3", color: "bg-pet-15", emoji: "👩🏼", feed: ["🍐"] },
+  rabbit: { labelKey: "pets.rabbit", color: "bg-pet-1", emoji: "🐰", feed: ["🥕"] },
+  monk: { labelKey: "pets.monk", color: "bg-pet-2", emoji: "🧘", feed: ["🍵"] },
+  man: { labelKey: "pets.man", color: "bg-pet-3", emoji: "👨🏽", feed: ["🍈"] },
+  man2: { labelKey: "pets.man2", color: "bg-pet-4", emoji: "👨🏾", feed: ["🥭"] },
+  panda: { labelKey: "pets.panda", color: "bg-pet-5", emoji: "🐼", feed: ["🎋"] },
+  robot3: { labelKey: "pets.robot3", color: "bg-pet-6", emoji: "🤖", feed: ["🔩"] },
 };
 
 // Папка питомца (русское имя) → латинский тип. Папки без записи
@@ -102,6 +120,16 @@ const FOLDER_TO_TYPE: Record<string, string> = {
   Мужчина3: "lev",
   Мужчина4: "mark",
   Мужчина5: "timur",
+  Салат: "salad",
+  Девушка: "girl",
+  Девушка2: "girl2",
+  Девушка3: "girl3",
+  Кролик: "rabbit",
+  Монах: "monk",
+  Мужчина: "man",
+  Мужчина2: "man2",
+  Панда: "panda",
+  Робот3: "robot3",
 };
 
 const AUTO_COLORS = [

@@ -7,7 +7,7 @@ describe("welcomeEmailHtml", () => {
     expect(html).toContain("Анна, добро пожаловать в Moodly!");
     expect(html).toContain("Пройдите тест настроения");
     expect(html).toContain("Попробуйте дыхательную практику");
-    expect(html).toContain("Выберите питомца");
+    expect(html).toContain("Выберите компаньона");
     expect(html).toContain("Включите напоминание");
     expect(html).toContain("Открыть Moodly");
   });
