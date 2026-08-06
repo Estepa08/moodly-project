@@ -1,9 +1,21 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useQueries } from "@tanstack/react-query";
+import { api } from "../lib/api";
 import { Card, CardContent } from "../components/ui/card";
 import { useStalePractices } from "../hooks/useStalePractices";
+import { useTests } from "../hooks/useTests";
 import { PracticeSource } from "../features/gamification/practice.enums";
-import { Wind, Heart, BrainCircuit, Moon, Scale, BookOpen, Clock } from "lucide-react";
+import {
+  Wind,
+  Heart,
+  BrainCircuit,
+  Moon,
+  Scale,
+  BookOpen,
+  Clock,
+  ClipboardList,
+} from "lucide-react";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
   "/practices/thought-journal": PracticeSource.ThoughtJournal,
@@ -68,6 +80,18 @@ const PRACTICES = [
 export default function PracticesPage() {
   const { t } = useTranslation();
   const { isStale } = useStalePractices(3);
+  const { data: tests, isLoading: testsLoading } = useTests();
+  const detailedTests = useQueries({
+    queries: (tests ?? []).map((test) => ({
+      queryKey: ["test", test.id],
+      queryFn: () => api.tests.get(test.id),
+      staleTime: 60_000,
+    })),
+  });
+  const testsWithQuestions = tests?.map((test, i) => ({
+    ...test,
+    questions: detailedTests[i]?.data?.questions ?? [],
+  }));
 
   return (
     <div className="space-y-4">
@@ -111,6 +135,44 @@ export default function PracticesPage() {
             </Link>
           );
         })}
+      </div>
+
+      <div className="pt-2 space-y-2">
+        <div className="space-y-0.5">
+          <h3 className="text-base font-semibold text-foreground font-serif">
+            {t("practices.testsSection")}
+          </h3>
+          <p className="text-xs text-muted-foreground">{t("practices.testsSubtitle")}</p>
+        </div>
+
+        {testsLoading ? (
+          <div className="h-32 rounded-xl bg-muted/40 animate-pulse" aria-hidden="true" />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {testsWithQuestions?.map((test) => (
+              <Link key={test.id} to={`/tests/${test.id}`} className="block">
+                <Card className="shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 border-l-2 border-l-accent">
+                  <CardContent className="flex items-start gap-4 p-5">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 bg-accent/10">
+                      <ClipboardList aria-hidden="true" className="w-6 h-6 text-accent" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="inline-block px-2 py-0.5 rounded-full bg-accent/10 text-[10px] font-medium text-accent mb-1.5 uppercase tracking-wide">
+                        {t("practices.testCategory")}
+                      </span>
+                      <p className="text-sm font-semibold text-foreground">{test.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{test.description}</p>
+                      <p className="flex items-center gap-1 text-xs text-muted-foreground mt-1.5">
+                        <Clock aria-hidden="true" className="w-3 h-3" />
+                        {t("practices.testQuestions", { count: test.questions.length })}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

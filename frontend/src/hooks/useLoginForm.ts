@@ -32,7 +32,7 @@ export function useLoginForm() {
 
     if (res.wrappedKey && res.keySalt) {
       await unlockDataKeyFromLogin(loginPassword, res.wrappedKey, res.keySalt);
-      navigate("/dashboard");
+      navigate("/my-day");
       return;
     }
 
@@ -42,7 +42,7 @@ export function useLoginForm() {
     const keys = await createRegistrationKeys(loginPassword, code);
     await api.auth.setKeys(keys);
     if (isDemo) {
-      navigate("/dashboard");
+      navigate("/my-day");
     } else {
       setRecoveryCode(code);
       setStep("recovery");
@@ -73,7 +73,7 @@ export function useLoginForm() {
   };
 
   const handleRecoveryConfirmed = () => {
-    navigate("/dashboard");
+    navigate("/my-day");
   };
 
   return {

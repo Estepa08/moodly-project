@@ -14,7 +14,8 @@ import PrivacyPage from "./routes/privacy";
 import TermsPage from "./routes/terms";
 import LandingPage from "./routes/landing";
 
-const Dashboard = lazy(() => import("./routes/dashboard"));
+const MyDayPage = lazy(() => import("./routes/my-day"));
+const StatisticsPage = lazy(() => import("./routes/statistics"));
 const OnboardingPage = lazy(() => import("./routes/onboarding"));
 const TestsPage = lazy(() => import("./routes/tests"));
 const TestDetailPage = lazy(() => import("./routes/test-detail"));
@@ -28,6 +29,7 @@ const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysi
 const SettingsPage = lazy(() => import("./routes/settings"));
 const ProgressPage = lazy(() => import("./routes/progress"));
 const AdminPanelPage = lazy(() => import("./routes/admin-panel"));
+const ContentPage = lazy(() => import("./routes/content"));
 const NotFoundPage = lazy(() => import("./routes/not-found"));
 const MoodDiaryPage = lazy(() => import("./routes/seo/mood-diary"));
 const AnxietyTestPage = lazy(() => import("./routes/seo/anxiety-test"));
@@ -77,14 +79,14 @@ function ProtectedRoute() {
 function AdminRoute() {
   const { data: user, isLoading } = useCurrentUser();
   if (isLoading) return <BootstrapSpinner />;
-  if (user?.role !== "admin") return <Navigate to="/dashboard" replace />;
+  if (user?.role !== "admin") return <Navigate to="/my-day" replace />;
   return <Outlet />;
 }
 
 function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
   if (isBootstrapping) return <BootstrapSpinner />;
-  if (isAuthenticated) return <Navigate to="/dashboard" replace />;
+  if (isAuthenticated) return <Navigate to="/my-day" replace />;
   return <Outlet />;
 }
 
@@ -110,11 +112,13 @@ export default function App() {
       <Route path="/blog/:slug" element={<BlogPostPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/my-day" element={<MyDayPage />} />
+        <Route path="/statistics" element={<StatisticsPage />} />
+        <Route path="/my-day" element={<Navigate to="/my-day" replace />} />
         <Route path="/practices" element={<PracticesPage />} />
         <Route path="/tests" element={<TestsPage />} />
         <Route path="/tests/:testId" element={<TestDetailPage />} />
-        <Route path="/results" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/results" element={<Navigate to="/my-day" replace />} />
         <Route path="/practices/breathing" element={<BreathingPage />} />
         <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
         <Route path="/practices/distortions" element={<DistortionsPage />} />
@@ -137,6 +141,7 @@ export default function App() {
         />
         <Route path="/progress" element={<ProgressPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/content" element={<ContentPage />} />
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<AdminPanelPage />} />
         </Route>

@@ -6,7 +6,6 @@ import { Button } from "../../components/ui/button";
 import PetAvatar from "../gamification/PetAvatar";
 import { usePets } from "../gamification";
 import { PET_DEFINITIONS } from "../gamification/pets";
-import DayActivitiesSection from "./DayActivitiesSection";
 
 interface DailyCheckInModalProps {
   open: boolean;
@@ -77,11 +76,6 @@ export default function DailyCheckInModal({
           </span>
           <span className="text-xs text-muted-foreground">{t("dailyCheckIn.energySub")}</span>
         </div>
-      </div>
-
-      <div className="my-1 border-t border-border" />
-      <div className="max-h-[38vh] overflow-y-auto pr-0.5">
-        <DayActivitiesSection />
       </div>
 
       <Button variant="default" className="w-full mt-1" onClick={onCheckIn} disabled={isPending}>

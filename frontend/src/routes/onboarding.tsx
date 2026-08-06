@@ -12,6 +12,8 @@ import {
   Heart,
   Sparkles,
   Bell,
+  SunMedium,
+  type LucideIcon,
 } from "lucide-react";
 import { useOnboarding } from "../hooks/useOnboarding";
 import { ExpLevel } from "../lib/constants";
@@ -31,6 +33,63 @@ const GOALS = [
 
 const EXP_LEVELS = [ExpLevel.Beginner, ExpLevel.Intermediate, ExpLevel.Advanced];
 
+function ReminderRow({
+  icon: Icon,
+  label,
+  checked,
+  time,
+  onToggle,
+  onTime,
+}: {
+  icon: LucideIcon;
+  label: string;
+  checked: boolean;
+  time: string;
+  onToggle: (next: boolean) => void;
+  onTime: (next: string) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl bg-card shadow-neumorphic-sm p-3">
+      <div className="flex items-center gap-3">
+        <span className="w-9 h-9 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0">
+          <Icon aria-hidden="true" className="w-4 h-4" />
+        </span>
+        <span className="text-sm font-medium text-foreground">{label}</span>
+      </div>
+      <div className="flex items-center gap-3">
+        {checked && (
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => onTime(e.target.value)}
+            aria-label={t("settings.remindersTimeLabel")}
+            className="px-2 py-1.5 rounded-lg bg-secondary text-sm text-foreground border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+        )}
+        <button
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          aria-label={label}
+          onClick={() => onToggle(!checked)}
+          className={cn(
+            "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            checked ? "bg-primary" : "bg-muted",
+          )}
+        >
+          <span
+            className={cn(
+              "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
+              checked && "translate-x-5",
+            )}
+          />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const TOTAL_STEPS = 6;
 
 export default function OnboardingPage() {
@@ -44,6 +103,10 @@ export default function OnboardingPage() {
   const [expLevel, setExpLevel] = useState<ExpLevel>(ExpLevel.Beginner);
   const [dailyReminder, setDailyReminder] = useState(false);
   const [reminderTime, setReminderTime] = useState("09:00");
+  const [afternoonReminder, setAfternoonReminder] = useState(false);
+  const [afternoonTime, setAfternoonTime] = useState("14:00");
+  const [eveningReminder, setEveningReminder] = useState(false);
+  const [eveningTime, setEveningTime] = useState("20:00");
   const [petType, setPetType] = useState<string>("puff");
   const [petName, setPetName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -57,7 +120,7 @@ export default function OnboardingPage() {
   }
 
   if (!needsOnboarding) {
-    navigate("/dashboard", { replace: true });
+    navigate("/my-day", { replace: true });
     return null;
   }
 
@@ -65,10 +128,19 @@ export default function OnboardingPage() {
     setGoals((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]));
   };
 
-  const handleFinish = async (destination = "/dashboard") => {
+  const handleFinish = async (destination = "/my-day") => {
     setSaving(true);
     try {
-      await complete({ goals, experienceLevel: expLevel, dailyReminder, reminderTime });
+      await complete({
+        goals,
+        experienceLevel: expLevel,
+        dailyReminder,
+        reminderTime,
+        afternoonReminder,
+        afternoonTime,
+        eveningReminder,
+        eveningTime,
+      });
       if (petName.trim() || petType !== "puff") {
         await setPet.mutateAsync({ petType, petName: petName.trim() || null });
       }
@@ -81,7 +153,7 @@ export default function OnboardingPage() {
   const handleSkip = async () => {
     setSaving(true);
     await complete({ goals: [], experienceLevel: ExpLevel.Beginner, dailyReminder: false });
-    navigate("/dashboard", { replace: true });
+    navigate("/my-day", { replace: true });
   };
 
   return (
@@ -193,28 +265,32 @@ export default function OnboardingPage() {
                 {t("onboarding2.reminderTitle")}
               </h2>
               <p className="text-muted-foreground text-sm">{t("onboarding2.reminderDesc")}</p>
-              <div className="flex items-center justify-center gap-4 py-2">
-                <Bell aria-hidden="true" className="w-6 h-6 text-primary" />
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={dailyReminder}
-                    onChange={(e) => setDailyReminder(e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary transition-colors after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-card after:rounded-full after:h-5 after:w-5 after:shadow-neumorphic-sm after:transition-[transform] peer-checked:after:translate-x-full" />
-                </label>
+              <div className="flex flex-col gap-4 text-left pt-1">
+                <ReminderRow
+                  icon={Bell}
+                  label={t("settings.slotMorning")}
+                  checked={dailyReminder}
+                  time={reminderTime}
+                  onToggle={setDailyReminder}
+                  onTime={setReminderTime}
+                />
+                <ReminderRow
+                  icon={SunMedium}
+                  label={t("settings.slotDay")}
+                  checked={afternoonReminder}
+                  time={afternoonTime}
+                  onToggle={setAfternoonReminder}
+                  onTime={setAfternoonTime}
+                />
+                <ReminderRow
+                  icon={Moon}
+                  label={t("settings.slotEvening")}
+                  checked={eveningReminder}
+                  time={eveningTime}
+                  onToggle={setEveningReminder}
+                  onTime={setEveningTime}
+                />
               </div>
-              {dailyReminder && (
-                <div className="flex justify-center">
-                  <input
-                    type="time"
-                    value={reminderTime}
-                    onChange={(e) => setReminderTime(e.target.value)}
-                    className="px-4 py-2 rounded-xl bg-card shadow-neumorphic-inset text-sm text-foreground border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  />
-                </div>
-              )}
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(2)}>
                   {t("common.back")}

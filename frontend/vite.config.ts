@@ -1,11 +1,19 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
-import path from "path";
+import { reactClickToComponent } from "vite-plugin-react-click-to-component";
+import { createRequire } from "node:module";
+import path from "node:path";
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [[require.resolve("@locator/babel-jsx"), { env: "development" }]],
+      },
+    }),
     VitePWA({
       registerType: "autoUpdate",
       srcDir: "src",
@@ -62,11 +70,15 @@ export default defineConfig({
         ],
       },
     }),
+    reactClickToComponent(),
   ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@moodly/shared": path.resolve(__dirname, "../shared/dist/index.js"),
+      // lottie-react: Vite резолвит поле `browser` (UMD-сборку), где default-экспорт —
+      // объект, а не компонент → «Element type is invalid». Направляем на ESM-сборку.
+      "lottie-react": path.resolve(__dirname, "node_modules/lottie-react/build/index.es.js"),
     },
   },
   build: {
