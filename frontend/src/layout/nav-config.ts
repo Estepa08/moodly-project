@@ -5,13 +5,13 @@ import {
   BrainCircuit,
   Moon,
   Scale,
-  ClipboardList,
   Settings,
   BookOpen,
   Trophy,
   ShieldCheck,
   User,
   Sparkles,
+  BarChart3,
   type LucideIcon,
 } from "lucide-react";
 
@@ -23,10 +23,17 @@ export interface NavItem {
 }
 
 export const DASHBOARD_ITEM: NavItem = {
-  labelKey: "nav.dashboard",
-  shortLabelKey: "nav.short.dashboard",
-  path: "/dashboard",
+  labelKey: "nav.myDay",
+  shortLabelKey: "nav.short.myDay",
+  path: "/my-day",
   icon: LayoutDashboard,
+};
+
+export const STATISTICS_ITEM: NavItem = {
+  labelKey: "nav.statistics",
+  shortLabelKey: "nav.short.statistics",
+  path: "/statistics",
+  icon: BarChart3,
 };
 
 export const PRACTICE_ITEMS: NavItem[] = [
@@ -69,13 +76,13 @@ export const PRACTICE_ITEMS: NavItem[] = [
 ];
 
 export const OTHER_ITEMS: NavItem[] = [
+  STATISTICS_ITEM,
   {
     labelKey: "nav.progress",
     shortLabelKey: "nav.short.progress",
     path: "/progress",
     icon: Trophy,
   },
-  { labelKey: "nav.tests", shortLabelKey: "nav.short.tests", path: "/tests", icon: ClipboardList },
   {
     labelKey: "nav.settings",
     shortLabelKey: "nav.short.settings",
@@ -92,7 +99,7 @@ export const BOTTOM_NAV_ITEMS: NavItem[] = [
     path: "/practices",
     icon: Sparkles,
   },
-  { labelKey: "nav.tests", shortLabelKey: "nav.short.tests", path: "/tests", icon: ClipboardList },
+  STATISTICS_ITEM,
   {
     labelKey: "nav.progress",
     shortLabelKey: "nav.short.progress",

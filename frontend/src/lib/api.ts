@@ -56,9 +56,18 @@ export interface UserPreference {
   experienceLevel: string;
   dailyReminder: boolean;
   reminderTime?: string;
+  afternoonReminder: boolean;
+  afternoonTime?: string;
+  eveningReminder: boolean;
+  eveningTime?: string;
   onboardingDone: boolean;
   showSupportResources: boolean;
 }
+
+export type MotivationMessage = components["schemas"]["MotivationMessage"];
+export type MotivationMessageCreate = components["schemas"]["MotivationMessageCreate"];
+export type MotivationMessageUpdate = components["schemas"]["MotivationMessageUpdate"];
+export type MessageOfDay = components["schemas"]["MessageOfDay"];
 
 export interface SyncAction {
   entity:
@@ -410,6 +419,24 @@ export const api = {
     listUsers: () => request<AdminUser[]>("/admin/users"),
     deleteUser: (id: string) => request<void>(`/admin/users/${id}`, { method: "DELETE" }),
     listFeedback: () => request<AdminFeedback[]>("/admin/feedback"),
+  },
+  content: {
+    messageOfDay: (type: string, locale: string) =>
+      request<MessageOfDay | null>(`/content/message-of-day?type=${encodeURIComponent(type)}&locale=${encodeURIComponent(locale)}`),
+    listMessages: (params?: { type?: string; locale?: string; active?: string }) => {
+      const q = new URLSearchParams();
+      if (params?.type) q.set("type", params.type);
+      if (params?.locale) q.set("locale", params.locale);
+      if (params?.active) q.set("active", params.active);
+      const qs = q.toString();
+      return request<MotivationMessage[]>(`/content/messages${qs ? `?${qs}` : ""}`);
+    },
+    createMessage: (body: MotivationMessageCreate) =>
+      request<MotivationMessage>("/content/messages", { method: "POST", body: JSON.stringify(body) }),
+    updateMessage: (id: string, body: MotivationMessageUpdate) =>
+      request<MotivationMessage>(`/content/messages/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
+    deleteMessage: (id: string) =>
+      request<void>(`/content/messages/${id}`, { method: "DELETE" }),
   },
   sync: {
     push: (actions: SyncAction[]) =>

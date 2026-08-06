@@ -31,7 +31,9 @@
     "footerDivider": "·"
   },
   "nav": {
-    "dashboard": "Статистика",
+    "dashboard": "Мой день",
+    "myDay": "Мой день",
+    "statistics": "Статистика",
     "practices": "Практики",
     "breathing": "Дыхание",
     "gratitude": "Благодарность",
@@ -49,7 +51,9 @@
     "main": "Основная навигация",
     "profile": "Профиль",
     "short": {
-      "dashboard": "Статистика",
+      "dashboard": "Мой день",
+      "myDay": "Мой день",
+      "statistics": "Статистика",
       "practices": "Практики",
       "thoughtJournal": "Дневник мыслей",
       "gratitude": "Благодарность",
@@ -63,6 +67,37 @@
       "admin": "Админ",
       "profile": "Профиль"
     }
+  },
+  "myDay": {
+    "morningHint": "Доброе утро — отметьте, как вы себя чувствуете",
+    "dayHint": "Как проходит день? Отметьте занятия и настроение",
+    "eveningHint": "Вечер — подведите итог дня",
+    "wishLabel": "Пожелание дня",
+    "morningDone_one": "Утро отмечено: {{count}} из {{total}}",
+    "morningDone_few": "Утро отмечено: {{count}} из {{total}}",
+    "morningDone_many": "Утро отмечено: {{count}} из {{total}}",
+    "morningDone_other": "Утро отмечено: {{count}} из {{total}}"
+  },
+  "petGreeter": {
+    "question": {
+      "morning": "Доброе утро, {{name}}! Как спалось?",
+      "day": "Как проходит день, {{name}}?",
+      "evening": "Как прошёл день, {{name}}? Давай подведём итог"
+    },
+    "cta": "Отметиться — 30 секунд",
+    "hint": "Питомец отвечает реакциями после каждого тапа"
+  },
+  "petCheckIn": {
+    "instantHint": "Тап — и сохранится мгновенно, печатать ничего не нужно",
+    "stepOf": "Шаг {{current}} из {{total}}",
+    "thanksTitle": "Спасибо!",
+    "thanksText": "Я всё запомнил и буду рядом — загляни позже, чтобы подвести итог дня.",
+    "done": "Готово",
+    "skip": "Пропустить",
+    "markActivities": "Отметить занятия дня"
+  },
+  "statistics": {
+    "subtitle": "Динамика состояния и результаты за период"
   },
   "login": {
     "title": "Moodly",
@@ -600,7 +635,14 @@
     "timeCba": "5–10 минут",
     "timeThoughtJournal": "1–3 минуты",
     "categoryBody": "Тело",
-    "categoryMind": "Разум"
+    "categoryMind": "Разум",
+    "testsSection": "Тесты · клиническая оценка",
+    "testsSubtitle": "Быстрая самодиагностика — 3–7 минут",
+    "testCategory": "Тесты",
+    "testQuestions_one": "{{count}} вопрос",
+    "testQuestions_few": "{{count}} вопроса",
+    "testQuestions_many": "{{count}} вопросов",
+    "testQuestions_other": "{{count}} вопросов"
   },
   "thoughtJournal": {
     "title": "Дневник мыслей",
@@ -1054,6 +1096,10 @@
     "remindersSwitchLabel": "Ежедневное напоминание",
     "remindersSwitchDesc": "Отмечать настроение каждый день",
     "remindersTimeLabel": "Время",
+    "remindersSlotsDesc": "Выберите, когда Moodly напомнит отметить настроение: утром, днём и вечером",
+    "slotMorning": "Утро",
+    "slotDay": "День",
+    "slotEvening": "Вечер",
     "pushAllowed": "Push включены",
     "pushAllowedDesc": "Браузер будет напоминать об отметке настроения",
     "pushAllow": "Разрешить",
@@ -1413,8 +1459,43 @@
     "deleting": "Удаление...",
     "usersTab": "Пользователи",
     "feedbackTab": "Отзывы",
+    "contentTab": "Контент",
     "noFeedback": "Отзывов пока нет.",
     "feedbackLoadFailed": "Не удалось загрузить отзывы"
+  },
+  "content": {
+    "title": "Управление контентом",
+    "subtitle": "Сообщения для карточек «Мой день» и push-уведомлений",
+    "forbidden": "Доступ только для администратора и контент-менеджера",
+    "type": {
+      "all": "Все",
+      "morning": "Утро",
+      "day": "День",
+      "evening": "Вечер"
+    },
+    "add": "Добавить",
+    "edit": "Изменить",
+    "editTitle": "Изменить сообщение",
+    "addTitle": "Новое сообщение",
+    "formDesc": "Текст показывается в карточке «Мой день» и в push-слоте нужного периода.",
+    "typeLabel": "Период",
+    "localeLabel": "Язык",
+    "textLabel": "Текст",
+    "textPlaceholder": "Введите текст мотивации",
+    "questionLabel": "Вопрос (необязательно)",
+    "questionPlaceholder": "Например: «Что у вас на душе?»",
+    "orderLabel": "Порядок",
+    "activeLabel": "Активно",
+    "inactive": "неактивно",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "saved": "Сохранено",
+    "saveFailed": "Не удалось сохранить",
+    "deleted": "Удалено",
+    "deleteFailed": "Не удалось удалить",
+    "deleteConfirm": "Удалить это сообщение?",
+    "empty": "Нет сообщений по выбранным фильтрам",
+    "loadFailed": "Не удалось загрузить сообщения"
   },
   "sync": {
     "status": {
