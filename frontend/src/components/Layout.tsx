@@ -1,9 +1,10 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { usePushNotifications } from "../hooks/usePushNotifications";
 import { SyncStatusIndicator } from "./SyncStatusIndicator";
 import SkipLink from "../widgets/SkipLink";
 import { Button } from "../components/ui/button";
@@ -20,8 +21,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const { isAuthenticated, isBootstrapping, logout } = useAuth();
   const isReducedMotion = useReducedMotion();
+  const { subscribe } = usePushNotifications();
 
   useSeo({ noindex: true });
+
+  // Тихий re-subscribe: если пользователь уже давал разрешение на push
+  // (permission === "granted") и подписка потерялась (например, после
+  // обновления service worker), восстанавливаем её без системного промпта.
+  // При permission "default"/"denied" ничего не делаем.
+  useEffect(() => {
+    if (!isAuthenticated || isBootstrapping) return;
+    const t = setTimeout(() => {
+      void subscribe({ silent: true });
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [isAuthenticated, isBootstrapping, subscribe]);
 
   const handleLogout = async () => {
     await logout();

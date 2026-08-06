@@ -8,6 +8,10 @@ export interface PushSubscribeResult {
   error?: PushSubscribeError;
 }
 
+export interface PushSubscribeOptions {
+  silent?: boolean;
+}
+
 const SERVICE_WORKER_READY_TIMEOUT = 10_000;
 
 export function usePushNotifications() {
@@ -37,60 +41,70 @@ export function usePushNotifications() {
     return result === "granted";
   }, []);
 
-  const subscribe = useCallback(async (): Promise<PushSubscribeResult> => {
-    if (typeof navigator === "undefined" || !navigator.serviceWorker) {
-      return { ok: false, error: "no-sw" };
-    }
+  const subscribe = useCallback(
+    async (opts?: { silent?: boolean }): Promise<PushSubscribeResult> => {
+      if (typeof navigator === "undefined" || !navigator.serviceWorker) {
+        return { ok: false, error: "no-sw" };
+      }
 
-    if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
-      console.warn("[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна");
-      return { ok: false, error: "no-vapid" };
-    }
+      if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
+        console.warn("[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна");
+        return { ok: false, error: "no-vapid" };
+      }
 
-    const allowed = await requestPermission();
-    if (!allowed) return { ok: false, error: "denied" };
+      if (typeof Notification === "undefined") return { ok: false, error: "denied" };
 
-    setSubscribing(true);
-    try {
-      const registration = await Promise.race([
-        navigator.serviceWorker.ready,
-        new Promise<never>((_, reject) =>
-          setTimeout(
-            () => reject(new Error("service-worker-ready-timeout")),
-            SERVICE_WORKER_READY_TIMEOUT,
+      const silent = opts?.silent ?? false;
+      if (silent && Notification.permission !== "granted") {
+        return { ok: false, error: "denied" };
+      }
+
+      const allowed = await requestPermission();
+      if (!allowed) return { ok: false, error: "denied" };
+
+      setSubscribing(true);
+      try {
+        const registration = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise<never>((_, reject) =>
+            setTimeout(
+              () => reject(new Error("service-worker-ready-timeout")),
+              SERVICE_WORKER_READY_TIMEOUT,
+            ),
           ),
-        ),
-      ]);
-      const existing = await registration.pushManager.getSubscription();
-      if (existing) {
-        const sub = existing.toJSON();
+        ]);
+        const existing = await registration.pushManager.getSubscription();
+        if (existing) {
+          const sub = existing.toJSON();
+          await api.push.subscribe({
+            endpoint: sub.endpoint!,
+            keys: sub.keys as { p256dh: string; auth: string },
+          });
+          setSubscribed(true);
+          return { ok: true };
+        }
+
+        const applicationServerKey = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY);
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: applicationServerKey as unknown as BufferSource,
+        });
+
+        const sub = subscription.toJSON();
         await api.push.subscribe({
           endpoint: sub.endpoint!,
           keys: sub.keys as { p256dh: string; auth: string },
         });
         setSubscribed(true);
         return { ok: true };
+      } catch {
+        return { ok: false, error: "failed" };
+      } finally {
+        setSubscribing(false);
       }
-
-      const applicationServerKey = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY);
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: applicationServerKey as unknown as BufferSource,
-      });
-
-      const sub = subscription.toJSON();
-      await api.push.subscribe({
-        endpoint: sub.endpoint!,
-        keys: sub.keys as { p256dh: string; auth: string },
-      });
-      setSubscribed(true);
-      return { ok: true };
-    } catch {
-      return { ok: false, error: "failed" };
-    } finally {
-      setSubscribing(false);
-    }
-  }, [requestPermission]);
+    },
+    [requestPermission],
+  );
 
   const unsubscribe = useCallback(async () => {
     if (typeof navigator === "undefined" || !navigator.serviceWorker) return;

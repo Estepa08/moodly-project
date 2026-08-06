@@ -15,7 +15,7 @@ function currentHour(): string {
 function sendForSlot(
   pref: { userId: string },
   payload: { title: string; body: string; url: string },
-): Promise<void> {
+): Promise<number> {
   return notificationService.sendToUser(pref.userId, payload);
 }
 

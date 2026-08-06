@@ -14,6 +14,7 @@ import creatureRoutes from "../routes/creature.js";
 import achievementRoutes from "../routes/achievements.js";
 import cbaRoutes from "../routes/cba.js";
 import syncRoutes from "../routes/sync.js";
+import notificationRoutes from "../routes/notifications.js";
 import adminRoutes from "../routes/admin.js";
 import contentRoutes from "../routes/content.js";
 import { setErrorHandler } from "../lib/handle-error.js";
@@ -36,6 +37,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(achievementRoutes);
   await fastify.register(cbaRoutes);
   await fastify.register(syncRoutes);
+  await fastify.register(notificationRoutes);
   await fastify.register(adminRoutes);
   await fastify.register(contentRoutes);
 
