@@ -252,6 +252,59 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/content/message-of-day": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Пожелание дня (morning/day/evening) для текущего пользователя */
+        get: operations["Content_messageOfDay"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/content/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Список пожеланий (только контент-менеджер/админ) */
+        get: operations["Content_listMessages"];
+        put?: never;
+        /** @description Создать пожелание (только контент-менеджер/админ) */
+        post: operations["Content_createMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/content/messages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Удалить пожелание (только контент-менеджер/админ) */
+        delete: operations["Content_deleteMessage"];
+        options?: never;
+        head?: never;
+        /** @description Обновить пожелание (только контент-менеджер/админ) */
+        patch: operations["Content_updateMessage"];
+        trace?: never;
+    };
     "/creature": {
         parameters: {
             query?: never;
@@ -908,6 +961,53 @@ export interface components {
             email: string;
             password: string;
         };
+        /** @description Пожелание дня для конкретного пользователя (детерминированная ротация) */
+        MessageOfDay: {
+            id: string;
+            type: string;
+            locale: string;
+            text: string;
+            question?: string | null;
+        };
+        /** @description Мотивационное пожелание/вопрос для «Моего дня» (утро/вечер), по языкам */
+        MotivationMessage: {
+            id: string;
+            /** @description Тип пожелания: morning | day | evening */
+            type: string;
+            /** @description Локаль: ru | en */
+            locale: string;
+            /** @description Мотивационная фраза/пожелание */
+            text: string;
+            /** @description Опциональный ротируемый вопрос (например, «Как спали?») */
+            question?: string | null;
+            isActive: boolean;
+            /** Format: int32 */
+            order: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        MotivationMessageCreate: {
+            /** @description Тип пожелания: morning | day | evening */
+            type: string;
+            /** @description Локаль: ru | en */
+            locale: string;
+            text: string;
+            question?: string | null;
+            isActive?: boolean;
+            /** Format: int32 */
+            order?: number;
+        };
+        MotivationMessageUpdate: {
+            type?: string;
+            locale?: string;
+            text?: string;
+            question?: string | null;
+            isActive?: boolean;
+            /** Format: int32 */
+            order?: number;
+        };
         /** @description Обучающая история для онбординга новых пользователей после регистрации */
         OnboardingStory: {
             id: string;
@@ -1116,6 +1216,10 @@ export interface components {
             experienceLevel: string;
             dailyReminder: boolean;
             reminderTime?: string;
+            afternoonReminder: boolean;
+            afternoonTime?: string;
+            eveningReminder: boolean;
+            eveningTime?: string;
             onboardingDone: boolean;
         };
         UserPreferenceUpdate: {
@@ -1123,6 +1227,10 @@ export interface components {
             experienceLevel?: string;
             dailyReminder?: boolean;
             reminderTime?: string;
+            afternoonReminder?: boolean;
+            afternoonTime?: string;
+            eveningReminder?: boolean;
+            eveningTime?: string;
             onboardingDone?: boolean;
         };
         UserUpdate: {
@@ -1477,6 +1585,123 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CbaExample"][];
+                };
+            };
+        };
+    };
+    Content_messageOfDay: {
+        parameters: {
+            query: {
+                type: string;
+                locale: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageOfDay"];
+                };
+            };
+        };
+    };
+    Content_listMessages: {
+        parameters: {
+            query?: {
+                type?: string;
+                locale?: string;
+                active?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MotivationMessage"][];
+                };
+            };
+        };
+    };
+    Content_createMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MotivationMessageCreate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MotivationMessage"];
+                };
+            };
+        };
+    };
+    Content_deleteMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    Content_updateMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MotivationMessageUpdate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MotivationMessage"];
                 };
             };
         };

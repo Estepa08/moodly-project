@@ -31,7 +31,9 @@
     "footerDivider": "·"
   },
   "nav": {
-    "dashboard": "Statistics",
+    "dashboard": "My Day",
+    "myDay": "My Day",
+    "statistics": "Statistics",
     "practices": "Practices",
     "breathing": "Breathing",
     "gratitude": "Gratitude",
@@ -49,7 +51,9 @@
     "main": "Main navigation",
     "profile": "Profile",
     "short": {
-      "dashboard": "Statistics",
+      "dashboard": "My Day",
+      "myDay": "My Day",
+      "statistics": "Statistics",
       "practices": "Practices",
       "thoughtJournal": "Journal",
       "gratitude": "Gratitude",
@@ -63,6 +67,37 @@
       "admin": "Admin",
       "profile": "Profile"
     }
+  },
+  "myDay": {
+    "morningHint": "Good morning — how are you feeling today?",
+    "dayHint": "How is your day going? Note activities and mood",
+    "eveningHint": "Evening — wrap up your day",
+    "wishLabel": "Wish of the day",
+    "morningDone_one": "Morning done: {{count}} of {{total}}",
+    "morningDone_few": "Morning done: {{count}} of {{total}}",
+    "morningDone_many": "Morning done: {{count}} of {{total}}",
+    "morningDone_other": "Morning done: {{count}} of {{total}}"
+  },
+  "petGreeter": {
+    "question": {
+      "morning": "Good morning, {{name}}! How did you sleep?",
+      "day": "How is your day going, {{name}}?",
+      "evening": "How was your day, {{name}}? Let's wrap it up"
+    },
+    "cta": "Check in — 30 seconds",
+    "hint": "The pet replies with reactions after every tap"
+  },
+  "petCheckIn": {
+    "instantHint": "Tap — it saves instantly, no typing needed",
+    "stepOf": "Step {{current}} of {{total}}",
+    "thanksTitle": "Thank you!",
+    "thanksText": "I saved it all and I'll be right here — come back later to wrap up your day.",
+    "done": "Done",
+    "skip": "Skip",
+    "markActivities": "Mark today's activities"
+  },
+  "statistics": {
+    "subtitle": "Mood dynamics and test results over a period"
   },
   "login": {
     "title": "Moodly",
@@ -596,7 +631,12 @@
     "timeCba": "5–10 min",
     "timeThoughtJournal": "1–3 min",
     "categoryBody": "Body",
-    "categoryMind": "Mind"
+    "categoryMind": "Mind",
+    "testsSection": "Tests · Clinical assessment",
+    "testsSubtitle": "Quick self-assessment — 3–7 minutes",
+    "testCategory": "Tests",
+    "testQuestions_one": "{{count}} question",
+    "testQuestions_other": "{{count}} questions"
   },
   "thoughtJournal": {
     "title": "Thought Journal",
@@ -1050,6 +1090,10 @@
     "remindersSwitchLabel": "Daily reminder",
     "remindersSwitchDesc": "Log your mood every day",
     "remindersTimeLabel": "Time",
+    "remindersSlotsDesc": "Choose when Moodly reminds you to log your mood: morning, day, and evening",
+    "slotMorning": "Morning",
+    "slotDay": "Day",
+    "slotEvening": "Evening",
     "pushAllowed": "Push enabled",
     "pushAllowedDesc": "The browser will remind you to log your mood",
     "pushAllow": "Allow",
@@ -1409,8 +1453,43 @@
     "deleting": "Deleting...",
     "usersTab": "Users",
     "feedbackTab": "Reviews",
+    "contentTab": "Content",
     "noFeedback": "No reviews yet",
     "feedbackLoadFailed": "Failed to load reviews"
+  },
+  "content": {
+    "title": "Content management",
+    "subtitle": "Messages for the “My Day” cards and push notifications",
+    "forbidden": "Only administrators and content managers have access",
+    "type": {
+      "all": "All",
+      "morning": "Morning",
+      "day": "Day",
+      "evening": "Evening"
+    },
+    "add": "Add",
+    "edit": "Edit",
+    "editTitle": "Edit message",
+    "addTitle": "New message",
+    "formDesc": "The text is shown in the “My Day” card and in the push slot for the matching period.",
+    "typeLabel": "Period",
+    "localeLabel": "Language",
+    "textLabel": "Text",
+    "textPlaceholder": "Enter motivation text",
+    "questionLabel": "Question (optional)",
+    "questionPlaceholder": "e.g. “How are you feeling?”",
+    "orderLabel": "Order",
+    "activeLabel": "Active",
+    "inactive": "inactive",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saved": "Saved",
+    "saveFailed": "Failed to save",
+    "deleted": "Deleted",
+    "deleteFailed": "Failed to delete",
+    "deleteConfirm": "Delete this message?",
+    "empty": "No messages match the selected filters",
+    "loadFailed": "Failed to load messages"
   },
   "sync": {
     "status": {
