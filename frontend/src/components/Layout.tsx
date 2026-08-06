@@ -38,7 +38,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <div className="flex-1 flex flex-col min-w-0">
         <header
-          className={`sticky top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${
+          className={`top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${
             isReducedMotion ? "" : "backdrop-blur-md"
           }`}
           style={{ paddingTop: "calc(0.75rem + var(--sat))" }}

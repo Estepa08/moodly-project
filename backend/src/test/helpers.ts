@@ -15,6 +15,7 @@ import achievementRoutes from "../routes/achievements.js";
 import cbaRoutes from "../routes/cba.js";
 import syncRoutes from "../routes/sync.js";
 import adminRoutes from "../routes/admin.js";
+import contentRoutes from "../routes/content.js";
 import { setErrorHandler } from "../lib/handle-error.js";
 
 export async function buildApp(): Promise<FastifyInstance> {
@@ -36,6 +37,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(cbaRoutes);
   await fastify.register(syncRoutes);
   await fastify.register(adminRoutes);
+  await fastify.register(contentRoutes);
 
   setErrorHandler(fastify);
 

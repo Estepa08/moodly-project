@@ -20,6 +20,7 @@ import notificationRoutes from "./routes/notifications.js";
 import syncRoutes from "./routes/sync.js";
 import adminRoutes from "./routes/admin.js";
 import clientErrorRoutes from "./routes/client-errors.js";
+import contentRoutes from "./routes/content.js";
 import { ensureDefaultParameters } from "./services/parameter.js";
 import { setErrorHandler } from "./lib/handle-error.js";
 import { env } from "./lib/env.js";
@@ -80,6 +81,7 @@ await fastify.register(notificationRoutes);
 await fastify.register(syncRoutes);
 await fastify.register(adminRoutes);
 await fastify.register(clientErrorRoutes);
+await fastify.register(contentRoutes);
 
 setErrorHandler(fastify);
 

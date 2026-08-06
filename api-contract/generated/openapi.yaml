@@ -15,6 +15,7 @@ tags:
   - name: Breathing
   - name: Cba
   - name: Admin
+  - name: Content
 paths:
   /admin/feedback:
     get:
@@ -277,6 +278,124 @@ paths:
                   $ref: '#/components/schemas/CbaExample'
       tags:
         - Cba
+  /content/message-of-day:
+    get:
+      operationId: Content_messageOfDay
+      description: Пожелание дня (morning/day/evening) для текущего пользователя
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+        - name: locale
+          in: query
+          required: true
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageOfDay'
+      tags:
+        - Content
+  /content/messages:
+    get:
+      operationId: Content_listMessages
+      description: Список пожеланий (только контент-менеджер/админ)
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: locale
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: active
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MotivationMessage'
+      tags:
+        - Content
+    post:
+      operationId: Content_createMessage
+      description: Создать пожелание (только контент-менеджер/админ)
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotivationMessage'
+      tags:
+        - Content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotivationMessageCreate'
+  /content/messages/{id}:
+    patch:
+      operationId: Content_updateMessage
+      description: Обновить пожелание (только контент-менеджер/админ)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotivationMessage'
+      tags:
+        - Content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotivationMessageUpdate'
+    delete:
+      operationId: Content_deleteMessage
+      description: Удалить пожелание (только контент-менеджер/админ)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Content
   /creature:
     get:
       operationId: Creature_getState
@@ -1337,6 +1456,105 @@ components:
           type: string
         password:
           type: string
+    MessageOfDay:
+      type: object
+      required:
+        - id
+        - type
+        - locale
+        - text
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        locale:
+          type: string
+        text:
+          type: string
+        question:
+          type: string
+          nullable: true
+      description: Пожелание дня для конкретного пользователя (детерминированная ротация)
+    MotivationMessage:
+      type: object
+      required:
+        - id
+        - type
+        - locale
+        - text
+        - isActive
+        - order
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: 'Тип пожелания: morning | day | evening'
+        locale:
+          type: string
+          description: 'Локаль: ru | en'
+        text:
+          type: string
+          description: Мотивационная фраза/пожелание
+        question:
+          type: string
+          nullable: true
+          description: Опциональный ротируемый вопрос (например, «Как спали?»)
+        isActive:
+          type: boolean
+        order:
+          type: integer
+          format: int32
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      description: Мотивационное пожелание/вопрос для «Моего дня» (утро/вечер), по языкам
+    MotivationMessageCreate:
+      type: object
+      required:
+        - type
+        - locale
+        - text
+      properties:
+        type:
+          type: string
+          description: 'Тип пожелания: morning | day | evening'
+        locale:
+          type: string
+          description: 'Локаль: ru | en'
+        text:
+          type: string
+        question:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        order:
+          type: integer
+          format: int32
+    MotivationMessageUpdate:
+      type: object
+      properties:
+        type:
+          type: string
+        locale:
+          type: string
+        text:
+          type: string
+        question:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        order:
+          type: integer
+          format: int32
     OnboardingStory:
       type: object
       required:
@@ -1782,6 +2000,8 @@ components:
         - goals
         - experienceLevel
         - dailyReminder
+        - afternoonReminder
+        - eveningReminder
         - onboardingDone
       properties:
         goals:
@@ -1793,6 +2013,14 @@ components:
         dailyReminder:
           type: boolean
         reminderTime:
+          type: string
+        afternoonReminder:
+          type: boolean
+        afternoonTime:
+          type: string
+        eveningReminder:
+          type: boolean
+        eveningTime:
           type: string
         onboardingDone:
           type: boolean
@@ -1809,6 +2037,14 @@ components:
         dailyReminder:
           type: boolean
         reminderTime:
+          type: string
+        afternoonReminder:
+          type: boolean
+        afternoonTime:
+          type: string
+        eveningReminder:
+          type: boolean
+        eveningTime:
           type: string
         onboardingDone:
           type: boolean
