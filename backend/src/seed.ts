@@ -413,6 +413,351 @@ const onboardingStories = [
   },
 ];
 
+const motivationMessages = [
+  // Утро — RU
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Доброе утро. Начните день с минуты тишины для себя.",
+    question: "Как вы спали этой ночью?",
+    order: 1,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Новый день — новая возможность позаботиться о себе.",
+    question: "Что поможет вам чувствовать себя лучше уже сейчас?",
+    order: 2,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Утро — лучшее время, чтобы наметить намерение на день.",
+    question: "Какое одно маленькое доброе дело вы сделаете сегодня?",
+    order: 3,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Спокойное утро — залог спокойного дня.",
+    question: "Что сегодня наполняет вас энергией?",
+    order: 4,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Приветствуйте новый день. Забота о себе начинается с малого.",
+    question: "Как вы себя чувствуете в это утро?",
+    order: 5,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Ваше настроение утром задаёт тон всему дню. Отметьте его.",
+    question: "Что в вашей жизни идёт хорошо прямо сейчас?",
+    order: 6,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Начните с дыхания: вдох, выдох — вы здесь, и этого достаточно.",
+    question: "Что вы хотите успеть до обеда?",
+    order: 7,
+  },
+  {
+    type: "morning",
+    locale: "ru",
+    text: "Сегодня у вас всё получится — даже если это будет всего один маленький шаг.",
+    question: "Какое намерение вы возьмёте с собой сегодня?",
+    order: 8,
+  },
+  // Утро — EN
+  {
+    type: "morning",
+    locale: "en",
+    text: "Good morning. Start the day with a moment of quiet for yourself.",
+    question: "How did you sleep last night?",
+    order: 1,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "A new day is a new chance to take care of yourself.",
+    question: "What would help you feel better right now?",
+    order: 2,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "Morning is the best time to set an intention for the day.",
+    question: "What is one small kind thing you will do today?",
+    order: 3,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "A calm morning leads to a calm day.",
+    question: "What gives you energy today?",
+    order: 4,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "Welcome the new day. Self-care starts with small steps.",
+    question: "How are you feeling this morning?",
+    order: 5,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "Your mood in the morning sets the tone for the whole day. Notice it.",
+    question: "What in your life is going well right now?",
+    order: 6,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "Start with your breath: in, out — you are here, and that is enough.",
+    question: "What do you want to get done before lunch?",
+    order: 7,
+  },
+  {
+    type: "morning",
+    locale: "en",
+    text: "You've got this today — even if it's just one small step.",
+    question: "What intention will you carry with you today?",
+    order: 8,
+  },
+  // День — RU
+  {
+    type: "day",
+    locale: "ru",
+    text: "День в разгаре. Как проходит середина дня?",
+    question: "Что вас окружает прямо сейчас?",
+    order: 1,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "Самое время на минуту остановиться и отметить, что происходит.",
+    question: "Как вы себя чувствуете в середине дня?",
+    order: 2,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "Середина дня — хороший момент перевести дыхание.",
+    question: "Что сегодня было приятным?",
+    order: 3,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "День идёт своим чередом. Отметьте занятия, которые уже случились.",
+    question: "Чем вы занимались в первой половине дня?",
+    order: 4,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "Второе дыхание — нормально, если в середине дня оно заканчивается.",
+    question: "Что поможет вам дойти до вечера мягче?",
+    order: 5,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "День длинный, и у вас есть время всё успеть.",
+    question: "Что важного осталось на вторую половину дня?",
+    order: 6,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "Пауза в середине дня помогает увидеть целое.",
+    question: "Что из запланированного уже сделано?",
+    order: 7,
+  },
+  {
+    type: "day",
+    locale: "ru",
+    text: "Вы уже много сделали сегодня — заметьте это.",
+    question: "За что можно поблагодарить себя прямо сейчас?",
+    order: 8,
+  },
+  // День — EN
+  {
+    type: "day",
+    locale: "en",
+    text: "The day is in full swing. How is the middle of the day going?",
+    question: "What surrounds you right now?",
+    order: 1,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "It's a good moment to pause and notice what's happening.",
+    question: "How are you feeling in the middle of the day?",
+    order: 2,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "Midday is a good time to catch your breath.",
+    question: "What felt pleasant today?",
+    order: 3,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "The day is unfolding. Note the activities that already happened.",
+    question: "What did you do in the first half of the day?",
+    order: 4,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "A second wind is normal to lose around midday.",
+    question: "What would make the rest of the day gentler?",
+    order: 5,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "The day is long, and there's still time to get things done.",
+    question: "What important thing remains for the second half?",
+    order: 6,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "A midday pause helps you see the whole picture.",
+    question: "What from your plans is already done?",
+    order: 7,
+  },
+  {
+    type: "day",
+    locale: "en",
+    text: "You've already done a lot today — notice it.",
+    question: "What can you thank yourself for right now?",
+    order: 8,
+  },
+  // Вечер — RU
+  {
+    type: "evening",
+    locale: "ru",
+    text: "День подходит к концу. Подведите его итог — это поможет завершить день осознанно.",
+    question: "Как прошёл ваш день?",
+    order: 1,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "Вечер — время подвести итог и отметить хорошее.",
+    question: "Что сегодня удалось, даже если это было непросто?",
+    order: 2,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "Вы дошли до конца дня. Это уже маленькая победа.",
+    question: "За что вы благодарны сегодня?",
+    order: 3,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "Завершите день, отпустив всё лишнее.",
+    question: "Какое событие было главным сегодня?",
+    order: 4,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "День был — и он уже позади. Поработайте над итогом, чтобы утро стало легче.",
+    question: "Что бы вы хотели повторить завтра?",
+    order: 5,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "Каждый вечер — маленькая точка опоры между вчера и завтра.",
+    question: "Как вы чувствуете себя в конце этого дня?",
+    order: 6,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "Поблагодарите себя за всё, что вы сделали сегодня.",
+    question: "Что принесло вам радость сегодня?",
+    order: 7,
+  },
+  {
+    type: "evening",
+    locale: "ru",
+    text: "Мягкий итог дня помогает заснуть спокойнее.",
+    question: "Что сегодня было для вас важно?",
+    order: 8,
+  },
+  // Вечер — EN
+  {
+    type: "evening",
+    locale: "en",
+    text: "The day is coming to an end. Sum it up to close the day mindfully.",
+    question: "How did your day go?",
+    order: 1,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "Evening is the time to look back and notice the good.",
+    question: "What went well today, even if it was hard?",
+    order: 2,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "You made it to the end of the day. That's a small victory.",
+    question: "What are you grateful for today?",
+    order: 3,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "Close the day by letting go of everything extra.",
+    question: "What was the main event of today?",
+    order: 4,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "The day happened, and now it's behind you. Wrap it up so tomorrow feels lighter.",
+    question: "What would you like to repeat tomorrow?",
+    order: 5,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "Every evening is a small anchor between yesterday and tomorrow.",
+    question: "How are you feeling at the end of this day?",
+    order: 6,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "Thank yourself for everything you did today.",
+    question: "What brought you joy today?",
+    order: 7,
+  },
+  {
+    type: "evening",
+    locale: "en",
+    text: "A gentle end-of-day review helps you fall asleep more peacefully.",
+    question: "What mattered to you today?",
+    order: 8,
+  },
+];
+
 const achievements = [
   {
     key: "first_checkin",
@@ -1015,6 +1360,7 @@ async function seed() {
     await prisma.test.deleteMany();
     await prisma.parameter.deleteMany();
     await prisma.onboardingStory.deleteMany();
+    await prisma.motivationMessage.deleteMany();
     await prisma.cbaExampleDistortion.deleteMany();
     await prisma.cbaExampleItem.deleteMany();
     await prisma.cbaExample.deleteMany();
@@ -1040,6 +1386,7 @@ async function seed() {
     await prisma.test.deleteMany();
     await prisma.parameter.deleteMany();
     await prisma.onboardingStory.deleteMany();
+    await prisma.motivationMessage.deleteMany();
     await prisma.cbaExampleDistortion.deleteMany();
     await prisma.cbaExampleItem.deleteMany();
     await prisma.cbaExample.deleteMany();
@@ -1063,6 +1410,8 @@ async function seed() {
   for (const s of onboardingStories) {
     await prisma.onboardingStory.create({ data: s });
   }
+
+  await prisma.motivationMessage.createMany({ data: motivationMessages });
 
   await prisma.achievement.createMany({ data: achievements as never });
 
@@ -2046,7 +2395,11 @@ async function seed() {
         goals: ["stress", "anxiety"],
         experienceLevel: "intermediate",
         dailyReminder: true,
-        reminderTime: "21:30",
+        reminderTime: "09:00",
+        afternoonReminder: true,
+        afternoonTime: "14:00",
+        eveningReminder: true,
+        eveningTime: "20:00",
         onboardingDone: true,
         showSupportResources: true,
       },

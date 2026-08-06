@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, type Mock } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders, screen, fireEvent, within } from "../../test/test-utils";
-import Dashboard from "../dashboard";
+import Statistics from "../statistics";
 import { api } from "../../lib/api";
 
 vi.mock("../../lib/api", () => ({
@@ -43,7 +43,7 @@ function mockDashboardApi() {
   (api.tests.list as Mock).mockResolvedValue([]);
 }
 
-describe("Dashboard", () => {
+describe("Statistics", () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
@@ -51,7 +51,7 @@ describe("Dashboard", () => {
 
   it("renders statistics page sections", async () => {
     mockDashboardApi();
-    renderWithProviders(<Dashboard />);
+    renderWithProviders(<Statistics />);
 
     // Wellbeing accordion header
     expect(screen.getByText("Wellbeing")).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe("Dashboard", () => {
 
   it("shows quick entry by default and toggles the wellbeing panel", async () => {
     mockDashboardApi();
-    renderWithProviders(<Dashboard />);
+    renderWithProviders(<Statistics />);
 
     // Panel is expanded by default
     expect(await screen.findByText("Quick Entry")).toBeInTheDocument();
@@ -102,7 +102,7 @@ describe("Dashboard", () => {
         createdAt: new Date().toISOString(),
       },
     ]);
-    renderWithProviders(<Dashboard />);
+    renderWithProviders(<Statistics />);
 
     expect(await screen.findByTestId("quick-entry-saved-Mood")).toBeInTheDocument();
     expect(screen.queryByTestId("quick-entry-saved-Anxiety")).not.toBeInTheDocument();
@@ -121,7 +121,7 @@ describe("Dashboard", () => {
         flags: { distortions: { allOrNothing: { score: 5 } } },
       },
     ]);
-    renderWithProviders(<Dashboard />);
+    renderWithProviders(<Statistics />);
 
     expect(await screen.findByText("Thinking Patterns")).toBeInTheDocument();
     expect(screen.queryByText("No thinking patterns test yet")).not.toBeInTheDocument();
@@ -151,7 +151,7 @@ describe("Dashboard", () => {
       },
     ]);
     (api.tests.list as Mock).mockResolvedValue([{ id: "t1", title: "Mood Test" }]);
-    renderWithProviders(<Dashboard />);
+    renderWithProviders(<Statistics />);
 
     // Default period (2 weeks): the 30-day-old result is excluded
     expect(await screen.findByText("Mood Test")).toBeInTheDocument();
@@ -191,7 +191,7 @@ describe("Dashboard", () => {
       },
     ]);
     (api.tests.list as Mock).mockResolvedValue([{ id: "t1", title: "Mood Test" }]);
-    renderWithProviders(<Dashboard />);
+    renderWithProviders(<Statistics />);
 
     fireEvent.click(await screen.findByText("Mood Test"));
 

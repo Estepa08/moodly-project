@@ -33,7 +33,7 @@ export default function Breadcrumbs() {
       <ol className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <li>
           <Link
-            to="/dashboard"
+            to="/my-day"
             className="hover:text-primary transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             {t(DASHBOARD_ITEM.labelKey)}

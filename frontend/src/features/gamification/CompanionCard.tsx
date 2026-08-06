@@ -1,17 +1,11 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Zap, Waves, Flame, Sparkles } from "lucide-react";
+import { Zap, Waves, Flame, Sparkles, Activity } from "lucide-react";
 import { useCreatureState, usePets } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 import { EXP_PER_LEVEL } from "../../lib/constants";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import PetAvatar from "./PetAvatar";
-
-const PET_MOOD_EMOJI: Record<string, string> = {
-  happy: "😊",
-  calm: "😌",
-  support: "💙",
-};
 
 export default function CompanionCard() {
   const { t } = useTranslation();
@@ -27,7 +21,6 @@ export default function CompanionCard() {
 
   const petMood = creature.petMood ?? "calm";
   const stage = creature.stage ?? "baby";
-  const moodEmoji = PET_MOOD_EMOJI[petMood] ?? "😌";
 
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
@@ -90,7 +83,7 @@ export default function CompanionCard() {
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-xs font-semibold text-primary">
           <span aria-hidden="true" className="text-sm leading-none">
-            {moodEmoji}
+            <Activity aria-hidden="true" className="w-3.5 h-3.5" />
           </span>
           {t(`petMood.${petMood}`)}
         </span>

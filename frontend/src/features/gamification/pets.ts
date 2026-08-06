@@ -45,7 +45,7 @@ const KNOWN_ORDER = [
 ];
 
 const PET_META: Record<string, PetMeta> = {
-  puff: { labelKey: "pets.puff", color: "bg-pet-1", emoji: "🦐", feed: ["🫧"] },
+  puff: { labelKey: "pets.puff", color: "bg-pet-1", emoji: "🦐", feed: ["🦐"] },
   sloth: { labelKey: "pets.sloth", color: "bg-pet-3", emoji: "🦥", feed: ["🍃"] },
   fox: { labelKey: "pets.fox", color: "bg-pet-4", emoji: "🦊", feed: ["🍓"] },
   giraffe: { labelKey: "pets.giraffe", color: "bg-pet-7", emoji: "🦒", feed: ["🌿"] },

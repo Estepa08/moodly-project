@@ -9,7 +9,6 @@ import { useTestFlow } from "../hooks/useTestFlow";
 import { useTestResultText } from "../hooks/useTestResultText";
 import { RadarChart } from "../features/analytics";
 import type { DistortionEntry } from "../features/analytics";
-import { WellnessDisclaimer } from "../widgets";
 import { RewardMoment, PetAvatar, usePets, useFeed } from "../features/gamification";
 import { PET_DEFINITIONS } from "../features/gamification/pets";
 import {
@@ -108,13 +107,11 @@ export default function TestDetailPage() {
                 <p className="text-muted-foreground">{recommendationText}</p>
               </div>
               <Button className="w-full" asChild>
-                <Link to="/dashboard">{t("testDetail.viewAll")}</Link>
+                <Link to="/my-day">{t("testDetail.viewAll")}</Link>
               </Button>
             </CardContent>
           </Card>
-          <div className="mt-4">
-            <WellnessDisclaimer />
-          </div>
+          <div className="mt-4"></div>
         </div>
         <StickyBottomBar>
           <div className="flex flex-wrap gap-2 justify-center">
@@ -122,7 +119,7 @@ export default function TestDetailPage() {
               <Link to="/practices/breathing">{t("testResults.nextBreathing")}</Link>
             </Button>
             <Button variant="secondary" size="sm" asChild>
-              <Link to="/dashboard">{t("testResults.nextTrack")}</Link>
+              <Link to="/my-day">{t("testResults.nextTrack")}</Link>
             </Button>
             <Button variant="secondary" size="sm" asChild>
               <Link to="/tests">{t("testResults.nextTests")}</Link>
@@ -240,9 +237,6 @@ export default function TestDetailPage() {
           })}
         </CardContent>
       </Card>
-
-      {isFirst && <WellnessDisclaimer variant="compact" />}
-
       <div className="flex items-center justify-between">
         {!isFirst ? (
           <Button

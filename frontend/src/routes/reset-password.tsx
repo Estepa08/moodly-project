@@ -66,7 +66,7 @@ export default function ResetPasswordPage() {
       }
       const res = await api.auth.resetPassword({ token, password, wrappedKey, keySalt });
       login(res.accessToken);
-      navigate("/dashboard");
+      navigate("/my-day");
     } catch (err) {
       setError(getErrorMessage(err, t));
     } finally {

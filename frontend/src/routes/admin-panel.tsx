@@ -18,6 +18,7 @@ import {
   DialogDescription,
 } from "../components/ui/dialog";
 import { AlertTriangle, MessageSquare, ShieldCheck, Star, Users } from "lucide-react";
+import ContentMessagesManager from "../features/content/ContentMessagesManager";
 import { cn } from "../lib/utils";
 
 function initials(u: AdminUser): string {
@@ -146,6 +147,15 @@ export default function AdminPanelPage() {
             )}
           >
             {t("admin.feedbackTab")}
+          </Tabs.Trigger>
+          <Tabs.Trigger
+            value="content"
+            className={cn(
+              "px-4 py-1.5 rounded-lg text-sm font-medium transition-[color,background-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "text-muted-foreground hover:text-foreground data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-neumorphic-sm",
+            )}
+          >
+            {t("admin.contentTab")}
           </Tabs.Trigger>
         </Tabs.List>
 
@@ -301,6 +311,10 @@ export default function AdminPanelPage() {
               ))}
             </div>
           )}
+        </Tabs.Content>
+
+        <Tabs.Content value="content" className="space-y-4">
+          <ContentMessagesManager />
         </Tabs.Content>
       </Tabs.Root>
 
