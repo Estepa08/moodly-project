@@ -11,7 +11,7 @@ function Harness() {
   const speech = usePetSpeech();
   return (
     <div>
-      <PetSpeechBubble current={speech.current} dismiss={speech.dismiss} replay={speech.replay} />
+      <PetSpeechBubble current={speech.current} dismiss={speech.dismiss} />
       <button onClick={() => emitSpeech("привет")}>emit</button>
     </div>
   );
@@ -73,15 +73,5 @@ describe("usePetSpeech", () => {
 
     expect(screen.queryByText("первая")).not.toBeInTheDocument();
     expect(screen.getByText("вторая")).toBeInTheDocument();
-  });
-
-  it("кнопка повтора перезапускает показ текущей реплики (не берёт из очереди)", () => {
-    render(<Harness />);
-    act(() => emitSpeech("только первая"));
-
-    fireEvent.click(screen.getByRole("button", { name: /repeat message/i }));
-
-    expect(screen.getByText("только первая")).toBeInTheDocument();
-    expect(screen.getAllByText("только первая").length).toBeGreaterThanOrEqual(1);
   });
 });
