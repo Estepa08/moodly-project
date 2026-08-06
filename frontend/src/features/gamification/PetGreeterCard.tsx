@@ -4,7 +4,6 @@ import { ArrowRight } from "lucide-react";
 import { useCreatureState, usePets } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 import PetAvatar from "./PetAvatar";
-import PetSpeechBubble, { type SpeechState } from "./PetSpeechBubble";
 import { emitSpeech } from "./celebration";
 import { useDayPhase } from "../../hooks/useDayPhase";
 import { useMessageOfDay } from "../../hooks/useMessageOfDay";
@@ -12,10 +11,9 @@ import { cn } from "../../lib/utils";
 
 interface PetGreeterCardProps {
   onCheckIn: () => void;
-  speech: SpeechState;
 }
 
-export default function PetGreeterCard({ onCheckIn, speech }: PetGreeterCardProps) {
+export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const { t } = useTranslation();
   const { data: creature, isLoading } = useCreatureState();
   const { data: pets } = usePets();
@@ -42,7 +40,6 @@ export default function PetGreeterCard({ onCheckIn, speech }: PetGreeterCardProp
 
   const handleTap = () => {
     queue.forEach((line) => setTimeout(() => emitSpeech(line), 0));
-    speech.replay();
   };
 
   return (
@@ -57,15 +54,6 @@ export default function PetGreeterCard({ onCheckIn, speech }: PetGreeterCardProp
         <span className="shrink-0 px-2.5 py-1 rounded-full bg-card shadow-neumorphic-sm text-xs font-semibold text-primary">
           {t("companion.level", { level: creature.level })}
         </span>
-      </div>
-
-      <div>
-        <PetSpeechBubble
-          current={speech.current}
-          dismiss={speech.dismiss}
-          replay={speech.replay}
-          className="max-w-[15rem] ml-auto"
-        />
       </div>
 
       <div className="relative flex justify-center pt-8 pb-1">

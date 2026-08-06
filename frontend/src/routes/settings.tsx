@@ -32,6 +32,10 @@ import {
   isCompanionHidden,
   setCompanionHidden,
 } from "../features/gamification/companionVisibility";
+import {
+  isSpeechBubbleHidden,
+  setSpeechBubbleHidden,
+} from "../features/gamification/speechBubbleVisibility";
 
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
@@ -41,6 +45,7 @@ export default function SettingsPage() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [companionHidden, setCompanionHiddenState] = useState(isCompanionHidden());
+  const [speechHidden, setSpeechHiddenState] = useState(isSpeechBubbleHidden());
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawError, setWithdrawError] = useState("");
@@ -49,6 +54,12 @@ export default function SettingsPage() {
     const next = !companionHidden;
     setCompanionHiddenState(next);
     setCompanionHidden(next);
+  };
+
+  const toggleSpeech = () => {
+    const next = !speechHidden;
+    setSpeechHiddenState(next);
+    setSpeechBubbleHidden(next);
   };
 
   const handleDelete = async () => {
@@ -252,6 +263,33 @@ export default function SettingsPage() {
                 className={cn(
                   "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
                   !companionHidden && "translate-x-5",
+                )}
+              />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
+            <div>
+              <p className="text-sm font-medium">{t("settings.speechToggleLabel")}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t("settings.speechToggleDesc")}
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={!speechHidden}
+              aria-label={t("settings.speechToggleLabel")}
+              onClick={toggleSpeech}
+              className={cn(
+                "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                !speechHidden ? "bg-primary" : "bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
+                  !speechHidden && "translate-x-5",
                 )}
               />
             </button>

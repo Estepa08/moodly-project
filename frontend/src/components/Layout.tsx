@@ -14,6 +14,7 @@ import BottomNav from "../layout/BottomNav";
 import Breadcrumbs from "../components/ui/breadcrumbs";
 
 const FloatingCompanion = lazy(() => import("../features/gamification/FloatingCompanion"));
+const FloatingSpeechBubble = lazy(() => import("../features/gamification/FloatingSpeechBubble"));
 const LayoutModals = lazy(() => import("../layout/LayoutModals"));
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -107,6 +108,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         <Suspense fallback={null}>
           <FloatingCompanion />
+        </Suspense>
+        <Suspense fallback={null}>
+          <FloatingSpeechBubble />
         </Suspense>
         <Suspense fallback={null}>
           <LayoutModals />

@@ -1107,6 +1107,8 @@
     "companionSection": "Companion",
     "companionToggleLabel": "Floating companion",
     "companionToggleDesc": "Show the companion in the bottom-right corner of the screen",
+    "speechToggleLabel": "Pet speech bubble",
+    "speechToggleDesc": "Show the pet's messages in a floating bubble",
     "deleteAccount": "Delete Account",
     "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteButton": "Delete my account",
