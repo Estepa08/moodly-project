@@ -22,11 +22,9 @@ export default function PetGreeterCard({ onCheckIn, speech }: PetGreeterCardProp
   const phase = useDayPhase();
   const { data: message } = useMessageOfDay(phase);
 
-  const queue = [
-    t(`petGreeter.question.${phase}`),
-    message?.text,
-    message?.question,
-  ].filter((line): line is string => typeof line === "string" && line.trim().length > 0);
+  const queue = [t(`petGreeter.question.${phase}`), message?.text, message?.question].filter(
+    (line): line is string => typeof line === "string" && line.trim().length > 0,
+  );
 
   useEffect(() => {
     const timers = queue.map((line, i) => setTimeout(() => emitSpeech(line), i * 900));

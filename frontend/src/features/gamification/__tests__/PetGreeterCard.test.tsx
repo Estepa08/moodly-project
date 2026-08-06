@@ -61,9 +61,7 @@ describe("PetGreeterCard", () => {
     await waitFor(() => expect(emitSpeech).toHaveBeenCalledTimes(1));
 
     fireEvent.click(screen.getByRole("button", { name: "Pip" }));
-    await waitFor(() =>
-      expect(emitSpeech).toHaveBeenCalledWith("How is your day going?"),
-    );
+    await waitFor(() => expect(emitSpeech).toHaveBeenCalledWith("How is your day going?"));
     expect(speech.replay).toHaveBeenCalled();
   });
 });
