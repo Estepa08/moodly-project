@@ -80,12 +80,13 @@
   },
   "petGreeter": {
     "question": {
-      "morning": "Good morning, {{name}}! How did you sleep?",
-      "day": "How is your day going, {{name}}?",
-      "evening": "How was your day, {{name}}? Let's wrap it up"
+      "morning": "Good morning! How did you sleep?",
+      "day": "How is your day going?",
+      "evening": "How was your day? Let's wrap it up"
     },
     "cta": "Check in — 30 seconds",
-    "hint": "Your companion replies with reactions after every tap"
+    "hint": "Your companion replies with reactions after every tap",
+    "close": "Close message"
   },
   "petCheckIn": {
     "instantHint": "Tap — it saves instantly, no typing needed",
@@ -94,7 +95,16 @@
     "thanksText": "I saved it all and I'll be right here — come back later to wrap up your day.",
     "done": "Done",
     "skip": "Skip",
-    "markActivities": "Mark today's activities"
+    "markActivities": "Mark today's activities",
+    "rewardXp": "+20 XP",
+    "rewardEnergy": "Energy +100",
+    "rewardStreak_one": "{{count}}-day streak",
+    "rewardStreak_other": "{{count}}-day streak"
+  },
+  "petSpeech": {
+    "replay": "Repeat message",
+    "close": "Hide message",
+    "thanks": "Thank you! I saved it and I'll be right here — come back later to wrap up your day."
   },
   "statistics": {
     "subtitle": "Mood dynamics and test results over a period"
@@ -970,22 +980,8 @@
     "back": "Back"
   },
   "dailyCheckIn": {
-    "greetingMorning": "Good morning",
-    "greetingAfternoon": "Good afternoon",
-    "greetingEvening": "Good evening",
-    "body": "Take a moment to check in with yourself today.",
-    "petGreeting": "{{name}} is happy to see you",
-    "button": "Check in",
-    "checkingIn": "Checking in...",
     "streak": "{{count}} day streak",
     "streak_plural": "{{count}} day streak",
-    "streakDays": "{{count}} day streak",
-    "streakDays_plural": "{{count}} day streak",
-    "expGained": "+20 XP",
-    "expSub": "per check-in",
-    "energyRestored": "Energy +100",
-    "energySub": "companion is charged",
-    "remindLater": "Remind me later",
     "levelUpTitle": "Level Up!",
     "levelUpBody": "Your creature grew to level {{level}}!"
   },

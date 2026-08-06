@@ -2,8 +2,9 @@ export { default as CreatureStatus } from "./CreatureStatus";
 export { default as StreakIndicator } from "./StreakIndicator";
 export { default as RewardMoment } from "./RewardMoment";
 export { default as PetAvatar } from "./PetAvatar";
+export { default as PetSpeechBubble, usePetSpeech } from "./PetSpeechBubble";
 export { default as PracticeProgress } from "./PracticeProgress";
-export { celebrate, celebrateReward } from "./celebration";
+export { celebrate, celebrateReward, subscribeSpeech, emitSpeech } from "./celebration";
 export {
   useCreatureState,
   useCompleteExercise,

@@ -4,6 +4,29 @@ import i18n from "../../i18n/i18n";
 
 const RewardMoment = lazy(() => import("./RewardMoment"));
 
+export interface PetSpeech {
+  id: string;
+  text: string;
+}
+
+type SpeechSubscriber = (speech: PetSpeech) => void;
+
+const speechSubscribers = new Set<SpeechSubscriber>();
+let speechSeq = 0;
+
+export function subscribeSpeech(subscriber: SpeechSubscriber): () => void {
+  speechSubscribers.add(subscriber);
+  return () => {
+    speechSubscribers.delete(subscriber);
+  };
+}
+
+export function emitSpeech(text: string): PetSpeech {
+  const speech: PetSpeech = { id: `speech-${++speechSeq}`, text };
+  for (const subscriber of speechSubscribers) subscriber(speech);
+  return speech;
+}
+
 const PRACTICE_REWARD_XP: Record<string, number> = {
   breathing: 10,
   gratitude: 5,

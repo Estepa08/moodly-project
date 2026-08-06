@@ -269,6 +269,21 @@
   will-change: transform;
 }
 
+@keyframes bubble-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-bubble-in {
+  animation: bubble-in 220ms ease-out forwards;
+}
+
 @keyframes feed-fall {
   0% {
     opacity: 0;

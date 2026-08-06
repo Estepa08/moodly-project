@@ -43,6 +43,8 @@ interface PetAvatarProps {
   className?: string;
   /** Смена значения запускает анимацию «кормления»: еда падает сверху на питомца */
   feedSignal?: number;
+  /** Доп. обработчик тапа по питомцу (вызывается вместе с декоративными пузырями) */
+  onTap?: () => void;
   /** Обрезает еду/пузыри по кругу аватара (для тостов и шапки теста — ничего не вылетает наружу) */
   contained?: boolean;
   /** Убирает фон-кружок (питомец на прозрачной подложке) */
@@ -57,6 +59,7 @@ export default function PetAvatar({
   ariaLabel,
   className,
   feedSignal,
+  onTap,
   contained = false,
   plain = false,
 }: PetAvatarProps) {
@@ -155,7 +158,10 @@ export default function PetAvatar({
   return (
     <button
       type="button"
-      onClick={spawnBubble}
+      onClick={() => {
+        spawnBubble();
+        onTap?.();
+      }}
       aria-label={ariaLabel}
       className={cn(
         "relative shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
