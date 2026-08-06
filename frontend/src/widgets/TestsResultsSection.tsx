@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { LoadingCard } from "../components/ui/loading-card";
 import EmptyState from "../components/ui/empty-state";
 import { Button } from "../components/ui/button";
-import { WellnessDisclaimer } from "../widgets";
 import PeriodSelect from "../components/ui/PeriodSelect";
 import { Period } from "../lib/constants";
 import { cn } from "../lib/utils";
@@ -217,8 +216,6 @@ export default function TestsResultsSection({
             </div>
           );
         })}
-
-        <WellnessDisclaimer />
       </CardContent>
     </Card>
   );

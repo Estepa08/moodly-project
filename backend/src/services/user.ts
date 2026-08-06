@@ -154,6 +154,10 @@ export const userService = {
       experienceLevel?: string;
       dailyReminder?: boolean;
       reminderTime?: string;
+      afternoonReminder?: boolean;
+      afternoonTime?: string;
+      eveningReminder?: boolean;
+      eveningTime?: string;
       onboardingDone?: boolean;
     },
   ) {

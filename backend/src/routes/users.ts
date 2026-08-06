@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { userService } from "../services/user.js";
-import { updateMeSchema } from "../lib/validation.js";
+import { updateMeSchema, updatePreferencesSchema } from "../lib/validation.js";
 import { AppError } from "../lib/errors.js";
 
 interface UpdateMeBody {
@@ -12,6 +12,10 @@ interface PreferencesBody {
   experienceLevel?: string;
   dailyReminder?: boolean;
   reminderTime?: string;
+  afternoonReminder?: boolean;
+  afternoonTime?: string;
+  eveningReminder?: boolean;
+  eveningTime?: string;
   onboardingDone?: boolean;
   showSupportResources?: boolean;
 }
@@ -46,7 +50,11 @@ export default async function userRoutes(fastify: FastifyInstance) {
     "/users/me/preferences",
     { preHandler: [fastify.authenticate] },
     async (request) => {
-      return userService.upsertPreferences(request.userId, request.body);
+      const parsed = updatePreferencesSchema.safeParse(request.body);
+      if (!parsed.success) {
+        throw new AppError("VALIDATION_ERROR", 400, parsed.error.issues[0].message);
+      }
+      return userService.upsertPreferences(request.userId, parsed.data);
     },
   );
 }

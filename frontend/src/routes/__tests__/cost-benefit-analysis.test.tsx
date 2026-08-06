@@ -35,7 +35,9 @@ const mockExample = (overrides = {}) => ({
 const mockCommonItem = (overrides = {}) => ({
   id: "c1",
   itemType: "advantage",
-  itemText: "Common pro",
+  category: "anxiety",
+  itemKey: "anxiety.safer",
+  itemText: "Feel safer",
   ...overrides,
 });
 
@@ -56,16 +58,15 @@ describe("CostBenefitAnalysisPage", () => {
   });
 
   it("submits a new entry from the form tab", async () => {
-    console.log("Mock example:", mockExample());
-    console.log(
-      "Mock common item:",
-      mockCommonItem({ itemType: "advantage", itemText: "Common pro" }),
-    );
-    console.log("Starting new entry submission test");
     (api.cba.examples as Mock).mockResolvedValueOnce([mockExample()]);
     (api.cba.commonItems as Mock).mockResolvedValueOnce([
-      mockCommonItem({ itemType: "advantage", itemText: "Common pro" }),
-      mockCommonItem({ id: "c2", itemType: "disadvantage", itemText: "Common con" }),
+      mockCommonItem({ id: "c1", itemType: "advantage", itemText: "Feel safer" }),
+      mockCommonItem({
+        id: "c2",
+        itemType: "disadvantage",
+        itemKey: "anxiety.postpone",
+        itemText: "Can put off dealing with the problem",
+      }),
     ]);
     (api.cba.entries.list as Mock).mockResolvedValue([]);
     (api.cba.entries.create as Mock).mockResolvedValueOnce({
@@ -82,14 +83,18 @@ describe("CostBenefitAnalysisPage", () => {
     renderWithProviders(<CostBenefitAnalysisPage />);
 
     await user.click(await screen.findByText("New Entry"));
-    console.log("Elements present:", screen.debug());
 
     const textarea = await screen.findByPlaceholderText(
       'e.g. "If I make a mistake, everyone will think I\'m incompetent"',
     );
     await user.type(textarea, "New thought");
-    await user.click(await screen.findByText(/Common pro/i));
-    await user.click(screen.getByText("Common con"));
+    const suggestionTriggers = screen
+      .getAllByRole("button")
+      .filter((b) => b.getAttribute("aria-haspopup") === "listbox");
+    await user.click(suggestionTriggers[0]);
+    await user.click(await screen.findByRole("option", { name: "Feel safer" }));
+    await user.click(suggestionTriggers[1]);
+    await user.click(screen.getByRole("option", { name: "Can put off dealing with the problem" }));
     await user.click(screen.getByText("Save entry"));
 
     await waitFor(() => {
@@ -99,8 +104,11 @@ describe("CostBenefitAnalysisPage", () => {
           prosWeight: 50,
           consWeight: 50,
           items: [
-            { itemType: "advantage", itemText: "Common pro" },
-            { itemType: "disadvantage", itemText: "Common con" },
+            { itemType: "advantage", itemText: "Feel safer" },
+            {
+              itemType: "disadvantage",
+              itemText: "Can put off dealing with the problem",
+            },
           ],
         }),
       );

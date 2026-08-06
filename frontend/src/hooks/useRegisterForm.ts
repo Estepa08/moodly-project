@@ -59,7 +59,7 @@ export function useRegisterForm() {
   };
 
   const handleRecoveryConfirmed = () => {
-    navigate("/dashboard");
+    navigate("/my-day");
   };
 
   return {

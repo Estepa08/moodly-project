@@ -47,6 +47,23 @@ export const updateMeSchema = z.object({
   name: z.string().max(100).optional(),
 });
 
+const timeField = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "HH:MM expected");
+
+export const updatePreferencesSchema = z
+  .object({
+    goals: z.array(z.string()).max(50).optional(),
+    experienceLevel: z.string().max(50).optional(),
+    dailyReminder: z.boolean().optional(),
+    reminderTime: timeField.optional(),
+    afternoonReminder: z.boolean().optional(),
+    afternoonTime: timeField.optional(),
+    eveningReminder: z.boolean().optional(),
+    eveningTime: timeField.optional(),
+    onboardingDone: z.boolean().optional(),
+    showSupportResources: z.boolean().optional(),
+  })
+  .strict();
+
 export const updateEntrySchema = z.object({
   encryptedData: z.string().min(1).max(65536),
 });

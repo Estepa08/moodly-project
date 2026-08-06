@@ -241,3 +241,36 @@ interface AdminUsers {
   @doc("Удалить пользователя вместе со всеми данными (только для администратора)")
   deleteUser(@path id: string): void;
 }
+
+@tag("Content")
+@route("/content")
+interface Content {
+  @get
+  @route("/message-of-day")
+  @doc("Пожелание дня (morning/day/evening) для текущего пользователя")
+  messageOfDay(@query type: string, @query locale: string): MessageOfDay | null;
+
+  @get
+  @route("/messages")
+  @doc("Список пожеланий (только контент-менеджер/админ)")
+  listMessages(
+    @query type?: string,
+    @query locale?: string,
+    @query active?: string,
+  ): MotivationMessage[];
+
+  @post
+  @route("/messages")
+  @doc("Создать пожелание (только контент-менеджер/админ)")
+  createMessage(@body body: MotivationMessageCreate): MotivationMessage;
+
+  @patch
+  @route("/messages/{id}")
+  @doc("Обновить пожелание (только контент-менеджер/админ)")
+  updateMessage(@path id: string, @body body: MotivationMessageUpdate): MotivationMessage;
+
+  @delete
+  @route("/messages/{id}")
+  @doc("Удалить пожелание (только контент-менеджер/админ)")
+  deleteMessage(@path id: string): void;
+}

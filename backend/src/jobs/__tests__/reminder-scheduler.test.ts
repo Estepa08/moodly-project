@@ -48,6 +48,20 @@ beforeAll(async () => {
     create: { userId: userId2, dailyReminder: true, reminderTime: `${currentHour}:00` },
     update: { dailyReminder: true, reminderTime: `${currentHour}:00` },
   });
+  await prisma.userPreference.upsert({
+    where: { userId: userId2 },
+    create: { userId: userId2, afternoonReminder: true, afternoonTime: `${currentHour}:00` },
+    update: { afternoonReminder: true, afternoonTime: `${currentHour}:00` },
+  });
+  await prisma.motivationMessage.create({
+    data: {
+      type: "day",
+      locale: "ru",
+      text: "Тестовое пожелание дня",
+      question: "Тестовый вопрос дня",
+      order: 1,
+    },
+  });
 });
 
 afterAll(async () => {
@@ -60,6 +74,11 @@ describe("reminderScheduler.runOnce", () => {
   it("counts users whose reminderTime matches the current hour", async () => {
     const count = await reminderScheduler.runOnce();
     expect(count).toBeGreaterThanOrEqual(2);
+  });
+
+  it("counts afternoon slot users separately", async () => {
+    const count = await reminderScheduler.runOnce();
+    expect(count).toBeGreaterThanOrEqual(3);
   });
 
   it("returns 0 when VAPID keys are missing", async () => {

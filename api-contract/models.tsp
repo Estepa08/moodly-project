@@ -53,6 +53,10 @@ model UserPreference {
   experienceLevel: string;
   dailyReminder: boolean;
   reminderTime?: string;
+  afternoonReminder: boolean;
+  afternoonTime?: string;
+  eveningReminder: boolean;
+  eveningTime?: string;
   onboardingDone: boolean;
 }
 
@@ -61,6 +65,10 @@ model UserPreferenceUpdate {
   experienceLevel?: string;
   dailyReminder?: boolean;
   reminderTime?: string;
+  afternoonReminder?: boolean;
+  afternoonTime?: string;
+  eveningReminder?: boolean;
+  eveningTime?: string;
   onboardingDone?: boolean;
 }
 model LoginRequest {
@@ -501,6 +509,54 @@ model CbaEntryCreate {
   prosWeight: int32;
   consWeight: int32;
   items: CbaEntryItemInput[];
+}
+
+// ---------- Motivation Message ----------
+
+@doc("Мотивационное пожелание/вопрос для «Моего дня» (утро/вечер), по языкам")
+model MotivationMessage {
+  id: string;
+  @doc("Тип пожелания: morning | day | evening")
+  type: string;
+  @doc("Локаль: ru | en")
+  locale: string;
+  @doc("Мотивационная фраза/пожелание")
+  text: string;
+  @doc("Опциональный ротируемый вопрос (например, «Как спали?»)")
+  question?: string | null;
+  isActive: boolean;
+  order: int32;
+  createdAt: utcDateTime;
+  updatedAt: utcDateTime;
+}
+
+model MotivationMessageCreate {
+  @doc("Тип пожелания: morning | day | evening")
+  type: string;
+  @doc("Локаль: ru | en")
+  locale: string;
+  text: string;
+  question?: string | null;
+  isActive?: boolean;
+  order?: int32;
+}
+
+model MotivationMessageUpdate {
+  type?: string;
+  locale?: string;
+  text?: string;
+  question?: string | null;
+  isActive?: boolean;
+  order?: int32;
+}
+
+@doc("Пожелание дня для конкретного пользователя (детерминированная ротация)")
+model MessageOfDay {
+  id: string;
+  type: string;
+  locale: string;
+  text: string;
+  question?: string | null;
 }
 
 // ---------- Errors ----------

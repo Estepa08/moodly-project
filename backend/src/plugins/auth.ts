@@ -10,6 +10,7 @@ declare module "fastify" {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     requireAdmin: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    requireContentManager: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }
 
@@ -50,4 +51,20 @@ export default fp(async function authPlugin(fastify: FastifyInstance) {
       return reply.status(403).send({ code: "FORBIDDEN", message: "Admin access required" });
     }
   });
+
+  fastify.decorate(
+    "requireContentManager",
+    async function (request: FastifyRequest, reply: FastifyReply) {
+      await fastify.authenticate(request, reply);
+      const user = await prisma.user.findUnique({
+        where: { id: request.userId },
+        select: { role: true },
+      });
+      if (!user || (user.role !== "admin" && user.role !== "content_manager")) {
+        return reply
+          .status(403)
+          .send({ code: "FORBIDDEN", message: "Content manager access required" });
+      }
+    },
+  );
 });
