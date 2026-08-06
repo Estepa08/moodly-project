@@ -422,7 +422,9 @@ export const api = {
   },
   content: {
     messageOfDay: (type: string, locale: string) =>
-      request<MessageOfDay | null>(`/content/message-of-day?type=${encodeURIComponent(type)}&locale=${encodeURIComponent(locale)}`),
+      request<MessageOfDay | null>(
+        `/content/message-of-day?type=${encodeURIComponent(type)}&locale=${encodeURIComponent(locale)}`,
+      ),
     listMessages: (params?: { type?: string; locale?: string; active?: string }) => {
       const q = new URLSearchParams();
       if (params?.type) q.set("type", params.type);
@@ -432,11 +434,16 @@ export const api = {
       return request<MotivationMessage[]>(`/content/messages${qs ? `?${qs}` : ""}`);
     },
     createMessage: (body: MotivationMessageCreate) =>
-      request<MotivationMessage>("/content/messages", { method: "POST", body: JSON.stringify(body) }),
+      request<MotivationMessage>("/content/messages", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
     updateMessage: (id: string, body: MotivationMessageUpdate) =>
-      request<MotivationMessage>(`/content/messages/${id}`, { method: "PATCH", body: JSON.stringify(body) }),
-    deleteMessage: (id: string) =>
-      request<void>(`/content/messages/${id}`, { method: "DELETE" }),
+      request<MotivationMessage>(`/content/messages/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      }),
+    deleteMessage: (id: string) => request<void>(`/content/messages/${id}`, { method: "DELETE" }),
   },
   sync: {
     push: (actions: SyncAction[]) =>

@@ -50,7 +50,11 @@ export default function ContentMessagesManager() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<MotivationMessageCreate>(EMPTY_FORM);
 
-  const { data: messages, isLoading, isError } = useQuery({
+  const {
+    data: messages,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["contentMessages", typeFilter, locale],
     queryFn: () =>
       api.content.listMessages({
@@ -194,7 +198,9 @@ export default function ContentMessagesManager() {
                     <span
                       className={cn(
                         "grid place-items-center w-9 h-9 shrink-0 rounded-full",
-                        m.isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground",
+                        m.isActive
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground",
                       )}
                     >
                       <Icon aria-hidden="true" className="w-4 h-4" />
@@ -207,8 +213,7 @@ export default function ContentMessagesManager() {
                         </p>
                       )}
                       <p className="text-[11px] text-muted-foreground mt-1">
-                        {t(`content.type.${m.type}`)} · {m.locale.toUpperCase()} · #
-                        {m.order}
+                        {t(`content.type.${m.type}`)} · {m.locale.toUpperCase()} · #{m.order}
                         {!m.isActive && (
                           <span className="ml-1 text-warning">· {t("content.inactive")}</span>
                         )}
@@ -240,20 +245,19 @@ export default function ContentMessagesManager() {
         </div>
       )}
 
-      <Dialog open={creating || editing !== null} onOpenChange={(v) => {
-        if (!v) {
-          setCreating(false);
-          setEditing(null);
-        }
-      }}>
+      <Dialog
+        open={creating || editing !== null}
+        onOpenChange={(v) => {
+          if (!v) {
+            setCreating(false);
+            setEditing(null);
+          }
+        }}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {editing ? t("content.editTitle") : t("content.addTitle")}
-            </DialogTitle>
-            <DialogDescription className="text-sm">
-              {t("content.formDesc")}
-            </DialogDescription>
+            <DialogTitle>{editing ? t("content.editTitle") : t("content.addTitle")}</DialogTitle>
+            <DialogDescription className="text-sm">{t("content.formDesc")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="flex gap-2">
@@ -262,7 +266,10 @@ export default function ContentMessagesManager() {
                 <select
                   value={form.type}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, type: e.target.value as MotivationMessageCreate["type"] }))
+                    setForm((f) => ({
+                      ...f,
+                      type: e.target.value as MotivationMessageCreate["type"],
+                    }))
                   }
                   className="mt-1 w-full h-9 rounded-lg border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
@@ -276,7 +283,10 @@ export default function ContentMessagesManager() {
                 <select
                   value={form.locale}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, locale: e.target.value as MotivationMessageCreate["locale"] }))
+                    setForm((f) => ({
+                      ...f,
+                      locale: e.target.value as MotivationMessageCreate["locale"],
+                    }))
                   }
                   className="mt-1 w-full h-9 rounded-lg border border-border bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
@@ -338,9 +348,7 @@ export default function ContentMessagesManager() {
               </Button>
               <Button
                 className="flex-1"
-                disabled={
-                  !form.text.trim() || createMutation.isPending || updateMutation.isPending
-                }
+                disabled={!form.text.trim() || createMutation.isPending || updateMutation.isPending}
                 onClick={submitForm}
               >
                 {t("content.save")}

@@ -376,11 +376,7 @@
 
 /* --- Pet greeting hero / check-in modal gradient --- */
 .pet-gradient-bg {
-  background-image: linear-gradient(
-    160deg,
-    hsl(var(--pet-gradient-1)),
-    hsl(var(--pet-gradient-2))
-  );
+  background-image: linear-gradient(160deg, hsl(var(--pet-gradient-1)), hsl(var(--pet-gradient-2)));
 }
 
 /* --- Scroll-reveal (useReveal) --- */

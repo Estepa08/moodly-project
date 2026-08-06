@@ -16,11 +16,7 @@ export default function ContentPage() {
     );
   }
 
-  if (
-    currentUser &&
-    currentUser.role !== "admin" &&
-    currentUser.role !== "content_manager"
-  ) {
+  if (currentUser && currentUser.role !== "admin" && currentUser.role !== "content_manager") {
     return (
       <EmptyState icon={MessageCircle} title={t("content.forbidden")} className="min-h-[50vh]" />
     );

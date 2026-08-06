@@ -1,8 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import {
-  shouldAutoOpenCheckIn,
-  markCheckInDone,
-} from "../PetCheckInDialog";
+import { shouldAutoOpenCheckIn, markCheckInDone } from "../PetCheckInDialog";
 import { ParameterName } from "../../../lib/constants";
 
 const moodId = "param-mood";

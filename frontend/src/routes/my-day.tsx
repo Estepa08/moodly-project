@@ -5,16 +5,16 @@ import { useDayPhase } from "../hooks/useDayPhase";
 import { useEntries } from "../hooks/useEntries";
 import { useParameters } from "../hooks/useParameters";
 import PetGreeterCard from "../features/gamification/PetGreeterCard";
-import PetCheckInDialog, { shouldAutoOpenCheckIn, markCheckInDone } from "../features/check-in/PetCheckInDialog";
+import PetCheckInDialog, {
+  shouldAutoOpenCheckIn,
+  markCheckInDone,
+} from "../features/check-in/PetCheckInDialog";
 import DayActivitiesCard from "../features/check-in/DayActivitiesCard";
 import ActivityCorrelationCard from "../features/analytics/ActivityCorrelationCard";
 
 function useTodayParamIds() {
   const { data: params } = useParameters();
-  const paramIdByName = useMemo(
-    () => new Map((params ?? []).map((p) => [p.name, p.id])),
-    [params],
-  );
+  const paramIdByName = useMemo(() => new Map((params ?? []).map((p) => [p.name, p.id])), [params]);
 
   const todayRange = useMemo(() => {
     const start = new Date();

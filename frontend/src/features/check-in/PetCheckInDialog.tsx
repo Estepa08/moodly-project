@@ -23,7 +23,11 @@ interface PetCheckInDialogProps {
   onMarkActivities?: () => void;
 }
 
-export default function PetCheckInDialog({ open, onOpenChange, onMarkActivities }: PetCheckInDialogProps) {
+export default function PetCheckInDialog({
+  open,
+  onOpenChange,
+  onMarkActivities,
+}: PetCheckInDialogProps) {
   const { t } = useTranslation();
   const phase = useDayPhase();
   const flow = FLOWS[phase];
@@ -99,7 +103,9 @@ export default function PetCheckInDialog({ open, onOpenChange, onMarkActivities 
 
         {done ? (
           <div className="space-y-3">
-            <p className="text-lg font-bold font-serif text-foreground">{t("petCheckIn.thanksTitle")}</p>
+            <p className="text-lg font-bold font-serif text-foreground">
+              {t("petCheckIn.thanksTitle")}
+            </p>
             <p className="text-sm text-muted-foreground leading-snug">
               {t("petCheckIn.thanksText", { name: petName })}
             </p>
@@ -117,9 +123,7 @@ export default function PetCheckInDialog({ open, onOpenChange, onMarkActivities 
               <p className="text-sm font-semibold text-foreground leading-snug">
                 {t(`petGreeter.question.${phase}`, { name: petName })}
               </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {t("petCheckIn.instantHint")}
-              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{t("petCheckIn.instantHint")}</p>
             </div>
 
             <div className="flex items-center justify-center gap-1.5 pt-1">
@@ -192,7 +196,10 @@ export default function PetCheckInDialog({ open, onOpenChange, onMarkActivities 
   );
 }
 
-export function shouldAutoOpenCheckIn(savedTodayParamIds: Set<string>, paramIdByName: Map<string, string>): boolean {
+export function shouldAutoOpenCheckIn(
+  savedTodayParamIds: Set<string>,
+  paramIdByName: Map<string, string>,
+): boolean {
   const phase = getDayPhase();
   const firstParam = FLOWS[phase][0];
   const firstParamId = paramIdByName.get(firstParam);

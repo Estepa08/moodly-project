@@ -76,9 +76,7 @@ export default function PetGreeterCard({ onCheckIn }: { onCheckIn: () => void })
         <ArrowRight aria-hidden="true" className="w-4 h-4" />
       </button>
 
-      <p className="text-center text-[11px] text-muted-foreground">
-        {t("petGreeter.hint")}
-      </p>
+      <p className="text-center text-[11px] text-muted-foreground">{t("petGreeter.hint")}</p>
     </section>
   );
 }
