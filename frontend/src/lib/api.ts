@@ -404,6 +404,11 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
+    send: (body: { title: string; body?: string; url?: string }) =>
+      request<{ ok: boolean; sent: number }>("/push/send", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
   },
   cba: {
     examples: () => request<CbaExample[]>("/cba/examples"),
