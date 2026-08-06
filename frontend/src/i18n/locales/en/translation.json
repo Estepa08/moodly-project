@@ -101,6 +101,11 @@
     "rewardStreak_one": "{{count}}-day streak",
     "rewardStreak_other": "{{count}}-day streak"
   },
+  "petSpeech": {
+    "replay": "Repeat message",
+    "close": "Hide message",
+    "thanks": "Thank you! I saved it and I'll be right here — come back later to wrap up your day."
+  },
   "statistics": {
     "subtitle": "Mood dynamics and test results over a period"
   },

@@ -1,18 +1,38 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { useCreatureState, usePets } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 import PetAvatar from "./PetAvatar";
+import PetSpeechBubble, { type SpeechState } from "./PetSpeechBubble";
+import { emitSpeech } from "./celebration";
 import { useDayPhase } from "../../hooks/useDayPhase";
 import { useMessageOfDay } from "../../hooks/useMessageOfDay";
 import { cn } from "../../lib/utils";
 
-export default function PetGreeterCard({ onCheckIn }: { onCheckIn: () => void }) {
+interface PetGreeterCardProps {
+  onCheckIn: () => void;
+  speech: SpeechState;
+}
+
+export default function PetGreeterCard({ onCheckIn, speech }: PetGreeterCardProps) {
   const { t } = useTranslation();
   const { data: creature, isLoading } = useCreatureState();
   const { data: pets } = usePets();
   const phase = useDayPhase();
   const { data: message } = useMessageOfDay(phase);
+
+  const queue = [
+    t(`petGreeter.question.${phase}`),
+    message?.text,
+    message?.question,
+  ].filter((line): line is string => typeof line === "string" && line.trim().length > 0);
+
+  useEffect(() => {
+    const timers = queue.map((line, i) => setTimeout(() => emitSpeech(line), i * 900));
+    return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, message?.text, message?.question]);
 
   if (isLoading || !creature) return null;
 
@@ -21,6 +41,11 @@ export default function PetGreeterCard({ onCheckIn }: { onCheckIn: () => void })
   const definition = PET_DEFINITIONS.find((p) => p.type === activePetType);
   const displayName = petName?.trim() || (definition ? t(definition.labelKey) : "");
   const petMood = creature.petMood ?? "calm";
+
+  const handleTap = () => {
+    queue.forEach((line) => setTimeout(() => emitSpeech(line), 0));
+    speech.replay();
+  };
 
   return (
     <section
@@ -36,30 +61,21 @@ export default function PetGreeterCard({ onCheckIn }: { onCheckIn: () => void })
         </span>
       </div>
 
+      <div>
+        <PetSpeechBubble
+          current={speech.current}
+          dismiss={speech.dismiss}
+          replay={speech.replay}
+          className="max-w-[15rem] ml-auto"
+        />
+      </div>
+
       <div className="relative flex justify-center pt-8 pb-1">
-        <div className="absolute right-0 top-0 z-10 w-full max-w-[15rem]">
-          <div className="relative ml-auto rounded-2xl bg-card shadow-neumorphic-sm px-4 py-3">
-            <span
-              aria-hidden="true"
-              className="absolute right-8 -bottom-1.5 w-3.5 h-3.5 bg-card rotate-45"
-            />
-            <p className="text-sm font-semibold text-foreground leading-snug">
-              {t(`petGreeter.question.${phase}`)}
-            </p>
-            {message?.text && (
-              <p className="mt-1 text-xs text-muted-foreground leading-snug">{message.text}</p>
-            )}
-            {message?.question && (
-              <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
-                {message.question}
-              </p>
-            )}
-          </div>
-        </div>
         <PetAvatar
           petType={activePetType}
           size="lg"
           interactive
+          onTap={handleTap}
           ariaLabel={displayName}
           emotion={petMood === "happy" ? "happy" : "idle"}
         />

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Flame } from "lucide-react";
 import { Dialog, DialogContent } from "../../components/ui/dialog";
 import PetAvatar from "../gamification/PetAvatar";
-import { usePets, useCreatureState, celebrate } from "../gamification";
+import { usePets, useCreatureState, celebrate, emitSpeech } from "../gamification";
 import { PET_DEFINITIONS } from "../gamification/pets";
 import { api } from "../../lib/api";
 import { useParameters } from "../../hooks/useParameters";
@@ -97,6 +97,7 @@ export default function PetCheckInDialog({
           setFeedSignal((s) => s + 1);
           if (step >= flow.length - 1) {
             setDone(true);
+            emitSpeech(t("petSpeech.thanks"));
             // Завершение флоу = дневной чек-ин (сервер сам защищает от повтора в день).
             checkInMutation.mutate(undefined);
           } else {

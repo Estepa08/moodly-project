@@ -5,6 +5,7 @@ import { useDayPhase } from "../hooks/useDayPhase";
 import { useEntries } from "../hooks/useEntries";
 import { useParameters } from "../hooks/useParameters";
 import PetGreeterCard from "../features/gamification/PetGreeterCard";
+import { usePetSpeech } from "../features/gamification";
 import PetCheckInDialog, {
   shouldAutoOpenCheckIn,
   markCheckInDone,
@@ -91,6 +92,7 @@ export default function MyDay() {
   const { paramIdByName, savedTodayParamIds } = useTodayParamIds();
   const [checkInOpen, setCheckInOpen] = useState(false);
   const markActivitiesRef = useRef<HTMLDivElement>(null);
+  const speech = usePetSpeech();
 
   useEffect(() => {
     const autoOpen = shouldAutoOpenCheckIn(savedTodayParamIds, paramIdByName);
@@ -117,7 +119,7 @@ export default function MyDay() {
         <PhaseHeader />
       </div>
 
-      <PetGreeterCard onCheckIn={() => setCheckInOpen(true)} />
+      <PetGreeterCard onCheckIn={() => setCheckInOpen(true)} speech={speech} />
 
       {showMorningStatus && <MorningStatus />}
 
