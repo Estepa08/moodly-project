@@ -271,7 +271,9 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
             <div>
               <p className="text-sm font-medium">{t("settings.speechToggleLabel")}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{t("settings.speechToggleDesc")}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t("settings.speechToggleDesc")}
+              </p>
             </div>
             <button
               type="button"

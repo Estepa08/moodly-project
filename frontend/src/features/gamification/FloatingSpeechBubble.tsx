@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PetSpeechBubble, { usePetSpeech } from "./PetSpeechBubble";
-import {
-  isSpeechBubbleHidden,
-  subscribeSpeechBubbleVisibility,
-} from "./speechBubbleVisibility";
+import { isSpeechBubbleHidden, subscribeSpeechBubbleVisibility } from "./speechBubbleVisibility";
 
 const HIDDEN_PATHS = ["/tests/", "/practices/breathing", "/onboarding"];
 
