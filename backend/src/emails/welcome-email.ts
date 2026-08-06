@@ -27,8 +27,8 @@ const content: Record<"ru" | "en", WelcomeContent> = {
         text: "Две минуты спокойствия, когда тревога поднимается. Работает офлайн.",
       },
       {
-        title: "Выберите питомца",
-        text: "Он станет вашим компаньоном и будет расти вместе с вами.",
+        title: "Выберите компаньона",
+        text: "Он станет вашим спутником и будет расти вместе с вами.",
       },
       {
         title: "Включите напоминание",
@@ -55,8 +55,8 @@ const content: Record<"ru" | "en", WelcomeContent> = {
         text: "Two minutes of calm when anxiety rises. Works offline.",
       },
       {
-        title: "Pick your pet",
-        text: "It will become your companion and grow together with you.",
+        title: "Pick your companion",
+        text: "It will grow together with you.",
       },
       {
         title: "Turn on reminders",
