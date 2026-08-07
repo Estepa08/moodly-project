@@ -278,11 +278,17 @@ async function applySoftDelete(
   // иначе tombstone не попадёт в pull (курсор фильтрует по updatedAt > cursor).
   switch (entity) {
     case "entry": {
-      await tx.entry.updateMany({ where: { id, userId }, data: { deletedAt, updatedAt: deletedAt } });
+      await tx.entry.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
     }
     case "feedback":
-      await tx.feedback.updateMany({ where: { id, userId }, data: { deletedAt, updatedAt: deletedAt } });
+      await tx.feedback.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
     case "testResult":
       await tx.testResult.updateMany({
