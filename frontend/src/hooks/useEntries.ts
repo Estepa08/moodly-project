@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
+import { isNetworkError } from "../lib/api-error";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { enqueue } from "../lib/offline/sync";
@@ -32,11 +33,19 @@ async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
 export function useEntries(params?: { parameterId?: string; from?: string; to?: string }) {
   return useQuery({
     queryKey: ["entries", params],
-    // offline-first: при офлайне читаем локальный кэш из IndexedDB (наполняется через pull)
+    // offline-first: при офлайне или недоступном сервере читаем локальный кэш
+    // из IndexedDB (наполняется через pull).
     queryFn: async () => {
-      const raw = navigator.onLine
-        ? await api.entries.list(params)
-        : await listLocalEntries(params);
+      if (navigator.onLine) {
+        try {
+          const raw = await api.entries.list(params);
+          return Promise.all((raw as Entry[]).map(decryptEntry));
+        } catch (err) {
+          if (!isNetworkError(err)) throw err;
+          // ERR_CONNECTION_REFUSED и т.п. — сервер недоступен, читаем локально.
+        }
+      }
+      const raw = await listLocalEntries(params);
       return Promise.all((raw as Entry[]).map(decryptEntry));
     },
     staleTime: 30_000,
@@ -74,7 +83,26 @@ export function useCreateEntry(onSuccess?: () => void) {
           createdAt: new Date().toISOString(),
         };
       }
-      return api.entries.create({ id, parameterId: data.parameterId, encryptedData });
+      try {
+        return await api.entries.create({ id, parameterId: data.parameterId, encryptedData });
+      } catch (err) {
+        if (!isNetworkError(err)) throw err;
+        // Сервер недоступен (ERR_CONNECTION_REFUSED) — кладём в офлайн-очередь,
+        // чтобы не потерять запись: синк отправит её, когда связь вернётся.
+        await enqueue("entry", "upsert", id, {
+          parameterId: data.parameterId,
+          encryptedData,
+        });
+        return {
+          id,
+          userId: "",
+          parameterId: data.parameterId,
+          value: data.value,
+          note: data.note ?? null,
+          activities: data.activities ?? [],
+          createdAt: new Date().toISOString(),
+        };
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
@@ -96,7 +124,13 @@ export function useDeleteEntry() {
         await enqueue("entry", "delete", id);
         return undefined;
       }
-      return api.entries.delete(id);
+      try {
+        return await api.entries.delete(id);
+      } catch (err) {
+        if (!isNetworkError(err)) throw err;
+        await enqueue("entry", "delete", id);
+        return undefined;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
@@ -139,7 +173,21 @@ export function useUpdateEntry() {
           createdAt: new Date().toISOString(),
         };
       }
-      return api.entries.update(id, { encryptedData });
+      try {
+        return await api.entries.update(id, { encryptedData });
+      } catch (err) {
+        if (!isNetworkError(err)) throw err;
+        await enqueue("entry", "upsert", id, { encryptedData });
+        return {
+          id,
+          userId: "",
+          parameterId: "",
+          value,
+          note: note ?? null,
+          activities: activities ?? [],
+          createdAt: new Date().toISOString(),
+        };
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });

@@ -15,9 +15,9 @@ import { RATING_LEVELS, type RatingLevel } from "../../lib/ratingLevels";
 import { cn } from "../../lib/utils";
 
 const FLOWS: Record<DayPhase, ParameterName[]> = {
-  morning: [ParameterName.Mood, ParameterName.Sleep, ParameterName.Energy, ParameterName.Anxiety],
-  day: [ParameterName.Mood, ParameterName.Energy],
-  evening: [ParameterName.Mood, ParameterName.Energy],
+  morning: [ParameterName.Sleep, ParameterName.Mood, ParameterName.Anxiety, ParameterName.Energy],
+  day: [ParameterName.Mood, ParameterName.Anxiety, ParameterName.Energy],
+  evening: [ParameterName.Mood, ParameterName.Anxiety, ParameterName.Energy],
 };
 
 interface PetCheckInDialogProps {

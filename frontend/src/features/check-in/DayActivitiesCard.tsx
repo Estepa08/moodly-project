@@ -107,7 +107,7 @@ export default function DayActivitiesCard() {
         title={t("dayActivities.sectionHeading")}
         description={t("dayActivities.subtitle")}
       >
-        <DayActivitiesSection />
+        <DayActivitiesSection onClose={() => setOpen(false)} />
       </ModalShell>
     </>
   );

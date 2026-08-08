@@ -2,8 +2,12 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { shouldAutoOpenCheckIn, markCheckInDone } from "../PetCheckInDialog";
 import { ParameterName } from "../../../lib/constants";
 
+const sleepId = "param-sleep";
 const moodId = "param-mood";
-const paramIdByName = new Map<string, string>([[ParameterName.Mood, moodId]]);
+const paramIdByName = new Map<string, string>([
+  [ParameterName.Sleep, sleepId],
+  [ParameterName.Mood, moodId],
+]);
 
 function savedToday(ids: string[]): Set<string> {
   return new Set(ids);
@@ -23,13 +27,19 @@ describe("shouldAutoOpenCheckIn", () => {
     vi.useRealTimers();
   });
 
-  it("не открывает модалку, если Mood за сегодня уже сохранён (утро 8:00)", () => {
+  it("не открывает модалку, если Sleep за сегодня уже сохранён (утро 8:00)", () => {
     vi.setSystemTime(new Date("2026-08-06T08:00:00"));
-    const result = shouldAutoOpenCheckIn(savedToday([moodId]), paramIdByName);
+    const result = shouldAutoOpenCheckIn(savedToday([sleepId]), paramIdByName);
     expect(result).toBe(false);
   });
 
-  it("открывает модалку, если Mood ещё не отмечен и localStorage пуст", () => {
+  it("открывает модалку, если Sleep не отмечен, даже если Mood уже сохранён (утро 8:00)", () => {
+    vi.setSystemTime(new Date("2026-08-06T08:00:00"));
+    const result = shouldAutoOpenCheckIn(savedToday([moodId]), paramIdByName);
+    expect(result).toBe(true);
+  });
+
+  it("открывает модалку, если Sleep ещё не отмечен и localStorage пуст", () => {
     vi.setSystemTime(new Date("2026-08-06T08:00:00"));
     const result = shouldAutoOpenCheckIn(savedToday([]), paramIdByName);
     expect(result).toBe(true);

@@ -87,7 +87,7 @@ export default {
         heading: ["Nunito", "system-ui", "-apple-system", "sans-serif"],
       },
       backgroundImage: {
-        "card-gradient": "linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary) / 0.3))",
+        "card-gradient": "linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)))",
         "btn-gradient": "linear-gradient(120deg, hsl(264 95% 60%), hsl(262 85% 55%))",
         "btn-gradient-hot": "linear-gradient(120deg, hsl(328 100% 74%), hsl(330 82% 54%))",
         aurora:
