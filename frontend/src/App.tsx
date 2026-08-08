@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { useCurrentUser } from "./hooks/useCurrentUser";
@@ -7,6 +7,7 @@ import SyncCoordinator from "./lib/offline/SyncCoordinator";
 import Layout from "./components/Layout";
 import OnboardingGate from "./components/OnboardingGate";
 import Spinner from "./components/ui/spinner";
+import { trackPageView } from "./lib/metrika";
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
 import ForgotPasswordPage from "./routes/forgot-password";
@@ -101,63 +102,85 @@ function PublicRoute() {
   return <Outlet />;
 }
 
+function MetrikaPageView() {
+  const location = useLocation();
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    trackPageView(location.pathname + location.search);
+  }, [location]);
+  return null;
+}
+
 export default function App() {
   return (
-    <Routes>
-      <Route element={<PublicRoute />}>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-      </Route>
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/mood-diary" element={<MoodDiaryPage />} />
-      <Route path="/anxiety-test" element={<AnxietyTestPage />} />
-      <Route path="/thinking-habits-test" element={<ThinkingHabitsTestPage />} />
-      <Route path="/sleep-hygiene-guide" element={<SleepHygieneGuidePage />} />
-      <Route path="/anxiety-self-help" element={<AnxietySelfHelpPage />} />
-      <Route path="/blog" element={<BlogPage />} />
-      <Route path="/blog/category/:category" element={<BlogCategoryPage />} />
-      <Route path="/blog/:slug" element={<BlogPostPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/my-day" element={<MyDayPage />} />
-        <Route path="/statistics" element={<StatisticsPage />} />
-        <Route path="/my-day" element={<Navigate to="/my-day" replace />} />
-        <Route path="/practices" element={<PracticesPage />} />
-        <Route path="/tests" element={<TestsPage />} />
-        <Route path="/tests/:testId" element={<TestDetailPage />} />
-        <Route path="/results" element={<Navigate to="/my-day" replace />} />
-        <Route path="/practices/breathing" element={<BreathingPage />} />
-        <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
-        <Route path="/practices/distortions" element={<DistortionsPage />} />
-        <Route path="/practices/sleep-hygiene" element={<SleepHygienePage />} />
-        <Route path="/practices/thought-journal" element={<ThoughtJournalPage />} />
-        <Route path="/practices/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
-
-        {/* Old practice route redirects */}
-        <Route path="/breathing" element={<Navigate to="/practices/breathing" replace />} />
-        <Route path="/gratitude-journal" element={<Navigate to="/practices/gratitude" replace />} />
-        <Route path="/distortions" element={<Navigate to="/practices/distortions" replace />} />
-        <Route path="/sleep-hygiene" element={<Navigate to="/practices/sleep-hygiene" replace />} />
-        <Route
-          path="/thought-journal"
-          element={<Navigate to="/practices/thought-journal" replace />}
-        />
-        <Route
-          path="/cost-benefit-analysis"
-          element={<Navigate to="/practices/cost-benefit-analysis" replace />}
-        />
-        <Route path="/progress" element={<ProgressPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/content" element={<ContentPage />} />
-        <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminPanelPage />} />
+    <>
+      <MetrikaPageView />
+      <Routes>
+        <Route element={<PublicRoute />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
-      </Route>
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/mood-diary" element={<MoodDiaryPage />} />
+        <Route path="/anxiety-test" element={<AnxietyTestPage />} />
+        <Route path="/thinking-habits-test" element={<ThinkingHabitsTestPage />} />
+        <Route path="/sleep-hygiene-guide" element={<SleepHygieneGuidePage />} />
+        <Route path="/anxiety-self-help" element={<AnxietySelfHelpPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/category/:category" element={<BlogCategoryPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/my-day" element={<MyDayPage />} />
+          <Route path="/statistics" element={<StatisticsPage />} />
+          <Route path="/my-day" element={<Navigate to="/my-day" replace />} />
+          <Route path="/practices" element={<PracticesPage />} />
+          <Route path="/tests" element={<TestsPage />} />
+          <Route path="/tests/:testId" element={<TestDetailPage />} />
+          <Route path="/results" element={<Navigate to="/my-day" replace />} />
+          <Route path="/practices/breathing" element={<BreathingPage />} />
+          <Route path="/practices/gratitude" element={<GratitudeJournalPage />} />
+          <Route path="/practices/distortions" element={<DistortionsPage />} />
+          <Route path="/practices/sleep-hygiene" element={<SleepHygienePage />} />
+          <Route path="/practices/thought-journal" element={<ThoughtJournalPage />} />
+          <Route path="/practices/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
+
+          {/* Old practice route redirects */}
+          <Route path="/breathing" element={<Navigate to="/practices/breathing" replace />} />
+          <Route
+            path="/gratitude-journal"
+            element={<Navigate to="/practices/gratitude" replace />}
+          />
+          <Route path="/distortions" element={<Navigate to="/practices/distortions" replace />} />
+          <Route
+            path="/sleep-hygiene"
+            element={<Navigate to="/practices/sleep-hygiene" replace />}
+          />
+          <Route
+            path="/thought-journal"
+            element={<Navigate to="/practices/thought-journal" replace />}
+          />
+          <Route
+            path="/cost-benefit-analysis"
+            element={<Navigate to="/practices/cost-benefit-analysis" replace />}
+          />
+          <Route path="/progress" element={<ProgressPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/content" element={<ContentPage />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminPanelPage />} />
+          </Route>
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
 }

@@ -6,7 +6,7 @@ const KEYS = ["replay", "close", "thanks"] as const;
 
 describe("petSpeech i18n phrases", () => {
   it("RU содержит все ключи petSpeech с непустыми значениями", () => {
-    const section = (ru as Record<string, Record<string, string>>).petSpeech;
+    const section = (ru as unknown as Record<string, Record<string, string>>).petSpeech;
     expect(section).toBeDefined();
     for (const key of KEYS) {
       expect(section[key]).toBeDefined();
@@ -15,7 +15,7 @@ describe("petSpeech i18n phrases", () => {
   });
 
   it("EN содержит все ключи petSpeech с непустыми значениями", () => {
-    const section = (en as Record<string, Record<string, string>>).petSpeech;
+    const section = (en as unknown as Record<string, Record<string, string>>).petSpeech;
     expect(section).toBeDefined();
     for (const key of KEYS) {
       expect(section[key]).toBeDefined();
