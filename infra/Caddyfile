@@ -49,9 +49,12 @@
         header {
             Content-Security-Policy "default-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         }
-        # Пытаемся найти файл. Если не найден - отдаём index.html
-        # Это нужно для SPA, чтобы React/Vue обрабатывали маршруты сами
-        try_files {path} /index.html
+        # Пытаемся найти файл. Сначала реальные файлы ({path}), затем
+        # пререндеренный HTML маршрута ({path}/index.html), и только потом
+        # SPA-fallback для несуществующих путей (React 404).
+        # Пререндер (frontend/scripts/prerender.mjs) кладёт статический HTML
+        # в dist/<route>/index.html — его отдают роботам/браузерам сразу.
+        try_files {path} {path}/index.html /index.html
         # Раздаём файлы из корня /srv
         file_server
     }

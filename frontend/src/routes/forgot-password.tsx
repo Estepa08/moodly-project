@@ -8,10 +8,18 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
+import { useSeo, withCanonical } from "../lib/seo";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+
+  useSeo({
+    title: t("forgotPassword.seo.title"),
+    description: t("forgotPassword.seo.description"),
+    canonical: withCanonical("/forgot-password"),
+    noindex: true,
+  });
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);

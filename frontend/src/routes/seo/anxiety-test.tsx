@@ -4,7 +4,7 @@ import { ArrowRight, Lock, ShieldCheck } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -17,16 +17,24 @@ import {
 
 export default function AnxietyTestPage() {
   const { t } = useTranslation();
-  useSeo({
-    title: t("seoPages.anxietyTest.meta.title"),
-    description: t("seoPages.anxietyTest.meta.description"),
-    canonical: withCanonical("/anxiety-test"),
-  });
 
   const faq = [1, 2].map((i) => ({
     q: t(`seoPages.anxietyTest.faq.${i}.q`),
     a: t(`seoPages.anxietyTest.faq.${i}.a`),
   }));
+
+  useSeo({
+    title: t("seoPages.anxietyTest.meta.title"),
+    description: t("seoPages.anxietyTest.meta.description"),
+    canonical: withCanonical("/anxiety-test"),
+    jsonLd: [
+      breadcrumbLd([
+        { name: t("seoPages.anxietyTest.breadcrumb.home"), url: withCanonical("/") },
+        { name: t("seoPages.anxietyTest.breadcrumb.current"), url: withCanonical("/anxiety-test") },
+      ]),
+      faqPageLd(faq),
+    ],
+  });
 
   return (
     <div className="min-h-screen bg-background">
