@@ -8,10 +8,17 @@ import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
 import { ShieldCheck, KeyRound } from "lucide-react";
 import { AuthPage, AuthHeader, AuthDisclaimer } from "../features/auth";
+import { useSeo, withCanonical } from "../lib/seo";
 
 export default function RegisterPage() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+
+  useSeo({
+    title: t("register.seo.title"),
+    description: t("register.seo.description"),
+    canonical: withCanonical("/register"),
+  });
 
   const {
     step,

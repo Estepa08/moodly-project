@@ -27,6 +27,11 @@ WORKDIR /workspace/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 COPY frontend/scripts ./scripts
 RUN npm ci
+# Playwright/Chromium нужен только для пререндера статического HTML
+# (frontend/scripts/prerender.mjs) на этапе сборки. В runtime-образ не копируется.
+# Best-effort: если установка браузера не удалась, пререндер будет пропущен,
+# а деплой уедет как классический SPA.
+RUN npx playwright install --with-deps chromium || echo "WARN: playwright chromium не установлен — prerender пропущен"
 COPY frontend/ .
 COPY --from=contract /workspace/api-contract/generated /workspace/api-contract/generated
 RUN npm run generate:api

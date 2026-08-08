@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -25,6 +25,10 @@ export default function BlogPage() {
     title: t("seoPages.blog.meta.title"),
     description: t("seoPages.blog.meta.description"),
     canonical: withCanonical("/blog"),
+    jsonLd: breadcrumbLd([
+      { name: t("seoPages.blog.breadcrumb.home"), url: withCanonical("/") },
+      { name: t("seoPages.blog.breadcrumb.current"), url: withCanonical("/blog") },
+    ]),
   });
 
   const chips: Array<{ slug: string | null; label: string }> = [

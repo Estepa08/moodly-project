@@ -136,7 +136,11 @@
     "legacyRecoveryNote": "This recovery code is used to regain access to your data if you forget your password. Keep it somewhere safe.",
     "unlockReasonTitle": "Protecting your data",
     "unlockReason": "We noticed a break in using the app. Your entries are encrypted on your device, so we need you to confirm your password again to read and save them — this keeps your data safe.",
-    "unlockReasonHint": "Your entries are safe and will be available after sign-in. We ask for your password again to protect your privacy."
+    "unlockReasonHint": "Your entries are safe and will be available after sign-in. We ask for your password again to protect your privacy.",
+    "seo": {
+      "title": "Sign in — Moodly",
+      "description": "Sign in to the Moodly mood diary and continue tracking how you feel."
+    }
   },
   "register": {
     "title": "Create Account",
@@ -156,7 +160,11 @@
     "termsLink": "Terms of Service",
     "and": "and",
     "privacyLink": "Privacy Policy",
-    "pdpConsentLink": "Privacy Policy"
+    "pdpConsentLink": "Privacy Policy",
+    "seo": {
+      "title": "Sign up — Moodly",
+      "description": "Create a Moodly account — a mood diary, self-assessment tests and mental-health practices. 30 seconds a day."
+    }
   },
   "dashboard": {
     "title": "Statistics",
@@ -388,7 +396,11 @@
     "sending": "Sending...",
     "checkEmail": "Check your email",
     "sent": "If this email is registered, a reset link has been sent.",
-    "backToLogin": "Back to login"
+    "backToLogin": "Back to login",
+    "seo": {
+      "title": "Reset your password — Moodly",
+      "description": "Recover access to your Moodly account with your email."
+    }
   },
   "resetPassword": {
     "title": "Set New Password",
@@ -398,7 +410,11 @@
     "resetting": "Resetting...",
     "mismatch": "Passwords do not match",
     "tooShort": "Password must be at least 6 characters",
-    "invalidLink": "Invalid or expired reset link"
+    "invalidLink": "Invalid or expired reset link",
+    "seo": {
+      "title": "Set a new password — Moodly",
+      "description": "Choose a new password for your Moodly mood diary."
+    }
   },
   "cognitiveDistortions": {
     "yourProfile": "Your Thinking Patterns",
@@ -1249,7 +1265,11 @@
     "responseTerms": "Response to Requests",
     "responseTermsText": "The operator responds to data subject requests within 10 business days of receipt (Article 20 of 152-FZ). The deadline may be extended by no more than 5 business days with written notice to the data subject. Refusals are accompanied by a reasoned response within the same period. You may appeal the operator's actions to the supervisory authority or in court (Article 17 of 152-FZ).",
     "contact": "Contact",
-    "contactText": "For privacy-related inquiries: privacy@moodly.app"
+    "contactText": "For privacy-related inquiries: privacy@moodly.app",
+    "seo": {
+      "title": "Privacy Policy — Moodly",
+      "description": "Moodly privacy policy: operator, legal basis, data collected and your rights under data-protection law."
+    }
   },
   "terms": {
     "title": "Terms of Service",
@@ -1268,7 +1288,11 @@
     "changes": "Changes to These Terms",
     "changesText": "The operator may update these Terms and the Privacy Policy. The new version takes effect upon publication. Continued use of the service after changes take effect constitutes acceptance of the new version.",
     "contact": "Contact",
-    "contactText": "For questions about these terms: legal@moodly.app"
+    "contactText": "For questions about these terms: legal@moodly.app",
+    "seo": {
+      "title": "Terms of Service — Moodly",
+      "description": "Moodly terms of service: service description, user obligations, medical disclaimer and applicable law."
+    }
   },
   "settings": {
     "title": "Settings",

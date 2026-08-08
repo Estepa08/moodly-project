@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -17,10 +17,23 @@ import {
 
 export default function MoodDiaryPage() {
   const { t } = useTranslation();
+
+  const faq = [1, 2, 3].map((i) => ({
+    q: t(`seoPages.moodDiary.faq.${i}.q`),
+    a: t(`seoPages.moodDiary.faq.${i}.a`),
+  }));
+
   useSeo({
     title: t("seoPages.moodDiary.meta.title"),
     description: t("seoPages.moodDiary.meta.description"),
     canonical: withCanonical("/mood-diary"),
+    jsonLd: [
+      breadcrumbLd([
+        { name: t("seoPages.moodDiary.breadcrumb.home"), url: withCanonical("/") },
+        { name: t("seoPages.moodDiary.breadcrumb.current"), url: withCanonical("/mood-diary") },
+      ]),
+      faqPageLd(faq),
+    ],
   });
 
   const stats = [1, 2, 3, 4].map((i) => ({
@@ -31,11 +44,6 @@ export default function MoodDiaryPage() {
   const params = [1, 2, 3, 4].map((i) => ({
     title: t(`seoPages.moodDiary.params.${i}.title`),
     sub: t(`seoPages.moodDiary.params.${i}.sub`),
-  }));
-
-  const faq = [1, 2, 3].map((i) => ({
-    q: t(`seoPages.moodDiary.faq.${i}.q`),
-    a: t(`seoPages.moodDiary.faq.${i}.a`),
   }));
 
   return (

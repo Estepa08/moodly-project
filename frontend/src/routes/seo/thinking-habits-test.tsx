@@ -4,7 +4,7 @@ import { ArrowRight, Brain, Lock, ShieldCheck } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -17,16 +17,27 @@ import {
 
 export default function ThinkingHabitsTestPage() {
   const { t } = useTranslation();
-  useSeo({
-    title: t("seoPages.thinkingHabits.meta.title"),
-    description: t("seoPages.thinkingHabits.meta.description"),
-    canonical: withCanonical("/thinking-habits-test"),
-  });
 
   const faq = [1, 2].map((i) => ({
     q: t(`seoPages.thinkingHabits.faq.${i}.q`),
     a: t(`seoPages.thinkingHabits.faq.${i}.a`),
   }));
+
+  useSeo({
+    title: t("seoPages.thinkingHabits.meta.title"),
+    description: t("seoPages.thinkingHabits.meta.description"),
+    canonical: withCanonical("/thinking-habits-test"),
+    jsonLd: [
+      breadcrumbLd([
+        { name: t("seoPages.thinkingHabits.breadcrumb.home"), url: withCanonical("/") },
+        {
+          name: t("seoPages.thinkingHabits.breadcrumb.current"),
+          url: withCanonical("/thinking-habits-test"),
+        },
+      ]),
+      faqPageLd(faq),
+    ],
+  });
 
   return (
     <div className="min-h-screen bg-background">

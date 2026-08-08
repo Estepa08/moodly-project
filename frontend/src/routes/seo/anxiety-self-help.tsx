@@ -4,7 +4,7 @@ import { ArrowRight, Wind, BookOpen, Heart, Moon, HeartHandshake } from "lucide-
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -19,16 +19,27 @@ const PRACTICE_ICONS = [Wind, BookOpen, Heart, Moon];
 
 export default function AnxietySelfHelpPage() {
   const { t } = useTranslation();
-  useSeo({
-    title: t("seoPages.anxietySelfHelp.meta.title"),
-    description: t("seoPages.anxietySelfHelp.meta.description"),
-    canonical: withCanonical("/anxiety-self-help"),
-  });
 
   const faq = [1, 2, 3].map((i) => ({
     q: t(`seoPages.anxietySelfHelp.faq.${i}.q`),
     a: t(`seoPages.anxietySelfHelp.faq.${i}.a`),
   }));
+
+  useSeo({
+    title: t("seoPages.anxietySelfHelp.meta.title"),
+    description: t("seoPages.anxietySelfHelp.meta.description"),
+    canonical: withCanonical("/anxiety-self-help"),
+    jsonLd: [
+      breadcrumbLd([
+        { name: t("seoPages.anxietySelfHelp.breadcrumb.home"), url: withCanonical("/") },
+        {
+          name: t("seoPages.anxietySelfHelp.breadcrumb.current"),
+          url: withCanonical("/anxiety-self-help"),
+        },
+      ]),
+      faqPageLd(faq),
+    ],
+  });
 
   return (
     <div className="min-h-screen bg-background">

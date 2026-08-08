@@ -10,10 +10,18 @@ import { PasswordInput } from "../components/ui/password-input";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent } from "../components/ui/card";
+import { useSeo, withCanonical } from "../lib/seo";
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  useSeo({
+    title: t("resetPassword.seo.title"),
+    description: t("resetPassword.seo.description"),
+    canonical: withCanonical("/reset-password"),
+    noindex: true,
+  });
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const token = searchParams.get("token") || "";
