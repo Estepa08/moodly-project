@@ -7,6 +7,12 @@
 
 # --- Caddy слушает HTTP на порту, куда панель проксирует маршрут ---
 :80 {
+    # Исторический домен mymoodly.online не является основным (основной — mymoodly.ru).
+    # Он не используется — навсегда отдаём 301 на канонический,
+    # чтобы Google склеил сигналы и убрал .online из выдачи по "mymoodly".
+    @moodlyonline host mymoodly.online www.mymoodly.online
+    redir @moodlyonline https://mymoodly.ru{uri} permanent
+
     # Указываем папку, откуда Caddy будет раздавать статику
     root * /srv
     encode gzip
