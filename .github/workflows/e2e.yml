@@ -51,6 +51,10 @@ jobs:
           cache: npm
           cache-dependency-path: e2e/package-lock.json
 
+      - name: Build @moodly/shared
+        working-directory: shared
+        run: npm ci && npm run build
+
       - name: Setup backend
         working-directory: backend
         run: |

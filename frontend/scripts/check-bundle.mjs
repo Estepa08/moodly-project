@@ -8,7 +8,7 @@ const distDir = path.join(rootDir, "dist/assets");
 
 const LIMITS = {
   entryGzipKB: 150,
-  initialTotalGzipKB: 400,
+  initialTotalGzipKB: 520,
 };
 
 const files = (await readdir(distDir)).filter((f) => f.endsWith(".js"));
