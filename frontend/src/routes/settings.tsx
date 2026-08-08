@@ -26,6 +26,7 @@ import {
   ScrollText,
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import { ToggleSwitch } from "../components/ui/toggle-switch";
 import ReviewForm from "../features/review/ReviewForm";
 import { RemindersCard } from "../features/reminders/RemindersCard";
 import {
@@ -248,24 +249,11 @@ export default function SettingsPage() {
                 {t("settings.companionToggleDesc")}
               </p>
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={!companionHidden}
+            <ToggleSwitch
+              checked={!companionHidden}
+              onCheckedChange={toggleCompanion}
               aria-label={t("settings.companionToggleLabel")}
-              onClick={toggleCompanion}
-              className={cn(
-                "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                !companionHidden ? "bg-primary" : "bg-muted",
-              )}
-            >
-              <span
-                className={cn(
-                  "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
-                  !companionHidden && "translate-x-5",
-                )}
-              />
-            </button>
+            />
           </div>
 
           <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
@@ -275,24 +263,11 @@ export default function SettingsPage() {
                 {t("settings.speechToggleDesc")}
               </p>
             </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={!speechHidden}
+            <ToggleSwitch
+              checked={!speechHidden}
+              onCheckedChange={toggleSpeech}
               aria-label={t("settings.speechToggleLabel")}
-              onClick={toggleSpeech}
-              className={cn(
-                "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                !speechHidden ? "bg-primary" : "bg-muted",
-              )}
-            >
-              <span
-                className={cn(
-                  "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
-                  !speechHidden && "translate-x-5",
-                )}
-              />
-            </button>
+            />
           </div>
         </CardContent>
       </Card>

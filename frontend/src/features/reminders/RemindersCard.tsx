@@ -6,6 +6,7 @@ import { usePreferences } from "../../hooks/useOnboarding";
 import { usePushNotifications } from "../../hooks/usePushNotifications";
 import { api, type UserPreference } from "../../lib/api";
 import { cn } from "../../lib/utils";
+import { ToggleSwitch } from "../../components/ui/toggle-switch";
 
 const TIMES = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, "0")}:00`);
 
@@ -69,25 +70,12 @@ function SlotRow({
             {t("settings.remindersSwitchDesc")}
           </p>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={enabled}
+        <ToggleSwitch
+          checked={enabled}
+          onCheckedChange={onToggle}
           aria-label={t(slot.labelKey)}
-          onClick={() => onToggle(!enabled)}
           disabled={saving}
-          className={cn(
-            "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60",
-            enabled ? "bg-primary" : "bg-muted",
-          )}
-        >
-          <span
-            className={cn(
-              "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
-              enabled && "translate-x-5",
-            )}
-          />
-        </button>
+        />
       </div>
 
       {enabled && (
