@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import "fake-indexeddb/auto";
 import { getDb } from "../db";
+import { saveLocalEntry, deleteLocalEntry, listLocalEntries } from "../db";
 import { enqueue, flushOutbox, pullChanges, syncNow } from "../sync";
 import { api } from "../../api";
 
@@ -31,6 +32,39 @@ beforeEach(async () => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+describe("offline entry mirror", () => {
+  it("saveLocalEntry немедленно видна через listLocalEntries (offline-first)", async () => {
+    await saveLocalEntry({
+      id: "off-1",
+      userId: "",
+      parameterId: "p1",
+      value: 5,
+      encryptedData: "cipher",
+      createdAt: new Date().toISOString(),
+    });
+
+    const all = await listLocalEntries();
+    expect(all.map((e) => e.id)).toEqual(["off-1"]);
+    expect(all[0]?.parameterId).toBe("p1");
+    expect(all[0]?.deletedAt).toBeNull();
+    expect(all[0]?.updatedAt).toBeTruthy();
+  });
+
+  it("deleteLocalEntry прячет запись из listLocalEntries (tombstone)", async () => {
+    await saveLocalEntry({
+      id: "off-2",
+      userId: "",
+      parameterId: "p1",
+      encryptedData: "cipher",
+      createdAt: new Date().toISOString(),
+    });
+    await deleteLocalEntry("off-2");
+
+    const all = await listLocalEntries();
+    expect(all.some((e) => e.id === "off-2")).toBe(false);
+  });
 });
 
 describe("offline outbox", () => {
