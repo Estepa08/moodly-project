@@ -74,12 +74,15 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@moodly/shared": path.resolve(__dirname, "../shared/dist/index.js"),
+      "@": path.resolve(import.meta.dirname, "./src"),
+      "@moodly/shared": path.resolve(import.meta.dirname, "../shared/dist/index.js"),
       // lottie-react: поле `browser` в его package.json указывает на UMD-сборку,
       // где default-экспорт — объект, а не компонент → «Element type is invalid».
       // Направляем на ESM-сборку, где default — настоящий компонент.
-      "lottie-react": path.resolve(__dirname, "node_modules/lottie-react/build/index.es.js"),
+      "lottie-react": path.resolve(
+        import.meta.dirname,
+        "node_modules/lottie-react/build/index.es.js",
+      ),
     },
   },
   build: {

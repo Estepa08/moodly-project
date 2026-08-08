@@ -46,7 +46,11 @@ function range(days: number) {
 
 type View = { step: "home" } | { step: "category"; category: ActivityCategory } | { step: "mine" };
 
-export default function DayActivitiesSection() {
+interface DayActivitiesSectionProps {
+  onClose?: () => void;
+}
+
+export default function DayActivitiesSection({ onClose }: DayActivitiesSectionProps) {
   const { t } = useTranslation();
   const { data: params } = useParameters();
   const createEntry = useCreateEntry();
@@ -138,9 +142,20 @@ export default function DayActivitiesSection() {
         onSuccess: () => {
           setSaved(true);
           toast.success(t("dayActivities.saved"));
+          onClose?.();
         },
       },
     );
+  };
+
+  const addCustomFromCategory = () => {
+    const text = customText.trim();
+    if (!text) return;
+    const item = createMyActivity(text);
+    setMyActivities((prev) => [...prev, item]);
+    setSaved(false);
+    setSelected((prev) => [...prev, { key: item.key, custom: true, label: text }]);
+    setCustomText("");
   };
 
   const filteredByCategory = useMemo(() => {
@@ -263,11 +278,33 @@ export default function DayActivitiesSection() {
           <button
             type="button"
             onClick={goBack}
-            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-neumorphic-sm transition-colors hover:border-primary/50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ChevronLeft aria-hidden="true" className="w-4 h-4" />
             {t("dayActivities.back")}
           </button>
+
+          <div className="flex items-center gap-2">
+            <Input
+              className="h-10 text-sm flex-1"
+              placeholder={t("dayActivities.customPlaceholder")}
+              value={customText}
+              onChange={(e) => setCustomText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") addCustomFromCategory();
+              }}
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={addCustomFromCategory}
+              disabled={!customText.trim() || customExists(customText)}
+            >
+              <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
+              {t("dayActivities.addCustom")}
+            </Button>
+          </div>
 
           <div className="flex items-center gap-2">
             <span className="grid place-items-center w-9 h-9 rounded-full bg-accent/10 text-accent">
@@ -415,9 +452,21 @@ export default function DayActivitiesSection() {
         <span className="text-sm font-medium text-muted-foreground">
           {t("dayActivities.selectedCount", { count: selected.length })}
         </span>
-        <Button type="button" onClick={save} disabled={createEntry.isPending}>
-          {saved ? t("dayActivities.saved") : t("dayActivities.save")}
-        </Button>
+        {view.step === "category" ? (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={goBack}
+            disabled={createEntry.isPending}
+          >
+            <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
+            {t("dayActivities.addCustom")}
+          </Button>
+        ) : (
+          <Button type="button" onClick={save} disabled={createEntry.isPending}>
+            {saved ? t("dayActivities.saved") : t("dayActivities.save")}
+          </Button>
+        )}
       </div>
     </div>
   );
