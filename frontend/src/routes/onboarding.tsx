@@ -18,6 +18,7 @@ import {
 import { useOnboarding } from "../hooks/useOnboarding";
 import { ExpLevel } from "../lib/constants";
 import Spinner from "../components/ui/spinner";
+import { ToggleSwitch } from "../components/ui/toggle-switch";
 import { useSetPet } from "../features/gamification";
 import { PET_DEFINITIONS, STARTER_PET_TYPES } from "../features/gamification/pets";
 import { WellnessDisclaimer } from "../widgets";
@@ -67,24 +68,7 @@ function ReminderRow({
             className="px-2 py-1.5 rounded-lg bg-secondary text-sm text-foreground border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         )}
-        <button
-          type="button"
-          role="switch"
-          aria-checked={checked}
-          aria-label={label}
-          onClick={() => onToggle(!checked)}
-          className={cn(
-            "relative h-7 w-12 rounded-full transition-colors duration-200 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            checked ? "bg-primary" : "bg-muted",
-          )}
-        >
-          <span
-            className={cn(
-              "absolute top-1 left-1 h-5 w-5 rounded-full bg-background shadow-neumorphic-sm transition-transform duration-200",
-              checked && "translate-x-5",
-            )}
-          />
-        </button>
+        <ToggleSwitch checked={checked} onCheckedChange={onToggle} aria-label={label} />
       </div>
     </div>
   );
