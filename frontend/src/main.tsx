@@ -11,6 +11,10 @@ import "./index.css";
 import i18n from "./i18n/i18n";
 import { getErrorMessage } from "./lib/error-messages";
 import { initErrorReporting } from "./lib/errorReporter";
+import { initMetrika } from "./lib/metrika";
+
+// Яндекс.Метрика (только на боевом домене)
+initMetrika();
 
 // Глобальный перехват ошибок клиента → POST /api/client-errors (лог на бэке)
 initErrorReporting();

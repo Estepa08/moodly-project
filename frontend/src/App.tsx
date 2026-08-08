@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { useCurrentUser } from "./hooks/useCurrentUser";
@@ -7,6 +7,7 @@ import SyncCoordinator from "./lib/offline/SyncCoordinator";
 import Layout from "./components/Layout";
 import OnboardingGate from "./components/OnboardingGate";
 import Spinner from "./components/ui/spinner";
+import { trackPageView } from "./lib/metrika";
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
 import ForgotPasswordPage from "./routes/forgot-password";
@@ -101,8 +102,23 @@ function PublicRoute() {
   return <Outlet />;
 }
 
+function MetrikaPageView() {
+  const location = useLocation();
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    trackPageView(location.pathname + location.search);
+  }, [location]);
+  return null;
+}
+
 export default function App() {
   return (
+    <>
+      <MetrikaPageView />
     <Routes>
       <Route element={<PublicRoute />}>
         <Route path="/" element={<LandingPage />} />
@@ -159,5 +175,6 @@ export default function App() {
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </>
   );
 }
