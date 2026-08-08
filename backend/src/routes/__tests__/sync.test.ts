@@ -178,6 +178,36 @@ describe("Sync pull", () => {
     const change = res.json().changes.find((c: { id: string }) => c.id === id);
     expect(change?.action).toBe("delete");
   });
+
+  it("delivers a tombstone after a soft delete via sync push (updatedAt bump)", async () => {
+    const user = await registerAndLogin(app, "sync-tombstone-push@example.com", "secret123");
+    const parameter = (await prisma.parameter.create({ data: { name: "SyncTombPush" } })).id;
+    const id = uuidv7();
+
+    // запись создана через тот же механизм, что и клиент, и уже вытянута (курсор прошёл её updatedAt)
+    await push([entryAction(id, parameter, "p1")], user.token);
+    await pull("", user.token);
+
+    // удаление через sync push — applySoftDelete должен бампнуть updatedAt,
+    // чтобы tombstone прошёл фильтр pull по (updatedAt, id)
+    const del = await push(
+      [
+        {
+          entity: "entry",
+          action: "delete",
+          id,
+          occurredAt: new Date().toISOString(),
+          payload: {},
+        },
+      ],
+      user.token,
+    );
+    expect(del.statusCode).toBe(200);
+
+    const res = await pull("", user.token);
+    const change = res.json().changes.find((c: { id: string }) => c.id === id);
+    expect(change?.action).toBe("delete");
+  });
 });
 
 describe("Sync push daily limit", () => {

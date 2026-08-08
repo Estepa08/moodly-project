@@ -15,8 +15,8 @@ export default function SyncCoordinator() {
       void queryClient.invalidateQueries({ queryKey: ["entries"] });
       void queryClient.invalidateQueries({ queryKey: ["creature"] });
       void queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
-      void queryClient.invalidateQueries({ queryKey: ["test-results"] });
-      void queryClient.invalidateQueries({ queryKey: ["feedback"] });
+      void queryClient.invalidateQueries({ queryKey: ["testResults"] });
+      void queryClient.invalidateQueries({ queryKey: ["myFeedback"] });
       void queryClient.invalidateQueries({ queryKey: ["achievements"] });
     },
   });

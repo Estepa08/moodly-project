@@ -274,21 +274,39 @@ async function applySoftDelete(
   id: string,
 ): Promise<void> {
   const deletedAt = new Date();
+  // updateMany не триггерит @updatedAt в Prisma, поэтому обновляем updatedAt явно:
+  // иначе tombstone не попадёт в pull (курсор фильтрует по updatedAt > cursor).
   switch (entity) {
-    case "entry":
-      await tx.entry.updateMany({ where: { id, userId }, data: { deletedAt } });
+    case "entry": {
+      await tx.entry.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
+    }
     case "feedback":
-      await tx.feedback.updateMany({ where: { id, userId }, data: { deletedAt } });
+      await tx.feedback.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
     case "testResult":
-      await tx.testResult.updateMany({ where: { id, userId }, data: { deletedAt } });
+      await tx.testResult.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
     case "breathingSession":
-      await tx.breathingSession.updateMany({ where: { id, userId }, data: { deletedAt } });
+      await tx.breathingSession.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
     case "practiceCompletion":
-      await tx.practiceCompletion.updateMany({ where: { id, userId }, data: { deletedAt } });
+      await tx.practiceCompletion.updateMany({
+        where: { id, userId },
+        data: { deletedAt, updatedAt: deletedAt },
+      });
       return;
     case "creatureState":
       // Singleton без deletedAt: удаление не поддерживается.
