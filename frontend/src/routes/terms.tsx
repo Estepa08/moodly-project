@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useSeo, withCanonical } from "../lib/seo";
 
 const SECTIONS = [
   "acceptance",
@@ -17,6 +18,12 @@ const SECTIONS = [
 export default function TermsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  useSeo({
+    title: t("terms.seo.title"),
+    description: t("terms.seo.description"),
+    canonical: withCanonical("/terms"),
+  });
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">

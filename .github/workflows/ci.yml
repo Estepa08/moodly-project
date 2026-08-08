@@ -75,5 +75,7 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm test
+      - name: Install Chromium (prerender)
+        run: npx playwright install --with-deps chromium
       - run: npm run build
       - run: npm run bundle:check

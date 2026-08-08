@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link, useParams, Navigate } from "react-router-dom";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd } from "../../lib/seo";
 import { SeoHeader, SeoBreadcrumbs, SeoFooter } from "../seo/seo-components";
 import { PostCard } from "./PostCard";
 import { CATEGORIES, getPostsByCategory } from "./posts";
@@ -24,6 +24,14 @@ export default function BlogCategoryPage() {
       ? `${t(CATEGORY_KEYS[category])} — ${t("seoPages.blog.shortTitle")}`
       : t("seoPages.blog.shortTitle"),
     canonical: category ? withCanonical(`/blog/category/${category}`) : withCanonical("/blog"),
+    jsonLd:
+      category !== null
+        ? breadcrumbLd([
+            { name: t("seoPages.blog.breadcrumb.home"), url: withCanonical("/") },
+            { name: t("seoPages.blog.breadcrumb.blog"), url: withCanonical("/blog") },
+            { name: t(CATEGORY_KEYS[category]), url: withCanonical(`/blog/category/${category}`) },
+          ])
+        : undefined,
   });
 
   if (!category) return <Navigate to="/blog" replace />;

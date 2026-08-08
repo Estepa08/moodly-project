@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useParams, Navigate } from "react-router-dom";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd, blogPostingLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -27,6 +27,26 @@ export default function BlogPostPage() {
     title: post ? `${post.title} — ${t("seoPages.blog.shortTitle")}` : t("seoPages.blog.notFound"),
     description: post?.excerpt,
     canonical: post ? withCanonical(`/blog/${post.slug}`) : withCanonical("/blog"),
+    og: post ? { type: "article", title: post.title } : undefined,
+    jsonLd: post
+      ? [
+          breadcrumbLd([
+            { name: t("seoPages.blog.breadcrumb.home"), url: withCanonical("/") },
+            { name: t("seoPages.blog.breadcrumb.blog"), url: withCanonical("/blog") },
+            {
+              name: t(CATEGORY_KEYS[post.category]),
+              url: withCanonical(`/blog/category/${post.category}`),
+            },
+            { name: post.title, url: withCanonical(`/blog/${post.slug}`) },
+          ]),
+          blogPostingLd({
+            title: post.title,
+            url: withCanonical(`/blog/${post.slug}`),
+            description: post.excerpt,
+            date: post.date,
+          }),
+        ]
+      : undefined,
   });
 
   if (!post) return <Navigate to="/blog" replace />;

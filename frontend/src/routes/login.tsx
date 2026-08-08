@@ -8,10 +8,17 @@ import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
 import { ShieldCheck, KeyRound, Info } from "lucide-react";
 import { AuthPage, AuthHeader, AuthDisclaimer } from "../features/auth";
+import { useSeo, withCanonical } from "../lib/seo";
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+
+  useSeo({
+    title: t("login.seo.title"),
+    description: t("login.seo.description"),
+    canonical: withCanonical("/login"),
+  });
 
   const {
     email,

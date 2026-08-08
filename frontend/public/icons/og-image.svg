@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FBF8FF"/>
+      <stop offset="1" stop-color="#E9DFFB"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#6D28D9"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#8B5CF6" flood-opacity="0.25"/>
+    </filter>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+      text { font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; }
+      .brand { font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="150" cy="80" r="240" fill="#8B5CF6" opacity="0.06"/>
+  <circle cx="1090" cy="590" r="300" fill="#8B5CF6" opacity="0.07"/>
+  <circle cx="470" cy="640" r="260" fill="#8B5CF6" opacity="0.05"/>
+
+  <g filter="url(#shadow)">
+    <rect x="72" y="72" width="104" height="104" rx="26" fill="url(#accent)"/>
+    <path
+      d="M124 88 c-5-10-17-13-25-7 c-5 3-9 9-10 15 c-1 10 6 16 16 23 c3 2 7 2 10 0 c6-4 12-10 18-15 c3-2 6-6 7-10 c1-4 0-9 -5-13 c-2-2 -5-2 -7 -1 c-1 1 -1 1 0 0 c4 1 8 4 10 8 c3 6 2 13 -3 18 c-5 5 -11 11 -17 16 c-4 3 -8 4 -11 3 c-4-2 -8-5 -10-9 z"
+      fill="#ffffff"
+    />
+  </g>
+
+  <text x="196" y="150" font-size="44" font-weight="800" fill="#312E81" class="brand">Moodly</text>
+
+  <text
+    x="72"
+    y="330"
+    font-size="84"
+    font-weight="800"
+    fill="#1F2937"
+    letter-spacing="-1"
+  >Дневник настроения,</text>
+  <text
+    x="72"
+    y="436"
+    font-size="64"
+    font-weight="800"
+    fill="#8B5CF6"
+  >который заботится о вас</text>
+
+  <text x="72" y="516" font-size="30" font-weight="400" fill="#6B7280">
+    Отмечайте настроение, энергию, сон и тревогу за полминуты в день.
+  </text>
+
+  <g>
+    <rect x="72" y="552" width="188" height="36" rx="18" fill="url(#accent)"/>
+    <text x="166" y="576" font-size="19" font-weight="700" fill="#ffffff" text-anchor="middle">Начать бесплатно</text>
+  </g>
+
+  <text x="1200" y="586" font-size="28" font-weight="500" fill="#8B5CF6" text-anchor="end">mymoodly.ru</text>
+</svg>

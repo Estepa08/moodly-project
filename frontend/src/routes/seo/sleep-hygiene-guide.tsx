@@ -4,7 +4,7 @@ import { ArrowRight, Moon, CheckCircle2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
 import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical } from "../../lib/seo";
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -17,16 +17,27 @@ import {
 
 export default function SleepHygieneGuidePage() {
   const { t } = useTranslation();
-  useSeo({
-    title: t("seoPages.sleepHygiene.meta.title"),
-    description: t("seoPages.sleepHygiene.meta.description"),
-    canonical: withCanonical("/sleep-hygiene-guide"),
-  });
 
   const faq = [1, 2, 3].map((i) => ({
     q: t(`seoPages.sleepHygiene.faq.${i}.q`),
     a: t(`seoPages.sleepHygiene.faq.${i}.a`),
   }));
+
+  useSeo({
+    title: t("seoPages.sleepHygiene.meta.title"),
+    description: t("seoPages.sleepHygiene.meta.description"),
+    canonical: withCanonical("/sleep-hygiene-guide"),
+    jsonLd: [
+      breadcrumbLd([
+        { name: t("seoPages.sleepHygiene.breadcrumb.home"), url: withCanonical("/") },
+        {
+          name: t("seoPages.sleepHygiene.breadcrumb.current"),
+          url: withCanonical("/sleep-hygiene-guide"),
+        },
+      ]),
+      faqPageLd(faq),
+    ],
+  });
 
   return (
     <div className="min-h-screen bg-background">
