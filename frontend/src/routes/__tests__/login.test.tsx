@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { renderWithProviders, screen, waitFor } from "../../test/test-utils";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "../../hooks/useAuth";
+import { render } from "@testing-library/react";
 import LoginPage from "../login";
 import userEvent from "@testing-library/user-event";
 import { createRegistrationKeys } from "../../lib/crypto/auth-keys";
@@ -109,5 +113,25 @@ describe("LoginPage", () => {
     await waitFor(() => {
       expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
     });
+  });
+
+  it("shows the unlock-required banner when arriving via ProtectedRoute redirect", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <MemoryRouter initialEntries={[{ pathname: "/login", state: { reason: "unlock-required" } }]}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <Routes>
+              <Route path="/login" element={children} />
+            </Routes>
+          </AuthProvider>
+        </QueryClientProvider>
+      </MemoryRouter>
+    );
+
+    render(<LoginPage />, { wrapper });
+    expect(screen.getByText("Protecting your data")).toBeInTheDocument();
   });
 });

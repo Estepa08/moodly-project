@@ -1,7 +1,8 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { useCurrentUser } from "./hooks/useCurrentUser";
+import { hasSessionKey } from "./lib/crypto/session";
 import SyncCoordinator from "./lib/offline/SyncCoordinator";
 import Layout from "./components/Layout";
 import OnboardingGate from "./components/OnboardingGate";
@@ -62,8 +63,16 @@ function BootstrapSpinner() {
 
 function ProtectedRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
+  const location = useLocation();
   if (isBootstrapping) return <BootstrapSpinner />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  // Сессия восстановлена по refresh-cookie, но DEK (ключ шифрования) потерян
+  // (например, браузер выгрузил вкладку и sessionStorage очистился). Не держим
+  // «мёртвую» авторизацию: без ключа запись и чтение данных невозможны, а
+  // сохранение падало бы с «Не удалось сохранить запись». Просим повторить вход.
+  if (!hasSessionKey()) {
+    return <Navigate to="/login" replace state={{ reason: "unlock-required" }} />;
+  }
   return (
     <Layout>
       <SyncCoordinator />
@@ -86,7 +95,9 @@ function AdminRoute() {
 function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
   if (isBootstrapping) return <BootstrapSpinner />;
-  if (isAuthenticated) return <Navigate to="/my-day" replace />;
+  // Без разблокированного DEK не уводим на защищённые маршруты (иначе цикл
+  // /login → /my-day → /login): остаёмся на логине с сообщением о разблокировке.
+  if (isAuthenticated && hasSessionKey()) return <Navigate to="/my-day" replace />;
   return <Outlet />;
 }
 

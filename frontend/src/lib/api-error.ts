@@ -2,9 +2,11 @@ import { cva } from "class-variance-authority";
 
 export class ApiError extends Error {
   code: string;
-  constructor(code: string, message: string) {
+  statusCode: number;
+  constructor(code: string, message: string, statusCode = 0) {
     super(message);
     this.code = code;
+    this.statusCode = statusCode;
     this.name = "ApiError";
   }
 }
@@ -19,6 +21,16 @@ export function isNetworkError(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
   if (err.name === "TypeError") return true;
   return /failed to fetch|networkerror|failed to fetch resource|network/i.test(err.message);
+}
+
+/**
+ * True, когда бэкенд ответил серверной ошибкой (5xx). Такая ошибка — это не
+ * вина пользовательских данных, а временная проблема бэкенда/инфраструктуры
+ * (деплой, перезапуск, перебои БД). Запись можно безопасно переложить в
+ * офлайн-очередь, чтобы не потерять данные, и дофлашить её позже.
+ */
+export function isServerError(err: unknown): boolean {
+  return err instanceof ApiError && err.statusCode >= 500 && err.statusCode < 600;
 }
 
 export const buttonVariants = cva(
