@@ -363,22 +363,43 @@ export const syncService = {
 
     let newEntries = 0;
 
-    await prisma.$transaction(async (tx) => {
-      for (const action of actions) {
-        if (action.action === "delete") {
-          await applySoftDelete(tx, action.entity, userId, action.id);
-          continue;
-        }
-        if (action.entity === "entry" && !existingEntryIds.has(action.id)) {
-          newEntries += 1;
-          if (todayEntryCount + newEntries > DAILY_ENTRY_LIMIT) {
-            throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+    // Транзакции на PostgreSQL могут падать на параллельных батчах одного
+    // пользователя c P2034 (write conflict / deadlock) или P2028 (retried
+    // statement failed). Это редкие временные сбои: повтор транзакции безопасен,
+    // т.к. upsert идемпотентен по id, а лимиты пересчитываются заново.
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        newEntries = 0;
+        await prisma.$transaction(async (tx) => {
+          for (const action of actions) {
+            if (action.action === "delete") {
+              await applySoftDelete(tx, action.entity, userId, action.id);
+              continue;
+            }
+            if (action.entity === "entry" && !existingEntryIds.has(action.id)) {
+              newEntries += 1;
+              if (todayEntryCount + newEntries > DAILY_ENTRY_LIMIT) {
+                throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+              }
+            }
+            const data = sanitize(action.entity, action.payload);
+            await applyUpsert(tx, action.entity, userId, action.id, data);
           }
+        });
+        break;
+      } catch (err) {
+        const code =
+          err instanceof Prisma.PrismaClientKnownRequestError
+            ? err.code
+            : err instanceof Prisma.PrismaClientUnknownRequestError
+              ? "UNKNOWN"
+              : "";
+        if (attempt >= 2 || (code !== "P2034" && code !== "P2028")) {
+          throw err;
         }
-        const data = sanitize(action.entity, action.payload);
-        await applyUpsert(tx, action.entity, userId, action.id, data);
+        await sleep(150);
       }
-    });
+    }
 
     return { applied: actions.length };
   },
@@ -516,4 +537,8 @@ async function pullRows(
         take: limit,
       })) as never;
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

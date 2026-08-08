@@ -1,11 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../lib/api";
-import { isNetworkError } from "../lib/api-error";
+import { isNetworkError, isServerError } from "../lib/api-error";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { enqueue } from "../lib/offline/sync";
 import { deleteLocalEntry, listLocalEntries, saveLocalEntry } from "../lib/offline/db";
 import { uuidv7 } from "@moodly/shared";
+import { reportError } from "../lib/errorReporter";
 import type { components } from "../lib/api-types";
 import {
   decryptEntryPayload,
@@ -14,6 +15,16 @@ import {
 } from "../lib/crypto/records";
 
 type Entry = components["schemas"]["Entry"];
+
+// Логирует реальную причину ошибки сохранения (код/сообщение) на бэкенд
+// (POST /client-errors), чтобы в проде было видно первопричину, а не
+// переведённую фразу тоста.
+function reportSaveError(operation: string, err: unknown): void {
+  const message =
+    err instanceof Error ? `${err.name}: ${err.message}` : `Unexpected error: ${String(err)}`;
+  const stack = err instanceof Error ? err.stack : undefined;
+  reportError({ message: `saveError [${operation}] ${message}`, stack });
+}
 
 export interface DecryptedEntry extends Entry {
   value: number;
@@ -95,9 +106,10 @@ export function useCreateEntry(onSuccess?: () => void) {
       try {
         return await api.entries.create({ id, parameterId: data.parameterId, encryptedData });
       } catch (err) {
-        if (!isNetworkError(err)) throw err;
-        // Сервер недоступен (ERR_CONNECTION_REFUSED) — кладём в офлайн-очередь,
-        // чтобы не потерять запись: синк отправит её, когда связь вернётся.
+        if (!isNetworkError(err) && !isServerError(err)) throw err;
+        // Сервер недоступен (ERR_CONNECTION_REFUSED) или ответил 5xx (деплой,
+        // перезапуск, сбой БД) — кладём в офлайн-очередь и локальное зеркало,
+        // чтобы не потерять запись: синк отправит её позже.
         await enqueue("entry", "upsert", id, {
           parameterId: data.parameterId,
           encryptedData,
@@ -126,7 +138,8 @@ export function useCreateEntry(onSuccess?: () => void) {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
       onSuccess?.();
     },
-    onError: () => {
+    onError: (err) => {
+      reportSaveError("create", err);
       toast.error(t("dashboard.saveError"));
     },
   });
@@ -146,7 +159,7 @@ export function useDeleteEntry() {
       try {
         return await api.entries.delete(id);
       } catch (err) {
-        if (!isNetworkError(err)) throw err;
+        if (!isNetworkError(err) && !isServerError(err)) throw err;
         await enqueue("entry", "delete", id);
         await deleteLocalEntry(id);
         return undefined;
@@ -155,7 +168,8 @@ export function useDeleteEntry() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
     },
-    onError: () => {
+    onError: (err) => {
+      reportSaveError("delete", err);
       toast.error(t("dashboard.saveError"));
     },
   });
@@ -197,7 +211,7 @@ export function useUpdateEntry() {
       try {
         return await api.entries.update(id, { encryptedData });
       } catch (err) {
-        if (!isNetworkError(err)) throw err;
+        if (!isNetworkError(err) && !isServerError(err)) throw err;
         await enqueue("entry", "upsert", id, { encryptedData });
         await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
         return {
@@ -214,7 +228,8 @@ export function useUpdateEntry() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entries"] });
     },
-    onError: () => {
+    onError: (err) => {
+      reportSaveError("update", err);
       toast.error(t("dashboard.saveError"));
     },
   });

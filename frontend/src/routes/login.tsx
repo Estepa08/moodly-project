@@ -6,7 +6,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { PasswordInput } from "../components/ui/password-input";
 import { Label } from "../components/ui/label";
-import { ShieldCheck, KeyRound } from "lucide-react";
+import { ShieldCheck, KeyRound, Info } from "lucide-react";
 import { AuthPage, AuthHeader, AuthDisclaimer } from "../features/auth";
 
 export default function LoginPage() {
@@ -19,6 +19,7 @@ export default function LoginPage() {
     password,
     setPassword,
     error,
+    unlockRequired,
     demoMode,
     demoLoading,
     step,
@@ -66,6 +67,24 @@ export default function LoginPage() {
   return (
     <AuthPage>
       <AuthHeader title={t("login.title")} subtitle={t("login.tagline")} />
+
+      {unlockRequired && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="rounded-lg border border-amber-300/50 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-900/20 dark:text-amber-100 space-y-1.5"
+        >
+          <div className="flex items-center gap-2 font-medium">
+            <ShieldCheck aria-hidden="true" className="w-4 h-4 shrink-0" />
+            <span>{t("login.unlockReasonTitle")}</span>
+          </div>
+          <p className="leading-relaxed">{t("login.unlockReason")}</p>
+          <p className="flex items-start gap-1.5 text-xs text-amber-800 dark:text-amber-200">
+            <Info aria-hidden="true" className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <span>{t("login.unlockReasonHint")}</span>
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">

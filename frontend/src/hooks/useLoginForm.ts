@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { api } from "../lib/api";
 import { getErrorMessage } from "../lib/error-messages";
@@ -15,11 +15,17 @@ export type LoginStep = "form" | "recovery";
 export function useLoginForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  // Сообщение о разблокировке, если приложение вернулось из «мёртвой» сессии
+  // (DEK в sessionStorage потерян после простоя вкладки). Передаётся через
+  // <Navigate state={{ reason: "unlock-required" }}> из ProtectedRoute.
+  const unlockRequired =
+    (location.state as { reason?: string } | null)?.reason === "unlock-required";
   const [demoLoading, setDemoLoading] = useState(false);
   const [step, setStep] = useState<LoginStep>("form");
   const [recoveryCode, setRecoveryCode] = useState("");
@@ -82,6 +88,7 @@ export function useLoginForm() {
     password,
     setPassword,
     error,
+    unlockRequired,
     demoMode: DEMO_MODE,
     demoLoading,
     step,

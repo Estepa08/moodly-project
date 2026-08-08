@@ -260,7 +260,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (res.status === 204) return undefined as T;
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new ApiError(error.code || "UNKNOWN", error.message || "Request failed");
+    throw new ApiError(error.code || "UNKNOWN", error.message || "Request failed", res.status);
   }
   return res.json();
 }
