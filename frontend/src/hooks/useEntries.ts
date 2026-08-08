@@ -4,7 +4,7 @@ import { isNetworkError } from "../lib/api-error";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { enqueue } from "../lib/offline/sync";
-import { listLocalEntries } from "../lib/offline/db";
+import { deleteLocalEntry, listLocalEntries, saveLocalEntry } from "../lib/offline/db";
 import { uuidv7 } from "@moodly/shared";
 import type { components } from "../lib/api-types";
 import {
@@ -73,6 +73,15 @@ export function useCreateEntry(onSuccess?: () => void) {
           parameterId: data.parameterId,
           encryptedData,
         });
+        await saveLocalEntry({
+          id,
+          userId: "",
+          parameterId: data.parameterId,
+          encryptedData,
+          value: data.value,
+          note: data.note ?? null,
+          createdAt: new Date().toISOString(),
+        });
         return {
           id,
           userId: "",
@@ -92,6 +101,15 @@ export function useCreateEntry(onSuccess?: () => void) {
         await enqueue("entry", "upsert", id, {
           parameterId: data.parameterId,
           encryptedData,
+        });
+        await saveLocalEntry({
+          id,
+          userId: "",
+          parameterId: data.parameterId,
+          encryptedData,
+          value: data.value,
+          note: data.note ?? null,
+          createdAt: new Date().toISOString(),
         });
         return {
           id,
@@ -122,6 +140,7 @@ export function useDeleteEntry() {
     mutationFn: async (id: string) => {
       if (!navigator.onLine) {
         await enqueue("entry", "delete", id);
+        await deleteLocalEntry(id);
         return undefined;
       }
       try {
@@ -129,6 +148,7 @@ export function useDeleteEntry() {
       } catch (err) {
         if (!isNetworkError(err)) throw err;
         await enqueue("entry", "delete", id);
+        await deleteLocalEntry(id);
         return undefined;
       }
     },
@@ -163,6 +183,7 @@ export function useUpdateEntry() {
       );
       if (!navigator.onLine) {
         await enqueue("entry", "upsert", id, { encryptedData });
+        await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
         return {
           id,
           userId: "",
@@ -178,6 +199,7 @@ export function useUpdateEntry() {
       } catch (err) {
         if (!isNetworkError(err)) throw err;
         await enqueue("entry", "upsert", id, { encryptedData });
+        await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
         return {
           id,
           userId: "",

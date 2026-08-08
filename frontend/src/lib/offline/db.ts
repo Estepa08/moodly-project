@@ -157,6 +157,40 @@ export async function listLocalAchievements(): Promise<LocalUserAchievement[]> {
   return getDb().achievements.toArray();
 }
 
+/**
+ * Локальное зеркало записи (offline-first): сохраняет запись в IndexedDB сразу,
+ * а не только в outbox. UI (useEntries → listLocalEntries) видит её немедленно;
+ * серверная копия появится после флаша outbox + pull (LWW по updatedAt).
+ */
+export async function saveLocalEntry(
+  entry: Partial<LocalEntry> & { id: string },
+): Promise<LocalEntry> {
+  const db = getDb();
+  const existing = await db.entries.get(entry.id);
+  const now = new Date().toISOString();
+  const record: LocalEntry = {
+    ...(existing ?? {}),
+    ...(entry as LocalEntry),
+    id: entry.id,
+    updatedAt: now,
+    deletedAt: null,
+  };
+  await db.entries.put(record);
+  return record;
+}
+
+/** Локальный tombstone записи (offline-first): удаляет запись из просмотра. */
+export async function deleteLocalEntry(id: string): Promise<void> {
+  const db = getDb();
+  const existing = await db.entries.get(id);
+  if (!existing) return;
+  await db.entries.put({
+    ...existing,
+    deletedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+}
+
 export interface LocalEntryFilter {
   parameterId?: string;
   from?: string;
