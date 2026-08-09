@@ -2,10 +2,10 @@ import { test, expect } from "@playwright/test";
 import { register, uniqueEmail, gotoApp } from "../helpers";
 
 const ROUTES: Array<[string, string]> = [
-  ["/", "Период"],
+  ["/my-day", "Мой день"],
+  ["/statistics", "Статистика"],
   ["/progress", "Мой прогресс"],
   ["/tests", "Оценки"],
-  ["/results", "Результаты тестов"],
   ["/settings", "Настройки"],
   ["/practices/breathing", "Дыхательное упражнение"],
   ["/practices/gratitude", "Дневник благодарности"],
@@ -17,15 +17,18 @@ test("все ключевые маршруты открываются после
 
   for (const [path, marker] of ROUTES) {
     await gotoApp(page, path);
-    await expect(page.getByText(marker).first()).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText(marker, { exact: false }).first()).toBeVisible({
+      timeout: 20_000,
+    });
   }
 });
 
 test(
-  "неавторизованный пользователь перенаправляется на вход",
+  "неавторизованный пользователь видит лендинг со входом",
   { tag: "@navigation" },
   async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByRole("link", { name: "Войти", exact: true })).toBeVisible();
   },
 );

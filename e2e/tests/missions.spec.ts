@@ -22,7 +22,7 @@ const MOOD_PARAM_LABELS = ["Настроение", "Сон", "Энергия", "
 
 async function moodEntry(page: Page, count: number): Promise<void> {
   for (let i = 0; i < count; i++) {
-    await gotoApp(page, "/");
+    await gotoApp(page, "/statistics");
     await page
       .getByRole("button", { name: new RegExp(`^${MOOD_PARAM_LABELS[i]}`) })
       .first()

@@ -4,9 +4,10 @@ import { register, quickEntry, gotoApp } from "../helpers";
 test("запись настроения: создаётся быстрая запись", { tag: "@dashboard" }, async ({ page }) => {
   await register(page);
 
-  await page.getByRole("button", { name: "Настроение" }).click();
+  await gotoApp(page, "/statistics");
+  await page.getByRole("button", { name: /^Настроение$/ }).click();
   await page.getByRole("button", { name: "Сохранить" }).click();
-  await expect(page.getByText("Сохранено")).toBeVisible();
+  await expect(page.getByText("Сохранено").first()).toBeVisible();
   await expect(page.getByTestId("quick-entry-saved-Mood")).toBeVisible();
 });
 
@@ -18,14 +19,15 @@ test("запись настроения с заметкой сохраняет �
   await expect(page.getByTestId("quick-entry-saved-Anxiety")).toBeVisible();
 });
 
-test("период дашборда переключается", { tag: "@dashboard" }, async ({ page }) => {
+test("период на странице статистики переключается", { tag: "@dashboard" }, async ({ page }) => {
   await register(page);
 
-  await page.getByRole("tab", { name: "Месяц", exact: true }).click();
-  await expect(page.getByRole("tab", { name: "Месяц", exact: true })).toHaveAttribute(
-    "aria-selected",
-    "true",
-  );
+  await gotoApp(page, "/statistics");
+  const trigger = page.getByRole("combobox", { name: "Период" }).first();
+  await expect(trigger).toBeVisible({ timeout: 20_000 });
+  await trigger.click();
+  await page.getByRole("option", { name: "Месяц", exact: true }).click();
+  await expect(trigger).toContainText("Месяц");
 });
 
 test(
@@ -36,7 +38,7 @@ test(
 
     await gotoApp(page, "/progress");
     await expect(page.getByRole("heading", { name: "Мой прогресс" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Статистика" })).toBeVisible();
-    await expect(page.getByText(/XP/).first()).toBeVisible();
+    await expect(page.getByText("Статистика").first()).toBeVisible();
+    await expect(page.getByText(/0\/100 XP/).first()).toBeVisible();
   },
 );
