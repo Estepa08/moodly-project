@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { api } from "../lib/api";
+import { getVapidPublicKey } from "../lib/vapid";
 
 export type PushSubscribeError = "no-vapid" | "no-sw" | "denied" | "failed";
 
@@ -47,7 +48,8 @@ export function usePushNotifications() {
         return { ok: false, error: "no-sw" };
       }
 
-      if (!import.meta.env.VITE_VAPID_PUBLIC_KEY) {
+      const vapidPublicKey = getVapidPublicKey();
+      if (!vapidPublicKey) {
         console.warn("[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна");
         return { ok: false, error: "no-vapid" };
       }
@@ -84,7 +86,7 @@ export function usePushNotifications() {
           return { ok: true };
         }
 
-        const applicationServerKey = urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY);
+        const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: applicationServerKey as unknown as BufferSource,
