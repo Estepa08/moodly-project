@@ -16,7 +16,8 @@ frontend/dev-dist/
 coverage/
 backups/
 CLAUDE.md
-docs/
+docs/*
+!docs/DB_MIGRATION.md
 infra/certs/*.key
 infra/certs/*.pem
 infra/certs/*.crt

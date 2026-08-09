@@ -93,10 +93,23 @@ async function renderRoute(browser, route) {
   }
 }
 
+/**
+ * Убирает абсолютные localhost-URLы из сохранённого HTML.
+ * Vite-рантайм при подгрузке ленивых чанков вставляет `modulepreload`/`script`
+ * с абсолютным адресом вида `http://127.0.0.1:4573/assets/x.js` (origin статик-
+ * сервера пререндера). Без нормализации эти URL уедут в прод-бандл, и браузер
+ * попытается грузить ассеты с localhost — CSP (`script-src 'self'`) их заблокирует.
+ * Заменяем их на корнеотносительные (`/assets/x.js`), которые на проде резолвятся
+ * в `self`.
+ */
+function normalizeAssetUrls(html) {
+  return html.split(`${BASE}/`).join("/");
+}
+
 function writeRoute(html, route) {
   const file = outputPath(route);
   mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, html);
+  writeFileSync(file, normalizeAssetUrls(html));
   return file;
 }
 

@@ -48,7 +48,7 @@
         # Google Fonts (fonts.googleapis.com / fonts.gstatic.com), data:/blob: картинки,
         # Яндекс.Метрика (mc.yandex.ru / yastatic.net / yandex.ru / yandex.net)
         header {
-            Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://mc.yandex.ru; connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://yandex.net; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+            Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://mc.yandex.ru; connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://yandex.net wss://mc.yandex.ru; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         }
         # Пытаемся найти файл. Сначала реальные файлы ({path}), затем
         # пререндеренный HTML маршрута ({path}/index.html), и только потом

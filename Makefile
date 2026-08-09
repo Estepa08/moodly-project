@@ -107,7 +107,7 @@ db-reset:
 	cd backend && npx prisma db push --force-reset
 	cd backend && npm run db:seed
 
-# Прод-БД (Render). DATABASE_URL берётся из backend/.env.prod.
+# Прод-БД. DATABASE_URL берётся из backend/.env.prod.
 # Пример: make db-prod-users
 # Пример: make db-prod-user-delete ARGS="--email=user@example.com --yes"
 # Пример: make db-prod-admin ARGS="--email=user@example.com"
