@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { register, uniqueEmail, gotoApp } from "../helpers";
+import { register, uniqueEmail, gotoApp, quickEntry } from "../helpers";
 
 test("длинный путь: запись → практика → дневник мыслей", { tag: "@journey" }, async ({ page }) => {
   await register(page, uniqueEmail("journey"));
 
-  await page.getByRole("button", { name: "Настроение" }).click();
-  await page.getByRole("button", { name: "Сохранить" }).click();
+  await quickEntry(page, "Настроение");
   await expect(page.getByTestId("quick-entry-saved-Mood")).toBeVisible();
 
   await gotoApp(page, "/practices/gratitude");
