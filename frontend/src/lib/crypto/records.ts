@@ -62,6 +62,27 @@ export async function decryptEntryPayload(
   };
 }
 
+/**
+ * Извлекает активности из «легаси»-заметки — записи без шифротекста, которые
+ * создаёт seed-скрипт для demo-аккаунта: в note лежит JSON-массив
+ * ActivitySelection. Обычные текстовые заметки (не начинающиеся с "[")
+ * игнорируются, чтобы не задеть семантику других параметров.
+ */
+export function parseLegacyActivities(note: string | null | undefined): ActivitySelection[] {
+  if (!note) return [];
+  const trimmed = note.trim();
+  if (!trimmed.startsWith("[")) return [];
+  try {
+    const parsed: unknown = JSON.parse(trimmed);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (a): a is ActivitySelection => !!a && typeof (a as ActivitySelection).key === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
 export async function encryptTestResultPayload(
   data: TestResultCipherPayload,
   entityId: string,

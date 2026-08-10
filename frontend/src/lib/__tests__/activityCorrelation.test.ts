@@ -90,30 +90,30 @@ describe("computeActivityCorrelation", () => {
     expect(result.down[0].key).toBe("stress");
     expect(result.up[0].lift).toBeGreaterThan(0);
     expect(result.down[0].lift).toBeLessThan(0);
-    expect(result.up[0].days).toBeGreaterThanOrEqual(3);
+    expect(result.up[0].days).toBeGreaterThanOrEqual(5);
   });
 
   it("deduplicates repeated activities within the same day", () => {
     const entries: DecryptedEntry[] = [];
-    for (let d = 1; d <= 4; d++) {
+    for (let d = 1; d <= 5; d++) {
       entries.push(makeEntry(d, mood, 9));
       entries.push(makeEntry(d, dayAct, 0, [{ key: "run" }, { key: "run" }]));
     }
-    for (let d = 5; d <= 6; d++) {
+    for (let d = 6; d <= 7; d++) {
       entries.push(makeEntry(d, mood, 5));
       entries.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
     }
     const result = computeActivityCorrelation(entries, paramNameById, labelFor);
-    expect(result.up.find((s) => s.key === "run")?.days).toBe(4);
+    expect(result.up.find((s) => s.key === "run")?.days).toBe(5);
   });
 
   it("uses custom label for custom activities", () => {
     const entries: DecryptedEntry[] = [];
-    for (let d = 1; d <= 4; d++) {
+    for (let d = 1; d <= 5; d++) {
       entries.push(makeEntry(d, mood, 8));
       entries.push(makeEntry(d, dayAct, 0, [{ key: "custom:x", custom: true, label: "Ретрит" }]));
     }
-    for (let d = 5; d <= 6; d++) {
+    for (let d = 6; d <= 7; d++) {
       entries.push(makeEntry(d, mood, 5));
       entries.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
     }
@@ -187,5 +187,123 @@ describe("computeAllMetricCorrelations", () => {
       expect(all[metric].sufficient).toBe(true);
       expect(all[metric].daysTracked).toBe(5);
     }
+  });
+});
+
+describe("confidence and noise filtering", () => {
+  it("excludes activities with n below MIN_ACTIVITY_DAYS even with large lift", () => {
+    const entries: DecryptedEntry[] = [];
+    // run: только 3 дня, но высокое значение показателя
+    for (let d = 1; d <= 3; d++) {
+      entries.push(makeEntry(d, mood, 9));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "run" }]));
+    }
+    // walk: 5 дней с низким значением — образует базлайн
+    for (let d = 4; d <= 8; d++) {
+      entries.push(makeEntry(d, mood, 5));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
+    }
+    const result = computeActivityCorrelation(entries, paramNameById, labelFor);
+    expect(result.sufficient).toBe(true);
+    expect(result.up.find((s) => s.key === "run")).toBeUndefined();
+    expect(result.down.find((s) => s.key === "run")).toBeUndefined();
+    expect(result.down[0].key).toBe("walk");
+  });
+
+  it("n=5 with stable low spread gets confidence low (n<7 base, no upgrade)", () => {
+    const entries: DecryptedEntry[] = [];
+    for (let d = 1; d <= 5; d++) {
+      entries.push(makeEntry(d, mood, 8));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
+    }
+    for (let d = 6; d <= 10; d++) {
+      entries.push(makeEntry(d, mood, 4));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "stress" }]));
+    }
+    const result = computeActivityCorrelation(entries, paramNameById, labelFor);
+    expect(result.up[0].key).toBe("walk");
+    expect(result.up[0].days).toBe(5);
+    expect(result.up[0].confidence).toBe("low");
+  });
+
+  it("confidence rises with daysCount: n=8 → medium, n=15 → high", () => {
+    const medium: DecryptedEntry[] = [];
+    for (let d = 1; d <= 8; d++) {
+      medium.push(makeEntry(d, mood, 8));
+      medium.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
+    }
+    for (let d = 9; d <= 14; d++) {
+      medium.push(makeEntry(d, mood, 4));
+      medium.push(makeEntry(d, dayAct, 0, [{ key: "stress" }]));
+    }
+    const mediumRes = computeActivityCorrelation(medium, paramNameById, labelFor);
+    expect(mediumRes.up[0].confidence).toBe("medium");
+
+    const high: DecryptedEntry[] = [];
+    for (let d = 1; d <= 15; d++) {
+      high.push(makeEntry(d, mood, 8));
+      high.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
+    }
+    for (let d = 16; d <= 30; d++) {
+      high.push(makeEntry(d, mood, 4));
+      high.push(makeEntry(d, dayAct, 0, [{ key: "stress" }]));
+    }
+    const highRes = computeActivityCorrelation(high, paramNameById, labelFor);
+    expect(highRes.up[0].confidence).toBe("high");
+  });
+
+  it("large spread downgrades confidence when signal is within noise", () => {
+    // walk: 8 дней с чередованием 8/2 — среднее 5, разброс ~3, сигнал ~0.43
+    const noisyMedium: DecryptedEntry[] = [];
+    for (let d = 1; d <= 8; d++) {
+      noisyMedium.push(makeEntry(d, mood, d % 2 === 1 ? 8 : 2));
+      noisyMedium.push(makeEntry(d, dayAct, 0, [{ key: "walk" }]));
+    }
+    for (let d = 9; d <= 14; d++) {
+      noisyMedium.push(makeEntry(d, mood, 4));
+      noisyMedium.push(makeEntry(d, dayAct, 0, [{ key: "stress" }]));
+    }
+    const res = computeActivityCorrelation(noisyMedium, paramNameById, labelFor);
+    const walk = res.up.find((s) => s.key === "walk") ?? res.down.find((s) => s.key === "walk");
+    expect(walk).toBeDefined();
+    expect(walk!.confidence).toBe("low");
+
+    // n=5 с большим разбросом тоже остаётся low (ниже опускаться некуда)
+    const noisySmall: DecryptedEntry[] = [];
+    for (let d = 1; d <= 5; d++) {
+      noisySmall.push(makeEntry(d, mood, d % 2 === 1 ? 8 : 2));
+      noisySmall.push(makeEntry(d, dayAct, 0, [{ key: "run" }]));
+    }
+    for (let d = 6; d <= 10; d++) {
+      noisySmall.push(makeEntry(d, mood, 4));
+      noisySmall.push(makeEntry(d, dayAct, 0, [{ key: "stress" }]));
+    }
+    const smallRes = computeActivityCorrelation(noisySmall, paramNameById, labelFor);
+    const run =
+      smallRes.up.find((s) => s.key === "run") ?? smallRes.down.find((s) => s.key === "run");
+    expect(run).toBeDefined();
+    expect(run!.confidence).toBe("low");
+  });
+
+  it("prefers larger daysCount when lifts are equal", () => {
+    const entries: DecryptedEntry[] = [];
+    // walk и gym оба в дни с mood=8: gym чаще (n=10), walk реже (n=5)
+    for (let d = 1; d <= 5; d++) {
+      entries.push(makeEntry(d, mood, 8));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "gym" }, { key: "walk" }]));
+    }
+    for (let d = 6; d <= 10; d++) {
+      entries.push(makeEntry(d, mood, 8));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "gym" }]));
+    }
+    for (let d = 11; d <= 15; d++) {
+      entries.push(makeEntry(d, mood, 4));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: "stress" }]));
+    }
+    const result = computeActivityCorrelation(entries, paramNameById, labelFor);
+    expect(result.up[0].key).toBe("gym");
+    expect(result.up[1].key).toBe("walk");
+    expect(result.up[0].lift).toBeCloseTo(result.up[1].lift);
+    expect(result.up[0].days).toBeGreaterThan(result.up[1].days);
   });
 });

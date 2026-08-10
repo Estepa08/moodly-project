@@ -11,6 +11,7 @@ import type { components } from "../lib/api-types";
 import {
   decryptEntryPayload,
   encryptEntryPayload,
+  parseLegacyActivities,
   type ActivitySelection,
 } from "../lib/crypto/records";
 
@@ -34,8 +35,14 @@ export interface DecryptedEntry extends Entry {
 
 async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
   if (!e.encryptedData) {
-    // Легаси-запись без шифротекста (миграция не тронула) — вернём как есть.
-    return { ...e, value: e.value ?? 0, note: e.note ?? null, activities: [] };
+    // Легаси-запись без шифротекста (demo-сид/миграция) — вернём как есть.
+    // Активности для параметра Day Activities в таких записях лежат в note.
+    return {
+      ...e,
+      value: e.value ?? 0,
+      note: e.note ?? null,
+      activities: parseLegacyActivities(e.note),
+    };
   }
   const payload = await decryptEntryPayload(e.encryptedData, e.id);
   return { ...e, value: payload.value, note: payload.note, activities: payload.activities };
