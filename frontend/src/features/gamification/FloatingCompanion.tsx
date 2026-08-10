@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import PetAvatar from "./PetAvatar";
-import { usePets } from "./useCreature";
+import { usePets, usePet } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 import { isCompanionHidden, subscribeCompanionVisibility } from "./companionVisibility";
 
@@ -12,9 +12,10 @@ export default function FloatingCompanion() {
   const { t } = useTranslation();
   const location = useLocation();
   const { data: pets } = usePets();
+  const pet = usePet();
   const [hidden, setHidden] = useState(isCompanionHidden);
 
-  useEffect(() => subscribeCompanionVisibility(() => setHidden(isCompanionHidden())), []);
+  useEffect(() => subscribeCompanionVisibility(() => setHidden(isCompanionHidden)), []);
 
   if (hidden) return null;
   if (HIDDEN_PATHS.some((path) => location.pathname.startsWith(path))) return null;
@@ -29,7 +30,13 @@ export default function FloatingCompanion() {
       className="fixed right-4 bottom-[calc(5rem+var(--sab))] md:bottom-6 md:right-6 z-40 animate-pet-float"
       role="presentation"
     >
-      <PetAvatar petType={petType} size="md" interactive ariaLabel={petName} />
+      <PetAvatar
+        petType={petType}
+        size="md"
+        interactive
+        ariaLabel={petName}
+        onTap={() => pet.mutate()}
+      />
     </div>
   );
 }

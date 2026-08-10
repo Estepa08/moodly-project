@@ -120,6 +120,9 @@ export interface CreatureState {
   stage?: "baby" | "kid" | "adult" | "max";
   feedCount?: number;
   feedCounts?: Record<string, number>;
+  petCount?: number;
+  petCountRemaining?: number;
+  lastPetAt?: string | null;
 }
 
 interface CheckInResponse {
@@ -133,6 +136,15 @@ export interface FeedResponse {
   xpAwarded: number;
   feedCount: number;
   feedCounts: Record<string, number>;
+}
+
+export interface PetResponse {
+  state: CreatureState;
+  leveledUp: boolean;
+  xpAwarded: number;
+  petCount: number;
+  petCountRemaining: number;
+  limitReached: boolean;
 }
 
 interface PracticeCompletion {
@@ -370,6 +382,7 @@ export const api = {
         body: JSON.stringify({ source }),
       }),
     feed: () => request<FeedResponse>("/creature/feed", { method: "POST" }),
+    pet: () => request<PetResponse>("/creature/pet", { method: "POST" }),
     getCompletions: (days = 30) =>
       request<PracticeCompletion[]>(`/creature/completions?days=${days}`),
     getStats: () => request<CreatureStats>("/creature/stats"),

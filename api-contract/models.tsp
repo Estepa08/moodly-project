@@ -372,6 +372,10 @@ model CreatureState {
   feedCount: int32;
   @doc("Скормленные единицы по каждому питомцу (map тип → количество)")
   feedCounts: unknown;
+  @doc("Поглаживаний за текущий день (сбрасывается в полночь по серверному времени)")
+  petCount: int32;
+  @doc("Сколько поглаживаний осталось сегодня (0 — лимит исчерпан)")
+  petCountRemaining: int32;
 }
 
 @doc("Коллекция питомцев пользователя")
@@ -394,6 +398,21 @@ model FeedResponse {
   feedCount: int32;
   @doc("Скормленные единицы по каждому питомцу (map тип → количество)")
   feedCounts: unknown;
+}
+
+@doc("Результат поглаживания компаньона")
+model PetResponse {
+  state: CreatureState;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
+  @doc("Сколько XP начислено за это поглаживание (0 после дневного лимита)")
+  xpAwarded: int32;
+  @doc("Поглаживаний за текущий день")
+  petCount: int32;
+  @doc("Сколько поглаживаний осталось сегодня")
+  petCountRemaining: int32;
+  @doc("Исчерпан ли дневной лимит поглаживаний")
+  limitReached: boolean;
 }
 
 @doc("Тело обновления питомца")

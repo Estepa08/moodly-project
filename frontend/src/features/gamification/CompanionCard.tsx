@@ -1,16 +1,20 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Zap, Waves, Flame, Sparkles, Activity } from "lucide-react";
-import { useCreatureState, usePets } from "./useCreature";
+import { toast } from "sonner";
+import { Zap, Waves, Flame, Sparkles, Activity, Heart } from "lucide-react";
+import { useCreatureState, usePets, usePet } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
 import { EXP_PER_LEVEL } from "../../lib/constants";
+import { PET_XP_DAILY_LIMIT } from "@moodly/shared";
 import { ProgressBar } from "../../components/ui/progress-bar";
+import { cn } from "../../lib/utils";
 import PetAvatar from "./PetAvatar";
 
 export default function CompanionCard() {
   const { t } = useTranslation();
   const { data: creature, isLoading } = useCreatureState();
   const { data: pets } = usePets();
+  const pet = usePet();
 
   if (isLoading || !creature) return null;
 
@@ -22,8 +26,22 @@ export default function CompanionCard() {
   const petMood = creature.petMood ?? "calm";
   const stage = creature.stage ?? "baby";
 
+  const petCount = creature.petCount ?? 0;
+  const petCountRemaining = creature.petCountRemaining ?? PET_XP_DAILY_LIMIT - petCount;
+  const limitReached = petCount >= PET_XP_DAILY_LIMIT;
+
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
+
+  const handleTap = () => {
+    pet.mutate(undefined, {
+      onSuccess: (data) => {
+        if (data.limitReached) {
+          toast.info(t("companion.petsLimitMessage", { limit: PET_XP_DAILY_LIMIT }));
+        }
+      },
+    });
+  };
 
   return (
     <section
@@ -36,6 +54,7 @@ export default function CompanionCard() {
           interactive
           ariaLabel={displayName}
           emotion={petMood === "happy" ? "happy" : "idle"}
+          onTap={handleTap}
         />
         <div className="min-w-0 flex-1">
           <p className="font-serif font-semibold text-foreground text-lg leading-tight truncate">
@@ -79,6 +98,40 @@ export default function CompanionCard() {
           className="mt-1.5"
         />
       </div>
+
+      <div className="flex items-center gap-3">
+        <span
+          className={cn(
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold",
+            limitReached
+              ? "bg-muted text-muted-foreground"
+              : "bg-gradient-to-r from-primary to-accent text-white shadow-neumorphic-sm",
+          )}
+        >
+          <Heart aria-hidden="true" className="w-3.5 h-3.5" />
+          {petCount}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+            {t("companion.petsRemainingLabel")}
+          </p>
+          <p className="text-xs text-muted-foreground font-semibold tabular-nums">
+            {t("companion.petsProgress", {
+              current: petCountRemaining,
+              limit: PET_XP_DAILY_LIMIT,
+            })}
+          </p>
+        </div>
+      </div>
+
+      {limitReached && (
+        <p
+          role="status"
+          className="rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary"
+        >
+          {t("companion.petsLimitMessage", { limit: PET_XP_DAILY_LIMIT })}
+        </p>
+      )}
 
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-xs font-semibold text-primary">

@@ -468,6 +468,19 @@ paths:
             schema:
               $ref: '#/components/schemas/BreathingCompleteRequest'
   /creature/pet:
+    post:
+      operationId: Creature_pet
+      description: 'Погладить компаньона: +1 XP до исчерпания дневного лимита (100)'
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PetResponse'
+      tags:
+        - Breathing
     patch:
       operationId: Creature_setPet
       description: Активировать питомца и/или задать имя
@@ -1246,6 +1259,8 @@ components:
         - streak
         - feedCount
         - feedCounts
+        - petCount
+        - petCountRemaining
       properties:
         id:
           type: string
@@ -1318,6 +1333,14 @@ components:
           description: Всего скормленных единиц еды
         feedCounts:
           description: Скормленные единицы по каждому питомцу (map тип → количество)
+        petCount:
+          type: integer
+          format: int32
+          description: Поглаживаний за текущий день (сбрасывается в полночь по серверному времени)
+        petCountRemaining:
+          type: integer
+          format: int32
+          description: Сколько поглаживаний осталось сегодня (0 — лимит исчерпан)
       description: Текущее состояние существа пользователя
     Entry:
       type: object
@@ -1607,6 +1630,37 @@ components:
         feedCounts:
           description: Скормленные единицы по каждому питомцу (map тип → количество)
       description: Коллекция питомцев пользователя
+    PetResponse:
+      type: object
+      required:
+        - state
+        - leveledUp
+        - xpAwarded
+        - petCount
+        - petCountRemaining
+        - limitReached
+      properties:
+        state:
+          $ref: '#/components/schemas/CreatureState'
+        leveledUp:
+          type: boolean
+          description: Был ли достигнут новый уровень
+        xpAwarded:
+          type: integer
+          format: int32
+          description: Сколько XP начислено за это поглаживание (0 после дневного лимита)
+        petCount:
+          type: integer
+          format: int32
+          description: Поглаживаний за текущий день
+        petCountRemaining:
+          type: integer
+          format: int32
+          description: Сколько поглаживаний осталось сегодня
+        limitReached:
+          type: boolean
+          description: Исчерпан ли дневной лимит поглаживаний
+      description: Результат поглаживания компаньона
     PetUpdateRequest:
       type: object
       properties:

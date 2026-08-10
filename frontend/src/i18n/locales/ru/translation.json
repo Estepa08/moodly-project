@@ -1635,7 +1635,11 @@
     "xpToLevel": "XP до {{level}} уровня",
     "energy": "Энергия {{value}}",
     "calmness": "Спокойствие {{value}}",
-    "toCollection": "К коллекции компаньонов"
+    "toCollection": "К коллекции компаньонов",
+    "petsRemainingLabel": "Осталось поглаживаний",
+    "petsProgress": "{{current}}/{{limit}}",
+    "petsLimitReached": "Лимит исчерпан",
+    "petsLimitMessage": "Сегодня ты уже погладил меня {{limit}} раз! Приходи завтра!"
   },
   "petMood": {
     "happy": "В отличном настроении",

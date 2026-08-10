@@ -88,19 +88,18 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (!id.includes("node_modules")) return;
-          if (id.includes("recharts") || id.includes("@nivo/")) return "vendor-charts";
-          if (id.includes("lottie-react")) return "vendor-anim";
-          if (id.includes("clsx") || id.includes("tailwind-merge")) return "vendor-ui";
-          if (
-            id.includes("react") ||
-            id.includes("react-dom") ||
-            id.includes("react-router") ||
-            id.includes("@tanstack/react-query")
-          ) {
-            return "vendor-react";
-          }
+        // Нативный rolldown-сплит вендоров. ВАЖНО: группы НЕ должны включать
+        // recharts/@nivo/lottie — при их явном выделении rolldown хостит эти
+        // чанки в static-импорты entry (баг), и весь стек графики попадает в
+        // initial-load. С точным regex (граница `/`) react-smooth и прочие
+        // транзитивные пакеты не захватываются.
+        codeSplitting: {
+          groups: [
+            {
+              name: "vendor-react",
+              test: /node_modules\/(react|react-dom|react-router|@tanstack)\//,
+            },
+          ],
         },
       },
     },

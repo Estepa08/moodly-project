@@ -94,8 +94,10 @@ export default function CollapsibleSection({
       <div
         id={id}
         className={cn(
-          "overflow-hidden transition-[max-height,opacity] duration-200",
-          open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0",
+          "transition-[max-height,opacity] duration-200",
+          open
+            ? "max-h-[60vh] overflow-y-auto overscroll-contain opacity-100 pr-0.5"
+            : "max-h-0 overflow-hidden opacity-0",
         )}
       >
         <div className="px-0.5 pt-2">{children}</div>

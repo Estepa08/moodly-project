@@ -10,6 +10,7 @@ export {
   useCompleteExercise,
   useRewardPractice,
   useFeed,
+  usePet,
   useCompletions,
   useCreatureStats,
   usePets,

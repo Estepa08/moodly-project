@@ -190,6 +190,11 @@ interface Creature {
   @doc("Получить коллекцию питомцев пользователя")
   getPets(): PetCollection;
 
+  @post
+  @route("/pet")
+  @doc("Погладить компаньона: +1 XP до исчерпания дневного лимита (100)")
+  pet(): PetResponse;
+
   @patch
   @route("/pet")
   @doc("Активировать питомца и/или задать имя")
