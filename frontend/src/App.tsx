@@ -95,10 +95,15 @@ function AdminRoute() {
 
 function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
+  const location = useLocation();
   if (isBootstrapping) return <BootstrapSpinner />;
-  // Без разблокированного DEK не уводим на защищённые маршруты (иначе цикл
-  // /login → /my-day → /login): остаёмся на логине с сообщением о разблокировке.
   if (isAuthenticated && hasSessionKey()) return <Navigate to="/my-day" replace />;
+  // Авторизованный, но DEK потерян (новая вкладка/браузер): на защищённые
+  // маршруты не ведём (ProtectedRoute и так уведёт на /login с разблокировкой),
+  // но и лендинг не показываем — только сам /login, чтобы не было цикла.
+  if (isAuthenticated && location.pathname !== "/login") {
+    return <Navigate to="/login" replace state={{ reason: "unlock-required" }} />;
+  }
   return <Outlet />;
 }
 
