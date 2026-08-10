@@ -7,7 +7,14 @@ export const ENERGY_PARAM = "Energy";
 export const ANXIETY_PARAM = "Anxiety";
 export const DAY_ACTIVITIES_PARAM = "Day Activities";
 export const CORRELATION_WINDOW_DAYS = 30;
-export const MIN_ACTIVITY_DAYS = 3;
+/**
+ * Минимальное число дней, по которому считается сигнал по конкретной активности.
+ * Порог поднят с 3 до 5: при n=3 один случайный день даёт ~33% веса выборки
+ * и может создать ложный сигнал («активность влияет на состояние»).
+ * n=5 — компромисс: активность средней частоты (раз в ~6 дней в окне 30 дней)
+ * успевает набрать выборку, а вклад одного дня уже не доминирует (~20%).
+ */
+export const MIN_ACTIVITY_DAYS = 5;
 
 export type CorrelationMetric = "mood" | "sleep" | "energy" | "anxiety";
 
@@ -31,12 +38,30 @@ function normalizeMetric(metric: CorrelationMetric, value: number): number {
   return metric === "anxiety" ? 10 - value : value;
 }
 
+export type Confidence = "low" | "medium" | "high";
+
 export interface ActivityScore {
   key: string;
   label: string;
+  /** n — на основе скольки дней посчитан lift */
   days: number;
   avgValue: number;
   lift: number;
+  confidence: Confidence;
+}
+
+/**
+ * Уверенность в сигнале. Базовый уровень по объёму выборки:
+ * n<7 → low, 7–14 → medium, 15+ → high.
+ * Если разброс (stdDev) сопоставим с величиной эффекта (stdDev >= |lift|),
+ * сигнал в пределах шума — понижаем на один уровень (но не ниже low).
+ */
+function confidenceFor(n: number, stdDev: number, absLift: number): Confidence {
+  const base: Confidence = n < 7 ? "low" : n <= 14 ? "medium" : "high";
+  if (stdDev >= absLift && base !== "low") {
+    return base === "high" ? "medium" : "low";
+  }
+  return base;
 }
 
 export interface MetricCorrelation {
@@ -120,10 +145,11 @@ export function computeMetricCorrelation(
 
   const baseline = days.reduce((s, d) => s + d.value, 0) / days.length;
 
-  const scores = new Map<string, { label: string; sum: number; count: number }>();
+  const scores = new Map<string, { label: string; sum: number; sumSq: number; count: number }>();
   const addScore = (key: string, label: string, value: number) => {
-    const cur = scores.get(key) ?? { label, sum: 0, count: 0 };
+    const cur = scores.get(key) ?? { label, sum: 0, sumSq: 0, count: 0 };
     cur.sum += value;
+    cur.sumSq += value * value;
     cur.count += 1;
     scores.set(key, cur);
   };
@@ -141,14 +167,26 @@ export function computeMetricCorrelation(
   for (const [key, s] of scores) {
     if (s.count < MIN_ACTIVITY_DAYS) continue;
     const avgValue = s.sum / s.count;
-    scored.push({ key, label: s.label, days: s.count, avgValue, lift: avgValue - baseline });
+    const lift = avgValue - baseline;
+    const variance = s.sumSq / s.count - avgValue * avgValue;
+    const stdDev = variance > 0 ? Math.sqrt(variance) : 0;
+    scored.push({
+      key,
+      label: s.label,
+      days: s.count,
+      avgValue,
+      lift,
+      confidence: confidenceFor(s.count, stdDev, Math.abs(lift)),
+    });
   }
 
-  const sorted = [...scored].sort((a, b) => b.lift - a.lift);
+  // При равном lift предпочитаем активность с большим days — более надёжный сигнал
+  // важнее чуть большей величины эффекта.
+  const sorted = [...scored].sort((a, b) => b.lift - a.lift || b.days - a.days);
   const up = sorted.filter((s) => s.lift > 0).slice(0, 3);
   const down = sorted
     .filter((s) => s.lift < 0)
-    .sort((a, b) => a.lift - b.lift)
+    .sort((a, b) => a.lift - b.lift || b.days - a.days)
     .slice(0, 3);
 
   return { metric, baseline, daysTracked, up, down, sufficient: true };
