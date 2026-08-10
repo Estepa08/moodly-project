@@ -1632,7 +1632,14 @@
     "petsRemainingLabel": "Pets remaining today",
     "petsProgress": "{{current}}/{{limit}}",
     "petsLimitReached": "Daily limit reached",
-    "petsLimitMessage": "You've already petted me {{limit}} times today! Come back tomorrow!"
+    "petsLimitMessage": "You've already petted me {{limit}} times today! Come back tomorrow!",
+    "cycleHint": "Petting cycle: {{current}}/{{total}} · every 3rd tap gives +1 XP",
+    "renameTitle": "What's your companion's name?",
+    "renameDescription": "Pick a name or leave it empty to use the default one.",
+    "renameSave": "Save",
+    "energyLowTitle": "Energy is almost out",
+    "energyLowHint": "Your companion is tired — petting no longer gives +XP. Restore energy with a practice.",
+    "energyRestoreCta": "Restore energy with a practice"
   },
   "petMood": {
     "happy": "In a great mood",

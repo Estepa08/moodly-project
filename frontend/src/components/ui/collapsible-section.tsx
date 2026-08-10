@@ -102,7 +102,6 @@ export default function CollapsibleSection({
         )}
       >
         <div className="px-0.5 pt-2">
-          <div className="h-px bg-border mb-3" aria-hidden="true" />
           <div className="relative rounded-xl bg-muted/70 shadow-neumorphic-inset pr-0.5 max-h-[56vh] overflow-y-auto">
             <div className="flex gap-2.5 p-2 pl-2.5">
               <span aria-hidden="true" className={cn("w-1 rounded-full shrink-0", railClassName)} />

@@ -2,10 +2,12 @@ import { useTranslation } from "react-i18next";
 import { Sparkles } from "lucide-react";
 import PetAvatar from "./PetAvatar";
 import { PET_DEFINITIONS } from "./pets";
-import { usePets } from "./useCreature";
+import { usePets, usePet } from "./useCreature";
 import { StreakIndicator } from "./index";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import { EXP_PER_LEVEL } from "../../lib/constants";
+import { PET_DAILY_CLICK_LIMIT, PET_CYCLE } from "@moodly/shared";
+import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
 import type { CreatureState } from "../../lib/api";
 
 interface ProgressHeroProps {
@@ -15,6 +17,7 @@ interface ProgressHeroProps {
 export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();
   const { data: pets } = usePets();
+  const pet = usePet();
   const petType = pets?.activePetType ?? "puff";
   const petName =
     pets?.petName?.trim() ||
@@ -22,11 +25,28 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
+  const petCount = creature.petCount ?? 0;
+  const limitReached = petCount >= PET_DAILY_CLICK_LIMIT;
+  const hasEnergy = (creature.energy ?? 100) > 0;
+  const cyclePosition = (petCount % PET_CYCLE) + 1;
+  const title = creature.activeTitle ?? null;
+  const titleEmoji = title ? (TITLE_EMOJI[title] ?? "🎖️") : null;
+  const titleLabel = title ? t(TITLE_MAP[title] ?? "progress.noTitle") : null;
+
   return (
     <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
         <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-          <PetAvatar petType={petType} size="lg" plain interactive ariaLabel={petName} />
+          <PetAvatar
+            petType={petType}
+            size="lg"
+            plain
+            interactive
+            ariaLabel={petName}
+            xpEligible={!limitReached && hasEnergy}
+            cyclePosition={cyclePosition}
+            onTap={() => pet.mutate()}
+          />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -37,6 +57,17 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               <Sparkles aria-hidden="true" className="w-3 h-3" />
               {t(`petStage.${creature.stage ?? "baby"}`)}
             </span>
+            {title && titleEmoji && (
+              <span
+                className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-info/10 text-xs font-semibold text-info"
+                title={titleLabel ?? undefined}
+              >
+                <span aria-hidden="true" className="text-sm leading-none">
+                  {titleEmoji}
+                </span>
+                <span className="hidden sm:inline">{titleLabel}</span>
+              </span>
+            )}
             <StreakIndicator streak={creature.streak} />
           </div>
           <div className="flex items-center gap-2">

@@ -413,6 +413,8 @@ model PetResponse {
   petCountRemaining: int32;
   @doc("Исчерпан ли дневной лимит поглаживаний")
   limitReached: boolean;
+  @doc("Позиция в цикле поглаживаний 1-2-3: на 3-й позиции начисляется XP")
+  cyclePosition: int32;
 }
 
 @doc("Тело обновления питомца")

@@ -1639,6 +1639,7 @@ components:
         - petCount
         - petCountRemaining
         - limitReached
+        - cyclePosition
       properties:
         state:
           $ref: '#/components/schemas/CreatureState'
@@ -1660,6 +1661,10 @@ components:
         limitReached:
           type: boolean
           description: Исчерпан ли дневной лимит поглаживаний
+        cyclePosition:
+          type: integer
+          format: int32
+          description: 'Позиция в цикле поглаживаний 1-2-3: на 3-й позиции начисляется XP'
       description: Результат поглаживания компаньона
     PetUpdateRequest:
       type: object

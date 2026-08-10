@@ -7,6 +7,9 @@ import { getLocalCreature, saveLocalCreature, listLocalAchievements } from "../.
 import { EXP_PER_LEVEL, ParameterName } from "../../lib/constants";
 import { useParameters } from "../../hooks/useParameters";
 import { useEntries } from "../../hooks/useEntries";
+import { toast } from "sonner";
+import { ENERGY_LOW_THRESHOLD } from "@moodly/shared";
+import i18n from "../../i18n/i18n";
 
 // ===== Функция для коррекции уровня и XP =====
 function correctLevelAndXP(state: CreatureState): { corrected: CreatureState; leveledUp: boolean } {
@@ -31,6 +34,22 @@ function correctLevelAndXP(state: CreatureState): { corrected: CreatureState; le
 }
 
 const MOOD_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+
+// Показываем уведомление о низкой энергии не чаще, чем раз в 10 минут,
+// чтобы не спамить при серии кликов.
+let lastEnergyWarnAt = 0;
+const ENERGY_WARN_COOLDOWN_MS = 10 * 60 * 1000;
+
+function maybeWarnLowEnergy(energy: number | undefined) {
+  if (energy === undefined) return;
+  if (energy > ENERGY_LOW_THRESHOLD) return;
+  const now = Date.now();
+  if (now - lastEnergyWarnAt < ENERGY_WARN_COOLDOWN_MS) return;
+  lastEnergyWarnAt = now;
+  toast.warning(i18n.t("companion.energyLowTitle"), {
+    description: i18n.t("companion.energyLowHint"),
+  });
+}
 
 // E2E: сервер не видит entry.value, поэтому настроение питомца считает клиент
 // из локальных расшифрованных записей «Mood» за последние 7 дней.
@@ -205,6 +224,8 @@ export function usePet() {
   return useMutation({
     mutationFn: () => api.creature.pet(),
     onSuccess: (data) => {
+      maybeWarnLowEnergy(data.state?.energy);
+
       if (data?.state && "level" in data.state && "experience" in data.state) {
         const { corrected, leveledUp } = correctLevelAndXP(data.state);
 
