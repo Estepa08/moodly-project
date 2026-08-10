@@ -615,8 +615,7 @@ export const creatureService = {
       const energy = state.energy ?? MAX_ENERGY;
       const hasEnergy = energy > 0;
       // XP и трата энергии — только на 3-м клике, когда энергия есть.
-      const xpAwarded =
-        isXpClick && !limitReached && hasEnergy ? PET_XP : 0;
+      const xpAwarded = isXpClick && !limitReached && hasEnergy ? PET_XP : 0;
       const nextEnergy = isXpClick && hasEnergy ? Math.max(0, energy - PET_ENERGY_COST) : energy;
 
       const { experience, level, leveledUp } = applyLevelUp(state, xpAwarded);
