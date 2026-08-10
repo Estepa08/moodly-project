@@ -14,6 +14,8 @@ import {
   MOOD_ENTRY_DAILY_LIMIT,
   FEED_XP,
   FEED_XP_DAILY_LIMIT,
+  PET_XP,
+  PET_XP_DAILY_LIMIT,
   STARTER_PET_TYPES,
   MS_PER_DAY,
 } from "@moodly/shared";
@@ -32,8 +34,11 @@ export const creatureService = {
     // E2E: настроение питомца считает клиент (сервер не видит entry.value).
     // Fallback для старых аккаунтов без значения.
     const petMood = (state.petMood ?? (state.calmness ?? 50) >= 70) ? "happy" : "calm";
+    const petSummary = this._petSummary(state);
     return {
       ...state,
+      petCount: petSummary.petCountToday,
+      petCountRemaining: petSummary.petCountRemaining,
       energy,
       level,
       experience: state.experience ?? 0,
@@ -41,6 +46,29 @@ export const creatureService = {
       sessionCount,
       petMood,
       stage: stageForLevel(level),
+    };
+  },
+
+  // Поглаживания считаются за сутки по серверному времени: если последнее
+  // поглаживание было вчера — сегодняшний счётчик считается нулевым.
+  _petSummary(state: { lastPetAt?: Date | null; petCount?: number | null }): {
+    petCountToday: number;
+    petCountRemaining: number;
+  } {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const lastPet = state.lastPetAt ? new Date(state.lastPetAt) : null;
+    let petCountToday = 0;
+    if (lastPet) {
+      const lastPetDate = new Date(lastPet);
+      lastPetDate.setHours(0, 0, 0, 0);
+      if (lastPetDate.getTime() === today.getTime()) {
+        petCountToday = state.petCount ?? 0;
+      }
+    }
+    return {
+      petCountToday,
+      petCountRemaining: Math.max(0, PET_XP_DAILY_LIMIT - petCountToday),
     };
   },
 
@@ -527,6 +555,73 @@ export const creatureService = {
       xpAwarded,
       feedCount: updated.feedCount,
       feedCounts: (updated.feedCounts as Record<string, number>) ?? {},
+    };
+  },
+
+  // Поглаживание компаньона: +1 XP, пока не исчерпан дневной лимит (100).
+  // Лимит и счётчик считаются по lastPetAt/petCount: при наступлении нового
+  // дня (по серверному времени) счётчик сбрасывается к следующему клику.
+  async pet(userId: string) {
+    // Чтение текущего счётчика, сброс при новом дне и начисление XP — атомарно
+    // под блокировкой User: параллельные клики не дадут двойного начисления.
+    const result = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
+
+      let state = await tx.creatureState.findUnique({ where: { userId } });
+      if (!state) {
+        state = await tx.creatureState.create({
+          data: { userId, calmness: 50 },
+        });
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const lastPet = state.lastPetAt ? new Date(state.lastPetAt) : null;
+      const petCount = (() => {
+        if (lastPet) {
+          const lastPetDate = new Date(lastPet);
+          lastPetDate.setHours(0, 0, 0, 0);
+          if (lastPetDate.getTime() === today.getTime()) {
+            return state.petCount ?? 0;
+          }
+        }
+        // Новый день — счётчик обнуляется.
+        return 0;
+      })();
+
+      const limitReached = petCount >= PET_XP_DAILY_LIMIT;
+      const xpAwarded = limitReached ? 0 : PET_XP;
+      const nextPetCount = limitReached ? petCount : petCount + 1;
+
+      const { experience, level, leveledUp } = applyLevelUp(state, xpAwarded);
+
+      const updated = await tx.creatureState.update({
+        where: { userId },
+        data: {
+          petCount: nextPetCount,
+          lastPetAt: new Date(),
+          experience,
+          level,
+        },
+      });
+
+      return { updated, leveledUp, xpAwarded, petCount: nextPetCount };
+    });
+
+    const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    return {
+      state: {
+        ...result.updated,
+        petCount: result.petCount,
+        petCountRemaining: Math.max(0, PET_XP_DAILY_LIMIT - result.petCount),
+        sessionCount,
+      },
+      leveledUp: result.leveledUp,
+      xpAwarded: result.xpAwarded,
+      petCount: result.petCount,
+      petCountRemaining: Math.max(0, PET_XP_DAILY_LIMIT - result.petCount),
+      limitReached: result.xpAwarded === 0 && result.petCount >= PET_XP_DAILY_LIMIT,
     };
   },
 };

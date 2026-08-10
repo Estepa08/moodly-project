@@ -226,6 +226,10 @@ model CreatureState {
   petMood          String?
   feedCount        Int      @default(0)
   feedCounts       Json     @default("{}")
+  // Дата последнего поглаживания и счётчик поглаживаний за текущий день.
+  // Счётчик сбрасывается в 0 при наступлении нового дня (см. creature.ts).
+  lastPetAt        DateTime?
+  petCount         Int      @default(0)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

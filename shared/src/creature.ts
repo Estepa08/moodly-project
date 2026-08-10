@@ -14,6 +14,10 @@ export const FEED_XP = 1;
 export const FEED_XP_DAILY_LIMIT = 50;
 export const DAILY_ENTRY_LIMIT = 100;
 
+// Поглаживания компаньона: +1 XP за клик, не более 100 в сутки.
+export const PET_XP = 1;
+export const PET_XP_DAILY_LIMIT = 100;
+
 export const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
 
 export const EVOLUTION_STAGES = [

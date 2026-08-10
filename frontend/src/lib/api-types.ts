@@ -382,7 +382,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** @description Погладить компаньона: +1 XP до исчерпания дневного лимита (100) */
+        post: operations["Creature_pet"];
         delete?: never;
         options?: never;
         head?: never;
@@ -884,6 +885,16 @@ export interface components {
             feedCount: number;
             /** @description Скормленные единицы по каждому питомцу (map тип → количество) */
             feedCounts: unknown;
+            /**
+             * Format: int32
+             * @description Поглаживаний за текущий день (сбрасывается в полночь по серверному времени)
+             */
+            petCount: number;
+            /**
+             * Format: int32
+             * @description Сколько поглаживаний осталось сегодня (0 — лимит исчерпан)
+             */
+            petCountRemaining: number;
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -1030,6 +1041,29 @@ export interface components {
             petName: string;
             /** @description Скормленные единицы по каждому питомцу (map тип → количество) */
             feedCounts: unknown;
+        };
+        /** @description Результат поглаживания компаньона */
+        PetResponse: {
+            state: components["schemas"]["CreatureState"];
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
+            /**
+             * Format: int32
+             * @description Сколько XP начислено за это поглаживание (0 после дневного лимита)
+             */
+            xpAwarded: number;
+            /**
+             * Format: int32
+             * @description Поглаживаний за текущий день
+             */
+            petCount: number;
+            /**
+             * Format: int32
+             * @description Сколько поглаживаний осталось сегодня
+             */
+            petCountRemaining: number;
+            /** @description Исчерпан ли дневной лимит поглаживаний */
+            limitReached: boolean;
         };
         /** @description Тело обновления питомца */
         PetUpdateRequest: {
@@ -1788,6 +1822,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CheckInResponse"];
+                };
+            };
+        };
+    };
+    Creature_pet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PetResponse"];
                 };
             };
         };

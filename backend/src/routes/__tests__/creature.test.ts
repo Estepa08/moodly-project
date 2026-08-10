@@ -88,6 +88,112 @@ describe("Creature pets", () => {
   });
 });
 
+describe("Creature petting (daily limit)", () => {
+  it("POST /creature/pet — first tap awards +1 XP and reports remaining", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-first@example.com",
+      "secret123",
+      "Petter",
+    );
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 1,
+      petCount: 1,
+      petCountRemaining: 99,
+      limitReached: false,
+    });
+    expect(res.json().state.petCount).toBe(1);
+    expect(res.json().state.petCountRemaining).toBe(99);
+  });
+
+  it("GET /creature — reports remaining petting for the day", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-state@example.com",
+      "secret123",
+      "State",
+    );
+    await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    const res = await app.inject({
+      method: "GET",
+      url: "/creature",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().petCount).toBe(1);
+    expect(res.json().petCountRemaining).toBe(99);
+  });
+
+  it("POST /creature/pet — stops awarding XP after the daily limit", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-limit@example.com",
+      "secret123",
+      "Limit",
+    );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { petCount: 100, lastPetAt: today },
+      create: { userId: user.userId, petCount: 100, lastPetAt: today },
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 0,
+      petCount: 100,
+      petCountRemaining: 0,
+      limitReached: true,
+    });
+  });
+
+  it("POST /creature/pet — counter resets on a new day", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-reset@example.com",
+      "secret123",
+      "Reset",
+    );
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(12, 0, 0, 0);
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { petCount: 100, lastPetAt: yesterday },
+      create: { userId: user.userId, petCount: 100, lastPetAt: yesterday },
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 1,
+      petCount: 1,
+      petCountRemaining: 99,
+      limitReached: false,
+    });
+  });
+});
+
 describe("Creature mood and stage", () => {
   it("GET /creature — returns default petMood and stage", async () => {
     const res = await app.inject({

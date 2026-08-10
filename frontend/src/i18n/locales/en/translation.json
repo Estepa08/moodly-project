@@ -1628,7 +1628,11 @@
     "xpToLevel": "XP to level {{level}}",
     "energy": "Energy {{value}}",
     "calmness": "Calmness {{value}}",
-    "toCollection": "Pet collection"
+    "toCollection": "Pet collection",
+    "petsRemainingLabel": "Pets remaining today",
+    "petsProgress": "{{current}}/{{limit}}",
+    "petsLimitReached": "Daily limit reached",
+    "petsLimitMessage": "You've already petted me {{limit}} times today! Come back tomorrow!"
   },
   "petMood": {
     "happy": "In a great mood",

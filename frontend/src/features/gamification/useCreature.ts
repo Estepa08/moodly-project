@@ -198,6 +198,33 @@ export function useFeed() {
   });
 }
 
+// ===== usePet - поглаживание компаньона, коррекция уровня и XP =====
+export function usePet() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.creature.pet(),
+    onSuccess: (data) => {
+      if (data?.state && "level" in data.state && "experience" in data.state) {
+        const { corrected, leveledUp } = correctLevelAndXP(data.state);
+
+        queryClient.setQueryData(["creature"], corrected);
+
+        if (leveledUp) {
+          celebrateReward("feed", {
+            leveledUp: true,
+            state: { level: corrected.level },
+          });
+        }
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["creature"] });
+      queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
+      queryClient.invalidateQueries({ queryKey: ["creature", "stats"] });
+    },
+  });
+}
+
 // Остальные хуки остаются прежними
 export function useCompletions(days = 30) {
   return useQuery({
