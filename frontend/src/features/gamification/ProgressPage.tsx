@@ -52,6 +52,7 @@ export default function ProgressPage() {
           subtitle={t("progress.statsSubtitle")}
           icon={Target}
           iconClassName="bg-primary/10 text-primary"
+          railClassName="bg-primary/80"
           defaultOpen
           storageKey="moodly_collapse_progress_stats"
         >
@@ -64,6 +65,7 @@ export default function ProgressPage() {
         subtitle={t("progress.missionsSubtitle")}
         icon={ListChecks}
         iconClassName="bg-accent/10 text-accent"
+        railClassName="bg-accent/80"
         defaultOpen
         storageKey="moodly_collapse_progress_missions"
       >
@@ -75,6 +77,7 @@ export default function ProgressPage() {
         subtitle={t("progress.petsSubtitle")}
         icon={PawPrint}
         iconClassName="bg-pet-1/10 text-pet-1"
+        railClassName="bg-pet-1/80"
         defaultOpen
         storageKey="moodly_collapse_progress_pets"
       >
@@ -87,6 +90,7 @@ export default function ProgressPage() {
           subtitle={t("progress.titlesSubtitle")}
           icon={Medal}
           iconClassName="bg-info/10 text-info"
+          railClassName="bg-info/80"
           defaultOpen={false}
           storageKey="moodly_collapse_progress_titles"
         >
@@ -103,6 +107,7 @@ export default function ProgressPage() {
         subtitle={t("progress.achievementsSubtitle")}
         icon={Trophy}
         iconClassName="bg-warning/10 text-warning"
+        railClassName="bg-warning/80"
         defaultOpen
         storageKey="moodly_collapse_progress_achievements"
       >
@@ -114,6 +119,7 @@ export default function ProgressPage() {
         subtitle={t("progress.activitySubtitle")}
         icon={Activity}
         iconClassName="bg-success/10 text-success"
+        railClassName="bg-success/80"
         defaultOpen={false}
         storageKey="moodly_collapse_progress_activity"
       >
