@@ -7,6 +7,8 @@ interface CollapsibleSectionProps {
   subtitle?: string;
   icon?: LucideIcon;
   iconClassName?: string;
+  /** Цвет акцентной рейки слева от контента (в тон иконки секции) */
+  railClassName?: string;
   defaultOpen?: boolean;
   storageKey?: string;
   children: ReactNode;
@@ -18,6 +20,7 @@ export default function CollapsibleSection({
   subtitle,
   icon: Icon,
   iconClassName,
+  railClassName = "bg-primary/80",
   defaultOpen = true,
   storageKey,
   children,
@@ -94,13 +97,19 @@ export default function CollapsibleSection({
       <div
         id={id}
         className={cn(
-          "transition-[max-height,opacity] duration-200",
-          open
-            ? "max-h-[60vh] overflow-y-auto overscroll-contain opacity-100 pr-0.5"
-            : "max-h-0 overflow-hidden opacity-0",
+          "transition-[max-height,opacity] duration-200 overflow-hidden",
+          open ? "max-h-[60vh] opacity-100" : "max-h-0 opacity-0",
         )}
       >
-        <div className="px-0.5 pt-2">{children}</div>
+        <div className="px-0.5 pt-2">
+          <div className="h-px bg-border mb-3" aria-hidden="true" />
+          <div className="relative rounded-xl bg-muted/70 shadow-neumorphic-inset pr-0.5 max-h-[56vh] overflow-y-auto">
+            <div className="flex gap-2.5 p-2 pl-2.5">
+              <span aria-hidden="true" className={cn("w-1 rounded-full shrink-0", railClassName)} />
+              <div className="flex-1 min-w-0">{children}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
