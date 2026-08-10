@@ -145,6 +145,8 @@ export interface PetResponse {
   petCount: number;
   petCountRemaining: number;
   limitReached: boolean;
+  /** Позиция текущего клика в цикле поглаживаний 1-2-3 (3 → начислен XP) */
+  cyclePosition?: number;
 }
 
 interface PracticeCompletion {

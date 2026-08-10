@@ -15,7 +15,10 @@ import {
   FEED_XP,
   FEED_XP_DAILY_LIMIT,
   PET_XP,
-  PET_XP_DAILY_LIMIT,
+  PET_CYCLE,
+  PET_ENERGY_COST,
+  PET_DAILY_CLICK_LIMIT,
+  PRACTICE_ENERGY_REWARD,
   STARTER_PET_TYPES,
   MS_PER_DAY,
 } from "@moodly/shared";
@@ -51,6 +54,8 @@ export const creatureService = {
 
   // Поглаживания считаются за сутки по серверному времени: если последнее
   // поглаживание было вчера — сегодняшний счётчик считается нулевым.
+  // Лимит в кликах: XP даёт только каждый 3-й клик, поэтому дневной лимит
+  // кликов = PET_DAILY_CLICK_LIMIT (300), а не 100.
   _petSummary(state: { lastPetAt?: Date | null; petCount?: number | null }): {
     petCountToday: number;
     petCountRemaining: number;
@@ -68,7 +73,7 @@ export const creatureService = {
     }
     return {
       petCountToday,
-      petCountRemaining: Math.max(0, PET_XP_DAILY_LIMIT - petCountToday),
+      petCountRemaining: Math.max(0, PET_DAILY_CLICK_LIMIT - petCountToday),
     };
   },
 
@@ -350,13 +355,18 @@ export const creatureService = {
     const initialCalmness = state.calmness;
     const gain = Math.min(Math.floor(duration / 6), 40);
     const finalCalmness = Math.min(100, initialCalmness + gain);
+    // Дыхательная практика восстанавливает энергию компаньона.
+    const energy = Math.min(
+      MAX_ENERGY,
+      (state.energy ?? MAX_ENERGY) + (PRACTICE_ENERGY_REWARD.breathing ?? 0),
+    );
 
     const { experience, level, leveledUp } = applyLevelUp(state, EXERCISE_EXP);
 
     const [updated] = await Promise.all([
       prisma.creatureState.update({
         where: { userId },
-        data: { calmness: finalCalmness, lastExerciseAt: new Date(), experience, level },
+        data: { calmness: finalCalmness, lastExerciseAt: new Date(), energy, experience, level },
       }),
       prisma.breathingSession.create({
         data: { userId, duration, initialCalmness, finalCalmness },
@@ -447,12 +457,17 @@ export const creatureService = {
     }
 
     const state = await this.getState(userId);
+    // Каждая практика восстанавливает энергию компаньона (зависит от вида).
+    const energy = Math.min(
+      MAX_ENERGY,
+      (state.energy ?? MAX_ENERGY) + (PRACTICE_ENERGY_REWARD[source] ?? 0),
+    );
     const { experience, level, leveledUp } = applyLevelUp(state, xp);
 
     const [updated] = await Promise.all([
       prisma.creatureState.update({
         where: { userId },
-        data: { experience, level },
+        data: { experience, level, energy },
       }),
       prisma.practiceCompletion.create({
         data: { userId, source, xpAwarded: xp },
@@ -558,9 +573,11 @@ export const creatureService = {
     };
   },
 
-  // Поглаживание компаньона: +1 XP, пока не исчерпан дневной лимит (100).
-  // Лимит и счётчик считаются по lastPetAt/petCount: при наступлении нового
-  // дня (по серверному времени) счётчик сбрасывается к следующему клику.
+  // Поглаживание компаньона: детерминированный цикл 1-2-3. Каждый 3-й клик
+  // даёт +1 XP и тратит 1 энергии (PET_ENERGY_COST), клики 1-2 — только
+  // анимация/эмодзи. Когда энергия на нуле, 3-й клик XP не даёт. Дневной лимит
+  // кликов = PET_DAILY_CLICK_LIMIT (300 → 100 XP). Счётчик сбрасывается при
+  // наступлении нового дня (по серверному времени).
   async pet(userId: string) {
     // Чтение текущего счётчика, сброс при новом дне и начисление XP — атомарно
     // под блокировкой User: параллельные клики не дадут двойного начисления.
@@ -589,9 +606,17 @@ export const creatureService = {
         return 0;
       })();
 
-      const limitReached = petCount >= PET_XP_DAILY_LIMIT;
-      const xpAwarded = limitReached ? 0 : PET_XP;
+      const limitReached = petCount >= PET_DAILY_CLICK_LIMIT;
       const nextPetCount = limitReached ? petCount : petCount + 1;
+      // Цикл 1-2-3: позиция текущего клика (до инкремента).
+      const cyclePosition = (petCount % PET_CYCLE) + 1;
+      const isXpClick = cyclePosition === PET_CYCLE;
+
+      const energy = state.energy ?? MAX_ENERGY;
+      const hasEnergy = energy > 0;
+      // XP и трата энергии — только на 3-м клике, когда энергия есть.
+      const xpAwarded = isXpClick && !limitReached && hasEnergy ? PET_XP : 0;
+      const nextEnergy = isXpClick && hasEnergy ? Math.max(0, energy - PET_ENERGY_COST) : energy;
 
       const { experience, level, leveledUp } = applyLevelUp(state, xpAwarded);
 
@@ -600,12 +625,13 @@ export const creatureService = {
         data: {
           petCount: nextPetCount,
           lastPetAt: new Date(),
+          energy: nextEnergy,
           experience,
           level,
         },
       });
 
-      return { updated, leveledUp, xpAwarded, petCount: nextPetCount };
+      return { updated, leveledUp, xpAwarded, petCount: nextPetCount, cyclePosition, limitReached };
     });
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
@@ -614,14 +640,15 @@ export const creatureService = {
       state: {
         ...result.updated,
         petCount: result.petCount,
-        petCountRemaining: Math.max(0, PET_XP_DAILY_LIMIT - result.petCount),
+        petCountRemaining: Math.max(0, PET_DAILY_CLICK_LIMIT - result.petCount),
         sessionCount,
       },
       leveledUp: result.leveledUp,
       xpAwarded: result.xpAwarded,
       petCount: result.petCount,
-      petCountRemaining: Math.max(0, PET_XP_DAILY_LIMIT - result.petCount),
-      limitReached: result.xpAwarded === 0 && result.petCount >= PET_XP_DAILY_LIMIT,
+      cyclePosition: result.cyclePosition,
+      petCountRemaining: Math.max(0, PET_DAILY_CLICK_LIMIT - result.petCount),
+      limitReached: result.limitReached,
     };
   },
 };

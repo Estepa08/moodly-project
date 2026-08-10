@@ -1064,6 +1064,11 @@ export interface components {
             petCountRemaining: number;
             /** @description Исчерпан ли дневной лимит поглаживаний */
             limitReached: boolean;
+            /**
+             * Format: int32
+             * @description Позиция в цикле поглаживаний 1-2-3: на 3-й позиции начисляется XP
+             */
+            cyclePosition: number;
         };
         /** @description Тело обновления питомца */
         PetUpdateRequest: {

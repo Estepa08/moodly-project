@@ -88,8 +88,8 @@ describe("Creature pets", () => {
   });
 });
 
-describe("Creature petting (daily limit)", () => {
-  it("POST /creature/pet — first tap awards +1 XP and reports remaining", async () => {
+describe("Creature petting (cycle 1-2-3 + energy)", () => {
+  it("POST /creature/pet — 1st tap: no XP, cyclePosition 1", async () => {
     const user = await registerAndLogin(
       app,
       "creature-pet-first@example.com",
@@ -103,13 +103,70 @@ describe("Creature petting (daily limit)", () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
-      xpAwarded: 1,
+      xpAwarded: 0,
       petCount: 1,
-      petCountRemaining: 99,
+      cyclePosition: 1,
       limitReached: false,
     });
     expect(res.json().state.petCount).toBe(1);
-    expect(res.json().state.petCountRemaining).toBe(99);
+    expect(res.json().state.energy).toBe(100);
+  });
+
+  it("POST /creature/pet — 2nd tap: no XP, cyclePosition 2", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-second@example.com",
+      "secret123",
+      "Second",
+    );
+    await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 0,
+      petCount: 2,
+      cyclePosition: 2,
+    });
+    expect(res.json().state.energy).toBe(100);
+  });
+
+  it("POST /creature/pet — 3rd tap: +1 XP, −1 energy, cyclePosition 3", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-third@example.com",
+      "secret123",
+      "Third",
+    );
+    await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 1,
+      petCount: 3,
+      cyclePosition: 3,
+    });
+    expect(res.json().state.energy).toBe(99);
   });
 
   it("GET /creature — reports remaining petting for the day", async () => {
@@ -131,7 +188,7 @@ describe("Creature petting (daily limit)", () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json().petCount).toBe(1);
-    expect(res.json().petCountRemaining).toBe(99);
+    expect(res.json().petCountRemaining).toBe(299);
   });
 
   it("POST /creature/pet — stops awarding XP after the daily limit", async () => {
@@ -145,8 +202,8 @@ describe("Creature petting (daily limit)", () => {
     today.setHours(0, 0, 0, 0);
     await prisma.creatureState.upsert({
       where: { userId: user.userId },
-      update: { petCount: 100, lastPetAt: today },
-      create: { userId: user.userId, petCount: 100, lastPetAt: today },
+      update: { petCount: 300, lastPetAt: today },
+      create: { userId: user.userId, petCount: 300, lastPetAt: today },
     });
 
     const res = await app.inject({
@@ -157,7 +214,7 @@ describe("Creature petting (daily limit)", () => {
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
       xpAwarded: 0,
-      petCount: 100,
+      petCount: 300,
       petCountRemaining: 0,
       limitReached: true,
     });
@@ -175,8 +232,8 @@ describe("Creature petting (daily limit)", () => {
     yesterday.setHours(12, 0, 0, 0);
     await prisma.creatureState.upsert({
       where: { userId: user.userId },
-      update: { petCount: 100, lastPetAt: yesterday },
-      create: { userId: user.userId, petCount: 100, lastPetAt: yesterday },
+      update: { petCount: 300, lastPetAt: yesterday },
+      create: { userId: user.userId, petCount: 300, lastPetAt: yesterday },
     });
 
     const res = await app.inject({
@@ -186,11 +243,37 @@ describe("Creature petting (daily limit)", () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
-      xpAwarded: 1,
+      xpAwarded: 0,
       petCount: 1,
-      petCountRemaining: 99,
+      cyclePosition: 1,
       limitReached: false,
     });
+  });
+
+  it("POST /creature/pet — 3rd tap with 0 energy awards no XP and keeps energy 0", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-pet-noenergy@example.com",
+      "secret123",
+      "Tired",
+    );
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { energy: 0, petCount: 2, lastPetAt: new Date() },
+      create: { userId: user.userId, energy: 0, petCount: 2, lastPetAt: new Date() },
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 0,
+      cyclePosition: 3,
+    });
+    expect(res.json().state.energy).toBe(0);
   });
 });
 
@@ -389,6 +472,77 @@ describe("Creature feed", () => {
     });
     expect(res.json().totalPractices).toBe(1);
     expect(res.json().sourceBreakdown).toEqual({ gratitude: 1 });
+  });
+});
+
+describe("Creature energy restoration", () => {
+  it("POST /creature/reward — gratitude restores +15 energy", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-energy-gratitude@example.com",
+      "secret123",
+      "Restore",
+    );
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { energy: 50 },
+      create: { userId: user.userId, energy: 50 },
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/reward",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload: { source: "gratitude" },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().state.energy).toBe(65);
+  });
+
+  it("POST /creature/reward — breathing restores +25 energy", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-energy-breathing@example.com",
+      "secret123",
+      "Breathe",
+    );
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { energy: 40 },
+      create: { userId: user.userId, energy: 40 },
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/reward",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload: { source: "breathing" },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().state.energy).toBe(65);
+  });
+
+  it("POST /creature/exercise/complete — restores energy and clamps to 100", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-energy-clamp@example.com",
+      "secret123",
+      "Clamp",
+    );
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { energy: 90 },
+      create: { userId: user.userId, energy: 90 },
+    });
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/creature/exercise/complete",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload: { duration: 60 },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().state.energy).toBe(100);
   });
 });
 

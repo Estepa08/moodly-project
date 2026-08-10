@@ -16,6 +16,10 @@ const SIZE_CLASS: Record<PetAvatarSize, { box: string; icon: string }> = {
 const FEED_ITEM_COUNT = 6;
 const BUBBLE_LIFETIME_MS = 3200;
 
+// Пулы эмодзи для кликов 1 и 2 цикла поглаживаний (3-й клик — «+1 XP»).
+const CYCLE_EMOJI_FIRST = ["🫶", "💗", "💞"];
+const CYCLE_EMOJI_SECOND = ["⭐", "✨", "💖"];
+
 type BubbleDepth = "over" | "under";
 
 interface BubbleTrajectory {
@@ -47,8 +51,10 @@ interface PetAvatarProps {
   feedSignal?: number;
   /** Доп. обработчик тапа по питомцу (вызывается вместе с декоративными пузырями) */
   onTap?: () => void;
-  /** Дневной лимит поглаживаний ещё не исчерпан — пузыри попеременно показывают «+1 XP» */
+  /** Дневной лимит поглаживаний ещё не исчерпан и энергия > 0 — на 3-м клике цикла показывается «+1 XP» */
   xpEligible?: boolean;
+  /** Позиция текущего клика в цикле 1-2-3: на 1-2 — эмодзи-пузырь, на 3 — «+1 XP» */
+  cyclePosition?: number;
   /** Обрезает еду/пузыри по кругу аватара (для тостов и шапки теста — ничего не вылетает наружу) */
   contained?: boolean;
   /** Убирает фон-кружок (питомец на прозрачной подложке) */
@@ -67,6 +73,7 @@ export default function PetAvatar({
   contained = false,
   plain = false,
   xpEligible = false,
+  cyclePosition = 1,
 }: PetAvatarProps) {
   const isReducedMotion = useReducedMotion();
   const animationData = usePetAnimation(petType, emotion);
@@ -85,8 +92,6 @@ export default function PetAvatar({
 
   useEffect(() => clearTimers, []);
 
-  const pickEmoji = () => feedEmojis[Math.floor(Math.random() * feedEmojis.length)];
-
   const spawnBubble = () => {
     if (!interactive) return;
     const id = Date.now() + Math.random();
@@ -97,13 +102,22 @@ export default function PetAvatar({
       tilt: (Math.random() - 0.5) * 36,
       by: -(220 + Math.random() * 70),
     };
-    // При активном лимите XP чередуем обычные кормовые эмоджи с бейджем «+1 XP».
-    const showXp = xpEligible && Math.random() > 0.5;
+    // Цикл 1-2-3: на 1-2 клике вылетает эмодзи (свой пул у каждой позиции),
+    // на 3-м — бейдж «+1 XP» (если XP доступен), иначе декоративная эмодзи.
+    const showXp = cyclePosition === 3 && xpEligible;
+    const emojiPool =
+      cyclePosition === 2
+        ? CYCLE_EMOJI_SECOND
+        : cyclePosition === 1
+          ? CYCLE_EMOJI_FIRST
+          : feedEmojis;
     setBubbles((prev) => [
       ...prev,
       {
         id,
-        ...(showXp ? { label: "+1 XP" } : { emoji: pickEmoji() }),
+        ...(showXp
+          ? { label: "+1 XP" }
+          : { emoji: emojiPool[Math.floor(Math.random() * emojiPool.length)] }),
         offset: Math.random() * 60 - 30,
         delay: 0,
         depth,

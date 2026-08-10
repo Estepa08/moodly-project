@@ -14,9 +14,29 @@ export const FEED_XP = 1;
 export const FEED_XP_DAILY_LIMIT = 50;
 export const DAILY_ENTRY_LIMIT = 100;
 
-// Поглаживания компаньона: +1 XP за клик, не более 100 в сутки.
+// Поглаживания компаньона: +1 XP за каждый 3-й клик (детерминированный
+// цикл 1-2-3), не более 100 XP в сутки. На кликах 1-2 показываются только
+// эмодзи-пузыри, на клике 3 — +1 XP и −1 энергии.
 export const PET_XP = 1;
 export const PET_XP_DAILY_LIMIT = 100;
+export const PET_CYCLE = 3;
+export const PET_ENERGY_COST = 1;
+// Дневной лимит самих кликов = XP-лимит × цикл (300 кликов дают 100 XP).
+export const PET_DAILY_CLICK_LIMIT = PET_XP_DAILY_LIMIT * PET_CYCLE;
+
+// Порог энергии (в единицах, от 0 до MAX_ENERGY=100), при котором компаньон
+// считается уставшим: ниже порога показываем уведомление/подсказку.
+export const ENERGY_LOW_THRESHOLD = 20;
+
+// Восстановление энергии за завершение практики (зависит от вида).
+export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
+  breathing: 25,
+  cba: 25,
+  distortions: 25,
+  gratitude: 15,
+  thoughtJournal: 15,
+  sleepHygiene: 15,
+};
 
 export const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
 
