@@ -1502,6 +1502,70 @@ async function seed() {
       }
     }
 
+    // Day Activities для карточки корреляций: 30 дней с активностями.
+    // Так как записи без шифротекста, активности кладутся в note как
+    // JSON-массив ActivitySelection — фронтенд читает их через
+    // parseLegacyActivities (см. useEntries/records.ts).
+    // Выборка построена так, чтобы покрыть все уровни confidence:
+    // n>=15 (high), 7–14 (medium), 5–6 (low).
+    // Индекс 0 — 30 дней назад (показатели хуже), 29 — вчера (лучше).
+    const retreat = { key: "custom:retreat", custom: true, label: "Ретрит" } as const;
+    const dayActivitiesByDay: (string | typeof retreat)[][] = [
+      ["wellbeing.stress", "health.alcohol", "health.bad_sleep"],
+      ["wellbeing.stress", "rest.mobile_scroll", "health.bad_sleep"],
+      ["wellbeing.stress", "work.overtime", "health.alcohol"],
+      ["wellbeing.stress", "social.conflict", "health.bad_sleep"],
+      ["wellbeing.stress", "work.overtime", "rest.mobile_scroll"],
+      ["wellbeing.stress", "health.alcohol", "health.bad_sleep"],
+      ["wellbeing.stress", "social.conflict", "health.bad_sleep"],
+      ["wellbeing.stress", "work.overtime", "rest.mobile_scroll"],
+      ["wellbeing.stress", "health.alcohol", "social.conflict"],
+      ["wellbeing.stress", "work.overtime", "health.bad_sleep"],
+      ["wellbeing.stress", "rest.mobile_scroll", "health.alcohol"],
+      ["wellbeing.stress", "work.overtime", "health.bad_sleep"],
+      ["wellbeing.stress", "social.conflict", "rest.mobile_scroll"],
+      ["wellbeing.stress", "work.overtime"],
+      ["movement.walk", "rest.meditation", "wellbeing.stress", "movement.yoga", "social.conflict"],
+      ["movement.walk", "movement.gym", "rest.read"],
+      ["movement.walk", "rest.meditation"],
+      ["movement.walk", "movement.gym", "movement.yoga"],
+      ["movement.walk", "rest.meditation", "rest.read"],
+      ["movement.walk", "movement.gym", "movement.yoga"],
+      ["movement.walk", "rest.meditation", retreat],
+      ["movement.walk", "movement.gym", "movement.yoga"],
+      ["movement.walk", "rest.meditation", "rest.read", retreat],
+      ["movement.walk", "movement.gym", "rest.read"],
+      ["movement.walk", "rest.meditation"],
+      ["movement.walk", "movement.gym", retreat],
+      ["movement.walk", "rest.meditation", "rest.read", retreat],
+      ["movement.walk", "movement.gym", "movement.yoga"],
+      ["movement.walk", "rest.meditation", "rest.read"],
+      ["movement.walk", "movement.gym", "rest.meditation", "rest.read", retreat],
+    ];
+
+    const dayActivitiesParamId = paramMap.get("Day Activities");
+    if (dayActivitiesParamId) {
+      const dayActivitiesData: {
+        userId: string;
+        parameterId: string;
+        value: number;
+        note: string;
+        createdAt: Date;
+      }[] = [];
+      for (let i = 0; i < dayActivitiesByDay.length; i++) {
+        const date = daysAgo(30 - i, 9 + (i % 6), 20);
+        const activities = dayActivitiesByDay[i];
+        dayActivitiesData.push({
+          userId: demoUser.id,
+          parameterId: dayActivitiesParamId,
+          value: 0,
+          note: JSON.stringify(activities),
+          createdAt: date,
+        });
+      }
+      entryData.push(...dayActivitiesData);
+    }
+
     const gratitudeNotes = [
       "Тёплый вечер с семьёй",
       "Удачная прогулка в парке",
