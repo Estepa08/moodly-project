@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import PetAvatar from "./PetAvatar";
-import { usePets, usePet } from "./useCreature";
+import { usePets, usePet, useCreatureState } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
+import { PET_XP_DAILY_LIMIT } from "@moodly/shared";
 import { isCompanionHidden, subscribeCompanionVisibility } from "./companionVisibility";
 
 const HIDDEN_PATHS = ["/tests/", "/practices/breathing", "/onboarding"];
@@ -12,6 +13,7 @@ export default function FloatingCompanion() {
   const { t } = useTranslation();
   const location = useLocation();
   const { data: pets } = usePets();
+  const { data: creature } = useCreatureState();
   const pet = usePet();
   const [hidden, setHidden] = useState(isCompanionHidden);
 
@@ -24,6 +26,7 @@ export default function FloatingCompanion() {
   const petName =
     pets?.petName?.trim() ||
     t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
+  const xpEligible = (creature?.petCount ?? 0) < PET_XP_DAILY_LIMIT;
 
   return (
     <div
@@ -35,6 +38,7 @@ export default function FloatingCompanion() {
         size="md"
         interactive
         ariaLabel={petName}
+        xpEligible={xpEligible}
         onTap={() => pet.mutate()}
       />
     </div>

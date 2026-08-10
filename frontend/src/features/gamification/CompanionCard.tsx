@@ -54,6 +54,7 @@ export default function CompanionCard() {
           interactive
           ariaLabel={displayName}
           emotion={petMood === "happy" ? "happy" : "idle"}
+          xpEligible={!limitReached}
           onTap={handleTap}
         />
         <div className="min-w-0 flex-1">

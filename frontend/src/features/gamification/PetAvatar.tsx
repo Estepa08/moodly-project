@@ -27,7 +27,9 @@ interface BubbleTrajectory {
 
 interface FloatItem {
   id: number;
-  emoji: string;
+  emoji?: string;
+  /** Если задан — рендерится текстовый пузырь (например «+1 XP») вместо эмоджи */
+  label?: string;
   offset: number;
   delay: number;
   depth: BubbleDepth;
@@ -45,6 +47,8 @@ interface PetAvatarProps {
   feedSignal?: number;
   /** Доп. обработчик тапа по питомцу (вызывается вместе с декоративными пузырями) */
   onTap?: () => void;
+  /** Дневной лимит поглаживаний ещё не исчерпан — пузыри попеременно показывают «+1 XP» */
+  xpEligible?: boolean;
   /** Обрезает еду/пузыри по кругу аватара (для тостов и шапки теста — ничего не вылетает наружу) */
   contained?: boolean;
   /** Убирает фон-кружок (питомец на прозрачной подложке) */
@@ -62,6 +66,7 @@ export default function PetAvatar({
   onTap,
   contained = false,
   plain = false,
+  xpEligible = false,
 }: PetAvatarProps) {
   const isReducedMotion = useReducedMotion();
   const animationData = usePetAnimation(petType, emotion);
@@ -92,11 +97,13 @@ export default function PetAvatar({
       tilt: (Math.random() - 0.5) * 36,
       by: -(220 + Math.random() * 70),
     };
+    // При активном лимите XP чередуем обычные кормовые эмоджи с бейджем «+1 XP».
+    const showXp = xpEligible && Math.random() > 0.5;
     setBubbles((prev) => [
       ...prev,
       {
         id,
-        emoji: pickEmoji(),
+        ...(showXp ? { label: "+1 XP" } : { emoji: pickEmoji() }),
         offset: Math.random() * 60 - 30,
         delay: 0,
         depth,
@@ -191,7 +198,8 @@ export default function PetAvatar({
           key={b.id}
           aria-hidden="true"
           className={cn(
-            "absolute left-1/2 top-0 w-6 h-6 flex items-center justify-center text-lg animate-bubble-up pointer-events-none",
+            "absolute left-1/2 top-0 flex items-center justify-center animate-bubble-up pointer-events-none",
+            b.label ? "min-w-[2.5rem] h-6 px-1" : "w-6 h-6 text-lg",
             b.depth === "over" && "z-20",
           )}
           style={
@@ -202,7 +210,11 @@ export default function PetAvatar({
           }
         >
           <span
-            className="animate-bubble-sway"
+            className={cn(
+              "animate-bubble-sway inline-block whitespace-nowrap",
+              b.label &&
+                "px-1.5 py-0.5 rounded-full bg-gradient-to-r from-primary to-accent text-[11px] font-bold text-white shadow-neumorphic-sm",
+            )}
             style={
               {
                 "--sway-a": `${b.trajectory.swayA}px`,
@@ -211,7 +223,7 @@ export default function PetAvatar({
               } as CSSProperties
             }
           >
-            {b.emoji}
+            {b.label ?? <span className="inline-block text-lg leading-none">{b.emoji}</span>}
           </span>
         </span>
       ))}
