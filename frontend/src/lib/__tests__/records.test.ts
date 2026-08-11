@@ -10,6 +10,7 @@ import {
 import { generateDataKey } from "../crypto/keys";
 import { setSessionKey, setSessionUserId, getSessionKey } from "../crypto/session";
 import { encryptJson } from "../crypto/codec";
+import { DistortionKey } from "../distortionsQuiz";
 
 const dummyEntityId = "test-id-123";
 const dummyUserId = "user-1";
@@ -47,6 +48,35 @@ describe("crypto/records encryption and decryption", () => {
     const encrypted = await encryptEntryPayload(payload, dummyEntityId);
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
     expect(decrypted.activities).toEqual(payload.activities);
+  });
+
+  it("should encrypt and decrypt cognitive distortion tags in EntryCipherPayload", async () => {
+    const payload: EntryCipherPayload = {
+      value: 4,
+      note: "Опять всё испортил",
+      distortions: [DistortionKey.Magnification, DistortionKey.AllOrNothing],
+    };
+    const encrypted = await encryptEntryPayload(payload, dummyEntityId);
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.distortions).toEqual([
+      DistortionKey.Magnification,
+      DistortionKey.AllOrNothing,
+    ]);
+  });
+
+  it("should ignore malformed distortion tags in EntryCipherPayload", async () => {
+    const key = await getSessionKey();
+    const encrypted = await encryptJson(
+      key,
+      {
+        value: 4,
+        note: null,
+        distortions: ["magnification", "not-a-real-key", 42, null],
+      },
+      { userId: dummyUserId, entityId: dummyEntityId },
+    );
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.distortions).toEqual(["magnification"]);
   });
 
   it("should ignore malformed activities list in EntryCipherPayload", async () => {

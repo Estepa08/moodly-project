@@ -59,13 +59,17 @@ describe("Statistics", () => {
     // Tests taken card (empty state)
     expect(await screen.findByText("Tests Taken")).toBeInTheDocument();
 
-    // Radar and tests blocks each have their own period dropdown, defaulted to 2 Weeks
-    expect(screen.getAllByRole("combobox")).toHaveLength(2);
+    // Radar, tests and distortion-trap blocks each have their own period dropdown
+    expect(screen.getAllByRole("combobox")).toHaveLength(3);
     expect(screen.getAllByText("2 Weeks").length).toBeGreaterThanOrEqual(1);
 
     // Thinking patterns radar is always visible (empty state without CD results)
     expect(screen.getByText("Thinking Patterns")).toBeInTheDocument();
     expect(screen.getByText("No thinking patterns test yet")).toBeInTheDocument();
+
+    // Distortion traps card (empty state)
+    expect(screen.getByText("Thinking Traps")).toBeInTheDocument();
+    expect(screen.getByText("No trap tags yet")).toBeInTheDocument();
 
     // Legacy digest sections removed
     expect(screen.queryByText("Weekly Averages")).not.toBeInTheDocument();
@@ -161,7 +165,7 @@ describe("Statistics", () => {
     // Switch the tests dropdown to 1 Month — the 30-day-old result now appears
     const testsCard = screen.getByText("Tests Taken").closest(".rounded-xl") as HTMLElement;
     await user.click(within(testsCard).getByRole("combobox"));
-    await user.click(await screen.findByText("1 Month"));
+    await user.click(within(await screen.findByRole("listbox")).getByText("1 Month"));
     expect(await screen.findByText("2 taken")).toBeInTheDocument();
 
     // Expanding the test shows the older run's interpretation too

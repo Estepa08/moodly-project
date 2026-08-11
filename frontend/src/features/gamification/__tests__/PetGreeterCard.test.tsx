@@ -8,6 +8,7 @@ import { emitSpeech } from "../celebration";
 vi.mock("../useCreature", () => ({
   useCreatureState: vi.fn(),
   usePets: vi.fn(),
+  usePet: vi.fn(() => ({ mutate: vi.fn() })),
 }));
 vi.mock("../../../hooks/useMessageOfDay", () => ({
   useMessageOfDay: vi.fn(),

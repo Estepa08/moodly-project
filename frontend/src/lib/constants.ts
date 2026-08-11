@@ -105,6 +105,9 @@ export enum ComponentSize {
 export const EXP_PER_LEVEL = 100;
 export const MS_PER_DAY = 86400000;
 
+// Единый цвет энергии компаньона — совпадает с BulletStat «Энергия» (CreatureStatsBlock).
+export const ENERGY_COLOR = "hsl(45 93% 47%)";
+
 export enum Period {
   OneWeek = "1w",
   TwoWeeks = "2w",

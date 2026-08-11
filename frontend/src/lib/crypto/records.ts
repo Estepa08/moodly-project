@@ -1,5 +1,6 @@
 import { encryptJson, decryptJson } from "./codec";
 import { getSessionKey, getSessionUserId } from "./session";
+import { DISTORTION_KEYS, DistortionKey } from "../distortionsQuiz";
 
 export interface ActivitySelection {
   key: string;
@@ -11,6 +12,7 @@ export interface EntryCipherPayload {
   value: number;
   note: string | null;
   activities?: ActivitySelection[];
+  distortions?: DistortionKey[];
 }
 
 export interface TestResultCipherPayload {
@@ -55,10 +57,17 @@ export async function decryptEntryPayload(
   const parsedActivities = Array.isArray(activities)
     ? (activities as ActivitySelection[]).filter((a) => a && typeof a.key === "string")
     : [];
+  const distortions = (raw as { distortions?: unknown }).distortions;
+  const parsedDistortions = Array.isArray(distortions)
+    ? (distortions as DistortionKey[]).filter(
+        (d) => typeof d === "string" && (DISTORTION_KEYS as string[]).includes(d),
+      )
+    : [];
   return {
     value,
     note: typeof note === "string" ? note : null,
     activities: parsedActivities,
+    distortions: parsedDistortions,
   };
 }
 

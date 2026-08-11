@@ -9,6 +9,7 @@ frontend/dev-dist/
 .env.test.*
 .env.prod
 .env.prod.ru
+.env.e2e
 .DS_Store
 .prisma/
 .next/

@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Calendar, Flame, Sparkles, Brain, Zap, Activity, UtensilsCrossed } from "lucide-react";
 import type { CreatureStats } from "../../lib/api";
 import BulletStat from "../../components/ui/bullet-stat";
+import { ENERGY_COLOR } from "../../lib/constants";
 
 interface CreatureStatsBlockProps {
   stats: CreatureStats;
@@ -54,7 +55,7 @@ export default function CreatureStatsBlock({ stats }: CreatureStatsBlockProps) {
         value={stats.energy}
         target={100}
         unit="%"
-        color="hsl(45 93% 47%)"
+        color={ENERGY_COLOR}
       />
       <BulletStat
         icon={UtensilsCrossed}

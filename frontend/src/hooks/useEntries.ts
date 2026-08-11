@@ -14,6 +14,7 @@ import {
   parseLegacyActivities,
   type ActivitySelection,
 } from "../lib/crypto/records";
+import type { DistortionKey } from "../lib/distortionsQuiz";
 
 type Entry = components["schemas"]["Entry"];
 
@@ -31,6 +32,7 @@ export interface DecryptedEntry extends Entry {
   value: number;
   note: string | null;
   activities?: ActivitySelection[];
+  distortions?: DistortionKey[];
 }
 
 async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
@@ -45,7 +47,13 @@ async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
     };
   }
   const payload = await decryptEntryPayload(e.encryptedData, e.id);
-  return { ...e, value: payload.value, note: payload.note, activities: payload.activities };
+  return {
+    ...e,
+    value: payload.value,
+    note: payload.note,
+    activities: payload.activities,
+    distortions: payload.distortions,
+  };
 }
 
 export function useEntries(params?: { parameterId?: string; from?: string; to?: string }) {
@@ -80,10 +88,16 @@ export function useCreateEntry(onSuccess?: () => void) {
       value: number;
       note?: string;
       activities?: ActivitySelection[];
+      distortions?: DistortionKey[];
     }) => {
       const id = uuidv7();
       const encryptedData = await encryptEntryPayload(
-        { value: data.value, note: data.note ?? null, activities: data.activities },
+        {
+          value: data.value,
+          note: data.note ?? null,
+          activities: data.activities,
+          distortions: data.distortions,
+        },
         id,
       );
       if (!navigator.onLine) {
@@ -107,6 +121,7 @@ export function useCreateEntry(onSuccess?: () => void) {
           value: data.value,
           note: data.note ?? null,
           activities: data.activities ?? [],
+          distortions: data.distortions ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -137,6 +152,7 @@ export function useCreateEntry(onSuccess?: () => void) {
           value: data.value,
           note: data.note ?? null,
           activities: data.activities ?? [],
+          distortions: data.distortions ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -192,14 +208,16 @@ export function useUpdateEntry() {
       value,
       note,
       activities,
+      distortions,
     }: {
       id: string;
       value: number;
       note?: string;
       activities?: ActivitySelection[];
+      distortions?: DistortionKey[];
     }) => {
       const encryptedData = await encryptEntryPayload(
-        { value, note: note ?? null, activities },
+        { value, note: note ?? null, activities, distortions },
         id,
       );
       if (!navigator.onLine) {
@@ -212,6 +230,7 @@ export function useUpdateEntry() {
           value,
           note: note ?? null,
           activities: activities ?? [],
+          distortions: distortions ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -228,6 +247,7 @@ export function useUpdateEntry() {
           value,
           note: note ?? null,
           activities: activities ?? [],
+          distortions: distortions ?? [],
           createdAt: new Date().toISOString(),
         };
       }

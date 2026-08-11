@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Zap, Waves, Flame, Sparkles, Activity, Heart, Pencil, ArrowRight } from "lucide-react";
 import { useCreatureState, usePets, usePet, useSetPet } from "./useCreature";
 import { PET_DEFINITIONS } from "./pets";
-import { EXP_PER_LEVEL } from "../../lib/constants";
+import { EXP_PER_LEVEL, ENERGY_COLOR } from "../../lib/constants";
 import { PET_DAILY_CLICK_LIMIT, PET_CYCLE, ENERGY_LOW_THRESHOLD } from "@moodly/shared";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import { cn } from "../../lib/utils";
@@ -101,11 +101,8 @@ export default function CompanionCard() {
           <div className="w-[60px]">
             <div className="h-1.5 rounded-full bg-muted overflow-hidden">
               <div
-                className={cn(
-                  "h-full rounded-full transition-[width] duration-300",
-                  isLowEnergy ? "bg-destructive" : "bg-warning",
-                )}
-                style={{ width: `${energyPercent}%` }}
+                className="h-full rounded-full transition-[width] duration-300"
+                style={{ width: `${energyPercent}%`, backgroundColor: ENERGY_COLOR }}
               />
             </div>
             <p className="mt-0.5 text-center text-[10px] font-bold text-muted-foreground tabular-nums">
@@ -247,9 +244,12 @@ export default function CompanionCard() {
           </span>
           {t(`petMood.${petMood}`)}
         </span>
-        <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-warning/10 text-xs font-semibold text-warning">
-          <Zap aria-hidden="true" className="w-3.5 h-3.5" />
-          {t("companion.energy", { value: energy })}
+        <span
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+          style={{ backgroundColor: `${ENERGY_COLOR}15` }}
+        >
+          <Zap aria-hidden="true" className="w-3.5 h-3.5" style={{ color: ENERGY_COLOR }} />
+          <span style={{ color: ENERGY_COLOR }}>{t("companion.energy", { value: energy })}</span>
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-xs font-semibold text-primary">
           <Waves aria-hidden="true" className="w-3.5 h-3.5" />

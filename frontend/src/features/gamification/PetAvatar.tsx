@@ -17,8 +17,8 @@ const FEED_ITEM_COUNT = 6;
 const BUBBLE_LIFETIME_MS = 3200;
 
 // Пулы эмодзи для кликов 1 и 2 цикла поглаживаний (3-й клик — «+1 XP»).
-const CYCLE_EMOJI_FIRST = ["🫶", "💗", "💞"];
-const CYCLE_EMOJI_SECOND = ["⭐", "✨", "💖"];
+const CYCLE_EMOJI_FIRST = ["🫶", "💜", "💞", "🎈"];
+const CYCLE_EMOJI_SECOND = ["⭐", "✨", "💖", "🎈"];
 
 type BubbleDepth = "over" | "under";
 
