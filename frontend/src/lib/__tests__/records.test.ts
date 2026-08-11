@@ -10,6 +10,7 @@ import {
 import { generateDataKey } from "../crypto/keys";
 import { setSessionKey, setSessionUserId, getSessionKey } from "../crypto/session";
 import { encryptJson } from "../crypto/codec";
+import { DistortionKey } from "../distortionsQuiz";
 
 const dummyEntityId = "test-id-123";
 const dummyUserId = "user-1";
@@ -53,11 +54,14 @@ describe("crypto/records encryption and decryption", () => {
     const payload: EntryCipherPayload = {
       value: 4,
       note: "Опять всё испортил",
-      distortions: ["magnification", "allOrNothing"],
+      distortions: [DistortionKey.Magnification, DistortionKey.AllOrNothing],
     };
     const encrypted = await encryptEntryPayload(payload, dummyEntityId);
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
-    expect(decrypted.distortions).toEqual(["magnification", "allOrNothing"]);
+    expect(decrypted.distortions).toEqual([
+      DistortionKey.Magnification,
+      DistortionKey.AllOrNothing,
+    ]);
   });
 
   it("should ignore malformed distortion tags in EntryCipherPayload", async () => {
