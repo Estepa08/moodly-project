@@ -9,7 +9,7 @@ import { Period } from "../lib/constants";
 import { filterByPeriod } from "../lib/utils";
 import { ParameterTrendsChart } from "../features/analytics";
 import { QuickEntryIcons } from "../features/mood-entry";
-import { WellbeingCard, FirstTimeHint } from "../widgets";
+import { WellbeingCard, FirstTimeHint, DistortionStatsCard } from "../widgets";
 import TestsResultsSection from "../widgets/TestsResultsSection";
 import ThinkingPatternsCard from "../widgets/ThinkingPatternsCard";
 
@@ -50,6 +50,7 @@ export default function Statistics() {
       wellbeing: readPeriodParam(searchParams.get("wb"), Period.TwoWeeks),
       radar: readPeriodParam(searchParams.get("radar"), Period.TwoWeeks),
       tests: readPeriodParam(searchParams.get("tests"), Period.TwoWeeks),
+      distortions: readPeriodParam(searchParams.get("distortions"), Period.OneMonth),
     }),
     [searchParams],
   );
@@ -187,6 +188,11 @@ export default function Statistics() {
         isLoading={resultsLoading}
         period={period.tests}
         onPeriodChange={(p) => setPeriodParam("tests", p)}
+      />
+
+      <DistortionStatsCard
+        period={period.distortions}
+        onPeriodChange={(p) => setPeriodParam("distortions", p)}
       />
     </div>
   );

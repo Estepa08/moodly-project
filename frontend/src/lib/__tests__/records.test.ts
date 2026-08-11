@@ -49,6 +49,32 @@ describe("crypto/records encryption and decryption", () => {
     expect(decrypted.activities).toEqual(payload.activities);
   });
 
+  it("should encrypt and decrypt cognitive distortion tags in EntryCipherPayload", async () => {
+    const payload: EntryCipherPayload = {
+      value: 4,
+      note: "Опять всё испортил",
+      distortions: ["magnification", "allOrNothing"],
+    };
+    const encrypted = await encryptEntryPayload(payload, dummyEntityId);
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.distortions).toEqual(["magnification", "allOrNothing"]);
+  });
+
+  it("should ignore malformed distortion tags in EntryCipherPayload", async () => {
+    const key = await getSessionKey();
+    const encrypted = await encryptJson(
+      key,
+      {
+        value: 4,
+        note: null,
+        distortions: ["magnification", "not-a-real-key", 42, null],
+      },
+      { userId: dummyUserId, entityId: dummyEntityId },
+    );
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.distortions).toEqual(["magnification"]);
+  });
+
   it("should ignore malformed activities list in EntryCipherPayload", async () => {
     const key = await getSessionKey();
     const encrypted = await encryptJson(

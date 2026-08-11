@@ -427,7 +427,14 @@
     "emotionalReasoning": "Emotional Reasoning",
     "shouldStatements": "Should Statements",
     "labeling": "Labeling",
-    "personalization": "Personalization"
+    "personalization": "Personalization",
+    "tagsTitle": "Thinking traps — what did you spin?",
+    "more": "More",
+    "less": "Less",
+    "add": "Add trap tag",
+    "addSuggested": "Add suggested trap tag",
+    "remove": "Remove trap tag",
+    "suggestHint": "This note sounds like “{{name}}” — tap the tag to mark it."
   },
   "distortions": {
     "title": "Cognitive Distortions",
@@ -1561,7 +1568,9 @@
     "titleSoulScribe": "Chronicler of Thoughts",
     "titleKnowThyself": "Know Thyself",
     "titleStargazer": "Stargazer",
-    "showAllAchievements": "Show all achievements ({{count}})"
+    "showAllAchievements": "Show all achievements ({{count}})",
+    "speech_one": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
+    "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀"
   },
   "missions": {
     "checkin": "Check in today",
@@ -2475,5 +2484,15 @@
         "2": "For persistent symptoms, see a doctor or psychologist."
       }
     }
+  },
+  "distortionStats": {
+    "title": "Thinking Traps",
+    "subtitle": "Which distortion most often drags down your mood",
+    "baseline": "Average mood: {{value}}",
+    "taggedDays": "tagged days: {{count}}",
+    "moodVsBaseline": "On these days mood is {{value}} ({{delta}} vs baseline)",
+    "statsHint": "Tags appear in notes — mark a trap whenever you write about your state.",
+    "emptyTitle": "No trap tags yet",
+    "emptyDesc": "Mark thinking traps in your notes — in a month your pattern statistics will appear here."
   }
 }

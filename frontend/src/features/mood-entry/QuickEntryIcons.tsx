@@ -11,7 +11,9 @@ import { ParameterName } from "../../lib/constants";
 import { RATING_LEVELS, levelForValue } from "../../lib/ratingLevels";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { RatingScaleSelector } from "./RatingScaleSelector";
+import DistortionTagsSelector from "./DistortionTagsSelector";
 import { Button } from "../../components/ui/button";
+import type { DistortionKey } from "../../lib/distortionsQuiz";
 
 interface QuickEntryIconsProps {
   createEntry: CreateEntryMutation;
@@ -29,6 +31,7 @@ export default function QuickEntryIcons({
   const [sliderValue, setSliderValue] = useState(5);
   const [showNote, setShowNote] = useState(false);
   const [noteText, setNoteText] = useState("");
+  const [distortions, setDistortions] = useState<DistortionKey[]>([]);
   const noteInputRef = useRef<HTMLInputElement>(null);
 
   const configs = PARAM_ICON_CONFIGS.filter((cfg) =>
@@ -46,6 +49,7 @@ export default function QuickEntryIcons({
     setSliderValue(5);
     setShowNote(false);
     setNoteText("");
+    setDistortions([]);
   }, []);
 
   const handleSave = useCallback(
@@ -53,7 +57,12 @@ export default function QuickEntryIcons({
       const param = numericParams?.find((p) => p.name === parameterName);
       if (!param) return;
 
-      const payload: { parameterId: string; value: number; note?: string } = {
+      const payload: {
+        parameterId: string;
+        value: number;
+        note?: string;
+        distortions?: DistortionKey[];
+      } = {
         parameterId: param.id,
         value,
       };
@@ -62,12 +71,17 @@ export default function QuickEntryIcons({
         payload.note = noteText.trim();
       }
 
+      if (distortions.length > 0) {
+        payload.distortions = distortions;
+      }
+
       createEntry.mutate(payload, {
         onSuccess: () => {
           toast.success(t("dashboard.quickEntry.entrySaved"));
           setSelectedParam(null);
           setShowNote(false);
           setNoteText("");
+          setDistortions([]);
         },
         onError: (err) => {
           const message =
@@ -79,7 +93,7 @@ export default function QuickEntryIcons({
         },
       });
     },
-    [createEntry, numericParams, t, noteText],
+    [createEntry, numericParams, t, noteText, distortions],
   );
 
   return (
@@ -191,26 +205,39 @@ export default function QuickEntryIcons({
                         {t("dashboard.quickEntry.addNote")}
                       </Button>
                     ) : (
-                      <div className="flex items-center gap-2">
-                        <label className="sr-only" htmlFor="quick-entry-note">
-                          {t("dashboard.quickEntry.notePlaceholder")}
-                        </label>
-                        <input
-                          id="quick-entry-note"
-                          ref={noteInputRef}
-                          type="text"
-                          value={noteText}
-                          onChange={(e) => setNoteText(e.target.value)}
-                          placeholder={t("dashboard.quickEntry.notePlaceholder")}
-                          autoComplete="off"
-                          enterKeyHint="done"
-                          className="w-full md:w-40 text-sm bg-muted rounded-lg px-3 py-2 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleSave(cfg.parameterName, sliderValue);
-                            }
-                          }}
-                        />
+                      <div className="space-y-3 w-full">
+                        <div className="flex items-center gap-2">
+                          <label className="sr-only" htmlFor="quick-entry-note">
+                            {t("dashboard.quickEntry.notePlaceholder")}
+                          </label>
+                          <input
+                            id="quick-entry-note"
+                            ref={noteInputRef}
+                            type="text"
+                            value={noteText}
+                            onChange={(e) => setNoteText(e.target.value)}
+                            placeholder={t("dashboard.quickEntry.notePlaceholder")}
+                            autoComplete="off"
+                            enterKeyHint="done"
+                            className="w-full md:w-40 text-sm bg-muted rounded-lg px-3 py-2 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleSave(cfg.parameterName, sliderValue);
+                              }
+                            }}
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <p className="text-[11px] font-semibold text-muted-foreground">
+                            {t("cognitiveDistortions.tagsTitle")}
+                          </p>
+                          <DistortionTagsSelector
+                            value={distortions}
+                            onChange={setDistortions}
+                            noteText={noteText}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>

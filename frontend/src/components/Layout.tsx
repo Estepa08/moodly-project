@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useReducedMotion } from "../hooks/useReducedMotion";
+import { useIdleLogout } from "../hooks/useIdleLogout";
 import { usePushNotifications } from "../hooks/usePushNotifications";
 import { SyncStatusIndicator } from "./SyncStatusIndicator";
 import SkipLink from "../widgets/SkipLink";
@@ -14,8 +15,10 @@ import BottomNav from "../layout/BottomNav";
 import Breadcrumbs from "../components/ui/breadcrumbs";
 
 const FloatingCompanion = lazy(() => import("../features/gamification/FloatingCompanion"));
-const FloatingSpeechBubble = lazy(() => import("../features/gamification/FloatingSpeechBubble"));
 const LayoutModals = lazy(() => import("../layout/LayoutModals"));
+
+// Автологаут при бездействии: 10 минут без активности → выход из аккаунта.
+const IDLE_LOGOUT_MS = 10 * 60 * 1000;
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
@@ -38,10 +41,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(t);
   }, [isAuthenticated, isBootstrapping, subscribe]);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await logout();
     navigate("/login");
-  };
+  }, [logout, navigate]);
+
+  const handleIdle = useCallback(() => {
+    if (!isAuthenticated) return;
+    void handleLogout();
+  }, [isAuthenticated, handleLogout]);
+
+  useIdleLogout(handleIdle, IDLE_LOGOUT_MS);
 
   if (isBootstrapping) return null;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
@@ -108,9 +118,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         <Suspense fallback={null}>
           <FloatingCompanion />
-        </Suspense>
-        <Suspense fallback={null}>
-          <FloatingSpeechBubble />
         </Suspense>
         <Suspense fallback={null}>
           <LayoutModals />
