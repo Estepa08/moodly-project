@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Zap } from "lucide-react";
-import PetAvatar from "./PetAvatar";
-import { usePets, useCreatureState } from "./useCreature";
-import { PET_DEFINITIONS } from "./pets";
-import { cn } from "../../lib/utils";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Zap } from 'lucide-react';
+import PetAvatar from './PetAvatar';
+import { usePets, useCreatureState } from './useCreature';
+import { PET_DEFINITIONS } from './pets';
+import { cn } from '../../lib/utils';
 
 interface RewardMomentProps {
   title?: string;
@@ -49,17 +49,17 @@ export default function RewardMoment({
     return () => clearInterval(interval);
   }, [xp]);
 
-  const petType = pets?.activePetType ?? "puff";
+  const petType = pets?.activePetType ?? 'puff';
   const petName =
     pets?.petName?.trim() ||
-    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
+    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? 'pets.puff');
 
   const heading = title ?? petName;
-  const body = subtitle ?? t("reward.petHappy", { name: petName });
+  const body = subtitle ?? t('reward.petHappy', { name: petName });
   const displayXp = xp !== undefined && shownXp > 0 ? shownXp : xp;
 
   return (
-    <div className={cn("rounded-2xl bg-card shadow-elevation-3 border border-border", className)}>
+    <div className={cn('rounded-2xl bg-card shadow-elevation-3 border border-border', className)}>
       <div className="flex items-center gap-3 p-4">
         <PetAvatar
           petType={petType}
@@ -83,7 +83,7 @@ export default function RewardMoment({
           )}
           {creature && (
             <p className="text-xs text-muted-foreground mt-1">
-              {t("reward.streakLevel", { streak: creature.streak, level: creature.level })}
+              {t('reward.streakLevel', { streak: creature.streak, level: creature.level })}
             </p>
           )}
         </div>
@@ -93,7 +93,7 @@ export default function RewardMoment({
           to="/progress"
           className="flex items-center justify-between border-t border-border px-4 py-2.5 text-xs font-semibold text-primary transition-colors duration-150 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-b-2xl"
         >
-          {t("companion.toCollection")}
+          {t('companion.toCollection')}
           <span aria-hidden="true" className="text-sm leading-none">
             ›
           </span>

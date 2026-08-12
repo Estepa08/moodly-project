@@ -1,25 +1,25 @@
-import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { BarChart3 } from "lucide-react";
-import { useDashboardData } from "../hooks/useDashboardData";
-import { useEntries } from "../hooks/useEntries";
-import { useTestResults } from "../hooks/useTests";
-import { Period } from "../lib/constants";
-import { filterByPeriod } from "../lib/utils";
-import { ParameterTrendsChart } from "../features/analytics";
-import { QuickEntryIcons } from "../features/mood-entry";
-import { WellbeingCard, FirstTimeHint, DistortionStatsCard } from "../widgets";
-import TestsResultsSection from "../widgets/TestsResultsSection";
-import ThinkingPatternsCard from "../widgets/ThinkingPatternsCard";
+import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { BarChart3 } from 'lucide-react';
+import { useDashboardData } from '../hooks/useDashboardData';
+import { useEntries } from '../hooks/useEntries';
+import { useTestResults } from '../hooks/useTests';
+import { Period } from '../lib/constants';
+import { filterByPeriod } from '../lib/utils';
+import { ParameterTrendsChart } from '../features/analytics';
+import { QuickEntryIcons } from '../features/mood-entry';
+import { WellbeingCard, FirstTimeHint, DistortionStatsCard } from '../widgets';
+import TestsResultsSection from '../widgets/TestsResultsSection';
+import ThinkingPatternsCard from '../widgets/ThinkingPatternsCard';
 
-const WELLBEING_PANEL_ID = "wellbeing-panel";
-const WELLBEING_OPEN_KEY = "moodly_wellbeing_open";
+const WELLBEING_PANEL_ID = 'wellbeing-panel';
+const WELLBEING_OPEN_KEY = 'moodly_wellbeing_open';
 
 function readWellbeingOpen(): boolean {
   try {
     const stored = localStorage.getItem(WELLBEING_OPEN_KEY);
-    if (stored !== null) return stored === "1";
+    if (stored !== null) return stored === '1';
   } catch {
     /* localStorage may be unavailable */
   }
@@ -28,7 +28,7 @@ function readWellbeingOpen(): boolean {
 
 function persistWellbeingOpen(open: boolean) {
   try {
-    localStorage.setItem(WELLBEING_OPEN_KEY, open ? "1" : "0");
+    localStorage.setItem(WELLBEING_OPEN_KEY, open ? '1' : '0');
   } catch {
     /* localStorage may be unavailable */
   }
@@ -47,10 +47,10 @@ export default function Statistics() {
 
   const period = useMemo(
     () => ({
-      wellbeing: readPeriodParam(searchParams.get("wb"), Period.TwoWeeks),
-      radar: readPeriodParam(searchParams.get("radar"), Period.TwoWeeks),
-      tests: readPeriodParam(searchParams.get("tests"), Period.TwoWeeks),
-      distortions: readPeriodParam(searchParams.get("distortions"), Period.OneMonth),
+      wellbeing: readPeriodParam(searchParams.get('wb'), Period.TwoWeeks),
+      radar: readPeriodParam(searchParams.get('radar'), Period.TwoWeeks),
+      tests: readPeriodParam(searchParams.get('tests'), Period.TwoWeeks),
+      distortions: readPeriodParam(searchParams.get('distortions'), Period.OneMonth),
     }),
     [searchParams],
   );
@@ -100,7 +100,7 @@ export default function Statistics() {
   const coreParamIds = useMemo(
     () =>
       numericParams
-        ?.filter((p) => ["Mood", "Energy", "Sleep", "Anxiety"].includes(p.name))
+        ?.filter((p) => ['Mood', 'Energy', 'Sleep', 'Anxiety'].includes(p.name))
         .map((p) => p.id) ?? [],
     [numericParams],
   );
@@ -128,9 +128,9 @@ export default function Statistics() {
       <div className="space-y-1">
         <h1 className="flex items-center gap-2 text-xl font-bold text-foreground">
           <BarChart3 aria-hidden="true" className="w-5 h-5 text-primary" />
-          {t("nav.statistics")}
+          {t('nav.statistics')}
         </h1>
-        <p className="text-sm text-muted-foreground">{t("statistics.subtitle")}</p>
+        <p className="text-sm text-muted-foreground">{t('statistics.subtitle')}</p>
       </div>
 
       <FirstTimeHint visible={isFirstTime} />
@@ -164,7 +164,7 @@ export default function Statistics() {
               paramNames={paramNames}
               isLoading={isDataLoading}
               period={period.wellbeing}
-              onPeriodChange={(p) => setPeriodParam("wb", p)}
+              onPeriodChange={(p) => setPeriodParam('wb', p)}
             />
           ) : (
             <QuickEntryIcons
@@ -180,19 +180,19 @@ export default function Statistics() {
         results={radarResults ?? []}
         isLoading={resultsLoading}
         period={period.radar}
-        onPeriodChange={(p) => setPeriodParam("radar", p)}
+        onPeriodChange={(p) => setPeriodParam('radar', p)}
       />
 
       <TestsResultsSection
         results={testsResults ?? []}
         isLoading={resultsLoading}
         period={period.tests}
-        onPeriodChange={(p) => setPeriodParam("tests", p)}
+        onPeriodChange={(p) => setPeriodParam('tests', p)}
       />
 
       <DistortionStatsCard
         period={period.distortions}
-        onPeriodChange={(p) => setPeriodParam("distortions", p)}
+        onPeriodChange={(p) => setPeriodParam('distortions', p)}
       />
     </div>
   );

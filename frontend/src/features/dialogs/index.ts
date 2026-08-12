@@ -1,1 +1,1 @@
-export { default as LowMoodAlert } from "./LowMoodAlert";
+export { default as LowMoodAlert } from './LowMoodAlert';

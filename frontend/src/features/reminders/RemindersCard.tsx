@@ -1,36 +1,36 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useQueryClient } from "@tanstack/react-query";
-import { BellRing } from "lucide-react";
-import { usePreferences } from "../../hooks/useOnboarding";
-import { usePushNotifications } from "../../hooks/usePushNotifications";
-import { api, type UserPreference } from "../../lib/api";
-import { cn } from "../../lib/utils";
-import { ToggleSwitch } from "../../components/ui/toggle-switch";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
+import { BellRing } from 'lucide-react';
+import { usePreferences } from '../../hooks/useOnboarding';
+import { usePushNotifications } from '../../hooks/usePushNotifications';
+import { api, type UserPreference } from '../../lib/api';
+import { cn } from '../../lib/utils';
+import { ToggleSwitch } from '../../components/ui/toggle-switch';
 
-const TIMES = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, "0")}:00`);
+const TIMES = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, '0')}:00`);
 
 const SLOTS = [
   {
-    key: "morning",
-    labelKey: "settings.slotMorning",
-    enabledField: "dailyReminder" as const,
-    timeField: "reminderTime" as const,
-    defaultTime: "09:00",
+    key: 'morning',
+    labelKey: 'settings.slotMorning',
+    enabledField: 'dailyReminder' as const,
+    timeField: 'reminderTime' as const,
+    defaultTime: '09:00',
   },
   {
-    key: "day",
-    labelKey: "settings.slotDay",
-    enabledField: "afternoonReminder" as const,
-    timeField: "afternoonTime" as const,
-    defaultTime: "14:00",
+    key: 'day',
+    labelKey: 'settings.slotDay',
+    enabledField: 'afternoonReminder' as const,
+    timeField: 'afternoonTime' as const,
+    defaultTime: '14:00',
   },
   {
-    key: "evening",
-    labelKey: "settings.slotEvening",
-    enabledField: "eveningReminder" as const,
-    timeField: "eveningTime" as const,
-    defaultTime: "20:00",
+    key: 'evening',
+    labelKey: 'settings.slotEvening',
+    enabledField: 'eveningReminder' as const,
+    timeField: 'eveningTime' as const,
+    defaultTime: '20:00',
   },
 ] as const;
 
@@ -38,11 +38,11 @@ type SlotConfig = (typeof SLOTS)[number];
 
 const DEFAULT_PREFS = {
   dailyReminder: false,
-  reminderTime: "09:00",
+  reminderTime: '09:00',
   afternoonReminder: false,
-  afternoonTime: "14:00",
+  afternoonTime: '14:00',
   eveningReminder: false,
-  eveningTime: "20:00",
+  eveningTime: '20:00',
 } as const;
 
 function SlotRow({
@@ -67,7 +67,7 @@ function SlotRow({
         <div>
           <p className="text-sm font-medium">{t(slot.labelKey)}</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {t("settings.remindersSwitchDesc")}
+            {t('settings.remindersSwitchDesc')}
           </p>
         </div>
         <ToggleSwitch
@@ -80,9 +80,9 @@ function SlotRow({
 
       {enabled && (
         <div className="flex items-center justify-between gap-4 pl-1">
-          <p className="text-sm font-medium">{t("settings.remindersTimeLabel")}</p>
+          <p className="text-sm font-medium">{t('settings.remindersTimeLabel')}</p>
           <label className="relative">
-            <span className="sr-only">{t("settings.remindersTimeLabel")}</span>
+            <span className="sr-only">{t('settings.remindersTimeLabel')}</span>
             <select
               value={time ?? slot.defaultTime}
               onChange={(e) => onTime(e.target.value)}
@@ -108,20 +108,20 @@ export function RemindersCard() {
   const { data: prefs, isLoading } = usePreferences();
   const { permission, subscribed, subscribing, subscribe, unsubscribe } = usePushNotifications();
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const current = prefs ?? DEFAULT_PREFS;
-  const pushActive = permission === "granted" && subscribed;
+  const pushActive = permission === 'granted' && subscribed;
   const anyEnabled = current.dailyReminder || current.afternoonReminder || current.eveningReminder;
 
   const save = async (patch: Partial<UserPreference>) => {
     setSaving(true);
-    setError("");
+    setError('');
     try {
       await api.users.savePreferences(patch);
-      await queryClient.invalidateQueries({ queryKey: ["preferences"] });
+      await queryClient.invalidateQueries({ queryKey: ['preferences'] });
     } catch {
-      setError(t("settings.remindersSaveFailed"));
+      setError(t('settings.remindersSaveFailed'));
     } finally {
       setSaving(false);
     }
@@ -132,9 +132,9 @@ export function RemindersCard() {
     const result = await subscribe();
     if (!result.ok) {
       setError(
-        result.error === "no-vapid"
-          ? t("settings.pushNotConfigured")
-          : t("settings.pushSubscribeFailed"),
+        result.error === 'no-vapid'
+          ? t('settings.pushNotConfigured')
+          : t('settings.pushSubscribeFailed'),
       );
       return false;
     }
@@ -170,7 +170,7 @@ export function RemindersCard() {
     <div className="space-y-3">
       <div className="rounded-xl bg-muted/50 p-3 flex items-center gap-3">
         <BellRing aria-hidden="true" className="w-4 h-4 shrink-0" />
-        <p className="text-sm text-muted-foreground">{t("settings.remindersSlotsDesc")}</p>
+        <p className="text-sm text-muted-foreground">{t('settings.remindersSlotsDesc')}</p>
       </div>
 
       {SLOTS.map((slot) => (
@@ -187,25 +187,25 @@ export function RemindersCard() {
 
       <div
         className={cn(
-          "rounded-xl p-3 flex items-center gap-3",
-          pushActive ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "bg-muted/60",
+          'rounded-xl p-3 flex items-center gap-3',
+          pushActive ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' : 'bg-muted/60',
         )}
       >
         <BellRing aria-hidden="true" className="w-4 h-4 shrink-0" />
         {pushActive ? (
           <div className="flex-1">
-            <p className="text-sm font-medium">{t("settings.pushAllowed")}</p>
-            <p className="text-xs opacity-80">{t("settings.pushAllowedDesc")}</p>
+            <p className="text-sm font-medium">{t('settings.pushAllowed')}</p>
+            <p className="text-xs opacity-80">{t('settings.pushAllowedDesc')}</p>
           </div>
         ) : (
           <div className="flex-1">
             <p className="text-sm font-medium">
-              {permission === "denied" ? t("settings.pushDenied") : t("settings.pushEnable")}
+              {permission === 'denied' ? t('settings.pushDenied') : t('settings.pushEnable')}
             </p>
             <p className="text-xs opacity-80">
-              {permission === "denied"
-                ? t("settings.pushDeniedDesc")
-                : t("settings.pushEnableDesc")}
+              {permission === 'denied'
+                ? t('settings.pushDeniedDesc')
+                : t('settings.pushEnableDesc')}
             </p>
           </div>
         )}
@@ -216,10 +216,10 @@ export function RemindersCard() {
             disabled={saving || subscribing}
             className="shrink-0 text-xs font-semibold underline underline-offset-2 hover:opacity-80 disabled:opacity-50 cursor-pointer"
           >
-            {t("settings.pushDisable")}
+            {t('settings.pushDisable')}
           </button>
         ) : (
-          permission !== "denied" &&
+          permission !== 'denied' &&
           !anyEnabled && (
             <button
               type="button"
@@ -227,16 +227,16 @@ export function RemindersCard() {
                 const result = await subscribe();
                 if (!result.ok) {
                   setError(
-                    result.error === "no-vapid"
-                      ? t("settings.pushNotConfigured")
-                      : t("settings.pushSubscribeFailed"),
+                    result.error === 'no-vapid'
+                      ? t('settings.pushNotConfigured')
+                      : t('settings.pushSubscribeFailed'),
                   );
                 }
               }}
               disabled={subscribing}
               className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {subscribing ? "…" : t("settings.pushAllow")}
+              {subscribing ? '…' : t('settings.pushAllow')}
             </button>
           )
         )}

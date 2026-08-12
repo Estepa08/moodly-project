@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
-import { MessageCircle } from "lucide-react";
-import ContentMessagesManager from "../features/content/ContentMessagesManager";
-import { useCurrentUser } from "../hooks/useCurrentUser";
-import EmptyState from "../components/ui/empty-state";
+import { useTranslation } from 'react-i18next';
+import { MessageCircle } from 'lucide-react';
+import ContentMessagesManager from '../features/content/ContentMessagesManager';
+import { useCurrentUser } from '../hooks/useCurrentUser';
+import EmptyState from '../components/ui/empty-state';
 
 export default function ContentPage() {
   const { t } = useTranslation();
@@ -16,17 +16,17 @@ export default function ContentPage() {
     );
   }
 
-  if (currentUser && currentUser.role !== "admin" && currentUser.role !== "content_manager") {
+  if (currentUser && currentUser.role !== 'admin' && currentUser.role !== 'content_manager') {
     return (
-      <EmptyState icon={MessageCircle} title={t("content.forbidden")} className="min-h-[50vh]" />
+      <EmptyState icon={MessageCircle} title={t('content.forbidden')} className="min-h-[50vh]" />
     );
   }
 
   return (
     <div className="max-w-5xl mx-auto space-y-4 pb-20">
       <div>
-        <h1 className="text-xl font-bold text-foreground font-serif">{t("content.title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("content.subtitle")}</p>
+        <h1 className="text-xl font-bold text-foreground font-serif">{t('content.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('content.subtitle')}</p>
       </div>
       <ContentMessagesManager />
     </div>

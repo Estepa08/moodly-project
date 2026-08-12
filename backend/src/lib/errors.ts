@@ -5,30 +5,30 @@ export class AppError extends Error {
     message: string,
   ) {
     super(message);
-    this.name = "AppError";
+    this.name = 'AppError';
   }
 }
 
 export class NotFoundError extends AppError {
   constructor(entity: string) {
-    super("NOT_FOUND", 404, `${entity} not found`);
+    super('NOT_FOUND', 404, `${entity} not found`);
   }
 }
 
 export class UnauthorizedError extends AppError {
-  constructor(message = "Unauthorized") {
-    super("UNAUTHORIZED", 401, message);
+  constructor(message = 'Unauthorized') {
+    super('UNAUTHORIZED', 401, message);
   }
 }
 
 export class ConflictError extends AppError {
   constructor(message: string) {
-    super("CONFLICT", 409, message);
+    super('CONFLICT', 409, message);
   }
 }
 
 export class ValidationError extends AppError {
   constructor(message: string) {
-    super("VALIDATION_ERROR", 400, message);
+    super('VALIDATION_ERROR', 400, message);
   }
 }

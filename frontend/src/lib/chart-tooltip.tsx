@@ -1,4 +1,4 @@
-import { cn } from "./utils";
+import { cn } from './utils';
 
 interface ChartTooltipProps {
   active?: boolean;
@@ -24,7 +24,7 @@ export function ChartTooltip({
   return (
     <div
       className={cn(
-        "bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm",
+        'bg-card px-3 py-2 rounded-xl shadow-neumorphic-sm border border-border text-sm',
         className,
       )}
       role="tooltip"

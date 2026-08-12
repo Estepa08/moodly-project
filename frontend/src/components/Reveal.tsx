@@ -1,6 +1,6 @@
-import type { CSSProperties, ElementType, ReactNode } from "react";
-import { useReveal, type RevealDirection } from "../hooks/useReveal";
-import { cn } from "../lib/utils";
+import type { CSSProperties, ElementType, ReactNode } from 'react';
+import { useReveal, type RevealDirection } from '../hooks/useReveal';
+import { cn } from '../lib/utils';
 
 interface RevealProps {
   children: ReactNode;
@@ -17,9 +17,9 @@ interface RevealProps {
 export default function Reveal({
   children,
   className,
-  direction = "up",
+  direction = 'up',
   delay = 0,
-  as: Tag = "div",
+  as: Tag = 'div',
 }: RevealProps) {
   const { ref, revealClassName, delayStyle } = useReveal<HTMLDivElement>({ delay });
   return (

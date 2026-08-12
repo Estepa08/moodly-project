@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { api } from "../lib/api";
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../lib/api';
 
 export function useCurrentUser() {
   return useQuery({
-    queryKey: ["userMe"],
+    queryKey: ['userMe'],
     queryFn: () => api.users.me(),
     staleTime: 300_000,
   });

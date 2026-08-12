@@ -1,8 +1,8 @@
-import { Check, CloudOff, Loader2, TriangleAlert } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useSync } from "../lib/offline/useSync";
-import { useReducedMotion } from "../hooks/useReducedMotion";
-import { cn } from "../lib/utils";
+import { Check, CloudOff, Loader2, TriangleAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { useSync } from '../lib/offline/useSync';
+import { useReducedMotion } from '../hooks/useReducedMotion';
+import { cn } from '../lib/utils';
 
 /** Мини-индикатор статуса синхронизации в шапке (макет docs/sync-status-indicator.svg). */
 export function SyncStatusIndicator() {
@@ -14,16 +14,16 @@ export function SyncStatusIndicator() {
 
   const icon = (() => {
     switch (status) {
-      case "syncing":
+      case 'syncing':
         return (
           <Loader2
             aria-hidden="true"
-            className={cn("h-4 w-4 text-primary", reducedMotion ? "" : "animate-spin")}
+            className={cn('h-4 w-4 text-primary', reducedMotion ? '' : 'animate-spin')}
           />
         );
-      case "offline":
+      case 'offline':
         return <CloudOff aria-hidden="true" className="h-4 w-4 text-muted-foreground" />;
-      case "error":
+      case 'error':
         return <TriangleAlert aria-hidden="true" className="h-4 w-4 text-destructive" />;
       default:
         return <Check aria-hidden="true" className="h-4 w-4 text-success" />;
@@ -39,10 +39,10 @@ export function SyncStatusIndicator() {
       className="relative h-9 w-9 shrink-0 grid place-items-center rounded-full bg-card shadow-neumorphic-sm text-muted-foreground hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors"
     >
       {icon}
-      {status === "offline" && pending > 0 && (
+      {status === 'offline' && pending > 0 && (
         <span
           className="absolute -top-1 -right-1 h-4 min-w-4 px-1 grid place-items-center rounded-full bg-warning text-warning-foreground text-[10px] font-bold leading-none"
-          aria-label={t("sync.pending", { count: pending })}
+          aria-label={t('sync.pending', { count: pending })}
         >
           {pending}
         </span>

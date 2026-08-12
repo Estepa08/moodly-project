@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp, registerAndLogin } from "../../test/helpers.js";
-import { PrismaClient } from "@prisma/client";
-import type { FastifyInstance } from "fastify";
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { buildApp, registerAndLogin } from '../../test/helpers.js';
+import { PrismaClient } from '@prisma/client';
+import type { FastifyInstance } from 'fastify';
 
 let app: FastifyInstance;
 let token: string;
@@ -13,14 +13,14 @@ beforeAll(async () => {
 
   const test = await prisma.test.create({
     data: {
-      title: "GAD-7",
+      title: 'GAD-7',
       questions: [
         {
-          id: "q1",
-          text: "Feeling nervous?",
+          id: 'q1',
+          text: 'Feeling nervous?',
           options: [
-            { id: "q1a", text: "Not at all", score: 0 },
-            { id: "q1b", text: "Several days", score: 1 },
+            { id: 'q1a', text: 'Not at all', score: 0 },
+            { id: 'q1b', text: 'Several days', score: 1 },
           ],
         },
       ],
@@ -28,7 +28,7 @@ beforeAll(async () => {
   });
   testId = test.id;
 
-  const result = await registerAndLogin(app, "tests-test@example.com", "secret123");
+  const result = await registerAndLogin(app, 'tests-test@example.com', 'secret123');
   token = result.token;
 });
 
@@ -37,20 +37,20 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-describe("Tests", () => {
-  it("GET /tests — lists tests", async () => {
+describe('Tests', () => {
+  it('GET /tests — lists tests', async () => {
     const res = await app.inject({
-      method: "GET",
-      url: "/tests",
+      method: 'GET',
+      url: '/tests',
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.json())).toBe(true);
   });
 
-  it("GET /tests/:id — returns test with questions", async () => {
+  it('GET /tests/:id — returns test with questions', async () => {
     const res = await app.inject({
-      method: "GET",
+      method: 'GET',
       url: `/tests/${testId}`,
       headers: { authorization: `Bearer ${token}` },
     });
@@ -58,12 +58,12 @@ describe("Tests", () => {
     expect(res.json().questions).toBeDefined();
   });
 
-  it("POST /tests/:id/results — no longer exists (E2E scoring is client-side)", async () => {
+  it('POST /tests/:id/results — no longer exists (E2E scoring is client-side)', async () => {
     const res = await app.inject({
-      method: "POST",
+      method: 'POST',
       url: `/tests/${testId}/results`,
       headers: { authorization: `Bearer ${token}` },
-      payload: { answers: [{ questionId: "q1", optionId: "q1b" }] },
+      payload: { answers: [{ questionId: 'q1', optionId: 'q1b' }] },
     });
     expect(res.statusCode).toBe(404);
   });

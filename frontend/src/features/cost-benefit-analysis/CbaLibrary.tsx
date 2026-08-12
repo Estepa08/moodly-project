@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
-import { ProgressBar } from "../../components/ui/progress-bar";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Chip } from "../../components/ui/chip";
-import { IconButton } from "../../components/ui/icon-button";
-import EmptyState from "../../components/ui/empty-state";
-import { cn } from "../../lib/utils";
-import type { CbaExample } from "./cba.types";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
+import { ProgressBar } from '../../components/ui/progress-bar';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Chip } from '../../components/ui/chip';
+import { IconButton } from '../../components/ui/icon-button';
+import EmptyState from '../../components/ui/empty-state';
+import { cn } from '../../lib/utils';
+import type { CbaExample } from './cba.types';
 
 interface CbaLibraryProps {
   examples: CbaExample[];
@@ -19,12 +19,12 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
   const [index, setIndex] = useState(0);
 
   if (examples.length === 0) {
-    return <EmptyState icon={BookOpen} title={t("cba.libraryEmpty")} />;
+    return <EmptyState icon={BookOpen} title={t('cba.libraryEmpty')} />;
   }
 
   const example = examples[index];
-  const advantages = example.items.filter((i) => i.itemType === "advantage");
-  const disadvantages = example.items.filter((i) => i.itemType === "disadvantage");
+  const advantages = example.items.filter((i) => i.itemType === 'advantage');
+  const disadvantages = example.items.filter((i) => i.itemType === 'disadvantage');
 
   return (
     <div className="space-y-3">
@@ -49,7 +49,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <p className="text-xs font-medium text-success">{t("cba.pros")}</p>
+              <p className="text-xs font-medium text-success">{t('cba.pros')}</p>
               <ul className="space-y-1">
                 {advantages.map((i) => (
                   <li key={i.id} className="text-sm text-muted-foreground">
@@ -59,7 +59,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
               </ul>
             </div>
             <div className="space-y-1.5">
-              <p className="text-xs font-medium text-destructive">{t("cba.cons")}</p>
+              <p className="text-xs font-medium text-destructive">{t('cba.cons')}</p>
               <ul className="space-y-1">
                 {disadvantages.map((i) => (
                   <li key={i.id} className="text-sm text-muted-foreground">
@@ -79,7 +79,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
                   value: Math.min(100, example.prosWeight + example.consWeight),
                   style: {
                     backgroundImage:
-                      "linear-gradient(to right, hsl(var(--success)), hsl(var(--destructive)))",
+                      'linear-gradient(to right, hsl(var(--success)), hsl(var(--destructive)))',
                   },
                 },
               ]}
@@ -94,7 +94,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
         <IconButton
           variant="ghost"
           size="icon"
-          label={t("cba.prevExample")}
+          label={t('cba.prevExample')}
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
         >
@@ -105,8 +105,8 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
             <span
               key={e.id}
               className={cn(
-                "h-1.5 rounded-full transition-[width,background-color] duration-150",
-                i === index ? "w-6 bg-primary" : "w-1.5 bg-muted",
+                'h-1.5 rounded-full transition-[width,background-color] duration-150',
+                i === index ? 'w-6 bg-primary' : 'w-1.5 bg-muted',
               )}
             />
           ))}
@@ -114,7 +114,7 @@ export default function CbaLibrary({ examples }: CbaLibraryProps) {
         <IconButton
           variant="ghost"
           size="icon"
-          label={t("cba.nextExample")}
+          label={t('cba.nextExample')}
           onClick={() => setIndex((i) => Math.min(examples.length - 1, i + 1))}
           disabled={index === examples.length - 1}
         >

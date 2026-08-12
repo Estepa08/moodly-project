@@ -1,23 +1,23 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { motion } from "framer-motion";
-import Lottie from "lottie-react";
-import { useTranslation } from "react-i18next";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from "./pets";
-import { usePetAnimation } from "./usePetAnimation";
-import PetRewardParticles from "./PetRewardParticles";
-import { pickPetWordIndex, type PetRewardSignal } from "./petRewards";
-import { cn } from "../../lib/utils";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { motion } from 'framer-motion';
+import Lottie from 'lottie-react';
+import { useTranslation } from 'react-i18next';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from './pets';
+import { usePetAnimation } from './usePetAnimation';
+import PetRewardParticles from './PetRewardParticles';
+import { pickPetWordIndex, type PetRewardSignal } from './petRewards';
+import { cn } from '../../lib/utils';
 
-export type PetAvatarSize = "sm" | "md" | "lg";
+export type PetAvatarSize = 'sm' | 'md' | 'lg';
 
 // Подсветка-подсказка скрытых бонусов: тёплый ореол утром (6-12),
 // синий ореол вечером (20-23).
-export type PetGlow = "warm" | "cool" | null;
+export type PetGlow = 'warm' | 'cool' | null;
 
 // Варианты медленного скрытия питомца в idle-цикле PetGreeterCard
 // (см. docs/pet-greeter-hide-animations.svg).
-export type PetHideVariant = "sink" | "melt" | "dissolve" | "collapse" | "tumble";
+export type PetHideVariant = 'sink' | 'melt' | 'dissolve' | 'collapse' | 'tumble';
 
 export interface PetHide {
   /** Уникальный id события скрытия — по нему рестартуют осколки «рассыпается» */
@@ -26,9 +26,9 @@ export interface PetHide {
 }
 
 const SIZE_CLASS: Record<PetAvatarSize, { box: string; icon: string }> = {
-  sm: { box: "w-[60px] h-[60px]", icon: "text-2xl" },
-  md: { box: "w-[72px] h-[72px]", icon: "text-3xl" },
-  lg: { box: "w-24 h-24", icon: "text-5xl" },
+  sm: { box: 'w-[60px] h-[60px]', icon: 'text-2xl' },
+  md: { box: 'w-[72px] h-[72px]', icon: 'text-3xl' },
+  lg: { box: 'w-24 h-24', icon: 'text-5xl' },
 };
 
 const FEED_ITEM_COUNT = 6;
@@ -47,7 +47,7 @@ const DASH_OUT_MS = 350;
 const DASH_TOTAL_MS = 900;
 
 // Время жизни анимации награды зависит от типа (дольше у «утро»/«возвращение»).
-const SIGNAL_LIFETIME_MS: Record<PetRewardSignal["kind"], number> = {
+const SIGNAL_LIFETIME_MS: Record<PetRewardSignal['kind'], number> = {
   none: 1200,
   standard: 1000,
   morning: 1800,
@@ -59,19 +59,19 @@ const SIGNAL_LIFETIME_MS: Record<PetRewardSignal["kind"], number> = {
 
 // CSS-классы медленного скрытия внутри контейнера (idle-цикл PetGreeterCard).
 const HIDE_CLASS: Record<PetHideVariant, string> = {
-  sink: "animate-pet-hide-sink",
-  melt: "animate-pet-hide-melt",
-  dissolve: "animate-pet-hide-fade",
-  collapse: "animate-pet-hide-collapse",
-  tumble: "animate-pet-hide-tumble",
+  sink: 'animate-pet-hide-sink',
+  melt: 'animate-pet-hide-melt',
+  dissolve: 'animate-pet-hide-fade',
+  collapse: 'animate-pet-hide-collapse',
+  tumble: 'animate-pet-hide-tumble',
 };
 
 // Пулы эмодзи для кликов 1 и 2 цикла поглаживаний (3-й клик — частицы награды).
-const CYCLE_EMOJI_FIRST = ["🫶", "💜", "💞", "🎈"];
-const CYCLE_EMOJI_SECOND = ["⭐", "✨", "💖", "🎈"];
-const CYCLE_EMOJI_THIRD = ["🫧", "🌷", "💫", "🥰"];
+const CYCLE_EMOJI_FIRST = ['🫶', '💜', '💞', '🎈'];
+const CYCLE_EMOJI_SECOND = ['⭐', '✨', '💖', '🎈'];
+const CYCLE_EMOJI_THIRD = ['🫧', '🌷', '💫', '🥰'];
 
-type BubbleDepth = "over" | "under";
+type BubbleDepth = 'over' | 'under';
 
 interface BubbleTrajectory {
   swayA: number;
@@ -121,9 +121,9 @@ interface PetAvatarProps {
 }
 
 export default function PetAvatar({
-  petType = "puff",
-  size = "md",
-  emotion = "idle",
+  petType = 'puff',
+  size = 'md',
+  emotion = 'idle',
   interactive = false,
   ariaLabel,
   className,
@@ -145,16 +145,16 @@ export default function PetAvatar({
   const [feedItems, setFeedItems] = useState<FloatItem[]>([]);
   const [signals, setSignals] = useState<PetRewardSignal[]>([]);
   const [squashing, setSquashing] = useState(false);
-  const [dash, setDash] = useState<null | "out" | "in">(null);
+  const [dash, setDash] = useState<null | 'out' | 'in'>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const dashDirRef = useRef<"left" | "right">("left");
+  const dashDirRef = useRef<'left' | 'right'>('left');
   const lastWordIndexRef = useRef<number | null>(null);
 
   const words =
-    (t("companion.petReward.words", { returnObjects: true }) as unknown as string[]) ?? [];
+    (t('companion.petReward.words', { returnObjects: true }) as unknown as string[]) ?? [];
 
   const definition = PET_DEFINITIONS.find((p) => p.type === petType);
-  const feedEmojis = definition?.feed ?? ["🫧"];
+  const feedEmojis = definition?.feed ?? ['🫧'];
 
   const clearTimers = () => {
     timersRef.current.forEach(clearTimeout);
@@ -187,12 +187,12 @@ export default function PetAvatar({
   // с противоположной стороны + слово-пилла (см. docs/companion-rewards-v4.svg, B.4).
   const runDash = () => {
     if (dash) return;
-    const dir: "left" | "right" = Math.random() > 0.5 ? "left" : "right";
+    const dir: 'left' | 'right' = Math.random() > 0.5 ? 'left' : 'right';
     dashDirRef.current = dir;
     const word = pickWord();
-    setDash("out");
+    setDash('out');
     const outTimer = setTimeout(() => {
-      setDash("in");
+      setDash('in');
       if (word) spawnBubble(word);
     }, DASH_OUT_MS);
     const inTimer = setTimeout(() => setDash(null), DASH_TOTAL_MS);
@@ -202,7 +202,7 @@ export default function PetAvatar({
   // Одноразовое слово-приветствие (например «Тут я!» после возврата из отлучки).
   useEffect(() => {
     if (!greetSignal || isReducedMotion) return;
-    spawnBubble(t("companion.petReward.returnWord"));
+    spawnBubble(t('companion.petReward.returnWord'));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [greetSignal]);
 
@@ -214,7 +214,7 @@ export default function PetAvatar({
       return;
     }
     const id = Date.now() + Math.random();
-    const depth: BubbleDepth = Math.random() > 0.5 ? "over" : "under";
+    const depth: BubbleDepth = Math.random() > 0.5 ? 'over' : 'under';
     const trajectory: BubbleTrajectory = {
       swayA: Math.random() * 40 - 20,
       swayB: Math.random() * 60 - 30,
@@ -278,7 +278,7 @@ export default function PetAvatar({
       emoji: feedEmojis[i % feedEmojis.length],
       offset: (i % 5) * 10 - 20,
       delay: i * 130,
-      depth: "under",
+      depth: 'under',
       trajectory: { swayA: 0, swayB: 0, tilt: 0, by: -260 },
     }));
     setFeedItems(items);
@@ -302,7 +302,7 @@ export default function PetAvatar({
 
   // Осколки для «рассыпается»: 6 фрагментов разлетаются равномерно по кругу.
   const dissolveShards = useMemo(() => {
-    if (!hide || hide.variant !== "dissolve") return [];
+    if (!hide || hide.variant !== 'dissolve') return [];
     const count = 6;
     return Array.from({ length: count }, (_, i) => {
       const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
@@ -318,11 +318,11 @@ export default function PetAvatar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hide?.id]);
 
-  const fallback = PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? "🫧";
+  const fallback = PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? '🫧';
   const { box, icon } = SIZE_CLASS[size];
 
   const showPetBounce =
-    emotion === "happy" && !hasPetEmotion(petType, "happy") && !isReducedMotion && !!animationData;
+    emotion === 'happy' && !hasPetEmotion(petType, 'happy') && !isReducedMotion && !!animationData;
 
   return (
     <button
@@ -333,21 +333,21 @@ export default function PetAvatar({
       }}
       aria-label={ariaLabel}
       className={cn(
-        "relative shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        contained && "overflow-hidden",
-        interactive && "cursor-pointer active:scale-95 transition-[transform] duration-150",
-        squashing && "animate-pet-squash",
-        !isReducedMotion && reappear && "animate-pet-pop-in",
+        'relative shrink-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        contained && 'overflow-hidden',
+        interactive && 'cursor-pointer active:scale-95 transition-[transform] duration-150',
+        squashing && 'animate-pet-squash',
+        !isReducedMotion && reappear && 'animate-pet-pop-in',
         !isReducedMotion &&
-          dash === "out" &&
-          (dashDirRef.current === "left"
-            ? "animate-pet-dash-out-left"
-            : "animate-pet-dash-out-right"),
+          dash === 'out' &&
+          (dashDirRef.current === 'left'
+            ? 'animate-pet-dash-out-left'
+            : 'animate-pet-dash-out-right'),
         !isReducedMotion &&
-          dash === "in" &&
-          (dashDirRef.current === "left"
-            ? "animate-pet-dash-in-right"
-            : "animate-pet-dash-in-left"),
+          dash === 'in' &&
+          (dashDirRef.current === 'left'
+            ? 'animate-pet-dash-in-right'
+            : 'animate-pet-dash-in-left'),
         !isReducedMotion && hide && HIDE_CLASS[hide.variant],
         className,
       )}
@@ -357,20 +357,20 @@ export default function PetAvatar({
         <span
           aria-hidden="true"
           className={cn(
-            "absolute -inset-2 rounded-full blur-md pointer-events-none",
-            glow === "warm"
-              ? "bg-amber-300/40 animate-glow-warm"
-              : "bg-sky-400/40 animate-glow-cool",
+            'absolute -inset-2 rounded-full blur-md pointer-events-none',
+            glow === 'warm'
+              ? 'bg-amber-300/40 animate-glow-warm'
+              : 'bg-sky-400/40 animate-glow-cool',
           )}
         />
       )}
 
-      <span className={cn("block rounded-full", plain ? "bg-transparent" : "bg-secondary", box)} />
+      <span className={cn('block rounded-full', plain ? 'bg-transparent' : 'bg-secondary', box)} />
       <span
         className={cn(
-          "absolute inset-0 flex items-center justify-center",
+          'absolute inset-0 flex items-center justify-center',
           icon,
-          showPetBounce && "animate-pet-happy",
+          showPetBounce && 'animate-pet-happy',
         )}
       >
         {isReducedMotion || !animationData ? (
@@ -385,28 +385,28 @@ export default function PetAvatar({
           key={b.id}
           aria-hidden="true"
           className={cn(
-            "absolute left-1/2 top-0 flex items-center justify-center pointer-events-none",
-            b.label ? "min-w-[3rem] h-7 px-1 animate-word-up" : "w-6 h-6 text-lg animate-bubble-up",
-            b.depth === "over" && "z-20",
+            'absolute left-1/2 top-0 flex items-center justify-center pointer-events-none',
+            b.label ? 'min-w-[3rem] h-7 px-1 animate-word-up' : 'w-6 h-6 text-lg animate-bubble-up',
+            b.depth === 'over' && 'z-20',
           )}
           style={
             {
               marginLeft: b.offset,
-              "--by": `${b.trajectory.by}px`,
+              '--by': `${b.trajectory.by}px`,
             } as CSSProperties
           }
         >
           <span
             className={cn(
-              "animate-bubble-sway inline-block whitespace-nowrap",
+              'animate-bubble-sway inline-block whitespace-nowrap',
               b.label &&
-                "px-2 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-xs font-bold text-white shadow-neumorphic-sm",
+                'px-2 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-xs font-bold text-white shadow-neumorphic-sm',
             )}
             style={
               {
-                "--sway-a": `${b.trajectory.swayA}px`,
-                "--sway-b": `${b.trajectory.swayB}px`,
-                "--tilt": `${b.trajectory.tilt}deg`,
+                '--sway-a': `${b.trajectory.swayA}px`,
+                '--sway-b': `${b.trajectory.swayB}px`,
+                '--tilt': `${b.trajectory.tilt}deg`,
               } as CSSProperties
             }
           >
@@ -427,7 +427,7 @@ export default function PetAvatar({
       ))}
 
       {!isReducedMotion &&
-        hide?.variant === "dissolve" &&
+        hide?.variant === 'dissolve' &&
         dissolveShards.map((s, i) => (
           <motion.span
             key={i}
@@ -435,7 +435,7 @@ export default function PetAvatar({
             className="absolute left-1/2 top-1/2 -ml-2 -mt-2 text-base leading-none pointer-events-none"
             initial={{ x: 0, y: 0, opacity: 1, scale: 1, rotate: 0 }}
             animate={{ x: s.x, y: s.y, opacity: 0, scale: s.scale, rotate: s.rotate }}
-            transition={{ duration: 3.2, delay: s.delay, ease: "easeOut" }}
+            transition={{ duration: 3.2, delay: s.delay, ease: 'easeOut' }}
           >
             {fallback}
           </motion.span>

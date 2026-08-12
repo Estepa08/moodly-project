@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import type { components } from "../../lib/api-types";
-import { toast } from "sonner";
-import { Heart, ChevronDown, ChevronUp } from "lucide-react";
-import type { CreateEntryMutation } from "../../lib/app-types";
-import { formatDateShort } from "../../lib/utils";
-import { GratitudeCategory } from "../../lib/gratitudePrompts";
-import { Button } from "../../components/ui/button";
-import { Chip } from "../../components/ui/chip";
-import { Textarea } from "../../components/ui/textarea";
-import { Card, CardContent } from "../../components/ui/card";
-import EmptyState from "../../components/ui/empty-state";
-import { usePets } from "../gamification";
-import { PET_DEFINITIONS } from "../gamification/pets";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { components } from '../../lib/api-types';
+import { toast } from 'sonner';
+import { Heart, ChevronDown, ChevronUp } from 'lucide-react';
+import type { CreateEntryMutation } from '../../lib/app-types';
+import { formatDateShort } from '../../lib/utils';
+import { GratitudeCategory } from '../../lib/gratitudePrompts';
+import { Button } from '../../components/ui/button';
+import { Chip } from '../../components/ui/chip';
+import { Textarea } from '../../components/ui/textarea';
+import { Card, CardContent } from '../../components/ui/card';
+import EmptyState from '../../components/ui/empty-state';
+import { usePets } from '../gamification';
+import { PET_DEFINITIONS } from '../gamification/pets';
 
 interface GratitudeJournalProps {
   parameterId: string | undefined;
-  entries: components["schemas"]["Entry"][];
+  entries: components['schemas']['Entry'][];
   createEntry: CreateEntryMutation;
   limit?: number;
   hideTitle?: boolean;
@@ -34,7 +34,7 @@ export default function GratitudeJournal({
   const { t, i18n } = useTranslation();
   const { data: pets } = usePets();
   const petName = pets?.petName?.trim() || t(PET_DEFINITIONS[0].labelKey);
-  const [note, setNote] = useState("");
+  const [note, setNote] = useState('');
   const [activePrompt, setActivePrompt] = useState<GratitudeCategory | null>(null);
   const [showAllHistory, setShowAllHistory] = useState(false);
 
@@ -50,9 +50,9 @@ export default function GratitudeJournal({
       { parameterId, value: 1, note: note || activePrompt || undefined },
       {
         onSuccess: () => {
-          setNote("");
+          setNote('');
           setActivePrompt(null);
-          toast.success(t("dashboard.gratitudeSaved"));
+          toast.success(t('dashboard.gratitudeSaved'));
         },
       },
     );
@@ -61,17 +61,17 @@ export default function GratitudeJournal({
   return (
     <div className="space-y-4">
       {!hideTitle && (
-        <h3 className="text-sm font-semibold text-foreground">{t("dashboard.gratitudeJournal")}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{t('dashboard.gratitudeJournal')}</h3>
       )}
 
       <Card className="shadow-neumorphic">
         <CardContent className="pt-4 space-y-3">
-          <p className="text-xs text-muted-foreground">{t("dashboard.gratitudePrompt")}</p>
+          <p className="text-xs text-muted-foreground">{t('dashboard.gratitudePrompt')}</p>
           <div className="flex flex-wrap gap-2">
             {ALL_CATEGORIES.map((cat) => (
               <Chip
                 key={cat}
-                variant={activePrompt === cat ? "active" : "default"}
+                variant={activePrompt === cat ? 'active' : 'default'}
                 onClick={() => handlePromptSelect(cat)}
               >
                 {t(`gratitudePrompts.${cat}`)}
@@ -86,7 +86,7 @@ export default function GratitudeJournal({
           <Textarea
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder={t("dashboard.gratitudePlaceholder")}
+            placeholder={t('dashboard.gratitudePlaceholder')}
           />
           <Button
             onClick={handleSave}
@@ -94,7 +94,7 @@ export default function GratitudeJournal({
             className="w-full"
           >
             <Heart aria-hidden="true" className="w-4 h-4 mr-1.5" />
-            {t("dashboard.gratitudeSave")}
+            {t('dashboard.gratitudeSave')}
           </Button>
         </CardContent>
       </Card>
@@ -122,8 +122,8 @@ export default function GratitudeJournal({
         <EmptyState
           pet
           petType={pets?.activePetType}
-          title={t("dashboard.gratitudeEmpty")}
-          description={t("dashboard.gratitudeEmptyPet", { name: petName })}
+          title={t('dashboard.gratitudeEmpty')}
+          description={t('dashboard.gratitudeEmptyPet', { name: petName })}
         />
       )}
 
@@ -135,8 +135,8 @@ export default function GratitudeJournal({
           className="flex items-center justify-center gap-1 w-full py-2 rounded-lg bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {showAllHistory
-            ? t("dashboard.hideAllGratitude")
-            : t("dashboard.showAllGratitude", { count: recentEntries.length })}
+            ? t('dashboard.hideAllGratitude')
+            : t('dashboard.showAllGratitude', { count: recentEntries.length })}
           {showAllHistory ? (
             <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
           ) : (

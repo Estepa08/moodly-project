@@ -1,6 +1,6 @@
-import { useState, useCallback, type ReactNode } from "react";
-import { ChevronDown, type LucideIcon } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { useState, useCallback, type ReactNode } from 'react';
+import { ChevronDown, type LucideIcon } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 interface CollapsibleSectionProps {
   title: string;
@@ -20,8 +20,8 @@ export default function CollapsibleSection({
   subtitle,
   icon: Icon,
   iconClassName,
-  railClassName = "bg-primary/80",
-  defaultOpen = true,
+  railClassName = 'bg-primary/80',
+  defaultOpen = false,
   storageKey,
   children,
   className,
@@ -30,7 +30,7 @@ export default function CollapsibleSection({
     if (storageKey) {
       try {
         const stored = sessionStorage.getItem(storageKey);
-        if (stored !== null) return stored === "1";
+        if (stored !== null) return stored === '1';
       } catch {
         /* sessionStorage may throw in private browsing */
       }
@@ -38,14 +38,14 @@ export default function CollapsibleSection({
     return defaultOpen;
   });
 
-  const id = `collapsible-${title.replace(/\s+/g, "-").toLowerCase()}`;
+  const id = `collapsible-${title.replace(/\s+/g, '-').toLowerCase()}`;
 
   const toggle = useCallback(() => {
     setOpen((prev) => {
       const next = !prev;
       if (storageKey) {
         try {
-          sessionStorage.setItem(storageKey, next ? "1" : "0");
+          sessionStorage.setItem(storageKey, next ? '1' : '0');
         } catch {
           /* sessionStorage may throw in private browsing */
         }
@@ -55,7 +55,7 @@ export default function CollapsibleSection({
   }, [storageKey]);
 
   return (
-    <div className={cn("space-y-0", className)}>
+    <div className={cn('space-y-0', className)}>
       <button
         onClick={toggle}
         aria-expanded={open}
@@ -65,7 +65,7 @@ export default function CollapsibleSection({
         {Icon && (
           <span
             className={cn(
-              "w-9 h-9 rounded-xl shrink-0 flex items-center justify-center bg-accent/10 text-accent transition-colors duration-200",
+              'w-9 h-9 rounded-xl shrink-0 flex items-center justify-center bg-accent/10 text-accent transition-colors duration-200',
               iconClassName,
             )}
           >
@@ -84,27 +84,27 @@ export default function CollapsibleSection({
         </span>
         <span
           className={cn(
-            "w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-muted/60 text-muted-foreground transition-[background-color,transform] duration-200",
-            open && "bg-accent/10 text-accent",
+            'w-7 h-7 rounded-full shrink-0 flex items-center justify-center bg-muted/60 text-muted-foreground transition-[background-color,transform] duration-200',
+            open && 'bg-accent/10 text-accent',
           )}
         >
           <ChevronDown
             aria-hidden="true"
-            className={cn("w-4 h-4 transition-transform duration-200", open && "rotate-180")}
+            className={cn('w-4 h-4 transition-transform duration-200', open && 'rotate-180')}
           />
         </span>
       </button>
       <div
         id={id}
         className={cn(
-          "transition-[max-height,opacity] duration-200 overflow-hidden",
-          open ? "max-h-[60vh] opacity-100" : "max-h-0 opacity-0",
+          'transition-[max-height,opacity] duration-200 overflow-hidden',
+          open ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0',
         )}
       >
         <div className="px-0.5 pt-2">
           <div className="relative rounded-xl bg-muted/70 shadow-neumorphic-inset pr-0.5 max-h-[56vh] overflow-y-auto">
             <div className="flex gap-2.5 p-2 pl-2.5">
-              <span aria-hidden="true" className={cn("w-1 rounded-full shrink-0", railClassName)} />
+              <span aria-hidden="true" className={cn('w-1 rounded-full shrink-0', railClassName)} />
               <div className="flex-1 min-w-0">{children}</div>
             </div>
           </div>

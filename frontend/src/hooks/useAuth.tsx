@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { setToken, api } from "../lib/api";
-import { ONBOARDING_DONE_KEY } from "../lib/constants";
-import { clearSessionKey } from "../lib/crypto/session";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { setToken, api } from '../lib/api';
+import { ONBOARDING_DONE_KEY } from '../lib/constants';
+import { clearSessionKey } from '../lib/crypto/session';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -69,6 +69,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 /* eslint-disable-next-line react-refresh/only-export-components */
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 }

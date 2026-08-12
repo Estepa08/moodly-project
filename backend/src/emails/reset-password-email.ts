@@ -1,4 +1,4 @@
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 export function resetPasswordEmailHtml({ token }: { token: string }): string {
   const link = `${FRONTEND_URL}/reset-password?token=${token}`;

@@ -1,10 +1,10 @@
-import { existsSync, realpathSync, rmSync, symlinkSync } from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync, realpathSync, rmSync, symlinkSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const link = path.resolve(__dirname, "../node_modules/@moodly/shared");
-const target = "../../../shared";
+const link = path.resolve(__dirname, '../node_modules/@moodly/shared');
+const target = '../../../shared';
 const expected = path.resolve(path.dirname(link), target);
 
 let ok = false;
@@ -17,5 +17,5 @@ if (existsSync(link)) {
 }
 if (!ok) {
   rmSync(link, { force: true });
-  symlinkSync(target, link, "dir");
+  symlinkSync(target, link, 'dir');
 }

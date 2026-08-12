@@ -1,8 +1,8 @@
-import type { LucideIcon } from "lucide-react";
-import type { ReactNode } from "react";
-import { cn } from "../../lib/utils";
-import { ComponentSize } from "../../lib/constants";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./dialog";
+import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { cn } from '../../lib/utils';
+import { ComponentSize } from '../../lib/constants';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './dialog';
 
 interface ModalShellProps {
   open: boolean;
@@ -20,8 +20,8 @@ interface ModalShellProps {
 }
 
 const iconSizeMap: Record<ComponentSize, { container: string; icon: string }> = {
-  [ComponentSize.Sm]: { container: "w-10 h-10", icon: "w-5 h-5" },
-  [ComponentSize.Md]: { container: "w-12 h-12", icon: "w-6 h-6" },
+  [ComponentSize.Sm]: { container: 'w-10 h-10', icon: 'w-5 h-5' },
+  [ComponentSize.Md]: { container: 'w-12 h-12', icon: 'w-6 h-6' },
 };
 
 export function ModalShell({
@@ -43,7 +43,7 @@ export function ModalShell({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={className ?? "max-w-sm"}
+        className={className ?? 'max-w-sm'}
         hideClose={hideClose}
         onInteractOutside={preventClose ? (e) => e.preventDefault() : undefined}
       >
@@ -52,12 +52,12 @@ export function ModalShell({
             {Icon && (
               <div
                 className={cn(
-                  "rounded-full flex items-center justify-center",
+                  'rounded-full flex items-center justify-center',
                   size.container,
-                  iconBg ?? "bg-primary/10",
+                  iconBg ?? 'bg-primary/10',
                 )}
               >
-                <Icon className={cn(size.icon, iconColor ?? "text-primary")} />
+                <Icon className={cn(size.icon, iconColor ?? 'text-primary')} />
               </div>
             )}
             <DialogTitle>{title}</DialogTitle>

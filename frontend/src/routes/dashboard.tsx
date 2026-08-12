@@ -1,26 +1,26 @@
-import { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useDashboardData } from "../hooks/useDashboardData";
-import { useEntries } from "../hooks/useEntries";
-import { useTestResults } from "../hooks/useTests";
-import { Period } from "../lib/constants";
-import { filterByPeriod } from "../lib/utils";
-import { ParameterTrendsChart } from "../features/analytics";
-import { QuickEntryIcons } from "../features/mood-entry";
-import DayActivitiesCard from "../features/check-in/DayActivitiesCard";
-import ActivityCorrelationCard from "../features/analytics/ActivityCorrelationCard";
-import { WellbeingCard, FirstTimeHint } from "../widgets";
-import TestsResultsSection from "../widgets/TestsResultsSection";
-import ThinkingPatternsCard from "../widgets/ThinkingPatternsCard";
-import CompanionCard from "../features/gamification/CompanionCard";
+import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useDashboardData } from '../hooks/useDashboardData';
+import { useEntries } from '../hooks/useEntries';
+import { useTestResults } from '../hooks/useTests';
+import { Period } from '../lib/constants';
+import { filterByPeriod } from '../lib/utils';
+import { ParameterTrendsChart } from '../features/analytics';
+import { QuickEntryIcons } from '../features/mood-entry';
+import DayActivitiesCard from '../features/check-in/DayActivitiesCard';
+import ActivityCorrelationCard from '../features/analytics/ActivityCorrelationCard';
+import { WellbeingCard, FirstTimeHint } from '../widgets';
+import TestsResultsSection from '../widgets/TestsResultsSection';
+import ThinkingPatternsCard from '../widgets/ThinkingPatternsCard';
+import CompanionCard from '../features/gamification/CompanionCard';
 
-const WELLBEING_PANEL_ID = "wellbeing-panel";
-const WELLBEING_OPEN_KEY = "moodly_wellbeing_open";
+const WELLBEING_PANEL_ID = 'wellbeing-panel';
+const WELLBEING_OPEN_KEY = 'moodly_wellbeing_open';
 
 function readWellbeingOpen(): boolean {
   try {
     const stored = localStorage.getItem(WELLBEING_OPEN_KEY);
-    if (stored !== null) return stored === "1";
+    if (stored !== null) return stored === '1';
   } catch {
     /* localStorage may be unavailable */
   }
@@ -29,7 +29,7 @@ function readWellbeingOpen(): boolean {
 
 function persistWellbeingOpen(open: boolean) {
   try {
-    localStorage.setItem(WELLBEING_OPEN_KEY, open ? "1" : "0");
+    localStorage.setItem(WELLBEING_OPEN_KEY, open ? '1' : '0');
   } catch {
     /* localStorage may be unavailable */
   }
@@ -47,9 +47,9 @@ export default function Dashboard() {
 
   const period = useMemo(
     () => ({
-      wellbeing: readPeriodParam(searchParams.get("wb"), Period.TwoWeeks),
-      radar: readPeriodParam(searchParams.get("radar"), Period.TwoWeeks),
-      tests: readPeriodParam(searchParams.get("tests"), Period.TwoWeeks),
+      wellbeing: readPeriodParam(searchParams.get('wb'), Period.TwoWeeks),
+      radar: readPeriodParam(searchParams.get('radar'), Period.TwoWeeks),
+      tests: readPeriodParam(searchParams.get('tests'), Period.TwoWeeks),
     }),
     [searchParams],
   );
@@ -99,7 +99,7 @@ export default function Dashboard() {
   const coreParamIds = useMemo(
     () =>
       numericParams
-        ?.filter((p) => ["Mood", "Energy", "Sleep", "Anxiety"].includes(p.name))
+        ?.filter((p) => ['Mood', 'Energy', 'Sleep', 'Anxiety'].includes(p.name))
         .map((p) => p.id) ?? [],
     [numericParams],
   );
@@ -161,7 +161,7 @@ export default function Dashboard() {
               paramNames={paramNames}
               isLoading={isDataLoading}
               period={period.wellbeing}
-              onPeriodChange={(p) => setPeriodParam("wb", p)}
+              onPeriodChange={(p) => setPeriodParam('wb', p)}
             />
           ) : (
             <QuickEntryIcons
@@ -177,14 +177,14 @@ export default function Dashboard() {
         results={radarResults ?? []}
         isLoading={resultsLoading}
         period={period.radar}
-        onPeriodChange={(p) => setPeriodParam("radar", p)}
+        onPeriodChange={(p) => setPeriodParam('radar', p)}
       />
 
       <TestsResultsSection
         results={testsResults ?? []}
         isLoading={resultsLoading}
         period={period.tests}
-        onPeriodChange={(p) => setPeriodParam("tests", p)}
+        onPeriodChange={(p) => setPeriodParam('tests', p)}
       />
     </div>
   );

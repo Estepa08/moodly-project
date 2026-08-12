@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Check, X } from "lucide-react";
-import type { CreateEntryMutation } from "../../lib/app-types";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Check, X } from 'lucide-react';
+import type { CreateEntryMutation } from '../../lib/app-types';
 import {
   QUIZ_ITEMS,
   QUIZ_PER_RUN,
   pickOptions,
   shuffle,
   DistortionKey,
-} from "../../lib/distortionsQuiz";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { cn } from "../../lib/utils";
+} from '../../lib/distortionsQuiz';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { cn } from '../../lib/utils';
 
 interface DistortionQuizProps {
   parameterId?: string;
@@ -64,12 +64,12 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
         <CardContent className="pt-6 text-center space-y-3">
           <Check aria-hidden="true" className="w-10 h-10 text-accent mx-auto" />
           <p className="text-lg font-bold font-serif text-foreground">
-            {t("distortions.quizDone")}
+            {t('distortions.quizDone')}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t("distortions.quizScore", { score, total: order.length, pct })}
+            {t('distortions.quizScore', { score, total: order.length, pct })}
           </p>
-          <Button onClick={handleRestart}>{t("distortions.quizRestart")}</Button>
+          <Button onClick={handleRestart}>{t('distortions.quizRestart')}</Button>
         </CardContent>
       </Card>
     );
@@ -78,18 +78,18 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
   return (
     <Card className="shadow-neumorphic">
       <CardHeader>
-        <CardTitle className="text-base">{t("distortions.quizTitle")}</CardTitle>
+        <CardTitle className="text-base">{t('distortions.quizTitle')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-xs text-muted-foreground">
-          {t("distortions.quizProgress", { current: index + 1, total: order.length })}
+          {t('distortions.quizProgress', { current: index + 1, total: order.length })}
         </p>
         {current && (
           <>
             <p className="text-sm font-medium text-foreground">
               {t(`distortionsLibrary.${current.distortion}.definition`)}
             </p>
-            <p className="text-xs text-muted-foreground">{t("distortions.whichDistortion")}</p>
+            <p className="text-xs text-muted-foreground">{t('distortions.whichDistortion')}</p>
             <div className="space-y-2">
               {options.map((opt) => {
                 const isCorrect = opt === current.distortion;
@@ -100,15 +100,15 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
                     onClick={() => handleSelect(opt)}
                     disabled={isAnswered}
                     className={cn(
-                      "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-left font-medium transition-[color,background-color,box-shadow,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      'w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm text-left font-medium transition-[color,background-color,box-shadow,opacity,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       isAnswered &&
                         isCorrect &&
-                        "bg-accent/10 text-accent shadow-neumorphic-inset ring-2 ring-accent/60",
+                        'bg-accent/10 text-accent shadow-neumorphic-inset ring-2 ring-accent/60',
                       isWrong &&
-                        "bg-destructive/10 text-destructive shadow-neumorphic-inset ring-2 ring-destructive/60",
+                        'bg-destructive/10 text-destructive shadow-neumorphic-inset ring-2 ring-destructive/60',
                       !isAnswered &&
-                        "bg-muted text-muted-foreground hover:text-foreground shadow-neumorphic-sm",
-                      isAnswered && !isCorrect && !isWrong && "opacity-50",
+                        'bg-muted text-muted-foreground hover:text-foreground shadow-neumorphic-sm',
+                      isAnswered && !isCorrect && !isWrong && 'opacity-50',
                     )}
                   >
                     <span>{t(`cognitiveDistortions.${opt}`)}</span>
@@ -124,7 +124,7 @@ export default function DistortionQuiz({ parameterId, createEntry }: DistortionQ
             </div>
             {isAnswered && (
               <Button onClick={handleNext} className="w-full">
-                {t(index < order.length - 1 ? "distortions.next" : "distortions.finish")}
+                {t(index < order.length - 1 ? 'distortions.next' : 'distortions.finish')}
               </Button>
             )}
           </>

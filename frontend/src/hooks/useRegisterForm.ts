@@ -1,28 +1,28 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api";
-import { getErrorMessage } from "../lib/error-messages";
-import { useAuth } from "./useAuth";
-import { createRegistrationKeys } from "../lib/crypto/auth-keys";
-import { generateRecoveryCode } from "../lib/crypto/keys";
-import { setSessionUserId } from "../lib/crypto/session";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../lib/api';
+import { getErrorMessage } from '../lib/error-messages';
+import { useAuth } from './useAuth';
+import { createRegistrationKeys } from '../lib/crypto/auth-keys';
+import { generateRecoveryCode } from '../lib/crypto/keys';
+import { setSessionUserId } from '../lib/crypto/session';
 
-export type RegisterStep = "form" | "recovery";
+export type RegisterStep = 'form' | 'recovery';
 
 export function useRegisterForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [step, setStep] = useState<RegisterStep>("form");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [birthYear, setBirthYear] = useState("");
+  const [step, setStep] = useState<RegisterStep>('form');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [birthYear, setBirthYear] = useState('');
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [pdpConsent, setPdpConsent] = useState(false);
-  const [error, setError] = useState("");
-  const [recoveryCode, setRecoveryCode] = useState("");
+  const [error, setError] = useState('');
+  const [recoveryCode, setRecoveryCode] = useState('');
 
   const currentYear = new Date().getFullYear();
   const birthYearNum = birthYear ? Number(birthYear) : null;
@@ -30,9 +30,9 @@ export function useRegisterForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     if (!isAdult) {
-      setError(t("register.ageError"));
+      setError(t('register.ageError'));
       return;
     }
     try {
@@ -52,14 +52,14 @@ export function useRegisterForm() {
       login(res.accessToken);
       setSessionUserId(res.user.id);
       setRecoveryCode(code);
-      setStep("recovery");
+      setStep('recovery');
     } catch (err) {
       setError(getErrorMessage(err, t));
     }
   };
 
   const handleRecoveryConfirmed = () => {
-    navigate("/my-day");
+    navigate('/my-day');
   };
 
   return {

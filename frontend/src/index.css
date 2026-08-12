@@ -122,7 +122,7 @@
   h5,
   h6 {
     font-family:
-      "Nunito",
+      'Nunito',
       system-ui,
       -apple-system,
       sans-serif;
@@ -726,4 +726,18 @@
   animation: heart-beat 1.2s ease-in-out infinite;
   will-change: transform;
   transform-origin: center;
+}
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 80px)) scale(1.2);
+  }
+}
+
+.animate-float-up {
+  animation: float-up 2s ease-out forwards;
 }

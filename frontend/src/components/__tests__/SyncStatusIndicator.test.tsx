@@ -1,19 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { SyncStatusIndicator } from "../SyncStatusIndicator";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { SyncStatusIndicator } from '../SyncStatusIndicator';
 
-vi.mock("../../lib/offline/useSync", () => ({
+vi.mock('../../lib/offline/useSync', () => ({
   useSync: vi.fn(),
 }));
 
-vi.mock("../../hooks/useReducedMotion", () => ({
+vi.mock('../../hooks/useReducedMotion', () => ({
   useReducedMotion: () => false,
 }));
 
-import { useSync } from "../../lib/offline/useSync";
-import { fireEvent } from "@testing-library/react";
+import { useSync } from '../../lib/offline/useSync';
+import { fireEvent } from '@testing-library/react';
 
-function mockSync(status: "idle" | "syncing" | "offline" | "error", pending = 0) {
+function mockSync(status: 'idle' | 'syncing' | 'offline' | 'error', pending = 0) {
   vi.mocked(useSync).mockReturnValue({
     status,
     pending,
@@ -23,35 +23,35 @@ function mockSync(status: "idle" | "syncing" | "offline" | "error", pending = 0)
   } as never);
 }
 
-describe("SyncStatusIndicator", () => {
+describe('SyncStatusIndicator', () => {
   beforeEach(() => {
     vi.mocked(useSync).mockReset();
   });
 
   it("показывает label 'Synced' в idle", () => {
-    mockSync("idle");
+    mockSync('idle');
     render(<SyncStatusIndicator />);
-    expect(screen.getByLabelText("Synced")).toBeInTheDocument();
+    expect(screen.getByLabelText('Synced')).toBeInTheDocument();
   });
 
   it("показывает label 'Syncing...' в syncing", () => {
-    mockSync("syncing");
+    mockSync('syncing');
     render(<SyncStatusIndicator />);
-    expect(screen.getByLabelText("Syncing...")).toBeInTheDocument();
+    expect(screen.getByLabelText('Syncing...')).toBeInTheDocument();
   });
 
-  it("показывает офлайн-метку и бейдж количества в очереди", () => {
-    mockSync("offline", 3);
+  it('показывает офлайн-метку и бейдж количества в очереди', () => {
+    mockSync('offline', 3);
     render(<SyncStatusIndicator />);
-    const button = screen.getByRole("button");
-    expect(button.getAttribute("aria-label")).toContain("Offline");
-    expect(screen.getByText("3")).toBeInTheDocument();
+    const button = screen.getByRole('button');
+    expect(button.getAttribute('aria-label')).toContain('Offline');
+    expect(screen.getByText('3')).toBeInTheDocument();
   });
 
-  it("вызывает sync по клику", () => {
-    mockSync("offline", 1);
+  it('вызывает sync по клику', () => {
+    mockSync('offline', 1);
     render(<SyncStatusIndicator />);
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole('button'));
     expect(vi.mocked(useSync).mock.results[0].value.sync).toHaveBeenCalled();
   });
 });

@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
-import { api } from "../lib/api";
-import { getVapidPublicKey } from "../lib/vapid";
+import { useState, useCallback, useEffect } from 'react';
+import { api } from '../lib/api';
+import { getVapidPublicKey } from '../lib/vapid';
 
-export type PushSubscribeError = "no-vapid" | "no-sw" | "denied" | "failed";
+export type PushSubscribeError = 'no-vapid' | 'no-sw' | 'denied' | 'failed';
 
 export interface PushSubscribeResult {
   ok: boolean;
@@ -17,13 +17,13 @@ const SERVICE_WORKER_READY_TIMEOUT = 10_000;
 
 export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>(
-    typeof Notification !== "undefined" ? Notification.permission : "denied",
+    typeof Notification !== 'undefined' ? Notification.permission : 'denied',
   );
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
 
   useEffect(() => {
-    if (typeof navigator === "undefined" || !navigator.serviceWorker) return;
+    if (typeof navigator === 'undefined' || !navigator.serviceWorker) return;
     navigator.serviceWorker.ready
       .then((registration) => registration.pushManager.getSubscription())
       .then((sub) => setSubscribed(Boolean(sub)))
@@ -31,38 +31,38 @@ export function usePushNotifications() {
   }, []);
 
   const requestPermission = useCallback(async (): Promise<boolean> => {
-    if (typeof Notification === "undefined") return false;
-    if (Notification.permission === "denied") return false;
-    if (Notification.permission === "granted") {
-      setPermission("granted");
+    if (typeof Notification === 'undefined') return false;
+    if (Notification.permission === 'denied') return false;
+    if (Notification.permission === 'granted') {
+      setPermission('granted');
       return true;
     }
     const result = await Notification.requestPermission();
     setPermission(result);
-    return result === "granted";
+    return result === 'granted';
   }, []);
 
   const subscribe = useCallback(
     async (opts?: { silent?: boolean }): Promise<PushSubscribeResult> => {
-      if (typeof navigator === "undefined" || !navigator.serviceWorker) {
-        return { ok: false, error: "no-sw" };
+      if (typeof navigator === 'undefined' || !navigator.serviceWorker) {
+        return { ok: false, error: 'no-sw' };
       }
 
       const vapidPublicKey = getVapidPublicKey();
       if (!vapidPublicKey) {
-        console.warn("[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна");
-        return { ok: false, error: "no-vapid" };
+        console.warn('[push] VITE_VAPID_PUBLIC_KEY не задан — подписка на push недоступна');
+        return { ok: false, error: 'no-vapid' };
       }
 
-      if (typeof Notification === "undefined") return { ok: false, error: "denied" };
+      if (typeof Notification === 'undefined') return { ok: false, error: 'denied' };
 
       const silent = opts?.silent ?? false;
-      if (silent && Notification.permission !== "granted") {
-        return { ok: false, error: "denied" };
+      if (silent && Notification.permission !== 'granted') {
+        return { ok: false, error: 'denied' };
       }
 
       const allowed = await requestPermission();
-      if (!allowed) return { ok: false, error: "denied" };
+      if (!allowed) return { ok: false, error: 'denied' };
 
       setSubscribing(true);
       try {
@@ -70,7 +70,7 @@ export function usePushNotifications() {
           navigator.serviceWorker.ready,
           new Promise<never>((_, reject) =>
             setTimeout(
-              () => reject(new Error("service-worker-ready-timeout")),
+              () => reject(new Error('service-worker-ready-timeout')),
               SERVICE_WORKER_READY_TIMEOUT,
             ),
           ),
@@ -100,7 +100,7 @@ export function usePushNotifications() {
         setSubscribed(true);
         return { ok: true };
       } catch {
-        return { ok: false, error: "failed" };
+        return { ok: false, error: 'failed' };
       } finally {
         setSubscribing(false);
       }
@@ -109,7 +109,7 @@ export function usePushNotifications() {
   );
 
   const unsubscribe = useCallback(async () => {
-    if (typeof navigator === "undefined" || !navigator.serviceWorker) return;
+    if (typeof navigator === 'undefined' || !navigator.serviceWorker) return;
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
@@ -137,8 +137,8 @@ export function usePushNotifications() {
 }
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
   const rawData = atob(base64);
   const arr = new Uint8Array(rawData.length);
   for (let i = 0; i < rawData.length; i++) {

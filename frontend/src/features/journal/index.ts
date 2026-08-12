@@ -1,2 +1,2 @@
-export { default as GratitudeJournal } from "./GratitudeJournal";
-export { default as ThoughtRelease } from "./ThoughtRelease";
+export { default as GratitudeJournal } from './GratitudeJournal';
+export { default as ThoughtRelease } from './ThoughtRelease';

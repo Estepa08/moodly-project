@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
-import { Moon, Star } from "lucide-react";
-import { Card, CardContent } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
+import { useTranslation } from 'react-i18next';
+import { Moon, Star } from 'lucide-react';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
 
 interface EmotionLimitProps {
   tier: string;
@@ -12,7 +12,7 @@ interface EmotionLimitProps {
 
 export default function EmotionLimit({ tier, dailyLimit, onLearnMore }: EmotionLimitProps) {
   const { t } = useTranslation();
-  const isPremium = tier === "premium";
+  const isPremium = tier === 'premium';
 
   return (
     <Card className="shadow-elevation-2">
@@ -21,24 +21,24 @@ export default function EmotionLimit({ tier, dailyLimit, onLearnMore }: EmotionL
           <Moon aria-hidden="true" className="w-6 h-6 text-primary" />
         </div>
         <p className="text-base font-heading font-extrabold text-foreground">
-          {t("emotionLab.limitTitle")}
+          {t('emotionLab.limitTitle')}
         </p>
         <p className="text-sm text-muted-foreground max-w-xs mt-1.5">
-          {t("emotionLab.limitDescription")}
+          {t('emotionLab.limitDescription')}
         </p>
 
         <div className="mt-5 w-full max-w-md rounded-xl bg-secondary border border-primary/20 px-5 py-4 text-left">
           <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Star aria-hidden="true" className="w-4 h-4 text-accent" fill="currentColor" />
-            {t("emotionLab.premiumOffer", {
+            {t('emotionLab.premiumOffer', {
               count: isPremium ? dailyLimit : Math.max(1, dailyLimit * 2),
             })}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">{t("emotionLab.premiumOfferDesc")}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('emotionLab.premiumOfferDesc')}</p>
         </div>
 
         <Button onClick={onLearnMore} className="mt-5">
-          {t("emotionLab.learnMore")}
+          {t('emotionLab.learnMore')}
         </Button>
       </CardContent>
     </Card>

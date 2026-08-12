@@ -67,3 +67,30 @@ export function findDyadByEmotions(emotionA: string, emotionB: string): DyadInfo
 export function dyadKeysByLevel(level: DyadLevel): string[] {
   return DYADS.filter((d) => d.level === level).map((d) => d.key);
 }
+
+// Экспорты для использования в других модулях
+export const EMOTION_META = EMOTIONS.reduce(
+  (acc, e) => {
+    acc[e.key] = e;
+    return acc;
+  },
+  {} as Record<EmotionKey, EmotionInfo>,
+);
+
+// Группируем диады по уровням
+export const DYADS_BY_LEVEL: Record<DyadLevel, DyadInfo[]> = {
+  1: DYADS.filter((d) => d.level === 1),
+  2: DYADS.filter((d) => d.level === 2),
+  3: DYADS.filter((d) => d.level === 3),
+  4: DYADS.filter((d) => d.level === 4),
+};
+
+// Объект "эмоция1+эмоция2" -> диада
+export const emotionAlchemy = DYADS.reduce(
+  (acc, d) => {
+    const key = d.emotions.slice().sort().join("+");
+    acc[key] = d;
+    return acc;
+  },
+  {} as Record<string, DyadInfo>,
+);

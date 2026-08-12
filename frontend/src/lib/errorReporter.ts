@@ -3,7 +3,7 @@
 // Логируются только технические поля; дедуп + троттлинг + очередь, чтобы
 // не заливать прод-лог и не порождать рекурсивные ошибки логирования.
 
-const REPORT_URL = "/api/client-errors";
+const REPORT_URL = '/api/client-errors';
 const MIN_INTERVAL_MS = 2000;
 const MAX_QUEUE = 50;
 
@@ -45,8 +45,8 @@ async function drain(): Promise<void> {
   sending = true;
   try {
     await fetch(REPORT_URL, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify(error),
       keepalive: true,
     });
@@ -64,9 +64,9 @@ export function reportError(error: ClientError): void {
 }
 
 export function initErrorReporting(): void {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
-  window.addEventListener("error", (event) => {
+  window.addEventListener('error', (event) => {
     enqueue({
       message: event.message,
       source: event.filename ?? undefined,
@@ -78,7 +78,7 @@ export function initErrorReporting(): void {
     });
   });
 
-  window.addEventListener("unhandledrejection", (event) => {
+  window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
     enqueue({
       message: reason instanceof Error ? reason.message : String(reason),

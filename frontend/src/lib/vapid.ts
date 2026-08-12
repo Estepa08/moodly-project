@@ -5,7 +5,7 @@
 // DockHost нет поддержки build-переменных), push всё равно работает.
 // Ключ должен совпадать с VAPID_PUBLIC_KEY в backend/.env (та же пара).
 export const VAPID_PUBLIC_KEY =
-  "BKI-sDzgNuRgtWjOwrVegsuNpFBuY2BazP5k-LngBpO6QXLXywXDDNftcEzpG1gJd025LIOtPwgPYLENK4FQbHM";
+  'BKI-sDzgNuRgtWjOwrVegsuNpFBuY2BazP5k-LngBpO6QXLXywXDDNftcEzpG1gJd025LIOtPwgPYLENK4FQbHM';
 
 // Приоритет: build-переменная Vite (VITE_VAPID_PUBLIC_KEY), иначе — hardcoded ключ.
 // Vite инлайнит import.meta.env.VITE_* на этапе сборки.

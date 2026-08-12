@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
-import { usePet, useEmpathyActive } from "./useCreature";
-import { buildRewardSignal, type PetRewardSignal } from "./petRewards";
-import { isMorningWindow, isEveningWindow } from "@moodly/shared";
-import type { PetGlow } from "./PetAvatar";
-import type { PetResponse } from "../../lib/api";
+import { useMemo, useState } from 'react';
+import { usePet, useEmpathyActive } from './useCreature';
+import { buildRewardSignal, type PetRewardSignal } from './petRewards';
+import { isMorningWindow, isEveningWindow } from '@moodly/shared';
+import type { PetGlow } from './PetAvatar';
+import type { PetResponse } from '../../lib/api';
 
 // Общая логика клика по компаньону с наградами:
 // - считает эмпатию (клиент видит расшифрованные записи Mood/Anxiety),
@@ -17,8 +17,8 @@ export function usePetReward() {
 
   const glow: PetGlow = useMemo(() => {
     const hour = new Date().getHours();
-    if (isMorningWindow(hour)) return "warm";
-    if (isEveningWindow(hour)) return "cool";
+    if (isMorningWindow(hour)) return 'warm';
+    if (isEveningWindow(hour)) return 'cool';
     return null;
   }, []);
 

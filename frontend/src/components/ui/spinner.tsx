@@ -1,11 +1,11 @@
-import { Loader2 } from "lucide-react";
+import { Loader2 } from 'lucide-react';
 
 interface Props {
   size?: number;
   className?: string;
 }
 
-export default function Spinner({ size = 20, className = "" }: Props) {
+export default function Spinner({ size = 20, className = '' }: Props) {
   return (
     <Loader2
       role="status"

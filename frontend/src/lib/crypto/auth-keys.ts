@@ -1,6 +1,6 @@
-import { deriveKek, generateSalt, fromBase64, toBase64 } from "./kdf";
-import { generateDataKey, wrapDataKey, unwrapDataKey } from "./keys";
-import { setSessionKey } from "./session";
+import { deriveKek, generateSalt, fromBase64, toBase64 } from './kdf';
+import { generateDataKey, wrapDataKey, unwrapDataKey } from './keys';
+import { setSessionKey } from './session';
 
 export interface RegistrationKeys {
   wrappedKey: string;

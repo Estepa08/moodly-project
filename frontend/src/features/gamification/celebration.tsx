@@ -1,12 +1,13 @@
-import { lazy } from "react";
-import { toast } from "sonner";
-import i18n from "../../i18n/i18n";
+import { lazy } from 'react';
+import { toast } from 'sonner';
+import i18n from '../../i18n/i18n';
 
-const RewardMoment = lazy(() => import("./RewardMoment"));
+const RewardMoment = lazy(() => import('./RewardMoment'));
 
 export interface PetSpeech {
   id: string;
   text: string;
+  timestamp?: number;
 }
 
 type SpeechSubscriber = (speech: PetSpeech) => void;
@@ -22,7 +23,11 @@ export function subscribeSpeech(subscriber: SpeechSubscriber): () => void {
 }
 
 export function emitSpeech(text: string): PetSpeech {
-  const speech: PetSpeech = { id: `speech-${++speechSeq}`, text };
+  const speech: PetSpeech = {
+    id: `speech-${++speechSeq}`,
+    text,
+    timestamp: Date.now(),
+  };
   for (const subscriber of speechSubscribers) subscriber(speech);
   return speech;
 }
@@ -61,8 +66,8 @@ export function celebrateReward(
 
   if (data.leveledUp && Date.now() - lastRewardAt >= REWARD_COOLDOWN_MS) {
     lastRewardAt = Date.now(); // Устанавливаем временную метку последнего уведомления
-    celebrate(t("dailyCheckIn.levelUpBody", { level: data.state?.level }), {
-      title: t("dailyCheckIn.levelUpTitle"),
+    celebrate(t('dailyCheckIn.levelUpBody', { level: data.state?.level }), {
+      title: t('dailyCheckIn.levelUpTitle'),
     });
     return;
   }
@@ -72,7 +77,7 @@ export function celebrateReward(
   lastRewardAt = now;
 
   const xp = PRACTICE_REWARD_XP[source];
-  celebrate(t("reward.practiceComplete"), {
+  celebrate(t('reward.practiceComplete'), {
     chip: xp ? `+${xp} XP` : undefined,
     xp,
   });

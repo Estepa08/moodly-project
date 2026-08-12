@@ -1,8 +1,8 @@
-const STORAGE_KEY = "moodly_hide_floating_companion";
+const STORAGE_KEY = 'moodly_hide_floating_companion';
 
 type Listener = () => void;
 
-let hidden = typeof localStorage !== "undefined" && localStorage.getItem(STORAGE_KEY) === "1";
+let hidden = typeof localStorage !== 'undefined' && localStorage.getItem(STORAGE_KEY) === '1';
 const listeners = new Set<Listener>();
 
 export function isCompanionHidden(): boolean {
@@ -12,7 +12,7 @@ export function isCompanionHidden(): boolean {
 export function setCompanionHidden(value: boolean) {
   hidden = value;
   if (value) {
-    localStorage.setItem(STORAGE_KEY, "1");
+    localStorage.setItem(STORAGE_KEY, '1');
   } else {
     localStorage.removeItem(STORAGE_KEY);
   }

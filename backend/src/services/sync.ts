@@ -1,20 +1,20 @@
-import { Prisma } from "@prisma/client";
-import { prisma } from "../lib/prisma.js";
-import { AppError } from "../lib/errors.js";
-import { DAILY_ENTRY_LIMIT } from "@moodly/shared";
+import { Prisma } from '@prisma/client';
+import { prisma } from '../lib/prisma.js';
+import { AppError } from '../lib/errors.js';
+import { DAILY_ENTRY_LIMIT } from '@moodly/shared';
 
 export type SyncEntity =
-  | "entry"
-  | "feedback"
-  | "testResult"
-  | "breathingSession"
-  | "practiceCompletion"
-  | "creatureState"
-  | "userAchievement";
+  | 'entry'
+  | 'feedback'
+  | 'testResult'
+  | 'breathingSession'
+  | 'practiceCompletion'
+  | 'creatureState'
+  | 'userAchievement';
 
 export interface SyncAction {
   entity: SyncEntity;
-  action: "upsert" | "delete";
+  action: 'upsert' | 'delete';
   id: string;
   occurredAt: string;
   payload: Record<string, unknown>;
@@ -23,7 +23,7 @@ export interface SyncAction {
 export interface SyncChange {
   entity: SyncEntity;
   id: string;
-  action: "upsert" | "delete";
+  action: 'upsert' | 'delete';
   updatedAt: string;
   data: Record<string, unknown>;
 }
@@ -36,36 +36,36 @@ export interface PullResult {
 }
 
 const ENTITIES: SyncEntity[] = [
-  "entry",
-  "feedback",
-  "testResult",
-  "breathingSession",
-  "practiceCompletion",
-  "creatureState",
-  "userAchievement",
+  'entry',
+  'feedback',
+  'testResult',
+  'breathingSession',
+  'practiceCompletion',
+  'creatureState',
+  'userAchievement',
 ];
 
 // Сущности, которые клиент вправе пушить. userAchievement — pull-only:
 // разблокировки вычисляет серверный achievementsService.check(), клиент не участвует.
 const PUSH_ENTITIES: SyncEntity[] = [
-  "entry",
-  "feedback",
-  "testResult",
-  "breathingSession",
-  "practiceCompletion",
-  "creatureState",
+  'entry',
+  'feedback',
+  'testResult',
+  'breathingSession',
+  'practiceCompletion',
+  'creatureState',
 ];
 
 function str(v: unknown): string | undefined {
-  return typeof v === "string" ? v : undefined;
+  return typeof v === 'string' ? v : undefined;
 }
 
 function num(v: unknown): number | undefined {
-  return typeof v === "number" && Number.isFinite(v) ? v : undefined;
+  return typeof v === 'number' && Number.isFinite(v) ? v : undefined;
 }
 
 function isoDate(v: unknown): Date | undefined {
-  if (typeof v !== "string") return undefined;
+  if (typeof v !== 'string') return undefined;
   const d = new Date(v);
   return Number.isNaN(d.getTime()) ? undefined : d;
 }
@@ -74,29 +74,29 @@ function isoDate(v: unknown): Date | undefined {
 // (без id/userId/updatedAt/deletedAt — ими управляет сервер).
 function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<string, unknown> {
   switch (entity) {
-    case "entry": {
+    case 'entry': {
       const parameterId = str(payload.parameterId);
       const encryptedData = str(payload.encryptedData);
       if (!parameterId || !encryptedData) {
-        throw new AppError("INVALID_PAYLOAD", 400, "entry requires parameterId and encryptedData");
+        throw new AppError('INVALID_PAYLOAD', 400, 'entry requires parameterId and encryptedData');
       }
       // E2E: сервер не хранит открытые значения — только шифротекст.
       // value/note зануляются навсегда (миграция старых записей).
       return { parameterId, encryptedData, value: null, note: null };
     }
-    case "feedback": {
+    case 'feedback': {
       const rating = num(payload.rating);
       const message = str(payload.message);
       if (rating === undefined || message === undefined) {
-        throw new AppError("INVALID_PAYLOAD", 400, "feedback requires rating and message");
+        throw new AppError('INVALID_PAYLOAD', 400, 'feedback requires rating and message');
       }
       return { rating: Math.trunc(rating), message };
     }
-    case "testResult": {
+    case 'testResult': {
       const testId = str(payload.testId);
       const encryptedData = str(payload.encryptedData);
       if (!testId || !encryptedData) {
-        throw new AppError("INVALID_PAYLOAD", 400, "testResult requires testId and encryptedData");
+        throw new AppError('INVALID_PAYLOAD', 400, 'testResult requires testId and encryptedData');
       }
       // E2E: сервер не хранит score/interpretation/recommendation — только шифротекст.
       return {
@@ -109,12 +109,12 @@ function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<
         completedAt: isoDate(payload.completedAt) ?? new Date(),
       };
     }
-    case "breathingSession": {
+    case 'breathingSession': {
       const duration = num(payload.duration);
       const initialCalmness = num(payload.initialCalmness);
       const finalCalmness = num(payload.finalCalmness);
       if (duration === undefined || initialCalmness === undefined || finalCalmness === undefined) {
-        throw new AppError("INVALID_PAYLOAD", 400, "breathingSession payload incomplete");
+        throw new AppError('INVALID_PAYLOAD', 400, 'breathingSession payload incomplete');
       }
       return {
         duration: Math.trunc(duration),
@@ -123,43 +123,43 @@ function sanitize(entity: SyncEntity, payload: Record<string, unknown>): Record<
         completedAt: isoDate(payload.completedAt) ?? new Date(),
       };
     }
-    case "practiceCompletion": {
+    case 'practiceCompletion': {
       const source = str(payload.source);
       const xpAwarded = num(payload.xpAwarded);
       if (!source || xpAwarded === undefined) {
         throw new AppError(
-          "INVALID_PAYLOAD",
+          'INVALID_PAYLOAD',
           400,
-          "practiceCompletion requires source and xpAwarded",
+          'practiceCompletion requires source and xpAwarded',
         );
       }
       return { source, xpAwarded: Math.trunc(xpAwarded) };
     }
-    case "creatureState": {
+    case 'creatureState': {
       return sanitizeCreatureState(payload);
     }
-    case "userAchievement":
-      throw new AppError("INVALID_PAYLOAD", 400, "userAchievement is read-only (pull-only)");
+    case 'userAchievement':
+      throw new AppError('INVALID_PAYLOAD', 400, 'userAchievement is read-only (pull-only)');
   }
 }
 
 function strArray(v: unknown): string[] | undefined {
-  return Array.isArray(v) && v.every((x) => typeof x === "string")
+  return Array.isArray(v) && v.every((x) => typeof x === 'string')
     ? (v as string[]).slice(0, 200)
     : undefined;
 }
 
 function numRecord(v: unknown): Record<string, number> | undefined {
-  if (v === null || typeof v !== "object" || Array.isArray(v)) return undefined;
+  if (v === null || typeof v !== 'object' || Array.isArray(v)) return undefined;
   const out: Record<string, number> = {};
   for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
-    if (typeof val === "number" && Number.isFinite(val)) out[k] = val;
+    if (typeof val === 'number' && Number.isFinite(val)) out[k] = val;
   }
   return out;
 }
 
 function intClamp(v: unknown, min: number, max: number): number | undefined {
-  if (typeof v !== "number" || !Number.isFinite(v)) return undefined;
+  if (typeof v !== 'number' || !Number.isFinite(v)) return undefined;
   return Math.min(max, Math.max(min, Math.trunc(v)));
 }
 
@@ -221,42 +221,42 @@ async function applyUpsert(
   data: Record<string, unknown>,
 ): Promise<void> {
   switch (entity) {
-    case "entry":
+    case 'entry':
       await tx.entry.upsert({
         where: { id },
         create: { id, userId, ...data } as Prisma.EntryUncheckedCreateInput,
         update: data as Prisma.EntryUncheckedUpdateInput,
       });
       return;
-    case "feedback":
+    case 'feedback':
       await tx.feedback.upsert({
         where: { id },
         create: { id, userId, ...data } as Prisma.FeedbackUncheckedCreateInput,
         update: data as Prisma.FeedbackUncheckedUpdateInput,
       });
       return;
-    case "testResult":
+    case 'testResult':
       await tx.testResult.upsert({
         where: { id },
         create: { id, userId, ...data } as Prisma.TestResultUncheckedCreateInput,
         update: data as Prisma.TestResultUncheckedUpdateInput,
       });
       return;
-    case "breathingSession":
+    case 'breathingSession':
       await tx.breathingSession.upsert({
         where: { id },
         create: { id, userId, ...data } as Prisma.BreathingSessionUncheckedCreateInput,
         update: data as Prisma.BreathingSessionUncheckedUpdateInput,
       });
       return;
-    case "practiceCompletion":
+    case 'practiceCompletion':
       await tx.practiceCompletion.upsert({
         where: { id },
         create: { id, userId, ...data } as Prisma.PracticeCompletionUncheckedCreateInput,
         update: data as Prisma.PracticeCompletionUncheckedUpdateInput,
       });
       return;
-    case "creatureState":
+    case 'creatureState':
       // Singleton-строка (userId @unique): клиент — автор истины, LWW по строке.
       await tx.creatureState.upsert({
         where: { userId },
@@ -277,41 +277,41 @@ async function applySoftDelete(
   // updateMany не триггерит @updatedAt в Prisma, поэтому обновляем updatedAt явно:
   // иначе tombstone не попадёт в pull (курсор фильтрует по updatedAt > cursor).
   switch (entity) {
-    case "entry": {
+    case 'entry': {
       await tx.entry.updateMany({
         where: { id, userId },
         data: { deletedAt, updatedAt: deletedAt },
       });
       return;
     }
-    case "feedback":
+    case 'feedback':
       await tx.feedback.updateMany({
         where: { id, userId },
         data: { deletedAt, updatedAt: deletedAt },
       });
       return;
-    case "testResult":
+    case 'testResult':
       await tx.testResult.updateMany({
         where: { id, userId },
         data: { deletedAt, updatedAt: deletedAt },
       });
       return;
-    case "breathingSession":
+    case 'breathingSession':
       await tx.breathingSession.updateMany({
         where: { id, userId },
         data: { deletedAt, updatedAt: deletedAt },
       });
       return;
-    case "practiceCompletion":
+    case 'practiceCompletion':
       await tx.practiceCompletion.updateMany({
         where: { id, userId },
         data: { deletedAt, updatedAt: deletedAt },
       });
       return;
-    case "creatureState":
+    case 'creatureState':
       // Singleton без deletedAt: удаление не поддерживается.
       return;
-    case "userAchievement":
+    case 'userAchievement':
       // pull-only сущность: клиент не удаляет разблокировки.
       return;
   }
@@ -320,23 +320,23 @@ async function applySoftDelete(
 export const syncService = {
   async push(userId: string, actions: SyncAction[]) {
     if (!Array.isArray(actions) || actions.length === 0) {
-      throw new AppError("INVALID_PAYLOAD", 400, "push requires a non-empty actions array");
+      throw new AppError('INVALID_PAYLOAD', 400, 'push requires a non-empty actions array');
     }
     if (actions.length > 500) {
-      throw new AppError("TOO_MANY", 413, "batch too large (max 500)");
+      throw new AppError('TOO_MANY', 413, 'batch too large (max 500)');
     }
     for (const a of actions) {
       if (!PUSH_ENTITIES.includes(a.entity)) {
-        throw new AppError("INVALID_PAYLOAD", 400, `unknown entity for push: ${a.entity}`);
+        throw new AppError('INVALID_PAYLOAD', 400, `unknown entity for push: ${a.entity}`);
       }
-      if (a.action !== "upsert" && a.action !== "delete") {
-        throw new AppError("INVALID_PAYLOAD", 400, `unknown action: ${a.action}`);
+      if (a.action !== 'upsert' && a.action !== 'delete') {
+        throw new AppError('INVALID_PAYLOAD', 400, `unknown action: ${a.action}`);
       }
-      if (typeof a.id !== "string" || a.id.length < 8 || a.id.length > 80) {
-        throw new AppError("INVALID_PAYLOAD", 400, "invalid id");
+      if (typeof a.id !== 'string' || a.id.length < 8 || a.id.length > 80) {
+        throw new AppError('INVALID_PAYLOAD', 400, 'invalid id');
       }
       if (a.occurredAt && Number.isNaN(new Date(a.occurredAt).getTime())) {
-        throw new AppError("INVALID_PAYLOAD", 400, "invalid occurredAt");
+        throw new AppError('INVALID_PAYLOAD', 400, 'invalid occurredAt');
       }
     }
 
@@ -347,7 +347,7 @@ export const syncService = {
     });
 
     const batchEntryIds = actions
-      .filter((a) => a.entity === "entry" && a.action === "upsert")
+      .filter((a) => a.entity === 'entry' && a.action === 'upsert')
       .map((a) => a.id);
     const existingEntryIds =
       batchEntryIds.length > 0
@@ -372,14 +372,14 @@ export const syncService = {
         newEntries = 0;
         await prisma.$transaction(async (tx) => {
           for (const action of actions) {
-            if (action.action === "delete") {
+            if (action.action === 'delete') {
               await applySoftDelete(tx, action.entity, userId, action.id);
               continue;
             }
-            if (action.entity === "entry" && !existingEntryIds.has(action.id)) {
+            if (action.entity === 'entry' && !existingEntryIds.has(action.id)) {
               newEntries += 1;
               if (todayEntryCount + newEntries > DAILY_ENTRY_LIMIT) {
-                throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+                throw new AppError('DAILY_LIMIT', 429, 'Daily entry limit reached');
               }
             }
             const data = sanitize(action.entity, action.payload);
@@ -392,9 +392,9 @@ export const syncService = {
           err instanceof Prisma.PrismaClientKnownRequestError
             ? err.code
             : err instanceof Prisma.PrismaClientUnknownRequestError
-              ? "UNKNOWN"
-              : "";
-        if (attempt >= 2 || (code !== "P2034" && code !== "P2028")) {
+              ? 'UNKNOWN'
+              : '';
+        if (attempt >= 2 || (code !== 'P2034' && code !== 'P2028')) {
           throw err;
         }
         await sleep(150);
@@ -411,14 +411,14 @@ export const syncService = {
     const limit = Math.min(Math.max(opts.limit ?? 500, 1), 1000);
 
     let cursor: Date;
-    let sinceId = opts.sinceId ?? "";
+    let sinceId = opts.sinceId ?? '';
     if (opts.since) {
       const parsed = new Date(opts.since);
       cursor = Number.isNaN(parsed.getTime()) ? new Date(0) : parsed;
     } else {
       const stored = await prisma.syncCursor.findUnique({ where: { userId } });
       cursor = stored?.lastPulledAt ?? new Date(0);
-      sinceId = stored?.lastPulledId ?? "";
+      sinceId = stored?.lastPulledId ?? '';
     }
 
     const upTo = new Date();
@@ -443,7 +443,7 @@ export const syncService = {
         changes.push({
           entity,
           id,
-          action: deletedAt ? "delete" : "upsert",
+          action: deletedAt ? 'delete' : 'upsert',
           updatedAt: updatedAt.toISOString(),
           data: { ...rest, createdAt: (row as { createdAt?: Date }).createdAt },
         });
@@ -453,7 +453,7 @@ export const syncService = {
     }
 
     let nextCursor = upTo;
-    let nextCursorId = "";
+    let nextCursorId = '';
     if (changes.length > 0) {
       const last = changes[changes.length - 1];
       nextCursor = new Date(last.updatedAt);
@@ -494,46 +494,46 @@ async function pullRows(
     : ({ userId, updatedAt: { gt: cursor } } as never);
 
   switch (entity) {
-    case "entry":
+    case 'entry':
       return (await prisma.entry.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
-    case "feedback":
+    case 'feedback':
       return (await prisma.feedback.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
-    case "testResult":
+    case 'testResult':
       return (await prisma.testResult.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
-    case "breathingSession":
+    case 'breathingSession':
       return (await prisma.breathingSession.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
-    case "practiceCompletion":
+    case 'practiceCompletion':
       return (await prisma.practiceCompletion.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
-    case "creatureState":
+    case 'creatureState':
       return (await prisma.creatureState.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
-    case "userAchievement":
+    case 'userAchievement':
       return (await prisma.userAchievement.findMany({
         where: base,
-        orderBy: [{ updatedAt: "asc" }, { id: "asc" }],
+        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
         take: limit,
       })) as never;
   }

@@ -1,4 +1,4 @@
-import { toBase64, fromBase64, asBufferSource } from "./kdf";
+import { toBase64, fromBase64, asBufferSource } from './kdf';
 
 export const CRYPTO_VERSION = 1;
 
@@ -24,7 +24,7 @@ export async function encryptJson(
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
   const plaintext = encoder.encode(JSON.stringify(value));
   const cipher = await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv: asBufferSource(iv), additionalData: asBufferSource(aad) },
+    { name: 'AES-GCM', iv: asBufferSource(iv), additionalData: asBufferSource(aad) },
     dataKey,
     plaintext,
   );
@@ -52,7 +52,7 @@ export async function decryptJson(
   const aad = encoder.encode(`moodly:${ctx.userId}:${ctx.entityId}`);
 
   const plaintext = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: asBufferSource(iv), additionalData: asBufferSource(aad) },
+    { name: 'AES-GCM', iv: asBufferSource(iv), additionalData: asBufferSource(aad) },
     dataKey,
     asBufferSource(cipher),
   );

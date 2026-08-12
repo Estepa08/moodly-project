@@ -1,22 +1,22 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../lib/api";
-import { isNetworkError, isServerError } from "../lib/api-error";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
-import { enqueue } from "../lib/offline/sync";
-import { deleteLocalEntry, listLocalEntries, saveLocalEntry } from "../lib/offline/db";
-import { uuidv7 } from "@moodly/shared";
-import { reportError } from "../lib/errorReporter";
-import type { components } from "../lib/api-types";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '../lib/api';
+import { isNetworkError, isServerError } from '../lib/api-error';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { enqueue } from '../lib/offline/sync';
+import { deleteLocalEntry, listLocalEntries, saveLocalEntry } from '../lib/offline/db';
+import { uuidv7 } from '@moodly/shared';
+import { reportError } from '../lib/errorReporter';
+import type { components } from '../lib/api-types';
 import {
   decryptEntryPayload,
   encryptEntryPayload,
   parseLegacyActivities,
   type ActivitySelection,
-} from "../lib/crypto/records";
-import type { DistortionKey } from "../lib/distortionsQuiz";
+} from '../lib/crypto/records';
+import type { DistortionKey } from '../lib/distortionsQuiz';
 
-type Entry = components["schemas"]["Entry"];
+type Entry = components['schemas']['Entry'];
 
 // Логирует реальную причину ошибки сохранения (код/сообщение) на бэкенд
 // (POST /client-errors), чтобы в проде было видно первопричину, а не
@@ -58,7 +58,7 @@ async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
 
 export function useEntries(params?: { parameterId?: string; from?: string; to?: string }) {
   return useQuery({
-    queryKey: ["entries", params],
+    queryKey: ['entries', params],
     // offline-first: при офлайне или недоступном сервере читаем локальный кэш
     // из IndexedDB (наполняется через pull).
     queryFn: async () => {
@@ -101,13 +101,13 @@ export function useCreateEntry(onSuccess?: () => void) {
         id,
       );
       if (!navigator.onLine) {
-        await enqueue("entry", "upsert", id, {
+        await enqueue('entry', 'upsert', id, {
           parameterId: data.parameterId,
           encryptedData,
         });
         await saveLocalEntry({
           id,
-          userId: "",
+          userId: '',
           parameterId: data.parameterId,
           encryptedData,
           value: data.value,
@@ -116,7 +116,7 @@ export function useCreateEntry(onSuccess?: () => void) {
         });
         return {
           id,
-          userId: "",
+          userId: '',
           parameterId: data.parameterId,
           value: data.value,
           note: data.note ?? null,
@@ -132,13 +132,13 @@ export function useCreateEntry(onSuccess?: () => void) {
         // Сервер недоступен (ERR_CONNECTION_REFUSED) или ответил 5xx (деплой,
         // перезапуск, сбой БД) — кладём в офлайн-очередь и локальное зеркало,
         // чтобы не потерять запись: синк отправит её позже.
-        await enqueue("entry", "upsert", id, {
+        await enqueue('entry', 'upsert', id, {
           parameterId: data.parameterId,
           encryptedData,
         });
         await saveLocalEntry({
           id,
-          userId: "",
+          userId: '',
           parameterId: data.parameterId,
           encryptedData,
           value: data.value,
@@ -147,7 +147,7 @@ export function useCreateEntry(onSuccess?: () => void) {
         });
         return {
           id,
-          userId: "",
+          userId: '',
           parameterId: data.parameterId,
           value: data.value,
           note: data.note ?? null,
@@ -158,12 +158,12 @@ export function useCreateEntry(onSuccess?: () => void) {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["entries"] });
+      queryClient.invalidateQueries({ queryKey: ['entries'] });
       onSuccess?.();
     },
     onError: (err) => {
-      reportSaveError("create", err);
-      toast.error(t("dashboard.saveError"));
+      reportSaveError('create', err);
+      toast.error(t('dashboard.saveError'));
     },
   });
 }
@@ -175,7 +175,7 @@ export function useDeleteEntry() {
   return useMutation({
     mutationFn: async (id: string) => {
       if (!navigator.onLine) {
-        await enqueue("entry", "delete", id);
+        await enqueue('entry', 'delete', id);
         await deleteLocalEntry(id);
         return undefined;
       }
@@ -183,17 +183,17 @@ export function useDeleteEntry() {
         return await api.entries.delete(id);
       } catch (err) {
         if (!isNetworkError(err) && !isServerError(err)) throw err;
-        await enqueue("entry", "delete", id);
+        await enqueue('entry', 'delete', id);
         await deleteLocalEntry(id);
         return undefined;
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["entries"] });
+      queryClient.invalidateQueries({ queryKey: ['entries'] });
     },
     onError: (err) => {
-      reportSaveError("delete", err);
-      toast.error(t("dashboard.saveError"));
+      reportSaveError('delete', err);
+      toast.error(t('dashboard.saveError'));
     },
   });
 }
@@ -221,12 +221,12 @@ export function useUpdateEntry() {
         id,
       );
       if (!navigator.onLine) {
-        await enqueue("entry", "upsert", id, { encryptedData });
+        await enqueue('entry', 'upsert', id, { encryptedData });
         await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
         return {
           id,
-          userId: "",
-          parameterId: "",
+          userId: '',
+          parameterId: '',
           value,
           note: note ?? null,
           activities: activities ?? [],
@@ -238,12 +238,12 @@ export function useUpdateEntry() {
         return await api.entries.update(id, { encryptedData });
       } catch (err) {
         if (!isNetworkError(err) && !isServerError(err)) throw err;
-        await enqueue("entry", "upsert", id, { encryptedData });
+        await enqueue('entry', 'upsert', id, { encryptedData });
         await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
         return {
           id,
-          userId: "",
-          parameterId: "",
+          userId: '',
+          parameterId: '',
           value,
           note: note ?? null,
           activities: activities ?? [],
@@ -253,11 +253,11 @@ export function useUpdateEntry() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["entries"] });
+      queryClient.invalidateQueries({ queryKey: ['entries'] });
     },
     onError: (err) => {
-      reportSaveError("update", err);
-      toast.error(t("dashboard.saveError"));
+      reportSaveError('update', err);
+      toast.error(t('dashboard.saveError'));
     },
   });
 }

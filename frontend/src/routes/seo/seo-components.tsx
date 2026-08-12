@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { Heart, ChevronDown, ArrowRight } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Card } from "../../components/ui/card";
-import Reveal from "../../components/Reveal";
-import { cn } from "../../lib/utils";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { Heart, ChevronDown, ArrowRight } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
+import Reveal from '../../components/Reveal';
+import { cn } from '../../lib/utils';
+import { withCanonical } from '../../lib/seo';
 
 function SeoHeader() {
   const { t } = useTranslation();
   const nav = [
-    { href: "/mood-diary", label: t("seo.nav.moodDiary") },
-    { href: "/anxiety-test", label: t("seo.nav.anxietyTest") },
-    { href: "/blog", label: t("seo.nav.blog") },
-    { href: "/privacy", label: t("seo.nav.privacy") },
-    { href: "/terms", label: t("seo.nav.terms") },
+    { href: '/mood-diary', label: t('seo.nav.moodDiary') },
+    { href: '/anxiety-test', label: t('seo.nav.anxietyTest') },
+    { href: '/blog', label: t('seo.nav.blog') },
+    { href: '/privacy', label: t('seo.nav.privacy') },
+    { href: '/terms', label: t('seo.nav.terms') },
   ];
 
   return (
@@ -45,7 +46,7 @@ function SeoHeader() {
         </nav>
 
         <Button size="sm" asChild>
-          <Link to="/register">{t("seo.nav.start")}</Link>
+          <Link to="/register">{t('seo.nav.start')}</Link>
         </Button>
       </div>
     </header>
@@ -58,25 +59,40 @@ interface Breadcrumb {
 }
 
 function SeoBreadcrumbs({ items }: { items: Breadcrumb[] }) {
+  // Добавляем JSON-LD для хлебных крошек
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.label,
+      item: item.to ? withCanonical(item.to) : undefined,
+    })),
+  };
+
   return (
-    <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-4 sm:px-6 pt-5">
-      <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
-        {items.map((item, i) => (
-          <li key={i} className="flex items-center gap-1.5">
-            {i > 0 && <span aria-hidden="true">/</span>}
-            {item.to ? (
-              <Link to={item.to} className="hover:text-primary transition-colors">
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-primary font-medium" aria-current="page">
-                {item.label}
-              </span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
+    <>
+      <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
+      <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-4 sm:px-6 pt-5">
+        <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
+          {items.map((item, i) => (
+            <li key={i} className="flex items-center gap-1.5">
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {item.to ? (
+                <Link to={item.to} className="hover:text-primary transition-colors">
+                  {item.label}
+                </Link>
+              ) : (
+                <span className="text-primary font-medium" aria-current="page">
+                  {item.label}
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </>
   );
 }
 
@@ -92,7 +108,7 @@ function SeoSectionHeading({
   center?: boolean;
 }) {
   return (
-    <Reveal className={cn(center && "text-center")}>
+    <Reveal className={cn(center && 'text-center')}>
       <p className="text-xs font-bold text-primary uppercase tracking-wider">{kicker}</p>
       <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-balance">
         {title}
@@ -123,7 +139,7 @@ function StepsGrid({
   return (
     <section className="mx-auto max-w-6xl px-4 sm:px-6 py-12">
       {(title || description) && (
-        <SeoSectionHeading kicker={title ?? ""} title={description ?? ""} />
+        <SeoSectionHeading kicker={title ?? ''} title={description ?? ''} />
       )}
       <div className="mt-8 grid md:grid-cols-3 gap-4">
         {steps.map((step, i) => (
@@ -170,8 +186,8 @@ function FaqAccordion({ title, items }: { title: string; items: FaqItem[] }) {
                   <ChevronDown
                     aria-hidden="true"
                     className={cn(
-                      "w-5 h-5 shrink-0 text-primary transition-transform",
-                      isOpen && "rotate-180",
+                      'w-5 h-5 shrink-0 text-primary transition-transform',
+                      isOpen && 'rotate-180',
                     )}
                   />
                 </button>
@@ -193,7 +209,7 @@ function CtaBanner({
   title,
   text,
   button,
-  to = "/register",
+  to = '/register',
 }: {
   title: string;
   text?: string;
@@ -240,13 +256,13 @@ function SeoDisclaimer({ lines }: { lines: string[] }) {
 function SeoFooter() {
   const { t } = useTranslation();
   const product = [
-    { label: t("seo.nav.moodDiary"), to: "/mood-diary" },
-    { label: t("seo.nav.anxietyTest"), to: "/anxiety-test" },
-    { label: t("seo.nav.blog"), to: "/blog" },
+    { label: t('seo.nav.moodDiary'), to: '/mood-diary' },
+    { label: t('seo.nav.anxietyTest'), to: '/anxiety-test' },
+    { label: t('seo.nav.blog'), to: '/blog' },
   ];
   const company = [
-    { label: t("seo.nav.privacy"), to: "/privacy" },
-    { label: t("seo.nav.terms"), to: "/terms" },
+    { label: t('seo.nav.privacy'), to: '/privacy' },
+    { label: t('seo.nav.terms'), to: '/terms' },
   ];
 
   return (
@@ -262,10 +278,10 @@ function SeoFooter() {
                 Moodly
               </p>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground max-w-xs">{t("seo.footer.about")}</p>
+            <p className="mt-2 text-xs text-muted-foreground max-w-xs">{t('seo.footer.about')}</p>
           </div>
           <div>
-            <p className="text-sm font-bold text-foreground">{t("seo.footer.product")}</p>
+            <p className="text-sm font-bold text-foreground">{t('seo.footer.product')}</p>
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
               {product.map((item) => (
                 <li key={item.to}>
@@ -277,7 +293,7 @@ function SeoFooter() {
             </ul>
           </div>
           <div>
-            <p className="text-sm font-bold text-foreground">{t("seo.footer.company")}</p>
+            <p className="text-sm font-bold text-foreground">{t('seo.footer.company')}</p>
             <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
               {company.map((item) => (
                 <li key={item.to}>

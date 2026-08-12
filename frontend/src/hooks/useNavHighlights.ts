@@ -1,7 +1,7 @@
-import { useCreatureState } from "../features/gamification/useCreature";
-import { useTestResults } from "./useTests";
-import { useStalePractices } from "./useStalePractices";
-import { MS_PER_DAY } from "../lib/constants";
+import { useCreatureState } from '../features/gamification/useCreature';
+import { useTestResults } from './useTests';
+import { useStalePractices } from './useStalePractices';
+import { MS_PER_DAY } from '../lib/constants';
 
 export function useNavHighlights() {
   const { data: creature } = useCreatureState();

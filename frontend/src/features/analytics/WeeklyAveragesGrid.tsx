@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { TrendingUp, TrendingDown, Minus, BarChart3 } from "lucide-react";
-import { PARAM_ICONS, PARAM_NAME_KEYS, NEGATIVE_VALENCE_PARAMS, Trend } from "../../lib/constants";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { LoadingCard } from "../../components/ui/loading-card";
-import EmptyState from "../../components/ui/empty-state";
-import type { ParameterName } from "../../lib/constants";
+import { useTranslation } from 'react-i18next';
+import { TrendingUp, TrendingDown, Minus, BarChart3 } from 'lucide-react';
+import { PARAM_ICONS, PARAM_NAME_KEYS, NEGATIVE_VALENCE_PARAMS, Trend } from '../../lib/constants';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { LoadingCard } from '../../components/ui/loading-card';
+import EmptyState from '../../components/ui/empty-state';
+import type { ParameterName } from '../../lib/constants';
 
 interface WeeklyAverage {
   name: string;
@@ -22,13 +22,13 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
   return (
     <Card className="shadow-neumorphic">
       <CardHeader>
-        <CardTitle className="text-base">{t("dashboard.weeklyAverages")}</CardTitle>
+        <CardTitle className="text-base">{t('dashboard.weeklyAverages')}</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <LoadingCard className="border-0 shadow-none" />
         ) : weeklyAverages.length === 0 ? (
-          <EmptyState icon={BarChart3} title={t("dashboard.noAveragesYet")} />
+          <EmptyState icon={BarChart3} title={t('dashboard.noAveragesYet')} />
         ) : (
           <div className="grid grid-cols-2 gap-3 max-sm:gap-2">
             {weeklyAverages.map((avg) => {
@@ -40,11 +40,11 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
               const colorClass =
                 goodness !== null
                   ? goodness >= 7
-                    ? "text-primary"
+                    ? 'text-primary'
                     : goodness >= 4
-                      ? "text-primary-muted"
-                      : "text-primary-dim"
-                  : "text-muted-foreground";
+                      ? 'text-primary-muted'
+                      : 'text-primary-dim'
+                  : 'text-muted-foreground';
               const TrendIcon =
                 avg.trend === Trend.Up
                   ? TrendingUp
@@ -59,10 +59,10 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                     : avg.trend === Trend.Up;
               const trendColor =
                 trendIsGood === null
-                  ? "text-muted-foreground"
+                  ? 'text-muted-foreground'
                   : trendIsGood
-                    ? "text-primary"
-                    : "text-primary-dim";
+                    ? 'text-primary'
+                    : 'text-primary-dim';
               return (
                 <div
                   key={avg.name}
@@ -76,7 +76,7 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                   </div>
                   <div className="flex items-end gap-2">
                     <span className={`text-2xl font-bold font-serif ${colorClass}`}>
-                      {averageValue !== null ? averageValue.toFixed(1) : "—"}
+                      {averageValue !== null ? averageValue.toFixed(1) : '—'}
                     </span>
                     {averageValue !== null && (
                       <TrendIcon aria-hidden="true" className={`w-4 h-4 mb-1 ${trendColor}`} />

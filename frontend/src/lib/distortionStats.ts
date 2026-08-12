@@ -1,7 +1,7 @@
-import { DISTORTION_KEYS, DistortionKey } from "./distortionsQuiz";
-import type { DecryptedEntry } from "../hooks/useEntries";
+import { DISTORTION_KEYS, DistortionKey } from './distortionsQuiz';
+import type { DecryptedEntry } from '../hooks/useEntries';
 
-export const MOOD_PARAM = "Mood";
+export const MOOD_PARAM = 'Mood';
 
 export interface DistortionStat {
   key: DistortionKey;
@@ -25,9 +25,9 @@ export interface DistortionStatsResult {
 function dayKeyLocal(createdAt: string): string {
   const d = new Date(createdAt);
   if (Number.isNaN(d.getTime())) return createdAt.slice(0, 10);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
     d.getDate(),
-  ).padStart(2, "0")}`;
+  ).padStart(2, '0')}`;
 }
 
 /**
@@ -46,7 +46,7 @@ export function computeDistortionStats(
     const day = dayKeyLocal(e.createdAt);
     const name = paramNameById(e.parameterId);
 
-    if (name === MOOD_PARAM && typeof e.value === "number") {
+    if (name === MOOD_PARAM && typeof e.value === 'number') {
       const bucket = moodByDay.get(day) ?? [];
       bucket.push(e.value);
       moodByDay.set(day, bucket);

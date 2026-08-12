@@ -1,1 +1,1 @@
-export { EXP_PER_LEVEL, MS_PER_DAY } from "@moodly/shared";
+export { EXP_PER_LEVEL, MS_PER_DAY } from '@moodly/shared';

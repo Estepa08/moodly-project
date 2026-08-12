@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Card } from "../../components/ui/card";
-import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
+import Reveal from '../../components/Reveal';
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from '../../lib/seo';
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -13,55 +13,55 @@ import {
   CtaBanner,
   SeoDisclaimer,
   SeoFooter,
-} from "./seo-components";
+} from './seo-components';
 
 export default function MoodDiaryPage() {
   const { t } = useTranslation();
 
   const faq = [
     {
-      q: "Как часто нужно вести дневник?",
-      a: "Начните с 3-5 минут в день. Исследования показывают: регулярность важнее продолжительности. Даже 30 секунд в день дают эффект через 2-3 недели.",
+      q: 'Как часто нужно вести дневник?',
+      a: 'Начните с 3-5 минут в день. Исследования показывают: регулярность важнее продолжительности. Даже 30 секунд в день дают эффект через 2-3 недели.',
     },
     {
-      q: "Что делать, если я пропустил день?",
-      a: "Просто начните снова. Не пытайтесь «догнать» пропущенные дни. Важен общий тренд, а не идеальная серия. Серия прервалась — это нормально, просто продолжайте.",
+      q: 'Что делать, если я пропустил день?',
+      a: 'Просто начните снова. Не пытайтесь «догнать» пропущенные дни. Важен общий тренд, а не идеальная серия. Серия прервалась — это нормально, просто продолжайте.',
     },
     {
-      q: "Помогает ли дневник при тревоге?",
-      a: "Да. Согласно исследованию Journal of Clinical Psychology (2025), регулярное ведение дневника снижает тревожность на 78% за 4 недели. Это один из самых эффективных инструментов самопомощи.",
+      q: 'Помогает ли дневник при тревоге?',
+      a: 'Да. Согласно исследованию Journal of Clinical Psychology (2025), регулярное ведение дневника снижает тревожность на 78% за 4 недели. Это один из самых эффективных инструментов самопомощи.',
     },
     {
-      q: "Что ещё можно отслеживать в дневнике?",
-      a: "Кроме настроения, добавьте энергию, сон и тревогу. Это помогает увидеть связи: например, «плохо спал → низкая энергия → тревога». Такие инсайты дают ключ к управлению состоянием.",
+      q: 'Что ещё можно отслеживать в дневнике?',
+      a: 'Кроме настроения, добавьте энергию, сон и тревогу. Это помогает увидеть связи: например, «плохо спал → низкая энергия → тревога». Такие инсайты дают ключ к управлению состоянием.',
     },
   ];
 
   useSeo({
-    title: t("seoPages.moodDiary.meta.title"),
-    description: t("seoPages.moodDiary.meta.description"),
-    canonical: withCanonical("/mood-diary"),
+    title: t('seoPages.moodDiary.meta.title'),
+    description: t('seoPages.moodDiary.meta.description'),
+    canonical: withCanonical('/mood-diary'),
     jsonLd: [
       breadcrumbLd([
-        { name: t("seoPages.moodDiary.breadcrumb.home"), url: withCanonical("/") },
-        { name: t("seoPages.moodDiary.breadcrumb.current"), url: withCanonical("/mood-diary") },
+        { name: t('seoPages.moodDiary.breadcrumb.home'), url: withCanonical('/') },
+        { name: t('seoPages.moodDiary.breadcrumb.current'), url: withCanonical('/mood-diary') },
       ]),
       faqPageLd(faq),
     ],
   });
 
   const stats = [
-    { value: "78%", label: "снижают тревожность через 4 недели" },
-    { value: "65%", label: "улучшают качество сна" },
-    { value: "82%", label: "продолжают вести дневник после 30 дней" },
-    { value: "⏱️ 5 мин", label: "среднее время на запись" },
+    { value: '78%', label: 'снижают тревожность через 4 недели' },
+    { value: '65%', label: 'улучшают качество сна' },
+    { value: '82%', label: 'продолжают вести дневник после 30 дней' },
+    { value: '⏱️ 5 мин', label: 'среднее время на запись' },
   ];
 
   const params = [
-    { title: "Настроение", sub: "Отслеживайте колебания эмоций" },
-    { title: "Энергия", sub: "Замечайте, как меняется ваша активность" },
-    { title: "Тревога", sub: "Отслеживайте уровень тревожности" },
-    { title: "Сон", sub: "Видите связь между сном и настроением" },
+    { title: 'Настроение', sub: 'Отслеживайте колебания эмоций' },
+    { title: 'Энергия', sub: 'Замечайте, как меняется ваша активность' },
+    { title: 'Тревога', sub: 'Отслеживайте уровень тревожности' },
+    { title: 'Сон', sub: 'Видите связь между сном и настроением' },
   ];
 
   return (
@@ -69,8 +69,8 @@ export default function MoodDiaryPage() {
       <SeoHeader />
       <SeoBreadcrumbs
         items={[
-          { label: t("seoPages.moodDiary.breadcrumb.home"), to: "/" },
-          { label: t("seoPages.moodDiary.breadcrumb.current") },
+          { label: t('seoPages.moodDiary.breadcrumb.home'), to: '/' },
+          { label: t('seoPages.moodDiary.breadcrumb.current') },
         ]}
       />
 
@@ -80,24 +80,24 @@ export default function MoodDiaryPage() {
           <Reveal>
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-                {t("seoPages.moodDiary.hero.title")}{" "}
-                <span className="text-primary">{t("seoPages.moodDiary.hero.accent")}</span>
+                {t('seoPages.moodDiary.hero.title')}{' '}
+                <span className="text-primary">{t('seoPages.moodDiary.hero.accent')}</span>
               </h1>
               <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
-                {t("seoPages.moodDiary.hero.sub1")}
+                {t('seoPages.moodDiary.hero.sub1')}
               </p>
               <p className="mt-2 text-muted-foreground text-base leading-relaxed max-w-xl">
-                {t("seoPages.moodDiary.hero.sub2")}
+                {t('seoPages.moodDiary.hero.sub2')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" asChild>
                   <Link to="/register">
-                    {t("seoPages.moodDiary.hero.ctaPrimary")}
+                    {t('seoPages.moodDiary.hero.ctaPrimary')}
                     <ArrowRight aria-hidden="true" className="w-5 h-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/anxiety-test">{t("seoPages.moodDiary.hero.ctaSecondary")}</Link>
+                  <Link to="/anxiety-test">{t('seoPages.moodDiary.hero.ctaSecondary')}</Link>
                 </Button>
               </div>
             </div>
@@ -106,16 +106,16 @@ export default function MoodDiaryPage() {
           <Reveal direction="right" delay={120}>
             <Card className="p-6 bg-card-gradient shadow-clay-lg">
               <p className="text-sm font-bold text-foreground">
-                {t("seoPages.moodDiary.mock.title")}
+                {t('seoPages.moodDiary.mock.title')}
               </p>
               <p className="text-xs text-muted-foreground">
-                {t("seoPages.moodDiary.mock.subtitle")}
+                {t('seoPages.moodDiary.mock.subtitle')}
               </p>
               <div className="mt-4 space-y-3">
                 {[
-                  t("seoPages.moodDiary.mock.row1"),
-                  t("seoPages.moodDiary.mock.row2"),
-                  t("seoPages.moodDiary.mock.row3"),
+                  t('seoPages.moodDiary.mock.row1'),
+                  t('seoPages.moodDiary.mock.row2'),
+                  t('seoPages.moodDiary.mock.row3'),
                 ].map((row, i) => (
                   <div key={i} className="rounded-xl bg-secondary/60 p-3 text-sm text-foreground">
                     {row}
@@ -145,9 +145,9 @@ export default function MoodDiaryPage() {
         {/* Why */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
           <SeoSectionHeading
-            kicker={t("seoPages.moodDiary.why.kicker")}
-            title={t("seoPages.moodDiary.why.title")}
-            text={[t("seoPages.moodDiary.why.text1"), t("seoPages.moodDiary.why.text2")]}
+            kicker={t('seoPages.moodDiary.why.kicker')}
+            title={t('seoPages.moodDiary.why.title')}
+            text={[t('seoPages.moodDiary.why.text1'), t('seoPages.moodDiary.why.text2')]}
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
@@ -171,8 +171,8 @@ export default function MoodDiaryPage() {
         {/* Params */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.moodDiary.params.kicker")}
-            title={t("seoPages.moodDiary.params.title")}
+            kicker={t('seoPages.moodDiary.params.kicker')}
+            title={t('seoPages.moodDiary.params.title')}
           />
           <div className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
             {params.map((p, i) => (
@@ -189,8 +189,8 @@ export default function MoodDiaryPage() {
         {/* How to start */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.moodDiary.how.kicker")}
-            title={t("seoPages.moodDiary.how.title")}
+            kicker={t('seoPages.moodDiary.how.kicker')}
+            title={t('seoPages.moodDiary.how.title')}
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
@@ -209,24 +209,24 @@ export default function MoodDiaryPage() {
           </div>
           <div className="mt-8 text-center">
             <Button size="lg" asChild>
-              <Link to="/register">{t("seoPages.moodDiary.how.cta")}</Link>
+              <Link to="/register">{t('seoPages.moodDiary.how.cta')}</Link>
             </Button>
           </div>
         </section>
 
         {/* FAQ */}
-        <FaqAccordion title={t("seoPages.moodDiary.faq.title")} items={faq} />
+        <FaqAccordion title={t('seoPages.moodDiary.faq.title')} items={faq} />
 
         {/* CTA */}
         <CtaBanner
-          title={t("seoPages.moodDiary.cta.title")}
-          text={t("seoPages.moodDiary.cta.text")}
-          button={t("seoPages.moodDiary.cta.button")}
+          title={t('seoPages.moodDiary.cta.title')}
+          text={t('seoPages.moodDiary.cta.text')}
+          button={t('seoPages.moodDiary.cta.button')}
         />
       </main>
 
       <SeoDisclaimer
-        lines={[t("seoPages.moodDiary.disclaimer.1"), t("seoPages.moodDiary.disclaimer.2")]}
+        lines={[t('seoPages.moodDiary.disclaimer.1'), t('seoPages.moodDiary.disclaimer.2')]}
       />
       <SeoFooter />
     </div>

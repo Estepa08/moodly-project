@@ -1,12 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { api } from "../lib/api";
-import { listLocalTestResults } from "../lib/offline/db";
-import type { components } from "../lib/api-types";
-import { decryptTestResultPayload } from "../lib/crypto/records";
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../lib/api';
+import { listLocalTestResults } from '../lib/offline/db';
+import type { components } from '../lib/api-types';
+import { decryptTestResultPayload } from '../lib/crypto/records';
 
 export function useTests() {
   return useQuery({
-    queryKey: ["tests"],
+    queryKey: ['tests'],
     queryFn: () => api.tests.list(),
     staleTime: 60_000,
   });
@@ -14,14 +14,14 @@ export function useTests() {
 
 export function useTest(id?: string) {
   return useQuery({
-    queryKey: ["test", id],
+    queryKey: ['test', id],
     queryFn: () => api.tests.get(id!),
     enabled: !!id,
     staleTime: 60_000,
   });
 }
 
-type TestResult = components["schemas"]["TestResult"];
+type TestResult = components['schemas']['TestResult'];
 
 export interface DecryptedTestResult extends TestResult {
   score: number;
@@ -36,8 +36,8 @@ async function decryptResult(r: TestResult): Promise<DecryptedTestResult> {
     return {
       ...r,
       score: r.score ?? 0,
-      interpretation: r.interpretation ?? "",
-      recommendation: r.recommendation ?? "",
+      interpretation: r.interpretation ?? '',
+      recommendation: r.recommendation ?? '',
       flags: r.flags as Record<string, unknown> | undefined,
     };
   }
@@ -54,7 +54,7 @@ async function decryptResult(r: TestResult): Promise<DecryptedTestResult> {
 
 export function useTestResults(testId?: string) {
   return useQuery({
-    queryKey: ["testResults", testId],
+    queryKey: ['testResults', testId],
     queryFn: async () => {
       const raw = navigator.onLine
         ? await api.testResults.list(testId)

@@ -1,25 +1,25 @@
-import { useMemo, useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Moon, Pencil, ChevronDown, X, Bed, Check } from "lucide-react";
-import type { CreateEntryMutation, UpdateEntryMutation } from "../../lib/app-types";
-import type { components } from "../../lib/api-types";
+import { useMemo, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { Moon, Pencil, ChevronDown, X, Bed, Check } from 'lucide-react';
+import type { CreateEntryMutation, UpdateEntryMutation } from '../../lib/app-types';
+import type { components } from '../../lib/api-types';
 import {
   SLEEP_HYGIENE_ITEMS,
   parseCheckedNote,
   findTodayEntry,
   HygieneItem,
-} from "../../lib/sleepHygiene";
-import { SleepHygieneListState } from "../../lib/constants";
-import { ChecklistItem } from "../../components/ui/checklist-item";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import EmptyState from "../../components/ui/empty-state";
-import { Button } from "../../components/ui/button";
-import { cn, formatDateShort } from "../../lib/utils";
+} from '../../lib/sleepHygiene';
+import { SleepHygieneListState } from '../../lib/constants';
+import { ChecklistItem } from '../../components/ui/checklist-item';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import EmptyState from '../../components/ui/empty-state';
+import { Button } from '../../components/ui/button';
+import { cn, formatDateShort } from '../../lib/utils';
 
 interface SleepHygieneChecklistProps {
   parameterId: string | undefined;
-  hygieneEntries: components["schemas"]["Entry"][];
+  hygieneEntries: components['schemas']['Entry'][];
   createEntry: CreateEntryMutation;
   updateEntry: UpdateEntryMutation;
 }
@@ -61,14 +61,14 @@ export default function SleepHygieneChecklist({
   };
 
   const handleSave = () => {
-    const note = Array.from(checked).join(",");
+    const note = Array.from(checked).join(',');
     const value = checked.size;
     if (todayEntryId) {
       updateEntry.mutate(
         { id: todayEntryId, value, note },
         {
           onSuccess: () => {
-            toast.success(t("sleepHygiene.saved"));
+            toast.success(t('sleepHygiene.saved'));
             setIsEditing(false);
             setListState(SleepHygieneListState.Completed);
           },
@@ -79,7 +79,7 @@ export default function SleepHygieneChecklist({
         { parameterId: parameterId!, value, note },
         {
           onSuccess: () => {
-            toast.success(t("sleepHygiene.saved"));
+            toast.success(t('sleepHygiene.saved'));
             setListState(SleepHygieneListState.Completed);
           },
         },
@@ -109,7 +109,7 @@ export default function SleepHygieneChecklist({
         <CardHeader className="flex-row items-center justify-between">
           <div className="flex items-center gap-2">
             <Moon aria-hidden="true" className="w-5 h-5 text-primary" />
-            <CardTitle className="text-base">{t("sleepHygiene.checklistTitle")}</CardTitle>
+            <CardTitle className="text-base">{t('sleepHygiene.checklistTitle')}</CardTitle>
           </div>
           {listState === SleepHygieneListState.Completed && todayEntryId && (
             <Button size="sm" variant="ghost" onClick={handleEdit}>
@@ -132,7 +132,7 @@ export default function SleepHygieneChecklist({
               </div>
               <div className="flex gap-2">
                 <Button onClick={handleSave} disabled={isPending || checked.size === 0}>
-                  {t(isPending ? "common.saving" : "sleepHygiene.save")}
+                  {t(isPending ? 'common.saving' : 'sleepHygiene.save')}
                 </Button>
                 {isEditing && (
                   <Button
@@ -142,7 +142,7 @@ export default function SleepHygieneChecklist({
                       setListState(SleepHygieneListState.Completed);
                     }}
                   >
-                    {t("common.cancel")}
+                    {t('common.cancel')}
                   </Button>
                 )}
               </div>
@@ -155,13 +155,13 @@ export default function SleepHygieneChecklist({
                   <Check aria-hidden="true" className="w-6 h-6 text-accent shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {t("sleepHygiene.todayCompleted", { count: todayData.checked.size })}
+                      {t('sleepHygiene.todayCompleted', { count: todayData.checked.size })}
                     </p>
                     <p className="text-xs text-muted-foreground">{todayData.date}</p>
                   </div>
                 </div>
               ) : (
-                <EmptyState icon={Bed} title={t("sleepHygiene.noEntryYet")} />
+                <EmptyState icon={Bed} title={t('sleepHygiene.noEntryYet')} />
               )}
             </>
           )}
@@ -174,10 +174,10 @@ export default function SleepHygieneChecklist({
         onClick={() => setShowDetails(!showDetails)}
         className="w-full h-auto px-0 gap-1 text-muted-foreground hover:text-foreground"
       >
-        {t(showDetails ? "sleepHygiene.hideHistory" : "sleepHygiene.showHistory")}
+        {t(showDetails ? 'sleepHygiene.hideHistory' : 'sleepHygiene.showHistory')}
         <ChevronDown
           aria-hidden="true"
-          className={cn("transition-transform", showDetails && "rotate-180")}
+          className={cn('transition-transform', showDetails && 'rotate-180')}
         />
       </Button>
 
@@ -209,8 +209,8 @@ export default function SleepHygieneChecklist({
                     <ChevronDown
                       aria-hidden="true"
                       className={cn(
-                        "w-4 h-4 text-muted-foreground transition-transform",
-                        expandedEntryId === entry.id && "rotate-180",
+                        'w-4 h-4 text-muted-foreground transition-transform',
+                        expandedEntryId === entry.id && 'rotate-180',
                       )}
                     />
                   </button>
@@ -225,7 +225,7 @@ export default function SleepHygieneChecklist({
                           )}
                           <span
                             className={
-                              entryChecked.has(item) ? "text-foreground" : "text-muted-foreground"
+                              entryChecked.has(item) ? 'text-foreground' : 'text-muted-foreground'
                             }
                           >
                             {t(`sleepHygiene.items.${item}`)}

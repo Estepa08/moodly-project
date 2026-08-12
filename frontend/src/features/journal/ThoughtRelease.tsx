@@ -1,14 +1,14 @@
-import { useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Trash2, ChevronRight } from "lucide-react";
-import type { CreateEntryMutation } from "../../lib/app-types";
-import { suggestDistortion } from "../../lib/distortionKeywordHints";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { Card, CardContent } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { Textarea } from "../../components/ui/textarea";
-import { cn } from "../../lib/utils";
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { Trash2, ChevronRight } from 'lucide-react';
+import type { CreateEntryMutation } from '../../lib/app-types';
+import { suggestDistortion } from '../../lib/distortionKeywordHints';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Textarea } from '../../components/ui/textarea';
+import { cn } from '../../lib/utils';
 
 interface ThoughtReleaseProps {
   parameterId: string | undefined;
@@ -20,7 +20,7 @@ const DRAG_THRESHOLD = 90;
 export default function ThoughtRelease({ parameterId, createEntry }: ThoughtReleaseProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
-  const [thought, setThought] = useState("");
+  const [thought, setThought] = useState('');
   const [showHintDetail, setShowHintDetail] = useState(false);
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -43,11 +43,11 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
   const finishRelease = () => {
     logRelease(hintKey);
     setReleased(true);
-    toast.success(t("distortions.letGo.released"));
+    toast.success(t('distortions.letGo.released'));
 
     if (reducedMotion) {
       window.setTimeout(() => {
-        setThought("");
+        setThought('');
         setShowHintDetail(false);
         setDragX(0);
         setReleased(false);
@@ -58,7 +58,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
     setCrumpling(true);
     window.setTimeout(() => setCrumpling(false), CRUMPLE_MS);
     window.setTimeout(() => {
-      setThought("");
+      setThought('');
       setShowHintDetail(false);
       setDragX(0);
       setReleased(false);
@@ -98,7 +98,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
             <Textarea
               value={thought}
               onChange={(e) => setThought(e.target.value)}
-              placeholder={t("distortions.letGo.placeholder")}
+              placeholder={t('distortions.letGo.placeholder')}
               rows={3}
               disabled={released}
             />
@@ -106,7 +106,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
             {hintKey && !released && (
               <div className="bg-muted/30 rounded-lg px-3 py-2 space-y-1.5">
                 <p className="text-sm text-foreground">
-                  {t("distortions.letGo.hintQuestion", {
+                  {t('distortions.letGo.hintQuestion', {
                     distortion: t(`cognitiveDistortions.${hintKey}`),
                   })}
                 </p>
@@ -120,9 +120,9 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                 >
                   <ChevronRight
                     aria-hidden="true"
-                    className={cn("transition-transform", showHintDetail && "rotate-90")}
+                    className={cn('transition-transform', showHintDetail && 'rotate-90')}
                   />
-                  {showHintDetail ? t("distortions.hideExample") : t("distortions.showExample")}
+                  {showHintDetail ? t('distortions.hideExample') : t('distortions.showExample')}
                 </Button>
                 {showHintDetail && (
                   <p className="text-xs text-muted-foreground">
@@ -152,25 +152,25 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
                     : crumpling
                       ? 0.9
                       : 1 - Math.min(Math.abs(dragX) / 220, 0.6),
-                borderRadius: crumpling || released ? "9999px" : undefined,
+                borderRadius: crumpling || released ? '9999px' : undefined,
                 transition: dragging
-                  ? "none"
+                  ? 'none'
                   : reducedMotion
-                    ? "opacity 150ms ease"
+                    ? 'opacity 150ms ease'
                     : crumpling
                       ? `transform ${CRUMPLE_MS}ms ease-out`
                       : released
                         ? `transform ${FALL_MS}ms ease-in, opacity ${FALL_MS}ms ease-in, border-radius ${FALL_MS}ms ease-in`
-                        : "transform 250ms ease, opacity 250ms ease",
-                touchAction: "pan-y",
+                        : 'transform 250ms ease, opacity 250ms ease',
+                touchAction: 'pan-y',
               }}
               className={cn(
-                "w-full max-w-xs rounded-xl bg-muted/50 shadow-neumorphic-sm px-4 py-3 text-center text-sm text-foreground select-none",
-                canRelease ? "cursor-grab active:cursor-grabbing" : "cursor-not-allowed opacity-50",
+                'w-full max-w-xs rounded-xl bg-muted/50 shadow-neumorphic-sm px-4 py-3 text-center text-sm text-foreground select-none',
+                canRelease ? 'cursor-grab active:cursor-grabbing' : 'cursor-not-allowed opacity-50',
               )}
               aria-hidden="true"
             >
-              {thought.trim() || t("distortions.letGo.emptyCard")}
+              {thought.trim() || t('distortions.letGo.emptyCard')}
             </div>
 
             <div
@@ -194,7 +194,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
             </div>
 
             <p className="text-xs text-muted-foreground text-center">
-              {t("distortions.letGo.dragHint")}
+              {t('distortions.letGo.dragHint')}
             </p>
 
             <Button
@@ -204,7 +204,7 @@ export default function ThoughtRelease({ parameterId, createEntry }: ThoughtRele
               className="flex items-center gap-2"
             >
               <Trash2 aria-hidden="true" className="w-4 h-4" />
-              {t("distortions.letGo.releaseButton")}
+              {t('distortions.letGo.releaseButton')}
             </Button>
           </div>
         </CardContent>

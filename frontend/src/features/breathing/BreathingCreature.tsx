@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState, useCallback, type CSSProperties } from "react";
-import Lottie, { type LottieRefCurrentProps } from "lottie-react";
-import type { AnimationItem } from "lottie-web";
-import animationData from "../../assets/lottie/breathing-creature.json";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { usePets } from "../gamification";
-import { usePetAnimation } from "../gamification/usePetAnimation";
-import { PET_DEFINITIONS } from "../gamification/pets";
-import { BreathPhase, ReactionType } from "./breathing.enums";
+import { useEffect, useRef, useState, useCallback, type CSSProperties } from 'react';
+import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
+import type { AnimationItem } from 'lottie-web';
+import animationData from '../../assets/lottie/breathing-creature.json';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { usePets } from '../gamification';
+import { usePetAnimation } from '../gamification/usePetAnimation';
+import { PET_DEFINITIONS } from '../gamification/pets';
+import { BreathPhase, ReactionType } from './breathing.enums';
 
 interface Reaction {
   id: number;
@@ -42,7 +42,7 @@ export default function BreathingCreature({
 }: BreathingCreatureProps) {
   const reducedMotion = useReducedMotion();
   const { data: pets } = usePets();
-  const petType = pets?.activePetType ?? "puff";
+  const petType = pets?.activePetType ?? 'puff';
   const petAnimation = usePetAnimation(petType);
   const containerRef = useRef<HTMLDivElement>(null);
   const lottieRef = useRef<LottieRefCurrentProps>(null);
@@ -61,10 +61,10 @@ export default function BreathingCreature({
       if (type === ReactionType.Dizzy) dizzyActiveRef.current = true;
       const id = nextReactionId++;
       const def = PET_DEFINITIONS.find((p) => p.type === petType);
-      const feed = def?.feed ?? ["🫧"];
+      const feed = def?.feed ?? ['🫧'];
       const emoji =
         type === ReactionType.Dizzy
-          ? (def?.emoji ?? "🫧")
+          ? (def?.emoji ?? '🫧')
           : feed[Math.floor(Math.random() * feed.length)];
       setReactions((prev) => [
         ...prev,
@@ -142,7 +142,7 @@ export default function BreathingCreature({
         targetY = py;
       }
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener('mousemove', onMove);
 
     const tick = () => {
       if (!followCursorRef.current) {
@@ -169,7 +169,7 @@ export default function BreathingCreature({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener('mousemove', onMove);
       cancelAnimationFrame(raf);
     };
   }, [reducedMotion]);
@@ -195,7 +195,7 @@ export default function BreathingCreature({
 
       const findPupilElement = () => {
         const renderer = (anim as unknown as InternalAnim).renderer;
-        return renderer?.elements?.find((el) => el.data?.nm === "pupilas")?.layerElement;
+        return renderer?.elements?.find((el) => el.data?.nm === 'pupilas')?.layerElement;
       };
 
       const onDrawnFrame = () => {
@@ -203,13 +203,13 @@ export default function BreathingCreature({
         if (!pupilEl) return;
         const dx = pointerRef.current.x * PUPIL_RANGE;
         const dy = -pointerRef.current.y * PUPIL_RANGE;
-        const baked = new DOMMatrix(pupilEl.getAttribute("transform") ?? undefined);
+        const baked = new DOMMatrix(pupilEl.getAttribute('transform') ?? undefined);
         const combined = baked.translate(dx, dy);
         pupilEl.style.transform = combined.toString();
       };
 
-      anim.addEventListener("drawnFrame", onDrawnFrame);
-      cleanup = () => anim?.removeEventListener("drawnFrame", onDrawnFrame);
+      anim.addEventListener('drawnFrame', onDrawnFrame);
+      cleanup = () => anim?.removeEventListener('drawnFrame', onDrawnFrame);
     };
     raf = requestAnimationFrame(setup);
 
@@ -226,9 +226,9 @@ export default function BreathingCreature({
         ref={containerRef}
         onClick={handleClick}
         style={{
-          width: "100%",
-          height: "100%",
-          willChange: "transform",
+          width: '100%',
+          height: '100%',
+          willChange: 'transform',
         }}
       >
         <Lottie
@@ -236,7 +236,7 @@ export default function BreathingCreature({
           animationData={petAnimation ?? animationData}
           loop
           autoplay={!reducedMotion}
-          style={{ width: "100%", height: "100%", cursor: "pointer" }}
+          style={{ width: '100%', height: '100%', cursor: 'pointer' }}
         />
       </div>
 
@@ -249,7 +249,7 @@ export default function BreathingCreature({
               style={
                 {
                   marginLeft: `calc(${r.x}px - 20px)`,
-                  "--by": `${r.by}px`,
+                  '--by': `${r.by}px`,
                 } as CSSProperties
               }
             >
@@ -257,9 +257,9 @@ export default function BreathingCreature({
                 className="w-10 h-10 rounded-full bg-card shadow-neumorphic-sm flex items-center justify-center animate-bubble-sway"
                 style={
                   {
-                    "--sway-a": `${r.swayA}px`,
-                    "--sway-b": `${r.swayB}px`,
-                    "--tilt": `${r.tilt}deg`,
+                    '--sway-a': `${r.swayA}px`,
+                    '--sway-b': `${r.swayB}px`,
+                    '--tilt': `${r.tilt}deg`,
                   } as CSSProperties
                 }
               >

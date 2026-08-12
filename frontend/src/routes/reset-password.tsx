@@ -1,53 +1,53 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { api } from "../lib/api";
-import { getErrorMessage } from "../lib/error-messages";
-import { rewrapDataKeyWithRecovery, createFreshDataKey } from "../lib/crypto/auth-keys";
-import { Button } from "../components/ui/button";
-import { PasswordInput } from "../components/ui/password-input";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Card, CardContent } from "../components/ui/card";
-import { useSeo, withCanonical } from "../lib/seo";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { api } from '../lib/api';
+import { getErrorMessage } from '../lib/error-messages';
+import { rewrapDataKeyWithRecovery, createFreshDataKey } from '../lib/crypto/auth-keys';
+import { Button } from '../components/ui/button';
+import { PasswordInput } from '../components/ui/password-input';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Card, CardContent } from '../components/ui/card';
+import { useSeo, withCanonical } from '../lib/seo';
 
 export default function ResetPasswordPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   useSeo({
-    title: t("resetPassword.seo.title"),
-    description: t("resetPassword.seo.description"),
-    canonical: withCanonical("/reset-password"),
+    title: t('resetPassword.seo.title'),
+    description: t('resetPassword.seo.description'),
+    canonical: withCanonical('/reset-password'),
     noindex: true,
   });
   const [searchParams] = useSearchParams();
   const { login } = useAuth();
-  const token = searchParams.get("token") || "";
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [recoveryCode, setRecoveryCode] = useState("");
+  const token = searchParams.get('token') || '';
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [recoveryCode, setRecoveryCode] = useState('');
   const [dataLossAccepted, setDataLossAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError(t("resetPassword.mismatch"));
+      setError(t('resetPassword.mismatch'));
       return;
     }
     if (password.length < 6) {
-      setError(t("resetPassword.tooShort"));
+      setError(t('resetPassword.tooShort'));
       return;
     }
     if (!recoveryCode.trim() && !dataLossAccepted) {
-      setError(t("resetPassword.recoveryRequired"));
+      setError(t('resetPassword.recoveryRequired'));
       return;
     }
     setLoading(true);
-    setError("");
+    setError('');
     try {
       let wrappedKey: string;
       let keySalt: string;
@@ -56,7 +56,7 @@ export default function ResetPasswordPage() {
         // недоступен (пароль забыт), поэтому fetch recovery-материала отдельно.
         const info = await api.auth.recoveryInfo({ token });
         if (!info.recoveryWrappedKey || !info.recoverySalt) {
-          throw new Error(t("resetPassword.noRecoveryStored"));
+          throw new Error(t('resetPassword.noRecoveryStored'));
         }
         const rewrapped = await rewrapDataKeyWithRecovery(
           recoveryCode.trim(),
@@ -74,7 +74,7 @@ export default function ResetPasswordPage() {
       }
       const res = await api.auth.resetPassword({ token, password, wrappedKey, keySalt });
       login(res.accessToken);
-      navigate("/my-day");
+      navigate('/my-day');
     } catch (err) {
       setError(getErrorMessage(err, t));
     } finally {
@@ -88,10 +88,10 @@ export default function ResetPasswordPage() {
         <Card className="w-full max-w-sm">
           <CardContent className="p-6 space-y-4 text-center">
             <h2 className="text-xl font-serif font-semibold text-foreground">
-              {t("resetPassword.invalidLink")}
+              {t('resetPassword.invalidLink')}
             </h2>
             <Button variant="secondary" className="w-full" asChild>
-              <Link to="/login">{t("forgotPassword.backToLogin")}</Link>
+              <Link to="/login">{t('forgotPassword.backToLogin')}</Link>
             </Button>
           </CardContent>
         </Card>
@@ -104,11 +104,11 @@ export default function ResetPasswordPage() {
       <Card className="w-full max-w-sm">
         <CardContent className="p-6 space-y-4">
           <h2 className="text-xl font-serif font-semibold text-center text-foreground">
-            {t("resetPassword.title")}
+            {t('resetPassword.title')}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password">{t("resetPassword.newPassword")}</Label>
+              <Label htmlFor="password">{t('resetPassword.newPassword')}</Label>
               <PasswordInput
                 id="password"
                 value={password}
@@ -118,12 +118,12 @@ export default function ResetPasswordPage() {
                 required
                 minLength={6}
                 autoFocus
-                showLabel={t("common.showPassword")}
-                hideLabel={t("common.hidePassword")}
+                showLabel={t('common.showPassword')}
+                hideLabel={t('common.hidePassword')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">{t("resetPassword.confirmPassword")}</Label>
+              <Label htmlFor="confirmPassword">{t('resetPassword.confirmPassword')}</Label>
               <PasswordInput
                 id="confirmPassword"
                 value={confirmPassword}
@@ -132,22 +132,22 @@ export default function ResetPasswordPage() {
                 enterKeyHint="next"
                 required
                 minLength={6}
-                showLabel={t("common.showPassword")}
-                hideLabel={t("common.hidePassword")}
+                showLabel={t('common.showPassword')}
+                hideLabel={t('common.hidePassword')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="recoveryCode">{t("resetPassword.recoveryCode")}</Label>
+              <Label htmlFor="recoveryCode">{t('resetPassword.recoveryCode')}</Label>
               <Input
                 id="recoveryCode"
                 value={recoveryCode}
                 onChange={(e) => setRecoveryCode(e.target.value.toUpperCase())}
                 autoComplete="off"
                 enterKeyHint="go"
-                placeholder={t("resetPassword.recoveryPlaceholder")}
+                placeholder={t('resetPassword.recoveryPlaceholder')}
                 spellCheck={false}
               />
-              <p className="text-xs text-muted-foreground">{t("resetPassword.recoveryHint")}</p>
+              <p className="text-xs text-muted-foreground">{t('resetPassword.recoveryHint')}</p>
             </div>
             {!recoveryCode.trim() && (
               <Label className="flex items-start gap-2 text-sm cursor-pointer">
@@ -157,7 +157,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setDataLossAccepted(e.target.checked)}
                   className="mt-1"
                 />
-                <span>{t("resetPassword.dataLossWarning")}</span>
+                <span>{t('resetPassword.dataLossWarning')}</span>
               </Label>
             )}
             {error && (
@@ -166,7 +166,7 @@ export default function ResetPasswordPage() {
               </p>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t("resetPassword.resetting") : t("resetPassword.reset")}
+              {loading ? t('resetPassword.resetting') : t('resetPassword.reset')}
             </Button>
           </form>
         </CardContent>

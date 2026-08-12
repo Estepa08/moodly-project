@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { useCompletions, useCreatureState } from "../features/gamification/useCreature";
-import { PracticeSource } from "../features/gamification/practice.enums";
+import { useMemo } from 'react';
+import { useCompletions, useCreatureState } from '../features/gamification/useCreature';
+import { PracticeSource } from '../features/gamification/practice.enums';
 
 const ALL_SOURCES = Object.values(PracticeSource);
 

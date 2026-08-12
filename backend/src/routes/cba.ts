@@ -1,5 +1,5 @@
-import type { FastifyInstance } from "fastify";
-import { cbaService, type CbaEntryItemInput } from "../services/cba.js";
+import type { FastifyInstance } from 'fastify';
+import { cbaService, type CbaEntryItemInput } from '../services/cba.js';
 
 interface CbaEntryCreateBody {
   thoughtText: string;
@@ -9,16 +9,16 @@ interface CbaEntryCreateBody {
 }
 
 export default async function cbaRoutes(fastify: FastifyInstance) {
-  fastify.get("/cba/examples", { preHandler: [fastify.authenticate] }, async () => {
+  fastify.get('/cba/examples', { preHandler: [fastify.authenticate] }, async () => {
     return cbaService.listExamples();
   });
 
-  fastify.get("/cba/common-items", { preHandler: [fastify.authenticate] }, async () => {
+  fastify.get('/cba/common-items', { preHandler: [fastify.authenticate] }, async () => {
     return cbaService.listCommonItems();
   });
 
   fastify.post<{ Body: CbaEntryCreateBody }>(
-    "/cba/entries",
+    '/cba/entries',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       return cbaService.createEntry({
@@ -31,12 +31,12 @@ export default async function cbaRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get("/cba/entries", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.get('/cba/entries', { preHandler: [fastify.authenticate] }, async (request) => {
     return cbaService.listEntries(request.userId);
   });
 
   fastify.delete<{ Params: { id: string } }>(
-    "/cba/entries/:id",
+    '/cba/entries/:id',
     { preHandler: [fastify.authenticate] },
     async (request, reply) => {
       await cbaService.deleteEntry(request.params.id, request.userId);

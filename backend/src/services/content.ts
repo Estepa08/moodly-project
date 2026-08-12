@@ -1,10 +1,10 @@
-import { prisma } from "../lib/prisma.js";
-import { NotFoundError } from "../lib/errors.js";
+import { prisma } from '../lib/prisma.js';
+import { NotFoundError } from '../lib/errors.js';
 
-export type MessageType = "morning" | "day" | "evening";
+export type MessageType = 'morning' | 'day' | 'evening';
 
-const MESSAGE_TYPES: MessageType[] = ["morning", "day", "evening"];
-const LOCALES = ["ru", "en"];
+const MESSAGE_TYPES: MessageType[] = ['morning', 'day', 'evening'];
+const LOCALES = ['ru', 'en'];
 
 export interface MessageInput {
   type: MessageType;
@@ -28,7 +28,7 @@ export const contentService = {
 
     return prisma.motivationMessage.findMany({
       where,
-      orderBy: [{ type: "asc" }, { locale: "asc" }, { order: "asc" }, { createdAt: "asc" }],
+      orderBy: [{ type: 'asc' }, { locale: 'asc' }, { order: 'asc' }, { createdAt: 'asc' }],
     });
   },
 
@@ -47,7 +47,7 @@ export const contentService = {
 
   async update(id: string, input: Partial<MessageInput>) {
     const existing = await prisma.motivationMessage.findUnique({ where: { id } });
-    if (!existing) throw new NotFoundError("MotivationMessage");
+    if (!existing) throw new NotFoundError('MotivationMessage');
 
     const data: Record<string, unknown> = {};
     if (input.type !== undefined && isValidType(input.type)) data.type = input.type;
@@ -62,7 +62,7 @@ export const contentService = {
 
   async remove(id: string) {
     const existing = await prisma.motivationMessage.findUnique({ where: { id } });
-    if (!existing) throw new NotFoundError("MotivationMessage");
+    if (!existing) throw new NotFoundError('MotivationMessage');
     await prisma.motivationMessage.delete({ where: { id } });
   },
 
@@ -75,7 +75,7 @@ export const contentService = {
 
     const messages = await prisma.motivationMessage.findMany({
       where: { type, locale, isActive: true },
-      orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+      orderBy: [{ order: 'asc' }, { createdAt: 'asc' }],
     });
     if (messages.length === 0) return null;
 

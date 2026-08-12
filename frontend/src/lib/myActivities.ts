@@ -4,7 +4,7 @@ export interface MyActivity {
   createdAt: string;
 }
 
-const STORAGE_KEY = "moodly_my_activities";
+const STORAGE_KEY = 'moodly_my_activities';
 
 function readStorage(): MyActivity[] {
   try {
@@ -14,7 +14,7 @@ function readStorage(): MyActivity[] {
     if (!Array.isArray(parsed)) return [];
     return parsed.filter(
       (a): a is MyActivity =>
-        !!a && typeof a === "object" && typeof a.key === "string" && typeof a.label === "string",
+        !!a && typeof a === 'object' && typeof a.key === 'string' && typeof a.label === 'string',
     );
   } catch {
     return [];

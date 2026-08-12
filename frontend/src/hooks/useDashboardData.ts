@@ -1,14 +1,14 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { useParameters } from "./useParameters";
-import { useEntries, useCreateEntry, type DecryptedEntry } from "./useEntries";
-import { useCreatureState } from "../features/gamification";
-import { TEXT_PARAMS, Period, Trend, ParameterName } from "../lib/constants";
-import { isWithinLastDays, formatChartDate, getDateRange } from "../lib/utils";
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParameters } from './useParameters';
+import { useEntries, useCreateEntry, type DecryptedEntry } from './useEntries';
+import { useCreatureState } from '../features/gamification';
+import { TEXT_PARAMS, Period, Trend, ParameterName } from '../lib/constants';
+import { isWithinLastDays, formatChartDate, getDateRange } from '../lib/utils';
 
 type Entry = DecryptedEntry;
 
-const DASHBOARD_EXCLUDED_PARAMS = new Set<string>(["Thought Journal Mood"]);
+const DASHBOARD_EXCLUDED_PARAMS = new Set<string>(['Thought Journal Mood']);
 
 const SUMMARY_PERIOD = Period.TwoWeeks;
 
@@ -44,7 +44,7 @@ export function useDashboardData(period: Period) {
     [period],
   );
   const { data: allEntries, isLoading: entriesLoading } = useEntries(dateRange);
-  const gratitudeParam = useMemo(() => params?.find((p) => p.name === "Gratitude"), [params]);
+  const gratitudeParam = useMemo(() => params?.find((p) => p.name === 'Gratitude'), [params]);
   const { data: gratitudeAllEntries } = useEntries(
     gratitudeParam ? { parameterId: gratitudeParam.id } : undefined,
   );
@@ -60,7 +60,7 @@ export function useDashboardData(period: Period) {
   );
 
   const paramNames = useMemo(() => {
-    if (!numericParams) return ["Anxiety", "Sleep", "Mood", "Energy"];
+    if (!numericParams) return ['Anxiety', 'Sleep', 'Mood', 'Energy'];
     return numericParams.map((p) => p.name);
   }, [numericParams]);
 
@@ -140,11 +140,11 @@ export function useDashboardData(period: Period) {
 
     const wellbeingScore = (getValue: (name: string) => number | null) => {
       const values: number[] = [];
-      for (const name of ["Mood", "Energy", "Sleep"]) {
+      for (const name of ['Mood', 'Energy', 'Sleep']) {
         const v = getValue(name);
         if (v !== null) values.push(v);
       }
-      const anxiety = getValue("Anxiety");
+      const anxiety = getValue('Anxiety');
       if (anxiety !== null) values.push(10 - anxiety);
       return values.length > 0 ? values.reduce((s, v) => s + v, 0) / values.length : null;
     };

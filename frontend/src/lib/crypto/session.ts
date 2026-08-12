@@ -1,4 +1,4 @@
-import { exportDataKey, importDataKey } from "./keys";
+import { exportDataKey, importDataKey } from './keys';
 
 /**
  * DEK (ключ данных) хранится в sessionStorage: переживает перезагрузку страницы
@@ -6,8 +6,8 @@ import { exportDataKey, importDataKey } from "./keys";
  * В localStorage не пишется; на сервере хранится только wrappedKey (DEK, зашифрованный KEK).
  */
 
-const SESSION_KEY = "moodly_data_key";
-const SESSION_USER_ID = "moodly_user_id";
+const SESSION_KEY = 'moodly_data_key';
+const SESSION_USER_ID = 'moodly_user_id';
 
 let cached: CryptoKey | null = null;
 let cachedRaw: string | null = null;
@@ -28,7 +28,7 @@ export function getSessionKeyRaw(): string | null {
 /** Возвращает DEK: из памяти или восстанавливает из sessionStorage. */
 export async function getSessionKey(): Promise<CryptoKey> {
   const raw = getSessionKeyRaw();
-  if (!raw) throw new Error("Data key is not unlocked");
+  if (!raw) throw new Error('Data key is not unlocked');
   if (cached && cachedRaw === raw) return cached;
   const key = await importDataKey(raw);
   cached = key;

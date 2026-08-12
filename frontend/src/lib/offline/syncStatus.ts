@@ -1,7 +1,7 @@
-export type SyncStatus = "idle" | "syncing" | "offline" | "error";
+export type SyncStatus = 'idle' | 'syncing' | 'offline' | 'error';
 
 const listeners = new Set<() => void>();
-let status: SyncStatus = typeof navigator !== "undefined" && navigator.onLine ? "idle" : "offline";
+let status: SyncStatus = typeof navigator !== 'undefined' && navigator.onLine ? 'idle' : 'offline';
 
 export function getSyncStatus(): SyncStatus {
   return status;

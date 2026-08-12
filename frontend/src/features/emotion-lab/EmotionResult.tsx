@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
-import { Sparkles } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { emotionMeta } from "./emotionLab";
-import type { EmotionLabAttemptResponse } from "./useEmotionLab";
+import { useTranslation } from 'react-i18next';
+import { Sparkles } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { emotionMeta } from './emotionLab';
+import type { EmotionLabAttemptResponse } from './useEmotionLab';
 
 interface EmotionResultProps {
   result: EmotionLabAttemptResponse;
@@ -21,7 +21,7 @@ export default function EmotionResult({ result }: EmotionResultProps) {
       <div className="px-5 pt-5">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/30 text-[10px] font-bold uppercase tracking-wide">
           <Sparkles aria-hidden="true" className="w-3.5 h-3.5" />
-          {result.isNewDiscovery ? t("emotionLab.newDiscovery") : t("emotionLab.alreadyKnown")}
+          {result.isNewDiscovery ? t('emotionLab.newDiscovery') : t('emotionLab.alreadyKnown')}
         </span>
       </div>
 
@@ -67,18 +67,18 @@ export default function EmotionResult({ result }: EmotionResultProps) {
 
       <div
         className={cn(
-          "px-5 py-3 flex flex-wrap items-center justify-between gap-2 text-xs border-t",
+          'px-5 py-3 flex flex-wrap items-center justify-between gap-2 text-xs border-t',
           result.isNewDiscovery
-            ? "bg-success/10 border-success/20 text-success"
-            : "bg-muted/50 border-border text-muted-foreground",
+            ? 'bg-success/10 border-success/20 text-success'
+            : 'bg-muted/50 border-border text-muted-foreground',
         )}
       >
         <span className="font-medium">
           {result.isNewDiscovery
-            ? t("emotionLab.attemptCountedDiscovery")
-            : t("emotionLab.attemptCountedRepeat")}
+            ? t('emotionLab.attemptCountedDiscovery')
+            : t('emotionLab.attemptCountedRepeat')}
         </span>
-        <span>{t("emotionLab.attemptsLeft", { count: result.attemptsRemaining })}</span>
+        <span>{t('emotionLab.attemptsLeft', { count: result.attemptsRemaining })}</span>
       </div>
     </div>
   );

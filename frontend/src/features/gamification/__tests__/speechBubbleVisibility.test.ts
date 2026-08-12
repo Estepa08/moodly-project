@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   isSpeechBubbleHidden,
   setSpeechBubbleHidden,
   subscribeSpeechBubbleVisibility,
-} from "../speechBubbleVisibility";
+} from '../speechBubbleVisibility';
 
-describe("speechBubbleVisibility", () => {
+describe('speechBubbleVisibility', () => {
   beforeEach(() => {
     localStorage.clear();
     setSpeechBubbleHidden(false);
@@ -15,24 +15,24 @@ describe("speechBubbleVisibility", () => {
     vi.restoreAllMocks();
   });
 
-  it("по умолчанию пузырь виден", () => {
+  it('по умолчанию пузырь виден', () => {
     expect(isSpeechBubbleHidden()).toBe(false);
   });
 
-  it("скрытие сохраняется в localStorage", () => {
+  it('скрытие сохраняется в localStorage', () => {
     setSpeechBubbleHidden(true);
     expect(isSpeechBubbleHidden()).toBe(true);
-    expect(localStorage.getItem("moodly_hide_speech_bubble")).toBe("1");
+    expect(localStorage.getItem('moodly_hide_speech_bubble')).toBe('1');
   });
 
-  it("возврат к показу убирает флаг", () => {
+  it('возврат к показу убирает флаг', () => {
     setSpeechBubbleHidden(true);
     setSpeechBubbleHidden(false);
     expect(isSpeechBubbleHidden()).toBe(false);
-    expect(localStorage.getItem("moodly_hide_speech_bubble")).toBeNull();
+    expect(localStorage.getItem('moodly_hide_speech_bubble')).toBeNull();
   });
 
-  it("уведомляет подписчиков об изменениях и возвращает отписку", () => {
+  it('уведомляет подписчиков об изменениях и возвращает отписку', () => {
     const listener = vi.fn();
     const unsubscribe = subscribeSpeechBubbleVisibility(listener);
 

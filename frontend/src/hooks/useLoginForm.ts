@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "./useAuth";
-import { api } from "../lib/api";
-import { getErrorMessage } from "../lib/error-messages";
-import { unlockDataKeyFromLogin, createRegistrationKeys } from "../lib/crypto/auth-keys";
-import { generateRecoveryCode } from "../lib/crypto/keys";
-import { setSessionUserId } from "../lib/crypto/session";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from './useAuth';
+import { api } from '../lib/api';
+import { getErrorMessage } from '../lib/error-messages';
+import { unlockDataKeyFromLogin, createRegistrationKeys } from '../lib/crypto/auth-keys';
+import { generateRecoveryCode } from '../lib/crypto/keys';
+import { setSessionUserId } from '../lib/crypto/session';
 
 const DEMO_MODE = import.meta.env.DEV;
 
-export type LoginStep = "form" | "recovery";
+export type LoginStep = 'form' | 'recovery';
 
 export function useLoginForm() {
   const { t } = useTranslation();
@@ -18,17 +18,17 @@ export function useLoginForm() {
   const location = useLocation();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   // Сообщение о разблокировке, если приложение вернулось из «мёртвой» сессии
   // (DEK в sessionStorage потерян после простоя вкладки). Передаётся через
   // <Navigate state={{ reason: "unlock-required" }}> из ProtectedRoute.
   const unlockRequired =
-    (location.state as { reason?: string } | null)?.reason === "unlock-required";
+    (location.state as { reason?: string } | null)?.reason === 'unlock-required';
   const [demoLoading, setDemoLoading] = useState(false);
-  const [step, setStep] = useState<LoginStep>("form");
-  const [recoveryCode, setRecoveryCode] = useState("");
+  const [step, setStep] = useState<LoginStep>('form');
+  const [recoveryCode, setRecoveryCode] = useState('');
 
   async function authenticate(loginPassword: string, loginEmail: string, isDemo: boolean) {
     const res = await api.auth.login({ email: loginEmail, password: loginPassword });
@@ -38,7 +38,7 @@ export function useLoginForm() {
 
     if (res.wrappedKey && res.keySalt) {
       await unlockDataKeyFromLogin(loginPassword, res.wrappedKey, res.keySalt);
-      navigate("/my-day");
+      navigate('/my-day');
       return;
     }
 
@@ -48,16 +48,16 @@ export function useLoginForm() {
     const keys = await createRegistrationKeys(loginPassword, code);
     await api.auth.setKeys(keys);
     if (isDemo) {
-      navigate("/my-day");
+      navigate('/my-day');
     } else {
       setRecoveryCode(code);
-      setStep("recovery");
+      setStep('recovery');
     }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     try {
       await authenticate(password, email, false);
     } catch (err) {
@@ -68,9 +68,9 @@ export function useLoginForm() {
   const handleDemo = async () => {
     if (!import.meta.env.DEV) return;
     setDemoLoading(true);
-    setError("");
+    setError('');
     try {
-      await authenticate("demo123", "demo@moodly.app", true);
+      await authenticate('demo123', 'demo@moodly.app', true);
     } catch (err) {
       setError(getErrorMessage(err, t));
     } finally {
@@ -79,7 +79,7 @@ export function useLoginForm() {
   };
 
   const handleRecoveryConfirmed = () => {
-    navigate("/my-day");
+    navigate('/my-day');
   };
 
   return {

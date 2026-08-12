@@ -1,8 +1,8 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./select";
-import { Period } from "../../lib/constants";
-import { PERIODS, cn } from "../../lib/utils";
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './select';
+import { Period } from '../../lib/constants';
+import { PERIODS, cn } from '../../lib/utils';
 
 interface PeriodSelectProps {
   value: Period;
@@ -17,7 +17,7 @@ export default function PeriodSelect({ value, onChange, className }: PeriodSelec
 
   return (
     <Select value={value} onValueChange={(v) => onChange(v as Period)}>
-      <SelectTrigger aria-label={t("dashboard.period")} className={cn("w-44", className)}>
+      <SelectTrigger aria-label={t('dashboard.period')} className={cn('w-44', className)}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

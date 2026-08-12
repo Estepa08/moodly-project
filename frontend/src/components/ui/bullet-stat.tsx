@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+import type { LucideIcon } from 'lucide-react';
 
 interface BulletStatProps {
   icon: LucideIcon;
@@ -14,8 +14,8 @@ export default function BulletStat({
   label,
   value,
   target,
-  unit = "",
-  color = "hsl(var(--primary))",
+  unit = '',
+  color = 'hsl(var(--primary))',
 }: BulletStatProps) {
   const progress = Math.min((value / target) * 100, 100);
 

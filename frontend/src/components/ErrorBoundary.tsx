@@ -1,6 +1,6 @@
-import { Component, type ErrorInfo, type ReactNode } from "react";
-import ErrorBoundaryFallback from "./ErrorBoundaryFallback";
-import { reportError } from "../lib/errorReporter";
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+import ErrorBoundaryFallback from './ErrorBoundaryFallback';
+import { reportError } from '../lib/errorReporter';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -18,12 +18,12 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("ErrorBoundary caught an error", error, info.componentStack);
+    console.error('ErrorBoundary caught an error', error, info.componentStack);
     reportError({
       message: error.message,
       stack: error.stack,
-      source: "react-error-boundary",
-      url: typeof window !== "undefined" ? window.location.href : undefined,
+      source: 'react-error-boundary',
+      url: typeof window !== 'undefined' ? window.location.href : undefined,
     });
   }
 

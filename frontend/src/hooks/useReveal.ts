@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Лёгкий scroll-reveal на IntersectionObserver (0 зависимостей).
  * Добавляет класс `reveal-visible`, когда элемент входит во вьюпорт.
  * Уважает prefers-reduced-motion.
  */
-export const REVEAL_DIRECTIONS = ["up", "left", "right", "fade"] as const;
+export const REVEAL_DIRECTIONS = ['up', 'left', 'right', 'fade'] as const;
 export type RevealDirection = (typeof REVEAL_DIRECTIONS)[number];
 
 export function useReveal<T extends HTMLElement = HTMLDivElement>(
@@ -17,8 +17,8 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
   const reduced = useRef(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (typeof window === 'undefined') return;
+    reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
 
   useEffect(() => {
@@ -41,15 +41,15 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
           }
         });
       },
-      { threshold, rootMargin: "0px 0px -10% 0px" },
+      { threshold, rootMargin: '0px 0px -10% 0px' },
     );
 
     observer.observe(target);
     return () => observer.disconnect();
   }, [once, threshold]);
 
-  const revealClassName = `reveal reveal-${visible ? "visible" : "hidden"}${
-    reduced.current ? " reveal-reduced" : ""
+  const revealClassName = `reveal reveal-${visible ? 'visible' : 'hidden'}${
+    reduced.current ? ' reveal-reduced' : ''
   }`;
 
   return {

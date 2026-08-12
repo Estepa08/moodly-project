@@ -1,27 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Check, ChevronLeft, History, Plus, Search, X } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { useParameters } from "../../hooks/useParameters";
-import { useEntries, useCreateEntry } from "../../hooks/useEntries";
-import { ParameterName } from "../../lib/constants";
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { Check, ChevronLeft, History, Plus, Search, X } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { useParameters } from '../../hooks/useParameters';
+import { useEntries, useCreateEntry } from '../../hooks/useEntries';
+import { ParameterName } from '../../lib/constants';
 import {
   ACTIVITY_CATALOG,
   ACTIVITY_CATEGORY_ORDER,
   ACTIVITY_ICONS,
   CATEGORY_ICONS,
   type ActivityCategory,
-} from "../../lib/dayActivities";
+} from '../../lib/dayActivities';
 import {
   loadMyActivities,
   createMyActivity,
   removeMyActivity,
   type MyActivity,
-} from "../../lib/myActivities";
-import { latestDayActivities, pickFrequent } from "../../lib/activityHistory";
-import type { ActivitySelection } from "../../lib/crypto/records";
+} from '../../lib/myActivities';
+import { latestDayActivities, pickFrequent } from '../../lib/activityHistory';
+import type { ActivitySelection } from '../../lib/crypto/records';
 
 const DAY_ACTIVITIES_NAME = ParameterName.DayActivities;
 const HISTORY_DAYS = 30;
@@ -44,7 +44,7 @@ function range(days: number) {
   return { from: start.toISOString(), to: new Date(end.getTime() + 86_400_000).toISOString() };
 }
 
-type View = { step: "home" } | { step: "category"; category: ActivityCategory } | { step: "mine" };
+type View = { step: 'home' } | { step: 'category'; category: ActivityCategory } | { step: 'mine' };
 
 interface DayActivitiesSectionProps {
   onClose?: () => void;
@@ -74,9 +74,9 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
   const yesterday = useMemo(() => latestDayActivities(historyData), [historyData]);
 
   const [selected, setSelected] = useState<ActivitySelection[]>([]);
-  const [view, setView] = useState<View>({ step: "home" });
-  const [query, setQuery] = useState("");
-  const [customText, setCustomText] = useState("");
+  const [view, setView] = useState<View>({ step: 'home' });
+  const [query, setQuery] = useState('');
+  const [customText, setCustomText] = useState('');
   const [saved, setSaved] = useState(false);
   const [myActivities, setMyActivities] = useState<MyActivity[]>(() => loadMyActivities());
 
@@ -128,7 +128,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
     setMyActivities((prev) => [...prev, item]);
     setSaved(false);
     setSelected((prev) => [...prev, { key: item.key, custom: true, label: text }]);
-    setCustomText("");
+    setCustomText('');
   };
 
   const customExists = (text: string) =>
@@ -141,7 +141,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
       {
         onSuccess: () => {
           setSaved(true);
-          toast.success(t("dayActivities.saved"));
+          toast.success(t('dayActivities.saved'));
           onClose?.();
         },
       },
@@ -155,11 +155,11 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
     setMyActivities((prev) => [...prev, item]);
     setSaved(false);
     setSelected((prev) => [...prev, { key: item.key, custom: true, label: text }]);
-    setCustomText("");
+    setCustomText('');
   };
 
   const filteredByCategory = useMemo(() => {
-    if (view.step !== "category") return [];
+    if (view.step !== 'category') return [];
     const q = query.trim().toLowerCase();
     return ACTIVITY_CATALOG.filter((a) => {
       if (a.category !== view.category) return false;
@@ -169,25 +169,25 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
   }, [view, query, t]);
 
   const goBack = () => {
-    setView({ step: "home" });
-    setQuery("");
+    setView({ step: 'home' });
+    setQuery('');
   };
 
   if (!paramId) return null;
 
   const showFrequent =
-    view.step === "home" && frequent.length > 0 && frequent.some((f) => !selectedKeys.has(f.key));
+    view.step === 'home' && frequent.length > 0 && frequent.some((f) => !selectedKeys.has(f.key));
   const showYesterday =
-    view.step === "home" && yesterday.length > 0 && yesterday.some((y) => !selectedKeys.has(y.key));
+    view.step === 'home' && yesterday.length > 0 && yesterday.some((y) => !selectedKeys.has(y.key));
 
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-base font-bold text-foreground">{t("dayActivities.sectionHeading")}</h3>
-        <p className="text-xs text-muted-foreground">{t("dayActivities.subtitle")}</p>
+        <h3 className="text-base font-bold text-foreground">{t('dayActivities.sectionHeading')}</h3>
+        <p className="text-xs text-muted-foreground">{t('dayActivities.subtitle')}</p>
       </div>
 
-      {view.step === "home" && (
+      {view.step === 'home' && (
         <>
           {showYesterday && (
             <button
@@ -196,14 +196,14 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-accent/10 text-accent text-sm font-semibold transition-colors hover:bg-accent/15 active:scale-[0.99]"
             >
               <History aria-hidden="true" className="w-4 h-4" />
-              {t("dayActivities.likeYesterday")}
+              {t('dayActivities.likeYesterday')}
             </button>
           )}
 
           {showFrequent && (
             <div className="space-y-2">
               <p className="text-[11px] font-semibold text-muted-foreground">
-                {t("dayActivities.frequent")}
+                {t('dayActivities.frequent')}
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {frequent
@@ -224,7 +224,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
                         <span className="truncate text-xs font-medium text-foreground">
                           {f.custom
                             ? f.label
-                            : t(`dayActivities.activities.${f.key.replace(".", "_")}`)}
+                            : t(`dayActivities.activities.${f.key.replace('.', '_')}`)}
                         </span>
                       </button>
                     );
@@ -235,7 +235,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
 
           <div className="space-y-2">
             <p className="text-[11px] font-semibold text-muted-foreground">
-              {t("dayActivities.allActivities")}
+              {t('dayActivities.allActivities')}
             </p>
             <div className="grid grid-cols-3 gap-2">
               {ACTIVITY_CATEGORY_ORDER.map((cat) => {
@@ -244,7 +244,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
                   <button
                     key={cat}
                     type="button"
-                    onClick={() => setView({ step: "category", category: cat })}
+                    onClick={() => setView({ step: 'category', category: cat })}
                     className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-card px-2 py-3 text-center shadow-neumorphic-sm transition-colors hover:border-primary/50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <span className="grid place-items-center w-9 h-9 rounded-full bg-accent/10 text-accent">
@@ -258,14 +258,14 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
               })}
               <button
                 type="button"
-                onClick={() => setView({ step: "mine" })}
+                onClick={() => setView({ step: 'mine' })}
                 className="flex flex-col items-center gap-1.5 rounded-xl border border-dashed border-border bg-card px-2 py-3 text-center shadow-neumorphic-sm transition-colors hover:border-primary/50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span className="grid place-items-center w-9 h-9 rounded-full bg-muted text-muted-foreground">
                   <Plus aria-hidden="true" className="w-5 h-5" />
                 </span>
                 <span className="text-[11px] font-medium text-foreground leading-tight">
-                  {t("dayActivities.myActivities")}
+                  {t('dayActivities.myActivities')}
                 </span>
               </button>
             </div>
@@ -273,7 +273,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
         </>
       )}
 
-      {view.step === "category" && (
+      {view.step === 'category' && (
         <div className="space-y-3">
           <button
             type="button"
@@ -281,17 +281,17 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
             className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold text-foreground shadow-neumorphic-sm transition-colors hover:border-primary/50 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ChevronLeft aria-hidden="true" className="w-4 h-4" />
-            {t("dayActivities.back")}
+            {t('dayActivities.back')}
           </button>
 
           <div className="flex items-center gap-2">
             <Input
               className="h-10 text-sm flex-1"
-              placeholder={t("dayActivities.customPlaceholder")}
+              placeholder={t('dayActivities.customPlaceholder')}
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") addCustomFromCategory();
+                if (e.key === 'Enter') addCustomFromCategory();
               }}
             />
             <Button
@@ -302,7 +302,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
               disabled={!customText.trim() || customExists(customText)}
             >
               <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
-              {t("dayActivities.addCustom")}
+              {t('dayActivities.addCustom')}
             </Button>
           </div>
 
@@ -325,7 +325,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
             />
             <Input
               className="pl-9 h-10 text-sm"
-              placeholder={t("dayActivities.searchPlaceholder")}
+              placeholder={t('dayActivities.searchPlaceholder')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -342,8 +342,8 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
                   onClick={() => toggle(a)}
                   className={`relative flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 text-center shadow-neumorphic-sm transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     active
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-card text-foreground hover:border-primary/50"
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border bg-card text-foreground hover:border-primary/50'
                   }`}
                 >
                   {active && (
@@ -353,7 +353,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
                   )}
                   <span
                     className={`grid place-items-center w-9 h-9 rounded-full ${
-                      active ? "bg-primary/15 text-primary" : "bg-accent/10 text-accent"
+                      active ? 'bg-primary/15 text-primary' : 'bg-accent/10 text-accent'
                     }`}
                   >
                     {Icon ? <Icon aria-hidden="true" className="w-5 h-5" /> : null}
@@ -365,13 +365,13 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
               );
             })}
             {filteredByCategory.length === 0 && (
-              <p className="col-span-2 text-xs text-muted-foreground">{t("dayActivities.empty")}</p>
+              <p className="col-span-2 text-xs text-muted-foreground">{t('dayActivities.empty')}</p>
             )}
           </div>
         </div>
       )}
 
-      {view.step === "mine" && (
+      {view.step === 'mine' && (
         <div className="space-y-3">
           <button
             type="button"
@@ -379,17 +379,17 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
             className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             <ChevronLeft aria-hidden="true" className="w-4 h-4" />
-            {t("dayActivities.back")}
+            {t('dayActivities.back')}
           </button>
 
           <div className="flex items-center gap-2">
             <Input
               className="h-10 text-sm flex-1"
-              placeholder={t("dayActivities.customPlaceholder")}
+              placeholder={t('dayActivities.customPlaceholder')}
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter") addCustom();
+                if (e.key === 'Enter') addCustom();
               }}
             />
             <Button
@@ -400,12 +400,12 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
               disabled={!customText.trim() || customExists(customText)}
             >
               <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
-              {t("dayActivities.addCustom")}
+              {t('dayActivities.addCustom')}
             </Button>
           </div>
 
           {allCustom.length === 0 ? (
-            <p className="text-xs text-muted-foreground">{t("dayActivities.empty")}</p>
+            <p className="text-xs text-muted-foreground">{t('dayActivities.empty')}</p>
           ) : (
             <div className="grid grid-cols-2 gap-2">
               {allCustom.map((s) => {
@@ -414,7 +414,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
                   <div
                     key={s.key}
                     className={`flex items-center gap-1.5 rounded-xl border px-3 py-2.5 shadow-neumorphic-sm ${
-                      active ? "border-primary bg-primary/10" : "border-border bg-card"
+                      active ? 'border-primary bg-primary/10' : 'border-border bg-card'
                     }`}
                   >
                     <button
@@ -435,7 +435,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
                         setSaved(false);
                         setSelected((prev) => prev.filter((x) => x.key !== s.key));
                       }}
-                      aria-label={t("dayActivities.removeFromCatalog")}
+                      aria-label={t('dayActivities.removeFromCatalog')}
                       className="grid place-items-center w-6 h-6 shrink-0 rounded-full text-muted-foreground transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <X aria-hidden="true" className="w-3.5 h-3.5" />
@@ -450,9 +450,9 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
 
       <div className="flex items-center justify-between pt-1">
         <span className="text-sm font-medium text-muted-foreground">
-          {t("dayActivities.selectedCount", { count: selected.length })}
+          {t('dayActivities.selectedCount', { count: selected.length })}
         </span>
-        {view.step === "category" ? (
+        {view.step === 'category' ? (
           <Button
             type="button"
             variant="secondary"
@@ -460,11 +460,11 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
             disabled={createEntry.isPending}
           >
             <Plus aria-hidden="true" className="mr-1 h-4 w-4" />
-            {t("dayActivities.addCustom")}
+            {t('dayActivities.addCustom')}
           </Button>
         ) : (
           <Button type="button" onClick={save} disabled={createEntry.isPending}>
-            {saved ? t("dayActivities.saved") : t("dayActivities.save")}
+            {saved ? t('dayActivities.saved') : t('dayActivities.save')}
           </Button>
         )}
       </div>

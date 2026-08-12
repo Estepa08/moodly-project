@@ -1,6 +1,6 @@
-import { prisma } from "../lib/prisma.js";
-import { notificationService } from "../services/notification.js";
-import { contentService } from "../services/content.js";
+import { prisma } from '../lib/prisma.js';
+import { notificationService } from '../services/notification.js';
+import { contentService } from '../services/content.js';
 
 let timer: NodeJS.Timeout | null = null;
 
@@ -9,7 +9,7 @@ function isVapidConfigured(): boolean {
 }
 
 function currentHour(): string {
-  return String(new Date().getHours()).padStart(2, "0");
+  return String(new Date().getHours()).padStart(2, '0');
 }
 
 function sendForSlot(
@@ -32,9 +32,9 @@ async function runOnce(): Promise<number> {
   });
   for (const pref of morning) {
     await sendForSlot(pref, {
-      title: "Moodly",
-      body: "Как вы себя чувствуете сейчас? Отметьте настроение — это займёт 30 секунд.",
-      url: "/my-day",
+      title: 'Moodly',
+      body: 'Как вы себя чувствуете сейчас? Отметьте настроение — это займёт 30 секунд.',
+      url: '/my-day',
     });
     sent.push(pref.userId);
   }
@@ -45,11 +45,11 @@ async function runOnce(): Promise<number> {
     select: { userId: true },
   });
   for (const pref of afternoon) {
-    const message = await contentService.messageOfDay("day", "ru", pref.userId);
+    const message = await contentService.messageOfDay('day', 'ru', pref.userId);
     await sendForSlot(pref, {
-      title: "Moodly",
-      body: message?.question ?? message?.text ?? "Как проходит день? Отметьте, что вас окружает.",
-      url: "/my-day",
+      title: 'Moodly',
+      body: message?.question ?? message?.text ?? 'Как проходит день? Отметьте, что вас окружает.',
+      url: '/my-day',
     });
     sent.push(pref.userId);
   }
@@ -61,9 +61,9 @@ async function runOnce(): Promise<number> {
   });
   for (const pref of evening) {
     await sendForSlot(pref, {
-      title: "Moodly",
-      body: "Как прошёл день? Подведите итог и отметьте занятия — это займёт 30 секунд.",
-      url: "/my-day",
+      title: 'Moodly',
+      body: 'Как прошёл день? Подведите итог и отметьте занятия — это займёт 30 секунд.',
+      url: '/my-day',
     });
     sent.push(pref.userId);
   }
@@ -74,11 +74,11 @@ async function runOnce(): Promise<number> {
 function start(): void {
   const tick = () => {
     void runOnce().catch((err: unknown) => {
-      console.error("[reminder] failed:", err);
+      console.error('[reminder] failed:', err);
     });
   };
   void runOnce().catch((err: unknown) => {
-    console.error("[reminder] failed:", err);
+    console.error('[reminder] failed:', err);
   });
   timer = setInterval(tick, 60 * 60 * 1000);
   timer.unref();

@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Check, ChevronDown, Search, X } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Check, ChevronDown, Search, X } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 export interface SuggestOption {
   id: string;
@@ -35,7 +35,7 @@ export default function SuggestCombobox({
 }: SuggestComboboxProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const rootRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -47,19 +47,19 @@ export default function SuggestCombobox({
       }
     };
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === 'Escape') setOpen(false);
     };
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
     return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
     };
   }, [open]);
 
   useEffect(() => {
     if (open) {
-      setQuery("");
+      setQuery('');
       requestAnimationFrame(() => searchRef.current?.focus());
     }
   }, [open]);
@@ -79,8 +79,8 @@ export default function SuggestCombobox({
   const id = useMemo(() => `suggest-combobox-${label}`, [label]);
 
   return (
-    <div ref={rootRef} className={cn("space-y-2", className)}>
-      <p ref={labelRef} id={`${id}-label`} className={cn("text-xs font-medium", accentClassName)}>
+    <div ref={rootRef} className={cn('space-y-2', className)}>
+      <p ref={labelRef} id={`${id}-label`} className={cn('text-xs font-medium', accentClassName)}>
         {label}
       </p>
 
@@ -92,8 +92,8 @@ export default function SuggestCombobox({
         aria-labelledby={`${id}-label`}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex w-full flex-wrap items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 min-h-11 text-left shadow-neumorphic-sm transition-[box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99] cursor-pointer",
-          open && "ring-2 ring-ring",
+          'flex w-full flex-wrap items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-2 min-h-11 text-left shadow-neumorphic-sm transition-[box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99] cursor-pointer',
+          open && 'ring-2 ring-ring',
         )}
       >
         {selectedOptions.length > 0 ? (
@@ -105,7 +105,7 @@ export default function SuggestCombobox({
               {o.label}
               <button
                 type="button"
-                aria-label={t("cba.removeItem")}
+                aria-label={t('cba.removeItem')}
                 onClick={(e) => {
                   e.stopPropagation();
                   onToggle(o.id);
@@ -122,8 +122,8 @@ export default function SuggestCombobox({
         <ChevronDown
           aria-hidden="true"
           className={cn(
-            "ml-auto h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-150",
-            open && "rotate-180",
+            'ml-auto h-4 w-4 text-muted-foreground shrink-0 transition-transform duration-150',
+            open && 'rotate-180',
           )}
         />
       </button>
@@ -164,16 +164,16 @@ export default function SuggestCombobox({
                   aria-selected={checked}
                   onClick={() => onToggle(o.id)}
                   className={cn(
-                    "w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    checked ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary",
+                    'w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    checked ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-secondary',
                   )}
                 >
                   <span
                     className={cn(
-                      "w-4 h-4 shrink-0 rounded-md border flex items-center justify-center",
+                      'w-4 h-4 shrink-0 rounded-md border flex items-center justify-center',
                       checked
-                        ? "bg-primary-strong border-primary-strong text-white"
-                        : "border-border",
+                        ? 'bg-primary-strong border-primary-strong text-white'
+                        : 'border-border',
                     )}
                   >
                     {checked && <Check aria-hidden="true" className="w-3 h-3" />}

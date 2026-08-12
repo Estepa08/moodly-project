@@ -1,26 +1,26 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Zap, Waves, Flame, Sparkles, Activity, Heart, Pencil, ArrowRight } from "lucide-react";
-import { useCreatureState, usePets, useSetPet } from "./useCreature";
-import { usePetReward } from "./usePetReward";
-import { PET_DEFINITIONS } from "./pets";
-import { EXP_PER_LEVEL, ENERGY_COLOR } from "../../lib/constants";
-import { PET_DAILY_CLICK_LIMIT, PET_CYCLE, ENERGY_LOW_THRESHOLD } from "@moodly/shared";
-import { ProgressBar } from "../../components/ui/progress-bar";
-import { cn } from "../../lib/utils";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { Zap, Waves, Flame, Sparkles, Activity, Heart, Pencil, ArrowRight } from 'lucide-react';
+import { useCreatureState, usePets, useSetPet } from './useCreature';
+import { usePetReward } from './usePetReward';
+import { PET_DEFINITIONS } from './pets';
+import { EXP_PER_LEVEL, ENERGY_COLOR } from '../../lib/constants';
+import { PET_DAILY_CLICK_LIMIT, PET_CYCLE, ENERGY_LOW_THRESHOLD } from '@moodly/shared';
+import { ProgressBar } from '../../components/ui/progress-bar';
+import { cn } from '../../lib/utils';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "../../components/ui/dialog";
-import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
-import PetAvatar from "./PetAvatar";
+} from '../../components/ui/dialog';
+import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
+import PetAvatar from './PetAvatar';
 
 export default function CompanionCard() {
   const { t } = useTranslation();
@@ -29,17 +29,17 @@ export default function CompanionCard() {
   const { reward, glow, handlePet } = usePetReward();
   const setPet = useSetPet();
   const [renameOpen, setRenameOpen] = useState(false);
-  const [draftName, setDraftName] = useState("");
+  const [draftName, setDraftName] = useState('');
 
   if (isLoading || !creature) return null;
 
-  const activePetType = pets?.activePetType ?? creature.petType ?? "puff";
+  const activePetType = pets?.activePetType ?? creature.petType ?? 'puff';
   const petName = pets?.petName ?? creature.petName ?? null;
   const definition = PET_DEFINITIONS.find((p) => p.type === activePetType);
-  const displayName = petName?.trim() || (definition ? t(definition.labelKey) : "");
+  const displayName = petName?.trim() || (definition ? t(definition.labelKey) : '');
 
-  const petMood = creature.petMood ?? "calm";
-  const stage = creature.stage ?? "baby";
+  const petMood = creature.petMood ?? 'calm';
+  const stage = creature.stage ?? 'baby';
 
   // Цикл поглаживаний 1-2-3: позиция следующего клика.
   const petCount = creature.petCount ?? 0;
@@ -54,13 +54,13 @@ export default function CompanionCard() {
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
   const title = creature.activeTitle ?? null;
-  const titleEmoji = title ? (TITLE_EMOJI[title] ?? "🎖️") : null;
-  const titleLabel = title ? t(TITLE_MAP[title] ?? "progress.noTitle") : null;
+  const titleEmoji = title ? (TITLE_EMOJI[title] ?? '🎖️') : null;
+  const titleLabel = title ? t(TITLE_MAP[title] ?? 'progress.noTitle') : null;
 
   const handleTap = () => {
     handlePet((data) => {
       if (data.limitReached) {
-        toast.info(t("companion.petsLimitMessage", { limit: PET_DAILY_CLICK_LIMIT }));
+        toast.info(t('companion.petsLimitMessage', { limit: PET_DAILY_CLICK_LIMIT }));
       }
     });
   };
@@ -88,7 +88,7 @@ export default function CompanionCard() {
             petType={activePetType}
             interactive
             ariaLabel={displayName}
-            emotion={petMood === "happy" ? "happy" : "idle"}
+            emotion={petMood === 'happy' ? 'happy' : 'idle'}
             cyclePosition={cyclePosition}
             reward={reward}
             glow={glow}
@@ -128,7 +128,7 @@ export default function CompanionCard() {
               variant="ghost"
               size="icon-sm"
               onClick={openRename}
-              aria-label={t("companion.renameTitle")}
+              aria-label={t('companion.renameTitle')}
               className="shrink-0"
             >
               <Pencil aria-hidden="true" className="w-3.5 h-3.5" />
@@ -136,7 +136,7 @@ export default function CompanionCard() {
           </div>
           <div className="flex flex-wrap items-center gap-1.5 mt-1">
             <span className="px-2 py-0.5 rounded-full bg-primary/10 text-xs font-semibold text-primary">
-              {t("companion.level", { level: creature.level })}
+              {t('companion.level', { level: creature.level })}
             </span>
             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-warning/10 text-xs font-semibold text-warning">
               <Flame aria-hidden="true" className="w-3 h-3" />
@@ -153,7 +153,7 @@ export default function CompanionCard() {
       <div>
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("companion.xpToLevel", { level: creature.level + 1 })}
+            {t('companion.xpToLevel', { level: creature.level + 1 })}
           </span>
           <span className="text-xs text-muted-foreground font-semibold tabular-nums">
             {creature.experience}/{nextLevelExp}
@@ -164,7 +164,7 @@ export default function CompanionCard() {
             {
               value: expPercent,
               className:
-                "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300",
+                'rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300',
             },
           ]}
           height={6}
@@ -177,10 +177,10 @@ export default function CompanionCard() {
       <div className="flex items-center gap-3">
         <span
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold",
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold',
             limitReached
-              ? "bg-muted text-muted-foreground"
-              : "bg-gradient-to-r from-primary to-accent text-white shadow-neumorphic-sm",
+              ? 'bg-muted text-muted-foreground'
+              : 'bg-gradient-to-r from-primary to-accent text-white shadow-neumorphic-sm',
           )}
         >
           <Heart aria-hidden="true" className="w-3.5 h-3.5" />
@@ -188,10 +188,10 @@ export default function CompanionCard() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-            {t("companion.petsRemainingLabel")}
+            {t('companion.petsRemainingLabel')}
           </p>
           <p className="text-xs text-muted-foreground font-semibold tabular-nums">
-            {t("companion.petsProgress", {
+            {t('companion.petsProgress', {
               current: petCountRemaining,
               limit: PET_DAILY_CLICK_LIMIT,
             })}
@@ -201,7 +201,7 @@ export default function CompanionCard() {
 
       {!limitReached && (
         <p className="rounded-lg bg-primary/5 px-3 py-2 text-xs font-semibold text-primary">
-          {t("companion.cycleHint", { current: cyclePosition, total: PET_CYCLE })}
+          {t('companion.cycleHint', { current: cyclePosition, total: PET_CYCLE })}
         </p>
       )}
 
@@ -210,7 +210,7 @@ export default function CompanionCard() {
           role="status"
           className="rounded-lg bg-primary/10 px-3 py-2 text-xs font-semibold text-primary"
         >
-          {t("companion.petsLimitMessage", { limit: PET_DAILY_CLICK_LIMIT })}
+          {t('companion.petsLimitMessage', { limit: PET_DAILY_CLICK_LIMIT })}
         </p>
       )}
 
@@ -219,16 +219,16 @@ export default function CompanionCard() {
         <div role="alert" className="rounded-xl bg-destructive/10 p-3 space-y-2">
           <p className="flex items-center gap-1.5 text-xs font-bold text-destructive">
             <Zap aria-hidden="true" className="w-4 h-4" />
-            {t("companion.energyLowTitle")}
+            {t('companion.energyLowTitle')}
           </p>
           <p className="text-xs font-medium text-muted-foreground leading-snug">
-            {t("companion.energyLowHint")}
+            {t('companion.energyLowHint')}
           </p>
           <Link
             to="/practices"
             className="flex items-center justify-between w-full rounded-lg bg-btn-gradient text-primary-foreground px-3 py-2 text-xs font-bold shadow-neumorphic-sm transition-[filter,transform] duration-150 hover:brightness-105 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {t("companion.energyRestoreCta")}
+            {t('companion.energyRestoreCta')}
             <ArrowRight aria-hidden="true" className="w-4 h-4" />
           </Link>
         </div>
@@ -246,11 +246,11 @@ export default function CompanionCard() {
           style={{ backgroundColor: `${ENERGY_COLOR}15` }}
         >
           <Zap aria-hidden="true" className="w-3.5 h-3.5" style={{ color: ENERGY_COLOR }} />
-          <span style={{ color: ENERGY_COLOR }}>{t("companion.energy", { value: energy })}</span>
+          <span style={{ color: ENERGY_COLOR }}>{t('companion.energy', { value: energy })}</span>
         </span>
         <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-xs font-semibold text-primary">
           <Waves aria-hidden="true" className="w-3.5 h-3.5" />
-          {t("companion.calmness", { value: creature.calmness })}
+          {t('companion.calmness', { value: creature.calmness })}
         </span>
       </div>
 
@@ -259,7 +259,7 @@ export default function CompanionCard() {
           to="/progress"
           className="flex items-center justify-between text-sm font-medium text-primary transition-[color,transform] duration-150 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
         >
-          {t("companion.toCollection")}
+          {t('companion.toCollection')}
           <span aria-hidden="true" className="text-base leading-none">
             ›
           </span>
@@ -269,8 +269,8 @@ export default function CompanionCard() {
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>{t("companion.renameTitle")}</DialogTitle>
-            <DialogDescription>{t("companion.renameDescription")}</DialogDescription>
+            <DialogTitle>{t('companion.renameTitle')}</DialogTitle>
+            <DialogDescription>{t('companion.renameDescription')}</DialogDescription>
           </DialogHeader>
           <form
             className="space-y-3"
@@ -283,7 +283,7 @@ export default function CompanionCard() {
               value={draftName}
               onChange={(e) => setDraftName(e.target.value)}
               maxLength={24}
-              aria-label={t("companion.renameTitle")}
+              aria-label={t('companion.renameTitle')}
               autoFocus
             />
             <div className="flex justify-end gap-2">
@@ -293,10 +293,10 @@ export default function CompanionCard() {
                 size="sm"
                 onClick={() => setRenameOpen(false)}
               >
-                {t("common.cancel")}
+                {t('common.cancel')}
               </Button>
               <Button type="submit" size="sm" disabled={setPet.isPending}>
-                {t("companion.renameSave")}
+                {t('companion.renameSave')}
               </Button>
             </div>
           </form>

@@ -1,4 +1,4 @@
-import type { ActivitySelection } from "./crypto/records";
+import type { ActivitySelection } from './crypto/records';
 
 export interface HistoryActivity {
   key: string;

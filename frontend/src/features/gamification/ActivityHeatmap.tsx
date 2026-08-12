@@ -1,16 +1,16 @@
-import { useTranslation } from "react-i18next";
-import { cn } from "../../lib/utils";
-import { useHeatmap } from "./useCreature";
+import { useTranslation } from 'react-i18next';
+import { cn } from '../../lib/utils';
+import { useHeatmap } from './useCreature';
 
-const DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
+const DAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
 
 function getColor(count: number, max: number): string {
-  if (count === 0) return "bg-muted/30";
+  if (count === 0) return 'bg-muted/30';
   const intensity = count / Math.max(max, 1);
-  if (intensity > 0.75) return "bg-primary";
-  if (intensity > 0.5) return "bg-primary/70";
-  if (intensity > 0.25) return "bg-primary/40";
-  return "bg-primary/20";
+  if (intensity > 0.75) return 'bg-primary';
+  if (intensity > 0.5) return 'bg-primary/70';
+  if (intensity > 0.25) return 'bg-primary/40';
+  return 'bg-primary/20';
 }
 
 export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
@@ -24,7 +24,7 @@ export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
   if (!heatmap || heatmap.length === 0) {
     return (
       <div className="text-center py-6 text-sm text-muted-foreground">
-        {t("progress.noActivityYet")}
+        {t('progress.noActivityYet')}
       </div>
     );
   }
@@ -45,7 +45,7 @@ export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
   if (weeks.length > 0) {
     const firstWeek = weeks[0];
     while (firstWeek.length < 7) {
-      firstWeek.unshift({ date: "", count: -1 });
+      firstWeek.unshift({ date: '', count: -1 });
     }
   }
 
@@ -63,13 +63,13 @@ export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
           <div key={wi} className="flex flex-col gap-0.5">
             {Array.from({ length: 7 }).map((_, di) => {
               const entry = week[di];
-              if (!entry || entry.date === "") {
+              if (!entry || entry.date === '') {
                 return <div key={di} className="w-[10px] h-[10px]" />;
               }
               return (
                 <div
                   key={entry.date}
-                  className={cn("w-[10px] h-[10px] rounded-sm", getColor(entry.count, maxCount))}
+                  className={cn('w-[10px] h-[10px] rounded-sm', getColor(entry.count, maxCount))}
                   title={`${entry.date}: ${entry.count} activities`}
                 />
               );
@@ -78,13 +78,13 @@ export default function ActivityHeatmap({ days = 90 }: { days?: number }) {
         ))}
       </div>
       <div className="flex items-center gap-1 mt-2 justify-end">
-        <span className="text-[10px] text-muted-foreground">{t("progress.less")}</span>
+        <span className="text-[10px] text-muted-foreground">{t('progress.less')}</span>
         <div className="w-[10px] h-[10px] rounded-sm bg-muted/30" />
         <div className="w-[10px] h-[10px] rounded-sm bg-primary/20" />
         <div className="w-[10px] h-[10px] rounded-sm bg-primary/40" />
         <div className="w-[10px] h-[10px] rounded-sm bg-primary/70" />
         <div className="w-[10px] h-[10px] rounded-sm bg-primary" />
-        <span className="text-[10px] text-muted-foreground">{t("progress.more")}</span>
+        <span className="text-[10px] text-muted-foreground">{t('progress.more')}</span>
       </div>
     </div>
   );
