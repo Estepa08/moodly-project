@@ -86,7 +86,10 @@ interface PetRewardParticlesProps {
   reducedMotion?: boolean;
 }
 
-export default function PetRewardParticles({ signal, reducedMotion = false }: PetRewardParticlesProps) {
+export default function PetRewardParticles({
+  signal,
+  reducedMotion = false,
+}: PetRewardParticlesProps) {
   const { t } = useTranslation();
   const particles = useMemo(() => {
     switch (signal.kind) {

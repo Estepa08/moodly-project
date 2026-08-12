@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { buildRewardSignal, computeEmpathy, pickPetWordIndex, EMPATHY_WINDOW_MS } from "../petRewards";
+import {
+  buildRewardSignal,
+  computeEmpathy,
+  pickPetWordIndex,
+  EMPATHY_WINDOW_MS,
+} from "../petRewards";
 import type { PetResponse } from "../../../lib/api";
 
 function makeResponse(partial: Partial<PetResponse> = {}): PetResponse {
@@ -19,7 +24,16 @@ describe("buildRewardSignal", () => {
     const signal = buildRewardSignal(
       makeResponse({
         xpAwarded: 1,
-        bonus: { morning: false, evening: false, welcome: false, empathy: false, comboCount: 1, comboBonusAwarded: false, calmnessGain: 0, comfortGain: 0 },
+        bonus: {
+          morning: false,
+          evening: false,
+          welcome: false,
+          empathy: false,
+          comboCount: 1,
+          comboBonusAwarded: false,
+          calmnessGain: 0,
+          comfortGain: 0,
+        },
       }),
     );
     expect(signal.kind).toBe("standard");
@@ -30,7 +44,16 @@ describe("buildRewardSignal", () => {
     const signal = buildRewardSignal(
       makeResponse({
         xpAwarded: 2,
-        bonus: { morning: true, evening: false, welcome: true, empathy: false, comboCount: 1, comboBonusAwarded: false, calmnessGain: 0, comfortGain: 0 },
+        bonus: {
+          morning: true,
+          evening: false,
+          welcome: true,
+          empathy: false,
+          comboCount: 1,
+          comboBonusAwarded: false,
+          calmnessGain: 0,
+          comfortGain: 0,
+        },
       }),
     );
     expect(signal.kind).toBe("welcome");
@@ -40,7 +63,16 @@ describe("buildRewardSignal", () => {
     const signal = buildRewardSignal(
       makeResponse({
         xpAwarded: 5,
-        bonus: { morning: true, evening: false, welcome: false, empathy: false, comboCount: 5, comboBonusAwarded: true, calmnessGain: 0, comfortGain: 0 },
+        bonus: {
+          morning: true,
+          evening: false,
+          welcome: false,
+          empathy: false,
+          comboCount: 5,
+          comboBonusAwarded: true,
+          calmnessGain: 0,
+          comfortGain: 0,
+        },
       }),
     );
     expect(signal.kind).toBe("combo");
@@ -52,7 +84,16 @@ describe("buildRewardSignal", () => {
     const signal = buildRewardSignal(
       makeResponse({
         xpAwarded: 0,
-        bonus: { morning: false, evening: true, welcome: false, empathy: false, comboCount: 2, comboBonusAwarded: false, calmnessGain: 1, comfortGain: 0 },
+        bonus: {
+          morning: false,
+          evening: true,
+          welcome: false,
+          empathy: false,
+          comboCount: 2,
+          comboBonusAwarded: false,
+          calmnessGain: 1,
+          comfortGain: 0,
+        },
       }),
     );
     expect(signal.kind).toBe("evening");
@@ -64,7 +105,16 @@ describe("buildRewardSignal", () => {
     const signal = buildRewardSignal(
       makeResponse({
         xpAwarded: 1,
-        bonus: { morning: false, evening: false, welcome: false, empathy: true, comboCount: 2, comboBonusAwarded: false, calmnessGain: 0, comfortGain: 2 },
+        bonus: {
+          morning: false,
+          evening: false,
+          welcome: false,
+          empathy: true,
+          comboCount: 2,
+          comboBonusAwarded: false,
+          calmnessGain: 0,
+          comfortGain: 2,
+        },
       }),
     );
     expect(signal.kind).toBe("empathy");
@@ -75,7 +125,16 @@ describe("buildRewardSignal", () => {
     const signal = buildRewardSignal(
       makeResponse({
         xpAwarded: 0,
-        bonus: { morning: false, evening: false, welcome: false, empathy: false, comboCount: 3, comboBonusAwarded: false, calmnessGain: 0, comfortGain: 0 },
+        bonus: {
+          morning: false,
+          evening: false,
+          welcome: false,
+          empathy: false,
+          comboCount: 3,
+          comboBonusAwarded: false,
+          calmnessGain: 0,
+          comfortGain: 0,
+        },
       }),
     );
     expect(signal.kind).toBe("none");

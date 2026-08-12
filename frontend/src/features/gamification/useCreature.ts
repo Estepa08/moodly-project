@@ -267,7 +267,8 @@ export function useEmpathyActive(): boolean {
 }
 
 // Остальные хуки остаются прежними
-export function useCompletions(days = 30) {  return useQuery({
+export function useCompletions(days = 30) {
+  return useQuery({
     queryKey: ["creature", "completions", days],
     queryFn: () => api.creature.getCompletions(days),
     staleTime: 30_000,

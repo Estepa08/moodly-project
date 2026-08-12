@@ -150,7 +150,8 @@ export default function PetAvatar({
   const dashDirRef = useRef<"left" | "right">("left");
   const lastWordIndexRef = useRef<number | null>(null);
 
-  const words = (t("companion.petReward.words", { returnObjects: true }) as unknown as string[]) ?? [];
+  const words =
+    (t("companion.petReward.words", { returnObjects: true }) as unknown as string[]) ?? [];
 
   const definition = PET_DEFINITIONS.find((p) => p.type === petType);
   const feedEmojis = definition?.feed ?? ["🫧"];
@@ -339,10 +340,14 @@ export default function PetAvatar({
         !isReducedMotion && reappear && "animate-pet-pop-in",
         !isReducedMotion &&
           dash === "out" &&
-          (dashDirRef.current === "left" ? "animate-pet-dash-out-left" : "animate-pet-dash-out-right"),
+          (dashDirRef.current === "left"
+            ? "animate-pet-dash-out-left"
+            : "animate-pet-dash-out-right"),
         !isReducedMotion &&
           dash === "in" &&
-          (dashDirRef.current === "left" ? "animate-pet-dash-in-right" : "animate-pet-dash-in-left"),
+          (dashDirRef.current === "left"
+            ? "animate-pet-dash-in-right"
+            : "animate-pet-dash-in-left"),
         !isReducedMotion && hide && HIDE_CLASS[hide.variant],
         className,
       )}
@@ -353,7 +358,9 @@ export default function PetAvatar({
           aria-hidden="true"
           className={cn(
             "absolute -inset-2 rounded-full blur-md pointer-events-none",
-            glow === "warm" ? "bg-amber-300/40 animate-glow-warm" : "bg-sky-400/40 animate-glow-cool",
+            glow === "warm"
+              ? "bg-amber-300/40 animate-glow-warm"
+              : "bg-sky-400/40 animate-glow-cool",
           )}
         />
       )}
