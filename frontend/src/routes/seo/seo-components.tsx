@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
 import Reveal from '../../components/Reveal';
 import { cn } from '../../lib/utils';
+import { withCanonical } from '../../lib/seo';
 
 function SeoHeader() {
   const { t } = useTranslation();
@@ -58,25 +59,40 @@ interface Breadcrumb {
 }
 
 function SeoBreadcrumbs({ items }: { items: Breadcrumb[] }) {
+  // Добавляем JSON-LD для хлебных крошек
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.label,
+      item: item.to ? withCanonical(item.to) : undefined,
+    })),
+  };
+
   return (
-    <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-4 sm:px-6 pt-5">
-      <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
-        {items.map((item, i) => (
-          <li key={i} className="flex items-center gap-1.5">
-            {i > 0 && <span aria-hidden="true">/</span>}
-            {item.to ? (
-              <Link to={item.to} className="hover:text-primary transition-colors">
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-primary font-medium" aria-current="page">
-                {item.label}
-              </span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
+    <>
+      <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>
+      <nav aria-label="Breadcrumb" className="mx-auto max-w-6xl px-4 sm:px-6 pt-5">
+        <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
+          {items.map((item, i) => (
+            <li key={i} className="flex items-center gap-1.5">
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {item.to ? (
+                <Link to={item.to} className="hover:text-primary transition-colors">
+                  {item.label}
+                </Link>
+              ) : (
+                <span className="text-primary font-medium" aria-current="page">
+                  {item.label}
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </>
   );
 }
 

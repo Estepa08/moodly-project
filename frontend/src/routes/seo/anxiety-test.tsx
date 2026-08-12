@@ -18,10 +18,16 @@ import {
 export default function AnxietyTestPage() {
   const { t } = useTranslation();
 
-  const faq = [1, 2].map((i) => ({
-    q: t(`seoPages.anxietyTest.faq.${i}.q`),
-    a: t(`seoPages.anxietyTest.faq.${i}.a`),
-  }));
+  const faq = [
+    {
+      q: "Насколько точен этот тест?",
+      a: "Тест основан на шкале тревоги Спилбергера (STAI) — одной из самых распространённых методик в клинической психологии. Он даёт ориентировочную оценку уровня тревоги, но не является медицинским диагнозом.",
+    },
+    {
+      q: "Что делать с результатом теста?",
+      a: "Если тест показывает высокий уровень тревоги, мы рекомендуем обратиться к психотерапевту. Moodly предлагает практики для снижения тревоги (дыхательные упражнения, КПТ-игры), которые могут быть полезны как дополнение к терапии.",
+    },
+  ];
 
   useSeo({
     title: t('seoPages.anxietyTest.meta.title'),
@@ -187,7 +193,12 @@ export default function AnxietyTestPage() {
         />
       </main>
 
-      <SeoDisclaimer lines={[1, 2].map((i) => t(`seoPages.anxietyTest.disclaimer.${i}`))} />
+      <SeoDisclaimer
+        lines={[
+          "Тест не является медицинским диагнозом.",
+          "При устойчивых симптомах тревоги обратитесь к психотерапевту.",
+        ]}
+      />
       <SeoFooter />
     </div>
   );

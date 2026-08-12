@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import { useQueries } from '@tanstack/react-query';
-import { api } from '../lib/api';
-import { Card, CardContent } from '../components/ui/card';
-import { useStalePractices } from '../hooks/useStalePractices';
-import { useTests } from '../hooks/useTests';
-import { PracticeSource } from '../features/gamification/practice.enums';
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { useQueries } from "@tanstack/react-query";
+import { api } from "../lib/api";
+import { Card, CardContent } from "../components/ui/card";
+import { useStalePractices } from "../hooks/useStalePractices";
+import { useTests } from "../hooks/useTests";
+import { PracticeSource } from "../features/gamification/practice.enums";
 import {
   Wind,
   Heart,
@@ -16,75 +16,74 @@ import {
   Clock,
   ClipboardList,
   FlaskConical,
-} from 'lucide-react';
+} from "lucide-react";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  '/practices/thought-journal': PracticeSource.ThoughtJournal,
-  '/practices/gratitude': PracticeSource.Gratitude,
-  '/practices/distortions': PracticeSource.Distortions,
-  '/practices/sleep-hygiene': PracticeSource.SleepHygiene,
-  '/practices/cost-benefit-analysis': PracticeSource.Cba,
-  '/practices/breathing': PracticeSource.Breathing,
-  '/practices/emotion-lab': PracticeSource.EmotionLab,
+  "/practices/thought-journal": PracticeSource.ThoughtJournal,
+  "/practices/gratitude": PracticeSource.Gratitude,
+  "/practices/distortions": PracticeSource.Distortions,
+  "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
+  "/practices/cost-benefit-analysis": PracticeSource.Cba,
+  "/practices/breathing": PracticeSource.Breathing,
+  "/practices/emotion-lab": PracticeSource.EmotionLab,
 };
 
 const PRACTICES = [
   {
-    path: '/practices/thought-journal',
+    path: "/practices/thought-journal",
     icon: BookOpen,
-    labelKey: 'nav.thoughtJournal',
-    descKey: 'practices.descThoughtJournal',
-    timeKey: 'practices.timeThoughtJournal',
-    categoryKey: 'practices.categoryMind',
+    labelKey: "nav.thoughtJournal",
+    descKey: "practices.descThoughtJournal",
+    timeKey: "practices.timeThoughtJournal",
+    categoryKey: "practices.categoryMind",
   },
   {
-    path: '/practices/gratitude',
+    path: "/practices/gratitude",
     icon: Heart,
-    labelKey: 'nav.gratitude',
-    descKey: 'practices.descGratitude',
-    timeKey: 'practices.timeGratitude',
-    categoryKey: 'practices.categoryMind',
+    labelKey: "nav.gratitude",
+    descKey: "practices.descGratitude",
+    timeKey: "practices.timeGratitude",
+    categoryKey: "practices.categoryMind",
   },
   {
-    path: '/practices/distortions',
+    path: "/practices/distortions",
     icon: BrainCircuit,
-    labelKey: 'nav.distortions',
-    descKey: 'practices.descDistortions',
-    timeKey: 'practices.timeDistortions',
-    categoryKey: 'practices.categoryMind',
+    labelKey: "nav.distortions",
+    descKey: "practices.descDistortions",
+    timeKey: "practices.timeDistortions",
+    categoryKey: "practices.categoryMind",
   },
   {
-    path: '/practices/sleep-hygiene',
+    path: "/practices/sleep-hygiene",
     icon: Moon,
-    labelKey: 'nav.sleepHygiene',
-    descKey: 'practices.descSleepHygiene',
-    timeKey: 'practices.timeSleepHygiene',
-    categoryKey: 'practices.categoryBody',
+    labelKey: "nav.sleepHygiene",
+    descKey: "practices.descSleepHygiene",
+    timeKey: "practices.timeSleepHygiene",
+    categoryKey: "practices.categoryBody",
   },
   {
-    path: '/practices/cost-benefit-analysis',
+    path: "/practices/cost-benefit-analysis",
     icon: Scale,
-    labelKey: 'nav.cba',
-    descKey: 'practices.descCba',
-    timeKey: 'practices.timeCba',
-    categoryKey: 'practices.categoryMind',
+    labelKey: "nav.cba",
+    descKey: "practices.descCba",
+    timeKey: "practices.timeCba",
+    categoryKey: "practices.categoryMind",
   },
   {
-    path: '/practices/breathing',
+    path: "/practices/breathing",
     icon: Wind,
-    labelKey: 'nav.breathing',
-    descKey: 'practices.descBreathing',
-    timeKey: 'practices.timeBreathing',
-    categoryKey: 'practices.categoryBody',
+    labelKey: "nav.breathing",
+    descKey: "practices.descBreathing",
+    timeKey: "practices.timeBreathing",
+    categoryKey: "practices.categoryBody",
   },
   {
-    // 👇 добавьте этот объект
-    path: '/practices/emotion-lab',
+    path: "/practices/emotion-lab",
     icon: FlaskConical,
-    labelKey: 'nav.emotionLab',
-    descKey: 'practices.descEmotionLab',
-    timeKey: 'practices.timeEmotionLab',
-    categoryKey: 'practices.categoryMind',
+    labelKey: "nav.emotionLab",
+    descKey: "practices.descEmotionLab",
+    timeKey: "practices.timeEmotionLab",
+    categoryKey: "practices.categoryMind",
   },
 ];
 
@@ -94,7 +93,7 @@ export default function PracticesPage() {
   const { data: tests, isLoading: testsLoading } = useTests();
   const detailedTests = useQueries({
     queries: (tests ?? []).map((test) => ({
-      queryKey: ['test', test.id],
+      queryKey: ["test", test.id],
       queryFn: () => api.tests.get(test.id),
       staleTime: 60_000,
     })),
@@ -107,8 +106,8 @@ export default function PracticesPage() {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-foreground font-serif">{t('nav.practices')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{t('practices.subtitle')}</p>
+        <h2 className="text-xl font-semibold text-foreground font-serif">{t("nav.practices")}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{t("practices.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -119,11 +118,11 @@ export default function PracticesPage() {
           return (
             <Link key={p.path} to={p.path} className="block">
               <Card
-                className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? 'border-l-2 border-primary' : ''}`}
+                className={`shadow-elevation-2 hover:shadow-elevation-3 transition-[box-shadow] duration-150 ${stale ? "border-l-2 border-primary" : ""}`}
               >
                 <CardContent className="flex items-start gap-4 p-5">
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? 'bg-primary/20' : 'bg-primary/10'}`}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 shadow-elevation-inset ${stale ? "bg-primary/20" : "bg-primary/10"}`}
                   >
                     <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
                   </div>
@@ -138,7 +137,7 @@ export default function PracticesPage() {
                       {t(p.timeKey)}
                     </p>
                     {stale && (
-                      <p className="text-xs text-primary mt-1">{t('practices.staleLabel')}</p>
+                      <p className="text-xs text-primary mt-1">{t("practices.staleLabel")}</p>
                     )}
                   </div>
                 </CardContent>
@@ -151,9 +150,9 @@ export default function PracticesPage() {
       <div className="pt-2 space-y-2">
         <div className="space-y-0.5">
           <h3 className="text-base font-semibold text-foreground font-serif">
-            {t('practices.testsSection')}
+            {t("practices.testsSection")}
           </h3>
-          <p className="text-xs text-muted-foreground">{t('practices.testsSubtitle')}</p>
+          <p className="text-xs text-muted-foreground">{t("practices.testsSubtitle")}</p>
         </div>
 
         {testsLoading ? (
@@ -169,13 +168,13 @@ export default function PracticesPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <span className="inline-block px-2 py-0.5 rounded-full bg-accent/10 text-[10px] font-medium text-accent mb-1.5 uppercase tracking-wide">
-                        {t('practices.testCategory')}
+                        {t("practices.testCategory")}
                       </span>
                       <p className="text-sm font-semibold text-foreground">{test.title}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{test.description}</p>
                       <p className="flex items-center gap-1 text-xs text-muted-foreground mt-1.5">
                         <Clock aria-hidden="true" className="w-3 h-3" />
-                        {t('practices.testQuestions', { count: test.questions.length })}
+                        {t("practices.testQuestions", { count: test.questions.length })}
                       </p>
                     </div>
                   </CardContent>

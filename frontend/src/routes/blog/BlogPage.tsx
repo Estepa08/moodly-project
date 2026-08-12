@@ -22,12 +22,21 @@ export default function BlogPage() {
   const { t } = useTranslation();
 
   useSeo({
-    title: t('seoPages.blog.meta.title'),
-    description: t('seoPages.blog.meta.description'),
+    title: 'Блог о психологии и эмоциональном здоровье | Moodly',
+    description:
+      'Статьи о дневнике настроения, тревоге, сне и психическом здоровье. Практические советы психологов и упражнения для улучшения эмоционального состояния.',
     canonical: withCanonical('/blog'),
+    og: {
+      title: 'Блог Moodly — статьи о психологии',
+      description:
+        'Практические советы по ведению дневника настроения, работе с тревогой и улучшению сна.',
+      image: 'https://mymoodly.ru/og-blog.jpg',
+      url: withCanonical('/blog'),
+      type: 'website',
+    },
     jsonLd: breadcrumbLd([
       { name: t('seoPages.blog.breadcrumb.home'), url: withCanonical('/') },
-      { name: t('seoPages.blog.breadcrumb.current'), url: withCanonical('/blog') },
+      { name: 'Блог Moodly', url: withCanonical('/blog') },
     ]),
   });
 
@@ -43,10 +52,7 @@ export default function BlogPage() {
     <div className="min-h-screen bg-background">
       <SeoHeader />
       <SeoBreadcrumbs
-        items={[
-          { label: t('seoPages.blog.breadcrumb.home'), to: '/' },
-          { label: t('seoPages.blog.breadcrumb.current') },
-        ]}
+        items={[{ label: t('seoPages.blog.breadcrumb.home'), to: '/' }, { label: 'Блог Moodly' }]}
       />
 
       <main>
@@ -56,22 +62,24 @@ export default function BlogPage() {
               {t('seoPages.blog.kicker')}
             </p>
             <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
-              {t('seoPages.blog.meta.title')}
+              Блог о психологии и эмоциональном здоровье
             </h1>
             <p className="mt-3 mx-auto max-w-2xl text-muted-foreground leading-relaxed">
-              {t('seoPages.blog.meta.description')}
+              Практические советы по ведению дневника настроения, работе с тревогой и улучшению сна
+              от команды Moodly
             </p>
           </Reveal>
         </section>
 
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12">
-          <div className="flex flex-wrap justify-center gap-2">
+          <nav className="flex flex-wrap justify-center gap-2" aria-label="Категории блога">
             {chips.map((chip) =>
               chip.slug === null ? (
                 <Link
                   key="all"
                   to="/blog"
                   className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                  aria-current="page"
                 >
                   {chip.label}
                 </Link>
@@ -85,7 +93,7 @@ export default function BlogPage() {
                 </Link>
               ),
             )}
-          </div>
+          </nav>
 
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
             {POSTS.map((post, i) => (

@@ -41,6 +41,11 @@ model User {
   recoveryWrappedKey String?
   recoverySalt      String?
 
+  // Тариф ("free" | "premium"). Реального биллинга нет — переключается вручную
+  // (Prisma Studio / служебный роут), заготовка под будущие премиум-лимиты.
+  subscriptionTier      String    @default("free")
+  subscriptionExpiresAt DateTime?
+
   entries     Entry[]
   testResults TestResult[]
   feedback    Feedback[]
@@ -57,6 +62,7 @@ model User {
   dailyMissions  DailyMission[]
   devices   Device[]
   syncCursor SyncCursor?
+  emotionLabProgress EmotionLabProgress?
 }
 
 model Parameter {
@@ -345,6 +351,21 @@ model SyncCursor {
   lastPulledAt DateTime @default(now())
   lastPulledId String?
   updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Игровой прогресс «Лаборатории эмоций» (алхимия на основе колеса Плутчика).
+// Открытие диад и дневной лимит попыток — игровая механика, НЕ чувствительные
+// данные, поэтому хранятся на сервере открыто (в отличие от записей трекера).
+// dailyAttemptsUsed сбрасывается в 0 при наступлении нового дня (см. emotion-lab.ts).
+model EmotionLabProgress {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  dailyAttemptsUsed Int      @default(0)
+  lastAttemptDate   DateTime?
+  discoveredDyads   String[] @default([]) // ключи диад, напр. "love", "guilt"
+  updatedAt         DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

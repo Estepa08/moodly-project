@@ -66,7 +66,8 @@
       "settings": "Settings",
       "admin": "Admin",
       "profile": "Profile"
-    }
+    },
+    "emotionLab": "Emotion Lab"
   },
   "myDay": {
     "morningHint": "Good morning — how are you feeling today?",
@@ -672,7 +673,9 @@
     "testsSubtitle": "Quick self-assessment — 3–7 minutes",
     "testCategory": "Tests",
     "testQuestions_one": "{{count}} question",
-    "testQuestions_other": "{{count}} questions"
+    "testQuestions_other": "{{count}} questions",
+    "descEmotionLab": "Emotion alchemy on Plutchik's wheel — discover new feelings",
+    "timeEmotionLab": "2–5 min"
   },
   "thoughtJournal": {
     "title": "Thought Journal",
@@ -1571,7 +1574,8 @@
     "activityEmotionLab": "Emotions",
     "showAllAchievements": "Show all achievements ({{count}})",
     "speech_one": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
-    "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀"
+    "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
+    "activityEmotionLab": "Emotions"
   },
   "missions": {
     "checkin": "Check in today",
@@ -2520,5 +2524,81 @@
     "statsHint": "Tags appear in notes — mark a trap whenever you write about your state.",
     "emptyTitle": "No trap tags yet",
     "emptyDesc": "Mark thinking traps in your notes — in a month your pattern statistics will appear here."
+  },
+  "emotionLab": {
+    "title": "Emotion Lab",
+    "subtitle": "Mix two emotions to discover new feelings on Plutchik's wheel",
+    "attemptsTitle": "Attempts today",
+    "of": "of",
+    "pickHint": "Tap two emotions to discover a new feeling",
+    "mixPlaceholder": "Pick two emotions on the wheel",
+    "mixReady": "Ready to mix?",
+    "mix": "Mix",
+    "mixing": "Mixing…",
+    "newDiscovery": "New discovery",
+    "alreadyKnown": "Already discovered",
+    "attemptCountedDiscovery": "New discovery added to your journal",
+    "attemptCountedRepeat": "Attempt counted",
+    "attemptsLeft": "{{count}} left",
+    "journalTitle": "Discovery Journal",
+    "journalHint": "First unlock all primary dyads — then secondary ones open.",
+    "journalHintExamples": "Tip: try joy + fear, trust + surprise…",
+    "level1": "Level 1 · Primary",
+    "level2": "Level 2 · Secondary",
+    "level3": "Level 3 · Tertiary",
+    "level4": "Level 4 · Opposites",
+    "levelLabel": {
+      "1": "Level 1 · primary",
+      "2": "Level 2 · secondary",
+      "3": "Level 3 · tertiary",
+      "4": "Level 4 · opposite"
+    },
+    "limitTitle": "That's all for today",
+    "limitDescription": "Attempts reset at midnight. Come back — every new feeling brings you closer to the full wheel.",
+    "premiumOffer": "Premium — {{count}} attempts a day",
+    "premiumOfferDesc": "Discover more, faster — no waiting around.",
+    "learnMore": "Learn more",
+    "loadError": "Couldn't load the lab. Please try again.",
+    "attemptError": "Couldn't mix the emotions. Please try again.",
+    "emotions": {
+      "joy": "Joy",
+      "trust": "Trust",
+      "fear": "Fear",
+      "surprise": "Surprise",
+      "sadness": "Sadness",
+      "disgust": "Disgust",
+      "anger": "Anger",
+      "anticipation": "Anticipation"
+    },
+    "dyads": {
+      "love": "Love",
+      "submission": "Submission",
+      "alarm": "Alarm",
+      "disappointment": "Disappointment",
+      "remorse": "Remorse",
+      "contempt": "Contempt",
+      "aggressiveness": "Aggressiveness",
+      "optimism": "Optimism",
+      "guilt": "Guilt",
+      "curiosity": "Curiosity",
+      "despair": "Despair",
+      "unbelief": "Disbelief",
+      "envy": "Envy",
+      "cynicism": "Cynicism",
+      "pride": "Pride",
+      "hope": "Hope",
+      "delight": "Delight",
+      "sentimentality": "Sentimentality",
+      "shame": "Shame",
+      "outrage": "Outrage",
+      "pessimism": "Pessimism",
+      "morbidness": "Morbidness",
+      "dominance": "Dominance",
+      "anxiety": "Anxiety",
+      "bittersweetness": "Bittersweetness",
+      "ambivalence": "Ambivalence",
+      "frozenness": "Frozenness",
+      "confusion": "Confusion"
+    }
   }
 }
