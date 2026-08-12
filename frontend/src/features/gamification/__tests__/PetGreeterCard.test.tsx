@@ -9,6 +9,7 @@ vi.mock("../useCreature", () => ({
   useCreatureState: vi.fn(),
   usePets: vi.fn(),
   usePet: vi.fn(() => ({ mutate: vi.fn() })),
+  useEmpathyActive: vi.fn(() => false),
 }));
 vi.mock("../../../hooks/useMessageOfDay", () => ({
   useMessageOfDay: vi.fn(),

@@ -376,6 +376,8 @@ model CreatureState {
   petCount: int32;
   @doc("Сколько поглаживаний осталось сегодня (0 — лимит исчерпан)")
   petCountRemaining: int32;
+  @doc("«Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)")
+  comfort: int32;
 }
 
 @doc("Коллекция питомцев пользователя")
@@ -400,6 +402,26 @@ model FeedResponse {
   feedCounts: unknown;
 }
 
+@doc("Информация о скрытых бонусах за клик по компаньону")
+model PetBonus {
+  @doc("Бонус «Бодрое утро» (6:00–12:00 по серверу): 3-й клик дал +2 XP")
+  morning: boolean;
+  @doc("Бонус «Спокойный вечер» (20:00–23:00): 3-й клик дал +1 XP и +1 calmness")
+  evening: boolean;
+  @doc("Бонус «Возвращение» (пауза > 4 ч): клик дал +2 XP")
+  welcome: boolean;
+  @doc("Бонус «Эмпатия» (грустное настроение): 3-й клик дал +1 XP и +2 comfort")
+  empathy: boolean;
+  @doc("Текущая длина серии быстрых кликов (< 0.5 c)")
+  comboCount: int32;
+  @doc("На этом клике сработал бонус «Комбо» (+3 XP)")
+  comboBonusAwarded: boolean;
+  @doc("На сколько вырос calmness этим кликом")
+  calmnessGain: int32;
+  @doc("На сколько вырос comfort этим кликом")
+  comfortGain: int32;
+}
+
 @doc("Результат поглаживания компаньона")
 model PetResponse {
   state: CreatureState;
@@ -415,6 +437,22 @@ model PetResponse {
   limitReached: boolean;
   @doc("Позиция в цикле поглаживаний 1-2-3: на 3-й позиции начисляется XP")
   cyclePosition: int32;
+  @doc("На сколько вырос calmness этим кликом")
+  calmnessGain: int32;
+  @doc("На сколько вырос comfort этим кликом")
+  comfortGain: int32;
+  @doc("Текущая длина серии быстрых кликов (< 0.5 c)")
+  comboCount: int32;
+  @doc("На этом клике сработал бонус «Комбо» (+3 XP)")
+  comboBonusAwarded: boolean;
+  @doc("Скрытые бонусы, сработавшие на этом клике")
+  bonus: PetBonus;
+}
+
+@doc("Тело запроса на поглаживание компаньона")
+model PetRequest {
+  @doc("Пользователь записал грустное настроение/тревогу — активировать бонус «Эмпатия»")
+  empathy?: boolean;
 }
 
 @doc("Тело обновления питомца")

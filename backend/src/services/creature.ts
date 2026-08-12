@@ -21,6 +21,19 @@ import {
   PRACTICE_ENERGY_REWARD,
   STARTER_PET_TYPES,
   MS_PER_DAY,
+  MORNING_XP,
+  EVENING_CALMNESS_GAIN,
+  COMBO_XP,
+  COMBO_THRESHOLD,
+  COMBO_WINDOW_MS,
+  PET_TIMES_BUFFER,
+  WELCOME_XP,
+  WELCOME_CLICK_COUNT,
+  WELCOME_PAUSE_HOURS,
+  EMPATHY_COMFORT_GAIN,
+  isMorningWindow,
+  isEveningWindow,
+  computeComboCount,
 } from "@moodly/shared";
 
 export const creatureService = {
@@ -113,6 +126,7 @@ export const creatureService = {
       level: creature.level,
       streak: creature.streak,
       calmness: creature.calmness,
+      comfort: creature.comfort ?? 0,
       energy: creature.energy,
       sourceBreakdown,
       feedCount: creature.feedCount ?? 0,
@@ -574,13 +588,24 @@ export const creatureService = {
   },
 
   // Поглаживание компаньона: детерминированный цикл 1-2-3. Каждый 3-й клик
-  // даёт +1 XP и тратит 1 энергии (PET_ENERGY_COST), клики 1-2 — только
+  // даёт XP (PET_XP) и тратит 1 энергии (PET_ENERGY_COST), клики 1-2 — только
   // анимация/эмодзи. Когда энергия на нуле, 3-й клик XP не даёт. Дневной лимит
   // кликов = PET_DAILY_CLICK_LIMIT (300 → 100 XP). Счётчик сбрасывается при
   // наступлении нового дня (по серверному времени).
-  async pet(userId: string) {
-    // Чтение текущего счётчика, сброс при новом дне и начисление XP — атомарно
-    // под блокировкой User: параллельные клики не дадут двойного начисления.
+  //
+  // Скрытые бонусы (сервер — источник правды о награде):
+  //  - «Бодрое утро» (6-12): 3-й клик даёт MORNING_XP (+2) вместо +1.
+  //  - «Спокойный вечер» (20-23): 3-й клик даёт +1 XP и +1 calmness.
+  //  - «Комбо»: серия кликов с интервалом < COMBO_WINDOW_MS; на каждом
+  //    COMBO_THRESHOLD-м быстром клике начисляется +COMBO_XP.
+  //  - «Возвращение»: после паузы > WELCOME_PAUSE_HOURS первые
+  //    WELCOME_CLICK_COUNT кликов дают по WELCOME_XP (+2) каждый.
+  //  - «Эмпатия» (клиент передаёт флаг): 3-й клик даёт +1 XP и
+  //    +EMPATHY_COMFORT_GAIN к параметру «Утешение» (comfort).
+  async pet(userId: string, empathy = false) {
+    // Чтение счётчика, сброс при новом дне, расчёт бонусов и начисление XP —
+    // атомарно под блокировкой User: параллельные клики не дадут двойного
+    // начисления ни по одному из бонусов.
     const result = await prisma.$transaction(async (tx) => {
       await lockUser(tx, userId);
 
@@ -591,6 +616,7 @@ export const creatureService = {
         });
       }
 
+      const now = new Date();
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const lastPet = state.lastPetAt ? new Date(state.lastPetAt) : null;
@@ -614,24 +640,80 @@ export const creatureService = {
 
       const energy = state.energy ?? MAX_ENERGY;
       const hasEnergy = energy > 0;
-      // XP и трата энергии — только на 3-м клике, когда энергия есть.
-      const xpAwarded = isXpClick && !limitReached && hasEnergy ? PET_XP : 0;
-      const nextEnergy = isXpClick && hasEnergy ? Math.max(0, energy - PET_ENERGY_COST) : energy;
 
-      const { experience, level, leveledUp } = applyLevelUp(state, xpAwarded);
+      // Временные окна бонусов — по серверному часу.
+      const hour = now.getHours();
+      const morning = isMorningWindow(hour);
+      const evening = isEveningWindow(hour);
+
+      // «Возвращение»: пауза > WELCOME_PAUSE_HOURS открывает «сессию
+      // возвращения» — первые WELCOME_CLICK_COUNT кликов дают +2 XP. Сессия
+      // активна, если пауза свежая либо уже начата (welcomeUsed > 0).
+      // Первый клик вообще (lastPet === null) бонусом не считается.
+      const pauseMs = lastPet ? now.getTime() - lastPet.getTime() : null;
+      const freshPause =
+        lastPet !== null && pauseMs !== null && pauseMs > WELCOME_PAUSE_HOURS * 60 * 60 * 1000;
+      const welcomeUsed = freshPause ? 0 : (state.welcomeUsed ?? 0);
+      const welcomeSessionActive = freshPause || welcomeUsed > 0;
+      const welcomeApplied =
+        welcomeSessionActive && welcomeUsed < WELCOME_CLICK_COUNT && !limitReached && hasEnergy;
+
+      // Базовый XP: «Возвращение» перекрывает цикл для первых кликов.
+      let xp = 0;
+      let calmnessGain = 0;
+      let comfortGain = 0;
+      if (welcomeApplied) {
+        xp += WELCOME_XP;
+      } else if (isXpClick && !limitReached && hasEnergy) {
+        xp += morning ? MORNING_XP : PET_XP;
+        if (evening) calmnessGain += EVENING_CALMNESS_GAIN;
+        if (empathy) comfortGain += EMPATHY_COMFORT_GAIN;
+      }
+
+      // «Комбо»: храним последние метки кликов, считаем длину серии.
+      const prevTimes = Array.isArray(state.petTimes)
+        ? (state.petTimes as number[]).map(Number)
+        : [];
+      const times = [...prevTimes.slice(-(PET_TIMES_BUFFER - 1)), now.getTime()];
+      const comboCount = computeComboCount(times);
+      const comboBonusAwarded = comboCount >= COMBO_THRESHOLD && comboCount % COMBO_THRESHOLD === 0;
+      if (comboBonusAwarded) xp += COMBO_XP;
+
+      // XP и трата энергии — только на 3-м клике, когда энергия есть.
+      const nextEnergy = isXpClick && hasEnergy ? Math.max(0, energy - PET_ENERGY_COST) : energy;
+      const nextCalmness = Math.min(100, (state.calmness ?? 50) + calmnessGain);
+      const nextComfort = Math.min(100, (state.comfort ?? 0) + comfortGain);
+
+      const { experience, level, leveledUp } = applyLevelUp(state, xp);
 
       const updated = await tx.creatureState.update({
         where: { userId },
         data: {
           petCount: nextPetCount,
-          lastPetAt: new Date(),
+          lastPetAt: now,
           energy: nextEnergy,
           experience,
           level,
+          calmness: nextCalmness,
+          comfort: nextComfort,
+          welcomeUsed: welcomeApplied ? welcomeUsed + 1 : welcomeUsed,
+          petTimes: times,
         },
       });
 
-      return { updated, leveledUp, xpAwarded, petCount: nextPetCount, cyclePosition, limitReached };
+      return {
+        updated,
+        leveledUp,
+        xp,
+        petCount: nextPetCount,
+        cyclePosition,
+        limitReached,
+        calmnessGain,
+        comfortGain,
+        comboCount,
+        comboBonusAwarded,
+        bonus: { morning, evening, welcome: welcomeApplied, empathy },
+      };
     });
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
@@ -644,11 +726,16 @@ export const creatureService = {
         sessionCount,
       },
       leveledUp: result.leveledUp,
-      xpAwarded: result.xpAwarded,
+      xpAwarded: result.xp,
       petCount: result.petCount,
       cyclePosition: result.cyclePosition,
       petCountRemaining: Math.max(0, PET_DAILY_CLICK_LIMIT - result.petCount),
       limitReached: result.limitReached,
+      calmnessGain: result.calmnessGain,
+      comfortGain: result.comfortGain,
+      comboCount: result.comboCount,
+      comboBonusAwarded: result.comboBonusAwarded,
+      bonus: result.bonus,
     };
   },
 };

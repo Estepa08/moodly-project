@@ -1648,7 +1648,32 @@
     "renameSave": "Save",
     "energyLowTitle": "Energy is almost out",
     "energyLowHint": "Your companion is tired — petting no longer gives +XP. Restore energy with a practice.",
-    "energyRestoreCta": "Restore energy with a practice"
+    "energyRestoreCta": "Restore energy with a practice",
+    "petAwayHint": "Gone for a snack 🍙",
+    "petAwaySub": "Tap to call back",
+    "petAwayAria": "Your companion is away. Tap to call them back",
+    "petReward": {
+      "welcome": "Welcome back!",
+      "combo": "Combo x{{count}}",
+      "comboBig": "Combo x{{count}}! 🔥",
+      "returnWord": "I'm back!",
+      "words": [
+        "Wow!",
+        "Yay!",
+        "Nice!",
+        "More!",
+        "Thanks!",
+        "Hug!",
+        "Great!",
+        "Love!",
+        "Awesome!",
+        "Oops!",
+        "Super!",
+        "Hi!",
+        "Purr!",
+        "Fun!"
+      ]
+    }
   },
   "petMood": {
     "happy": "In a great mood",

@@ -22,6 +22,10 @@ interface PetBody {
   petName?: string | null;
 }
 
+interface PetTapBody {
+  empathy?: boolean;
+}
+
 interface ClaimMissionParams {
   id: string;
 }
@@ -55,9 +59,13 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     return creatureService.feed(request.userId);
   });
 
-  fastify.post("/creature/pet", { preHandler: [fastify.authenticate] }, async (request) => {
-    return creatureService.pet(request.userId);
-  });
+  fastify.post<{ Body: PetTapBody }>(
+    "/creature/pet",
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return creatureService.pet(request.userId, request.body?.empathy === true);
+    },
+  );
 
   fastify.get<{ Querystring: CompletionsQuery }>(
     "/creature/completions",

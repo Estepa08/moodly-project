@@ -230,6 +230,12 @@ model CreatureState {
   // Счётчик сбрасывается в 0 при наступлении нового дня (см. creature.ts).
   lastPetAt        DateTime?
   petCount         Int      @default(0)
+  // «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение).
+  comfort          Int      @default(0)
+  // Сколько кликов бонуса «Возвращение» уже использовано после паузы > 4 ч.
+  welcomeUsed      Int      @default(0)
+  // Недавние времена поглаживаний (для подсчёта серии «Комбо»).
+  petTimes         Json     @default("[]")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

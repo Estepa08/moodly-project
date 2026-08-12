@@ -9,6 +9,7 @@ import { useParameters } from "../../hooks/useParameters";
 import { useEntries } from "../../hooks/useEntries";
 import { toast } from "sonner";
 import { ENERGY_LOW_THRESHOLD } from "@moodly/shared";
+import { computeEmpathy } from "./petRewards";
 import i18n from "../../i18n/i18n";
 
 // ===== Функция для коррекции уровня и XP =====
@@ -222,7 +223,9 @@ export function usePet() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => api.creature.pet(),
+    // Флаг empathy передаётся в момент клика: сервер начисляет +2 comfort,
+    // если пользователь грустит/тревожится (см. computeEmpathy у клиента).
+    mutationFn: (opts?: { empathy?: boolean }) => api.creature.pet(opts?.empathy),
     onSuccess: (data) => {
       maybeWarnLowEnergy(data.state?.energy);
 
@@ -244,6 +247,23 @@ export function usePet() {
       queryClient.invalidateQueries({ queryKey: ["creature", "stats"] });
     },
   });
+}
+
+// ===== useEmpathyActive - пользователь грустит/тревожится (активен бонус «Эмпатия») =====
+// Клиент пересчитывает эмпатию из расшифрованных записей Mood (≤ 3) или Anxiety
+// за последние 24 часа (E2E: сервер не видит value записей).
+export function useEmpathyActive(): boolean {
+  const { data: params } = useParameters();
+  const moodParam = params?.find((p) => p.name === ParameterName.Mood);
+  const anxietyParam = params?.find((p) => p.name === ParameterName.Anxiety);
+  const { data: moodEntries } = useEntries(moodParam ? { parameterId: moodParam.id } : undefined);
+  const { data: anxietyEntries } = useEntries(
+    anxietyParam ? { parameterId: anxietyParam.id } : undefined,
+  );
+  return computeEmpathy(moodParam?.id, anxietyParam?.id, [
+    ...(moodEntries ?? []),
+    ...(anxietyEntries ?? []),
+  ]);
 }
 
 // Остальные хуки остаются прежними

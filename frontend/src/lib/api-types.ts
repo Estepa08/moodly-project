@@ -382,7 +382,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Погладить компаньона: +1 XP до исчерпания дневного лимита (100) */
+        /** @description Погладить компаньона: цикл 1-2-3 с XP и скрытыми бонусами (утро/вечер/комбо/возвращение/эмпатия) */
         post: operations["Creature_pet"];
         delete?: never;
         options?: never;
@@ -895,6 +895,11 @@ export interface components {
              * @description Сколько поглаживаний осталось сегодня (0 — лимит исчерпан)
              */
             petCountRemaining: number;
+            /**
+             * Format: int32
+             * @description «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
+             */
+            comfort: number;
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -1034,6 +1039,34 @@ export interface components {
             description?: string;
             unit?: string;
         };
+        /** @description Информация о скрытых бонусах за клик по компаньону */
+        PetBonus: {
+            /** @description Бонус «Бодрое утро» (6:00–12:00 по серверу): 3-й клик дал +2 XP */
+            morning: boolean;
+            /** @description Бонус «Спокойный вечер» (20:00–23:00): 3-й клик дал +1 XP и +1 calmness */
+            evening: boolean;
+            /** @description Бонус «Возвращение» (пауза > 4 ч): клик дал +2 XP */
+            welcome: boolean;
+            /** @description Бонус «Эмпатия» (грустное настроение): 3-й клик дал +1 XP и +2 comfort */
+            empathy: boolean;
+            /**
+             * Format: int32
+             * @description Текущая длина серии быстрых кликов (< 0.5 c)
+             */
+            comboCount: number;
+            /** @description На этом клике сработал бонус «Комбо» (+3 XP) */
+            comboBonusAwarded: boolean;
+            /**
+             * Format: int32
+             * @description На сколько вырос calmness этим кликом
+             */
+            calmnessGain: number;
+            /**
+             * Format: int32
+             * @description На сколько вырос comfort этим кликом
+             */
+            comfortGain: number;
+        };
         /** @description Коллекция питомцев пользователя */
         PetCollection: {
             unlockedPetTypes: string[];
@@ -1041,6 +1074,11 @@ export interface components {
             petName: string;
             /** @description Скормленные единицы по каждому питомцу (map тип → количество) */
             feedCounts: unknown;
+        };
+        /** @description Тело запроса на поглаживание компаньона */
+        PetRequest: {
+            /** @description Пользователь записал грустное настроение/тревогу — активировать бонус «Эмпатия» */
+            empathy?: boolean;
         };
         /** @description Результат поглаживания компаньона */
         PetResponse: {
@@ -1069,6 +1107,25 @@ export interface components {
              * @description Позиция в цикле поглаживаний 1-2-3: на 3-й позиции начисляется XP
              */
             cyclePosition: number;
+            /**
+             * Format: int32
+             * @description На сколько вырос calmness этим кликом
+             */
+            calmnessGain: number;
+            /**
+             * Format: int32
+             * @description На сколько вырос comfort этим кликом
+             */
+            comfortGain: number;
+            /**
+             * Format: int32
+             * @description Текущая длина серии быстрых кликов (< 0.5 c)
+             */
+            comboCount: number;
+            /** @description На этом клике сработал бонус «Комбо» (+3 XP) */
+            comboBonusAwarded: boolean;
+            /** @description Скрытые бонусы, сработавшие на этом клике */
+            bonus: components["schemas"]["PetBonus"];
         };
         /** @description Тело обновления питомца */
         PetUpdateRequest: {
@@ -1838,7 +1895,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PetRequest"];
+            };
+        };
         responses: {
             /** @description The request has succeeded. */
             200: {

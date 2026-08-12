@@ -6,11 +6,12 @@ import PetSpeechBubble, { usePetSpeech } from "./PetSpeechBubble";
 import { useSpeechBubbleHidden } from "./speechBubbleVisibility";
 import { emitSpeech } from "./celebration";
 import { PET_DEFINITIONS } from "./pets";
-import { usePets, usePet } from "./useCreature";
+import { usePets } from "./useCreature";
+import { usePetReward } from "./usePetReward";
 import { StreakIndicator } from "./index";
 import { ProgressBar } from "../../components/ui/progress-bar";
 import { EXP_PER_LEVEL, ENERGY_COLOR } from "../../lib/constants";
-import { PET_DAILY_CLICK_LIMIT, PET_CYCLE } from "@moodly/shared";
+import { PET_CYCLE } from "@moodly/shared";
 import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
 import type { CreatureState } from "../../lib/api";
 
@@ -21,7 +22,7 @@ interface ProgressHeroProps {
 export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();
   const { data: pets } = usePets();
-  const pet = usePet();
+  const { reward, glow, handlePet } = usePetReward();
   const speech = usePetSpeech();
   const speechHidden = useSpeechBubbleHidden();
   const petType = pets?.activePetType ?? "puff";
@@ -32,8 +33,6 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
   const petCount = creature.petCount ?? 0;
-  const limitReached = petCount >= PET_DAILY_CLICK_LIMIT;
-  const hasEnergy = (creature.energy ?? 100) > 0;
   const cyclePosition = (petCount % PET_CYCLE) + 1;
   const title = creature.activeTitle ?? null;
   const titleEmoji = title ? (TITLE_EMOJI[title] ?? "🎖️") : null;
@@ -53,7 +52,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   }, [creature.level, creature.streak]);
 
   const handleTap = () => {
-    pet.mutate();
+    handlePet();
     emitSpeech(speechText);
   };
 
@@ -68,8 +67,9 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               plain
               interactive
               ariaLabel={petName}
-              xpEligible={!limitReached && hasEnergy}
               cyclePosition={cyclePosition}
+              reward={reward}
+              glow={glow}
               className="animate-pet-float"
               onTap={handleTap}
             />

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from "vitest";
 import { buildApp, registerAndLogin } from "../../test/helpers.js";
 import { prisma } from "../../lib/prisma.js";
 import type { FastifyInstance } from "fastify";
@@ -89,6 +89,16 @@ describe("Creature pets", () => {
 });
 
 describe("Creature petting (cycle 1-2-3 + energy)", () => {
+  // Фиксируем время вне окон бонусов (6-12 и 20-23), чтобы базовый цикл
+  // не зависел от реального часа запуска тестов.
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("POST /creature/pet — 1st tap: no XP, cyclePosition 1", async () => {
     const user = await registerAndLogin(
       app,
@@ -220,7 +230,7 @@ describe("Creature petting (cycle 1-2-3 + energy)", () => {
     });
   });
 
-  it("POST /creature/pet — counter resets on a new day", async () => {
+  it("POST /creature/pet — counter resets on a new day (first click after overnight pause = welcome +2 XP)", async () => {
     const user = await registerAndLogin(
       app,
       "creature-pet-reset@example.com",
@@ -243,10 +253,11 @@ describe("Creature petting (cycle 1-2-3 + energy)", () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
-      xpAwarded: 0,
+      xpAwarded: 2,
       petCount: 1,
       cyclePosition: 1,
       limitReached: false,
+      bonus: { welcome: true },
     });
   });
 
@@ -274,6 +285,180 @@ describe("Creature petting (cycle 1-2-3 + energy)", () => {
       cyclePosition: 3,
     });
     expect(res.json().state.energy).toBe(0);
+  });
+});
+
+describe("Creature pet bonuses (morning / evening / combo / welcome / empathy)", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  const tap = (user: { token: string }, payload?: { empathy?: boolean }) =>
+    app.inject({
+      method: "POST",
+      url: "/creature/pet",
+      headers: { authorization: `Bearer ${user.token}` },
+      payload,
+    });
+
+  it("morning window (6-12): 3rd tap awards +2 XP", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 8, 30, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-morning@example.com",
+      "secret123",
+      "Morning",
+    );
+    await tap(user);
+    await tap(user);
+    const res = await tap(user);
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 2,
+      cyclePosition: 3,
+      bonus: { morning: true, evening: false, welcome: false, empathy: false },
+    });
+  });
+
+  it("evening window (20-23): 3rd tap awards +1 XP and +1 calmness", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 21, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-evening@example.com",
+      "secret123",
+      "Evening",
+    );
+    await tap(user);
+    await tap(user);
+    const res = await tap(user);
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 1,
+      cyclePosition: 3,
+      calmnessGain: 1,
+      bonus: { morning: false, evening: true, welcome: false, empathy: false },
+    });
+    expect(res.json().state.calmness).toBe(51);
+  });
+
+  it("welcome: after a pause > 4h the first 3 taps award +2 XP each", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-welcome@example.com",
+      "secret123",
+      "Welcome",
+    );
+    const pausedAt = new Date(2026, 5, 15, 10, 0, 0);
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { lastPetAt: pausedAt, welcomeUsed: 0, petCount: 0 },
+      create: { userId: user.userId, lastPetAt: pausedAt, welcomeUsed: 0, petCount: 0 },
+    });
+
+    for (let i = 1; i <= 3; i++) {
+      const res = await tap(user);
+      expect(res.json()).toMatchObject({ xpAwarded: 2, bonus: { welcome: true } });
+      expect(res.json().petCount).toBe(i);
+    }
+
+    const fourth = await tap(user);
+    expect(fourth.json()).toMatchObject({ xpAwarded: 0, bonus: { welcome: false } });
+  });
+
+  it("welcome: a brand-new account (no lastPetAt) does NOT trigger the bonus", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-welcome-new@example.com",
+      "secret123",
+      "Newbie",
+    );
+    const first = await tap(user);
+    expect(first.json()).toMatchObject({ xpAwarded: 0, bonus: { welcome: false } });
+  });
+
+  it("combo: 5 quick taps award +3 XP on the 5th tap", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-combo@example.com",
+      "secret123",
+      "Combo",
+    );
+    let res!: Awaited<ReturnType<typeof tap>>;
+    for (let i = 1; i <= 5; i++) {
+      res = await tap(user);
+    }
+    expect(res.json()).toMatchObject({
+      comboCount: 5,
+      comboBonusAwarded: true,
+      xpAwarded: 3,
+    });
+  });
+
+  it("combo: a gap over 0.5s breaks the streak (no bonus)", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-combo-gap@example.com",
+      "secret123",
+      "Gap",
+    );
+    for (let i = 1; i <= 4; i++) {
+      await tap(user);
+    }
+    // Пауза 1 секунда между кликами.
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 1));
+    const res = await tap(user);
+    expect(res.json()).toMatchObject({
+      comboCount: 1,
+      comboBonusAwarded: false,
+    });
+  });
+
+  it("empathy: 3rd tap with empathy flag awards +1 XP and +2 comfort", async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      "creature-bonus-empathy@example.com",
+      "secret123",
+      "Empathy",
+    );
+    await tap(user);
+    await tap(user);
+    const res = await tap(user, { empathy: true });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 1,
+      comfortGain: 2,
+      bonus: { empathy: true },
+    });
+    expect(res.json().state.comfort).toBe(2);
+  });
+
+  it("GET /creature — state and stats include comfort", async () => {
+    const user = await registerAndLogin(
+      app,
+      "creature-comfort-state@example.com",
+      "secret123",
+      "Comfort",
+    );
+    const state = await app.inject({
+      method: "GET",
+      url: "/creature",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(state.json().comfort).toBe(0);
+    const stats = await app.inject({
+      method: "GET",
+      url: "/creature/stats",
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(stats.json().comfort).toBe(0);
   });
 });
 

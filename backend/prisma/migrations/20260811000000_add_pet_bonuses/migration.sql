@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "CreatureState" ADD COLUMN     "comfort" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "welcomeUsed" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "petTimes" JSONB NOT NULL DEFAULT '[]';

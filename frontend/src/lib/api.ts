@@ -123,6 +123,26 @@ export interface CreatureState {
   petCount?: number;
   petCountRemaining?: number;
   lastPetAt?: string | null;
+  comfort?: number;
+}
+
+export interface PetBonus {
+  /** Бонус «Бодрое утро» (6:00–12:00): 3-й клик дал +2 XP */
+  morning: boolean;
+  /** Бонус «Спокойный вечер» (20:00–23:00): 3-й клик дал +1 XP и +1 calmness */
+  evening: boolean;
+  /** Бонус «Возвращение» (пауза > 4 ч): клик дал +2 XP */
+  welcome: boolean;
+  /** Бонус «Эмпатия»: 3-й клик дал +1 XP и +2 comfort */
+  empathy: boolean;
+  /** Текущая длина серии быстрых кликов (< 0.5 c) */
+  comboCount: number;
+  /** На этом клике сработал бонус «Комбо» (+3 XP) */
+  comboBonusAwarded: boolean;
+  /** На сколько вырос calmness этим кликом */
+  calmnessGain: number;
+  /** На сколько вырос comfort этим кликом */
+  comfortGain: number;
 }
 
 interface CheckInResponse {
@@ -147,6 +167,16 @@ export interface PetResponse {
   limitReached: boolean;
   /** Позиция текущего клика в цикле поглаживаний 1-2-3 (3 → начислен XP) */
   cyclePosition?: number;
+  /** На сколько вырос calmness этим кликом (бонус «Спокойный вечер») */
+  calmnessGain?: number;
+  /** На сколько вырос comfort этим кликом (бонус «Эмпатия») */
+  comfortGain?: number;
+  /** Текущая длина серии быстрых кликов */
+  comboCount?: number;
+  /** На этом клике сработал бонус «Комбо» (+3 XP) */
+  comboBonusAwarded?: boolean;
+  /** Скрытые бонусы, сработавшие на этом клике */
+  bonus?: PetBonus;
 }
 
 interface PracticeCompletion {
@@ -384,7 +414,11 @@ export const api = {
         body: JSON.stringify({ source }),
       }),
     feed: () => request<FeedResponse>("/creature/feed", { method: "POST" }),
-    pet: () => request<PetResponse>("/creature/pet", { method: "POST" }),
+    pet: (empathy?: boolean) =>
+      request<PetResponse>("/creature/pet", {
+        method: "POST",
+        body: empathy ? JSON.stringify({ empathy: true }) : undefined,
+      }),
     getCompletions: (days = 30) =>
       request<PracticeCompletion[]>(`/creature/completions?days=${days}`),
     getStats: () => request<CreatureStats>("/creature/stats"),
