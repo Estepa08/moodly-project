@@ -41,11 +41,6 @@ model User {
   recoveryWrappedKey String?
   recoverySalt      String?
 
-  // Тариф ("free" | "premium"). Реального биллинга нет — переключается вручную
-  // (Prisma Studio / служебный роут), заготовка под будущие премиум-лимиты.
-  subscriptionTier      String    @default("free")
-  subscriptionExpiresAt DateTime?
-
   entries     Entry[]
   testResults TestResult[]
   feedback    Feedback[]
@@ -62,7 +57,6 @@ model User {
   dailyMissions  DailyMission[]
   devices   Device[]
   syncCursor SyncCursor?
-  emotionLabProgress EmotionLabProgress?
 }
 
 model Parameter {
@@ -488,16 +482,4 @@ model CbaEntryItem {
   entry CbaEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
 
   @@index([entryId])
-}
-
-model EmotionLabProgress {
-  id                String    @id @default(cuid())
-  userId            String    @unique
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  dailyAttemptsUsed Int       @default(0)
-  lastAttemptDate   DateTime?
-  discoveredDyads   String[]  @default([])
-  updatedAt         DateTime  @updatedAt
-
-  @@map("emotion_lab_progress")
 }
