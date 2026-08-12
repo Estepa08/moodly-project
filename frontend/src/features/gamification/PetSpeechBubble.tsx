@@ -12,9 +12,7 @@ export interface SpeechState {
 
 const DEFAULT_AUTO_HIDE_MS = 6000;
 
-export type BubbleAnchor = 
-  | "left"   
-  | "right";
+export type BubbleAnchor = "left" | "right";
 
 interface PetSpeechBubbleProps extends SpeechState {
   autoHideMs?: number;
@@ -57,7 +55,7 @@ export default function PetSpeechBubble({
     const onMouseDown = (e: MouseEvent) => {
       e.preventDefault();
       setIsDragging(true);
-      
+
       const rect = bubbleRef.current?.getBoundingClientRect();
       if (!rect) return;
 
@@ -67,10 +65,10 @@ export default function PetSpeechBubble({
       const onMouseMove = (ev: MouseEvent) => {
         const newX = ev.clientX - offsetX;
         const newY = ev.clientY - offsetY;
-        
+
         const maxX = window.innerWidth - (bubbleRef.current?.offsetWidth || 300);
         const maxY = window.innerHeight - (bubbleRef.current?.offsetHeight || 100);
-        
+
         setPosition({
           x: Math.max(0, Math.min(newX, maxX)),
           y: Math.max(0, Math.min(newY, maxY)),
@@ -79,16 +77,16 @@ export default function PetSpeechBubble({
 
       const onMouseUp = () => {
         setIsDragging(false);
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
       };
 
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
     };
 
-    dragElement.addEventListener('mousedown', onMouseDown);
-    return () => dragElement.removeEventListener('mousedown', onMouseDown);
+    dragElement.addEventListener("mousedown", onMouseDown);
+    return () => dragElement.removeEventListener("mousedown", onMouseDown);
   }, [draggable]);
 
   if (!current) return null;
@@ -116,13 +114,13 @@ export default function PetSpeechBubble({
       role="status"
       aria-live="polite"
       style={{
-        transform: draggable ? `translate(${position.x}px, ${position.y}px)` : 'none',
-        position: draggable ? 'fixed' : 'relative',
+        transform: draggable ? `translate(${position.x}px, ${position.y}px)` : "none",
+        position: draggable ? "fixed" : "relative",
         zIndex: 9999,
         top: 0,
         left: 0,
-        touchAction: 'none',
-        maxWidth: '320px',
+        touchAction: "none",
+        maxWidth: "320px",
       }}
       className={cn(
         style.bg,
@@ -139,12 +137,7 @@ export default function PetSpeechBubble({
       {/* Текст */}
       <div className="flex items-start gap-2.5">
         <div className="flex-1 min-w-0">
-          <p className={cn(
-            "text-sm font-medium leading-relaxed",
-            style.text
-          )}>
-            {current.text}
-          </p>
+          <p className={cn("text-sm font-medium leading-relaxed", style.text)}>{current.text}</p>
         </div>
       </div>
 

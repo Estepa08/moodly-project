@@ -8,11 +8,11 @@ interface FloatingTextProps {
   className?: string;
 }
 
-export default function FloatingText({ 
-  text, 
-  duration = 2000, 
+export default function FloatingText({
+  text,
+  duration = 2000,
   onComplete,
-  className 
+  className,
 }: FloatingTextProps) {
   const [visible, setVisible] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -21,7 +21,7 @@ export default function FloatingText({
     // Случайное смещение для каждой фразы
     const offsetX = (Math.random() - 0.5) * 60;
     const offsetY = -40 - Math.random() * 40;
-    
+
     setPosition({ x: offsetX, y: offsetY });
 
     const timer = setTimeout(() => {
@@ -40,12 +40,12 @@ export default function FloatingText({
         "fixed pointer-events-none z-[9999]",
         "text-lg font-bold",
         "animate-float-up",
-        className
+        className,
       )}
       style={{
         left: `calc(50% + ${position.x}px)`,
         top: `calc(50% + ${position.y}px)`,
-        transform: 'translate(-50%, -50%)',
+        transform: "translate(-50%, -50%)",
       }}
     >
       {text}

@@ -34,8 +34,8 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const phase = useDayPhase();
   const { data: message } = useMessageOfDay(phase);
   const isReducedMotion = useReducedMotion();
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   const [idlePhase, setIdlePhase] = useState<IdlePhase>("visible");
   const [hide, setHide] = useState<PetHide | null>(null);
 

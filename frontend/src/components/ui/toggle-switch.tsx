@@ -1,10 +1,8 @@
 import * as React from "react";
 import { cn } from "../../lib/utils";
 
-export interface ToggleSwitchProps extends Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  "onChange" | "checked"
-> {
+export interface ToggleSwitchProps
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "onChange" | "checked"> {
   checked: boolean;
   onCheckedChange?: (next: boolean) => void;
   size?: "sm" | "md";

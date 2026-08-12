@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { LoadingCard } from "../../components/ui/loading-card";
 import EmptyState from "../../components/ui/empty-state";
 import { PracticeSource } from "./practice.enums";
-import { FlaskConical } from "lucide-react"; 
+import { FlaskConical } from "lucide-react";
 
 interface PracticeProgressProps {
   breathingSessionCount?: number;

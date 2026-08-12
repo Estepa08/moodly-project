@@ -28,21 +28,21 @@ export default function EmotionJournal({ state }: EmotionJournalProps) {
   const { t } = useTranslation();
   // Все уровни скрыты по умолчанию, кроме первого
   const [expandedLevels, setExpandedLevels] = useState<Record<number, boolean>>({
-    1: true,  // Только первый уровень открыт
+    1: true, // Только первый уровень открыт
     2: false,
     3: false,
     4: false,
   });
-  
+
   const discovered = new Set(state.discoveredDyads);
-  
+
   const countByLevel = (level: 1 | 2 | 3 | 4) =>
     DYADS_BY_LEVEL[level].filter((d) => discovered.has(d.key)).length;
 
   const toggleLevel = (level: number) => {
-    setExpandedLevels(prev => ({
+    setExpandedLevels((prev) => ({
       ...prev,
-      [level]: !prev[level]
+      [level]: !prev[level],
     }));
   };
 
@@ -85,12 +85,12 @@ export default function EmotionJournal({ state }: EmotionJournalProps) {
           const hasProgress = count > 0 && count < total;
 
           return (
-            <Card 
-              key={level} 
+            <Card
+              key={level}
               className={cn(
                 "overflow-hidden transition-all duration-200",
                 isComplete && "border-l-4 border-l-green-500",
-                hasProgress && !isComplete && "border-l-4 border-l-blue-400"
+                hasProgress && !isComplete && "border-l-4 border-l-blue-400",
               )}
             >
               {/* Заголовок уровня - кликабельный */}
@@ -103,14 +103,16 @@ export default function EmotionJournal({ state }: EmotionJournalProps) {
                   <span className="text-sm font-medium text-foreground">
                     {t(LEVEL_LABEL_KEYS[level])}
                   </span>
-                  <span className={cn(
-                    "text-xs px-2 py-0.5 rounded-full",
-                    isComplete 
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-                      : hasProgress
-                      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-                      : "bg-muted text-muted-foreground"
-                  )}>
+                  <span
+                    className={cn(
+                      "text-xs px-2 py-0.5 rounded-full",
+                      isComplete
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300"
+                        : hasProgress
+                          ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                          : "bg-muted text-muted-foreground",
+                    )}
+                  >
                     {count} / {total}
                   </span>
                   {isComplete && (
@@ -137,11 +139,7 @@ export default function EmotionJournal({ state }: EmotionJournalProps) {
                 <CardContent className="pt-2 pb-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {DYADS_BY_LEVEL[level].map((dyad) => (
-                      <DyadChip 
-                        key={dyad.key} 
-                        dyad={dyad} 
-                        discovered={discovered.has(dyad.key)} 
-                      />
+                      <DyadChip key={dyad.key} dyad={dyad} discovered={discovered.has(dyad.key)} />
                     ))}
                   </div>
                 </CardContent>
@@ -167,7 +165,7 @@ function DyadChip({ dyad, discovered }: { dyad: DyadView; discovered: boolean })
   const [a, b] = dyad.emotions;
   const metaA = emotionMeta(a);
   const metaB = emotionMeta(b);
-  
+
   const dyadNameKey = `emotionLab.dyads.${dyad.key}.name`;
 
   return (
