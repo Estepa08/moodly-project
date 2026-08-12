@@ -1,4 +1,4 @@
-import { toBase64, fromBase64, asBufferSource } from "./kdf";
+import { toBase64, fromBase64, asBufferSource } from './kdf';
 
 const RAW_LENGTH = 32; // 256-битный ключ данных
 
@@ -10,23 +10,23 @@ const encoder = new TextEncoder();
  */
 export async function generateDataKey(): Promise<CryptoKey> {
   return crypto.subtle.importKey(
-    "raw",
+    'raw',
     crypto.getRandomValues(new Uint8Array(RAW_LENGTH)),
-    "AES-GCM",
+    'AES-GCM',
     true,
-    ["encrypt", "decrypt"],
+    ['encrypt', 'decrypt'],
   );
 }
 
 export async function exportDataKey(key: CryptoKey): Promise<string> {
-  const raw = await crypto.subtle.exportKey("raw", key);
+  const raw = await crypto.subtle.exportKey('raw', key);
   return toBase64(new Uint8Array(raw));
 }
 
 export async function importDataKey(base64: string): Promise<CryptoKey> {
-  return crypto.subtle.importKey("raw", asBufferSource(fromBase64(base64)), "AES-GCM", true, [
-    "encrypt",
-    "decrypt",
+  return crypto.subtle.importKey('raw', asBufferSource(fromBase64(base64)), 'AES-GCM', true, [
+    'encrypt',
+    'decrypt',
   ]);
 }
 
@@ -36,9 +36,9 @@ export async function importDataKey(base64: string): Promise<CryptoKey> {
  */
 export async function wrapDataKey(dataKey: CryptoKey, kek: CryptoKey): Promise<string> {
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const raw = await crypto.subtle.exportKey("raw", dataKey);
+  const raw = await crypto.subtle.exportKey('raw', dataKey);
   const wrapped = await crypto.subtle.encrypt(
-    { name: "AES-GCM", iv: asBufferSource(iv) },
+    { name: 'AES-GCM', iv: asBufferSource(iv) },
     kek,
     raw,
   );
@@ -54,22 +54,22 @@ export async function unwrapDataKey(wrappedKey: string, kek: CryptoKey): Promise
   const iv = buf.slice(0, 12);
   const wrapped = buf.slice(12);
   const raw = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: asBufferSource(iv) },
+    { name: 'AES-GCM', iv: asBufferSource(iv) },
     kek,
     asBufferSource(wrapped),
   );
-  return crypto.subtle.importKey("raw", raw, "AES-GCM", true, ["encrypt", "decrypt"]);
+  return crypto.subtle.importKey('raw', raw, 'AES-GCM', true, ['encrypt', 'decrypt']);
 }
 
-const RECOVERY_CHARSET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const RECOVERY_CHARSET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 /** Генерирует recovery-код: 5 групп по 4 символа, без неоднозначных букв. */
 export function generateRecoveryCode(): string {
   const bytes = crypto.getRandomValues(new Uint8Array(20));
-  let code = "";
+  let code = '';
   for (let i = 0; i < bytes.length; i++) {
     code += RECOVERY_CHARSET[bytes[i] % RECOVERY_CHARSET.length];
-    if (code.length % 4 === 0 && code.length < 20) code += "-";
+    if (code.length % 4 === 0 && code.length < 20) code += '-';
   }
   return code;
 }

@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
 import {
   Wind,
   LayoutDashboard,
@@ -14,22 +14,22 @@ import {
   Bell,
   SunMedium,
   type LucideIcon,
-} from "lucide-react";
-import { useOnboarding } from "../hooks/useOnboarding";
-import { ExpLevel } from "../lib/constants";
-import Spinner from "../components/ui/spinner";
-import { ToggleSwitch } from "../components/ui/toggle-switch";
-import { useSetPet } from "../features/gamification";
-import { PET_DEFINITIONS, STARTER_PET_TYPES } from "../features/gamification/pets";
-import { WellnessDisclaimer } from "../widgets";
-import { cn } from "../lib/utils";
+} from 'lucide-react';
+import { useOnboarding } from '../hooks/useOnboarding';
+import { ExpLevel } from '../lib/constants';
+import Spinner from '../components/ui/spinner';
+import { ToggleSwitch } from '../components/ui/toggle-switch';
+import { useSetPet } from '../features/gamification';
+import { PET_DEFINITIONS, STARTER_PET_TYPES } from '../features/gamification/pets';
+import { WellnessDisclaimer } from '../widgets';
+import { cn } from '../lib/utils';
 
 const GOALS = [
-  { key: "stress", icon: Wind },
-  { key: "anxiety", icon: Brain },
-  { key: "sleep", icon: Moon },
-  { key: "mood", icon: Heart },
-  { key: "therapy", icon: ClipboardList },
+  { key: 'stress', icon: Wind },
+  { key: 'anxiety', icon: Brain },
+  { key: 'sleep', icon: Moon },
+  { key: 'mood', icon: Heart },
+  { key: 'therapy', icon: ClipboardList },
 ] as const;
 
 const EXP_LEVELS = [ExpLevel.Beginner, ExpLevel.Intermediate, ExpLevel.Advanced];
@@ -64,7 +64,7 @@ function ReminderRow({
             type="time"
             value={time}
             onChange={(e) => onTime(e.target.value)}
-            aria-label={t("settings.remindersTimeLabel")}
+            aria-label={t('settings.remindersTimeLabel')}
             className="px-2 py-1.5 rounded-lg bg-secondary text-sm text-foreground border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         )}
@@ -86,13 +86,13 @@ export default function OnboardingPage() {
   const [goals, setGoals] = useState<string[]>([]);
   const [expLevel, setExpLevel] = useState<ExpLevel>(ExpLevel.Beginner);
   const [dailyReminder, setDailyReminder] = useState(false);
-  const [reminderTime, setReminderTime] = useState("09:00");
+  const [reminderTime, setReminderTime] = useState('09:00');
   const [afternoonReminder, setAfternoonReminder] = useState(false);
-  const [afternoonTime, setAfternoonTime] = useState("14:00");
+  const [afternoonTime, setAfternoonTime] = useState('14:00');
   const [eveningReminder, setEveningReminder] = useState(false);
-  const [eveningTime, setEveningTime] = useState("20:00");
-  const [petType, setPetType] = useState<string>("puff");
-  const [petName, setPetName] = useState("");
+  const [eveningTime, setEveningTime] = useState('20:00');
+  const [petType, setPetType] = useState<string>('puff');
+  const [petName, setPetName] = useState('');
   const [saving, setSaving] = useState(false);
 
   if (isLoading) {
@@ -104,7 +104,7 @@ export default function OnboardingPage() {
   }
 
   if (!needsOnboarding) {
-    navigate("/my-day", { replace: true });
+    navigate('/my-day', { replace: true });
     return null;
   }
 
@@ -112,7 +112,7 @@ export default function OnboardingPage() {
     setGoals((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]));
   };
 
-  const handleFinish = async (destination = "/my-day") => {
+  const handleFinish = async (destination = '/my-day') => {
     setSaving(true);
     try {
       await complete({
@@ -125,7 +125,7 @@ export default function OnboardingPage() {
         eveningReminder,
         eveningTime,
       });
-      if (petName.trim() || petType !== "puff") {
+      if (petName.trim() || petType !== 'puff') {
         await setPet.mutateAsync({ petType, petName: petName.trim() || null });
       }
       navigate(destination, { replace: true });
@@ -137,7 +137,7 @@ export default function OnboardingPage() {
   const handleSkip = async () => {
     setSaving(true);
     await complete({ goals: [], experienceLevel: ExpLevel.Beginner, dailyReminder: false });
-    navigate("/my-day", { replace: true });
+    navigate('/my-day', { replace: true });
   };
 
   return (
@@ -149,7 +149,7 @@ export default function OnboardingPage() {
               <div
                 key={i}
                 className={`h-1.5 w-8 rounded-full transition-colors duration-200 ${
-                  i === step ? "bg-primary" : "bg-muted"
+                  i === step ? 'bg-primary' : 'bg-muted'
                 }`}
               />
             ))}
@@ -158,14 +158,14 @@ export default function OnboardingPage() {
           {step === 0 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
-                {t("onboarding2.welcomeTitle")}
+                {t('onboarding2.welcomeTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t("onboarding2.welcomeDesc")}</p>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.welcomeDesc')}</p>
               <div className="flex gap-2 pt-2">
                 <Button variant="ghost" onClick={handleSkip} disabled={saving}>
-                  {t("onboarding.skip")}
+                  {t('onboarding.skip')}
                 </Button>
-                <Button onClick={() => setStep(1)}>{t("onboarding.next")}</Button>
+                <Button onClick={() => setStep(1)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
@@ -173,9 +173,9 @@ export default function OnboardingPage() {
           {step === 1 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
-                {t("onboarding2.goalsTitle")}
+                {t('onboarding2.goalsTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t("onboarding2.goalsDesc")}</p>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.goalsDesc')}</p>
               <div className="flex flex-col gap-2">
                 {GOALS.map(({ key, icon: Icon }) => (
                   <button
@@ -183,8 +183,8 @@ export default function OnboardingPage() {
                     onClick={() => toggleGoal(key)}
                     className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       goals.includes(key)
-                        ? "border-primary bg-primary/5 shadow-neumorphic-sm"
-                        : "border-border bg-card shadow-neumorphic-sm"
+                        ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                        : 'border-border bg-card shadow-neumorphic-sm'
                     }`}
                   >
                     <Icon aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
@@ -196,9 +196,9 @@ export default function OnboardingPage() {
               </div>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={handleSkip} disabled={saving}>
-                  {t("onboarding.skip")}
+                  {t('onboarding.skip')}
                 </Button>
-                <Button onClick={() => setStep(2)}>{t("onboarding.next")}</Button>
+                <Button onClick={() => setStep(2)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
@@ -206,9 +206,9 @@ export default function OnboardingPage() {
           {step === 2 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
-                {t("onboarding2.expTitle")}
+                {t('onboarding2.expTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t("onboarding2.expDesc")}</p>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.expDesc')}</p>
               <div className="flex flex-col gap-2">
                 {EXP_LEVELS.map((level) => (
                   <button
@@ -216,14 +216,14 @@ export default function OnboardingPage() {
                     onClick={() => setExpLevel(level)}
                     className={`flex items-center gap-3 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       expLevel === level
-                        ? "border-primary bg-primary/5 shadow-neumorphic-sm"
-                        : "border-border bg-card shadow-neumorphic-sm"
+                        ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                        : 'border-border bg-card shadow-neumorphic-sm'
                     }`}
                   >
                     <Sparkles
                       aria-hidden="true"
                       className={`w-5 h-5 shrink-0 ${
-                        expLevel === level ? "text-primary" : "text-muted-foreground"
+                        expLevel === level ? 'text-primary' : 'text-muted-foreground'
                       }`}
                     />
                     <div>
@@ -236,9 +236,9 @@ export default function OnboardingPage() {
               </div>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(1)}>
-                  {t("common.back")}
+                  {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(3)}>{t("onboarding.next")}</Button>
+                <Button onClick={() => setStep(3)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
@@ -246,13 +246,13 @@ export default function OnboardingPage() {
           {step === 3 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
-                {t("onboarding2.reminderTitle")}
+                {t('onboarding2.reminderTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t("onboarding2.reminderDesc")}</p>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.reminderDesc')}</p>
               <div className="flex flex-col gap-4 text-left pt-1">
                 <ReminderRow
                   icon={Bell}
-                  label={t("settings.slotMorning")}
+                  label={t('settings.slotMorning')}
                   checked={dailyReminder}
                   time={reminderTime}
                   onToggle={setDailyReminder}
@@ -260,7 +260,7 @@ export default function OnboardingPage() {
                 />
                 <ReminderRow
                   icon={SunMedium}
-                  label={t("settings.slotDay")}
+                  label={t('settings.slotDay')}
                   checked={afternoonReminder}
                   time={afternoonTime}
                   onToggle={setAfternoonReminder}
@@ -268,7 +268,7 @@ export default function OnboardingPage() {
                 />
                 <ReminderRow
                   icon={Moon}
-                  label={t("settings.slotEvening")}
+                  label={t('settings.slotEvening')}
                   checked={eveningReminder}
                   time={eveningTime}
                   onToggle={setEveningReminder}
@@ -277,9 +277,9 @@ export default function OnboardingPage() {
               </div>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(2)}>
-                  {t("common.back")}
+                  {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(4)}>{t("onboarding.next")}</Button>
+                <Button onClick={() => setStep(4)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
@@ -287,14 +287,14 @@ export default function OnboardingPage() {
           {step === 4 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
-                {t("onboarding2.petTitle")}
+                {t('onboarding2.petTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t("onboarding2.petDesc")}</p>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.petDesc')}</p>
 
               <div className="flex justify-center py-2">
                 <div className="relative w-24 h-24 rounded-full bg-secondary flex items-center justify-center">
                   <span aria-hidden="true" className="text-5xl">
-                    {PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? "🫧"}
+                    {PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? '🫧'}
                   </span>
                   <span
                     aria-hidden="true"
@@ -308,14 +308,14 @@ export default function OnboardingPage() {
                   htmlFor="pet-name"
                   className="block text-xs font-medium text-muted-foreground mb-1.5"
                 >
-                  {t("onboarding2.petNameLabel")}
+                  {t('onboarding2.petNameLabel')}
                 </label>
                 <input
                   id="pet-name"
                   type="text"
                   value={petName}
                   onChange={(e) => setPetName(e.target.value)}
-                  placeholder={t("onboarding2.petNamePlaceholder")}
+                  placeholder={t('onboarding2.petNamePlaceholder')}
                   maxLength={24}
                   className="w-full px-4 py-2.5 rounded-xl bg-secondary text-foreground text-sm placeholder:text-muted-foreground border-none outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
@@ -323,7 +323,7 @@ export default function OnboardingPage() {
 
               <div className="text-left">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  {t("onboarding2.petChooseTitle")}
+                  {t('onboarding2.petChooseTitle')}
                 </p>
                 <div className="grid grid-cols-3 gap-2">
                   {PET_DEFINITIONS.filter((p) => STARTER_PET_TYPES.includes(p.type as never)).map(
@@ -336,15 +336,15 @@ export default function OnboardingPage() {
                           onClick={() => setPetType(pet.type)}
                           aria-pressed={isActive}
                           className={cn(
-                            "flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                            'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                             isActive
-                              ? "border-primary bg-primary/5 shadow-neumorphic-sm"
-                              : "border-border bg-card shadow-neumorphic-sm",
+                              ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                              : 'border-border bg-card shadow-neumorphic-sm',
                           )}
                         >
                           <span
                             className={cn(
-                              "w-12 h-12 rounded-full flex items-center justify-center text-2xl",
+                              'w-12 h-12 rounded-full flex items-center justify-center text-2xl',
                               pet.color,
                             )}
                           >
@@ -360,13 +360,13 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <p className="text-xs text-muted-foreground">{t("onboarding2.petMoreHint")}</p>
+              <p className="text-xs text-muted-foreground">{t('onboarding2.petMoreHint')}</p>
 
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(3)}>
-                  {t("common.back")}
+                  {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(5)}>{t("onboarding.next")}</Button>
+                <Button onClick={() => setStep(5)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
@@ -374,56 +374,56 @@ export default function OnboardingPage() {
           {step === 5 && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
-                {t("onboarding2.actionTitle")}
+                {t('onboarding2.actionTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t("onboarding2.actionDesc")}</p>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.actionDesc')}</p>
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => handleFinish("/")}
+                  onClick={() => handleFinish('/')}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <LayoutDashboard aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {t("onboarding.chooseDashboard")}
+                      {t('onboarding.chooseDashboard')}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t("onboarding.chooseDashboardDesc")}
+                      {t('onboarding.chooseDashboardDesc')}
                     </p>
                   </div>
                 </button>
                 <button
-                  onClick={() => handleFinish("/practices/breathing")}
+                  onClick={() => handleFinish('/practices/breathing')}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Wind aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {t("onboarding.chooseBreathing")}
+                      {t('onboarding.chooseBreathing')}
                     </p>
-                    <p className="text-xs text-muted-foreground">{t("breathing.subtitle")}</p>
+                    <p className="text-xs text-muted-foreground">{t('breathing.subtitle')}</p>
                   </div>
                 </button>
                 <button
-                  onClick={() => handleFinish("/tests")}
+                  onClick={() => handleFinish('/tests')}
                   className="flex items-center gap-3 p-4 rounded-xl bg-card shadow-neumorphic-sm cursor-pointer hover:opacity-90 transition-[opacity,transform] active:scale-[0.97] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <ClipboardList aria-hidden="true" className="w-5 h-5 text-primary shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {t("onboarding.chooseTest")}
+                      {t('onboarding.chooseTest')}
                     </p>
-                    <p className="text-xs text-muted-foreground">{t("tests.title")}</p>
+                    <p className="text-xs text-muted-foreground">{t('tests.title')}</p>
                   </div>
                 </button>
               </div>
               <WellnessDisclaimer variant="compact" />
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setStep(4)}>
-                  {t("common.back")}
+                  {t('common.back')}
                 </Button>
-                <Button onClick={() => handleFinish("/")} disabled={saving}>
-                  {saving ? t("common.saving") : t("onboarding.getStarted")}
+                <Button onClick={() => handleFinish('/')} disabled={saving}>
+                  {saving ? t('common.saving') : t('onboarding.getStarted')}
                 </Button>
               </div>
             </>

@@ -1,8 +1,8 @@
-import "@testing-library/jest-dom/vitest";
-import { vi } from "vitest";
-import i18n from "../i18n/i18n";
+import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
+import i18n from '../i18n/i18n';
 
-i18n.changeLanguage("en");
+i18n.changeLanguage('en');
 
 // Node ships its own built-in `localStorage` global (stable since Node 22),
 // which can shadow jsdom's window.localStorage depending on pool/isolation
@@ -30,7 +30,7 @@ function createMemoryStorage(): Storage {
   } as Storage;
 }
 
-Object.defineProperty(globalThis, "localStorage", {
+Object.defineProperty(globalThis, 'localStorage', {
   value: createMemoryStorage(),
   writable: true,
   configurable: true,
@@ -64,7 +64,7 @@ if (!window.HTMLElement.prototype.scrollIntoView) {
   window.HTMLElement.prototype.scrollIntoView = () => {};
 }
 
-Object.defineProperty(window, "matchMedia", {
+Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
@@ -78,6 +78,6 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
-vi.mock("lottie-react", () => ({
-  default: () => "lottie-mock",
+vi.mock('lottie-react', () => ({
+  default: () => 'lottie-mock',
 }));

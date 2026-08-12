@@ -1,4 +1,4 @@
-import { DistortionKey } from "./distortionsQuiz";
+import { DistortionKey } from './distortionsQuiz';
 
 export interface DistortionEntry {
   key: DistortionKey;

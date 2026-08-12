@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useSync } from "./useSync";
+import { useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSync } from './useSync';
 
 /**
  * Координатор синхронизации: на монтировании (авторизованное приложение)
@@ -12,12 +12,12 @@ export default function SyncCoordinator() {
 
   const { sync } = useSync({
     onSynced: () => {
-      void queryClient.invalidateQueries({ queryKey: ["entries"] });
-      void queryClient.invalidateQueries({ queryKey: ["creature"] });
-      void queryClient.invalidateQueries({ queryKey: ["creature", "pets"] });
-      void queryClient.invalidateQueries({ queryKey: ["testResults"] });
-      void queryClient.invalidateQueries({ queryKey: ["myFeedback"] });
-      void queryClient.invalidateQueries({ queryKey: ["achievements"] });
+      void queryClient.invalidateQueries({ queryKey: ['entries'] });
+      void queryClient.invalidateQueries({ queryKey: ['creature'] });
+      void queryClient.invalidateQueries({ queryKey: ['creature', 'pets'] });
+      void queryClient.invalidateQueries({ queryKey: ['testResults'] });
+      void queryClient.invalidateQueries({ queryKey: ['myFeedback'] });
+      void queryClient.invalidateQueries({ queryKey: ['achievements'] });
     },
   });
 

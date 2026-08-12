@@ -1,12 +1,12 @@
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
-import Lottie from "lottie-react";
-import { Lock, Check } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { usePets, useSetPet } from "./useCreature";
-import { PET_DEFINITIONS, type PetDefinition } from "./pets";
-import { usePetAnimation } from "./usePetAnimation";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import Lottie from 'lottie-react';
+import { Lock, Check } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { usePets, useSetPet } from './useCreature';
+import { PET_DEFINITIONS, type PetDefinition } from './pets';
+import { usePetAnimation } from './usePetAnimation';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const PREVIEW_COUNT = 6;
 
@@ -20,21 +20,21 @@ interface PetCardProps {
 function PetCard({ pet, isUnlocked, isActive, onSelect }: PetCardProps) {
   const { t } = useTranslation();
   const isReducedMotion = useReducedMotion();
-  const animationData = usePetAnimation(pet.type, "idle");
+  const animationData = usePetAnimation(pet.type, 'idle');
 
   return (
     <button
       onClick={() => isUnlocked && !isActive && onSelect(pet.type)}
       disabled={!isUnlocked || isActive}
       className={cn(
-        "relative w-full rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        "min-h-[92px]",
+        'relative w-full rounded-xl p-3 flex flex-col items-center gap-1.5 transition-[background-color,box-shadow,opacity,transform] duration-150',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'min-h-[92px]',
         isActive
-          ? "bg-card shadow-neumorphic-inset border-2 border-primary"
+          ? 'bg-card shadow-neumorphic-inset border-2 border-primary'
           : isUnlocked
-            ? "bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.97]"
-            : "bg-muted/40 opacity-70 cursor-not-allowed",
+            ? 'bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.97]'
+            : 'bg-muted/40 opacity-70 cursor-not-allowed',
       )}
       aria-label={t(pet.labelKey)}
       aria-pressed={isActive}
@@ -46,8 +46,8 @@ function PetCard({ pet, isUnlocked, isActive, onSelect }: PetCardProps) {
       )}
       <div
         className={cn(
-          "w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-xl shrink-0",
-          isActive ? pet.color : isUnlocked ? "bg-secondary" : "bg-muted",
+          'w-11 h-11 rounded-full overflow-hidden flex items-center justify-center text-xl shrink-0',
+          isActive ? pet.color : isUnlocked ? 'bg-secondary' : 'bg-muted',
         )}
       >
         {isUnlocked ? (
@@ -73,8 +73,8 @@ export default function PetCollection() {
   const setPet = useSetPet();
   const [showAll, setShowAll] = useState(false);
 
-  const unlocked = pets?.unlockedPetTypes ?? ["puff"];
-  const active = pets?.activePetType ?? "puff";
+  const unlocked = pets?.unlockedPetTypes ?? ['puff'];
+  const active = pets?.activePetType ?? 'puff';
 
   const visiblePets = showAll ? PET_DEFINITIONS : PET_DEFINITIONS.slice(0, PREVIEW_COUNT);
   const hiddenCount = PET_DEFINITIONS.length - PREVIEW_COUNT;
@@ -103,7 +103,7 @@ export default function PetCollection() {
           onClick={() => setShowAll(true)}
           className="w-full rounded-xl p-2.5 text-sm font-semibold text-foreground bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.99] transition-[box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {t("pets.showAll", { count: hiddenCount })}
+          {t('pets.showAll', { count: hiddenCount })}
         </button>
       )}
     </div>

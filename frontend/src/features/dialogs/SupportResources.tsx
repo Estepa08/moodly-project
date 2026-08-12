@@ -1,13 +1,13 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "../../components/ui/dialog";
-import { Button } from "../../components/ui/button";
-import { PhoneCall, Heart } from "lucide-react";
+} from '../../components/ui/dialog';
+import { Button } from '../../components/ui/button';
+import { PhoneCall, Heart } from 'lucide-react';
 
 interface Props {
   open: boolean;
@@ -16,7 +16,7 @@ interface Props {
 
 export default function SupportResources({ open, onDismiss }: Props) {
   const { t, i18n } = useTranslation();
-  const isRu = i18n.language === "ru";
+  const isRu = i18n.language === 'ru';
 
   return (
     <Dialog
@@ -32,18 +32,18 @@ export default function SupportResources({ open, onDismiss }: Props) {
               <Heart aria-hidden="true" className="w-5 h-5 text-primary" />
             </div>
             <DialogTitle className="text-lg text-foreground font-serif">
-              {t("supportResources.title")}
+              {t('supportResources.title')}
             </DialogTitle>
           </div>
           <DialogDescription className="text-sm leading-relaxed text-foreground/80">
-            {t("supportResources.body")}
+            {t('supportResources.body')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-3 rounded-xl bg-secondary/50 p-4 border border-border">
           <p className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
             <PhoneCall aria-hidden="true" className="w-3.5 h-3.5" />
-            {t("supportResources.helpline")}
+            {t('supportResources.helpline')}
           </p>
 
           {isRu ? (
@@ -66,20 +66,20 @@ export default function SupportResources({ open, onDismiss }: Props) {
               href="tel:988"
               className="block w-full text-center py-3 rounded-lg bg-primary-strong text-primary-foreground font-bold text-lg transition-colors hover:opacity-90"
             >
-              {t("supportResources.call")} 988
+              {t('supportResources.call')} 988
             </a>
           )}
           <p className="text-xs text-muted-foreground text-center mt-2">
-            {t("supportResources.localEmergency")}
+            {t('supportResources.localEmergency')}
           </p>
         </div>
 
         <p className="text-xs text-muted-foreground text-center">
-          {t("supportResources.notSubstitute")}
+          {t('supportResources.notSubstitute')}
         </p>
 
         <Button variant="outline" className="w-full" onClick={onDismiss}>
-          {t("common.close")}
+          {t('common.close')}
         </Button>
       </DialogContent>
     </Dialog>

@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { ProgressBar } from "../../components/ui/progress-bar";
-import { cn } from "../../lib/utils";
+import { useTranslation } from 'react-i18next';
+import { ProgressBar } from '../../components/ui/progress-bar';
+import { cn } from '../../lib/utils';
 
 interface CreatureStatusProps {
   level: number;
@@ -16,9 +16,9 @@ export default function CreatureStatus({ level, experience, className }: Creatur
   const expPercent = Math.min(100, Math.round((experience / nextLevelExp) * 100));
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn('flex items-center gap-2', className)}>
       <div className="px-3 py-1 rounded-full bg-primary/10 text-xs font-semibold text-primary leading-tight">
-        {t("creature.level", { level })}
+        {t('creature.level', { level })}
       </div>
       <div className="flex items-center gap-1.5 min-w-[120px]">
         <ProgressBar
@@ -26,7 +26,7 @@ export default function CreatureStatus({ level, experience, className }: Creatur
             {
               value: expPercent,
               className:
-                "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300",
+                'rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300',
             },
           ]}
           height={2.5}

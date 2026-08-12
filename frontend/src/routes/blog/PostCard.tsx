@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import { Card } from "../../components/ui/card";
-import Reveal from "../../components/Reveal";
-import { getCategoryName, formatDate, type Post } from "./posts";
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { Card } from '../../components/ui/card';
+import Reveal from '../../components/Reveal';
+import { getCategoryName, formatDate, type Post } from './posts';
 
 export function PostCard({ post, delay = 0 }: { post: Post; delay?: number }) {
   return (

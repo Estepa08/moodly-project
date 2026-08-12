@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
-import { cn } from "../../lib/utils"; // <-- два уровня
-import { EMOTION_META } from "../../lib/emotion-meta"; // <-- исправлено: ../../../
+import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
+import { cn } from '../../lib/utils'; // <-- два уровня
+import { EMOTION_META } from '../../lib/emotion-meta'; // <-- исправлено: ../../../
 
 interface EmotionWheelProps {
   selected: string[];
@@ -9,14 +9,14 @@ interface EmotionWheelProps {
 }
 
 const EMOTIONS = [
-  "joy",
-  "trust",
-  "fear",
-  "surprise",
-  "sadness",
-  "disgust",
-  "anger",
-  "anticipation",
+  'joy',
+  'trust',
+  'fear',
+  'surprise',
+  'sadness',
+  'disgust',
+  'anger',
+  'anticipation',
 ];
 
 export default function EmotionWheel({ selected, onSelect }: EmotionWheelProps) {
@@ -37,12 +37,12 @@ export default function EmotionWheel({ selected, onSelect }: EmotionWheelProps) 
             onClick={() => onSelect(key)}
             disabled={isDisabled}
             className={cn(
-              "relative p-3 rounded-lg transition-all duration-200",
-              "bg-white dark:bg-gray-800 shadow-sm hover:shadow-md",
-              "border-2 border-transparent",
-              isSelected && "border-primary ring-2 ring-primary/20",
-              isDisabled && "opacity-40 cursor-not-allowed",
-              !isDisabled && "hover:border-gray-200 dark:hover:border-gray-600",
+              'relative p-3 rounded-lg transition-all duration-200',
+              'bg-white dark:bg-gray-800 shadow-sm hover:shadow-md',
+              'border-2 border-transparent',
+              isSelected && 'border-primary ring-2 ring-primary/20',
+              isDisabled && 'opacity-40 cursor-not-allowed',
+              !isDisabled && 'hover:border-gray-200 dark:hover:border-gray-600',
             )}
           >
             <div

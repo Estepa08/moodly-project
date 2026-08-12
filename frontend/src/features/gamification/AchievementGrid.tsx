@@ -1,5 +1,5 @@
-import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 import {
   Trophy,
   Lock,
@@ -12,11 +12,11 @@ import {
   Flame,
   HelpCircle,
   Medal,
-} from "lucide-react";
-import { cn } from "../../lib/utils";
-import { useAchievements } from "./useCreature";
-import type { Achievement } from "../../lib/api";
-import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
+} from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { useAchievements } from './useCreature';
+import type { Achievement } from '../../lib/api';
+import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
 
 const CATEGORY_ICONS: Record<string, typeof Trophy> = {
   general: Star,
@@ -29,16 +29,16 @@ const CATEGORY_ICONS: Record<string, typeof Trophy> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  general: "text-accent",
-  streak: "text-warning",
-  practices: "text-primary",
-  level: "text-success",
-  breathing: "text-info",
-  mindfulness: "text-primary",
-  hidden: "text-muted-foreground",
+  general: 'text-accent',
+  streak: 'text-warning',
+  practices: 'text-primary',
+  level: 'text-success',
+  breathing: 'text-info',
+  mindfulness: 'text-primary',
+  hidden: 'text-muted-foreground',
 };
 
-const isHidden = (a: Achievement) => a.category === "hidden";
+const isHidden = (a: Achievement) => a.category === 'hidden';
 
 export default function AchievementGrid() {
   const { t } = useTranslation();
@@ -58,7 +58,7 @@ export default function AchievementGrid() {
   if (!achievements || achievements.length === 0) {
     return (
       <div className="text-center py-8 text-sm text-muted-foreground">
-        {t("progress.noAchievementsYet")}
+        {t('progress.noAchievementsYet')}
       </div>
     );
   }
@@ -82,7 +82,7 @@ export default function AchievementGrid() {
           onClick={() => setShowAll(true)}
           className="w-full rounded-xl p-2.5 text-sm font-semibold text-foreground bg-card shadow-neumorphic-sm cursor-pointer hover:shadow-elevation-2 active:scale-[0.99] transition-[box-shadow,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {t("progress.showAllAchievements", { count: rest.length })}
+          {t('progress.showAllAchievements', { count: rest.length })}
         </button>
       )}
     </div>
@@ -92,30 +92,30 @@ export default function AchievementGrid() {
 function AchievementCard({ achievement: a }: { achievement: Achievement }) {
   const { t } = useTranslation();
   const Icon = CATEGORY_ICONS[a.category] ?? Trophy;
-  const colorClass = CATEGORY_COLORS[a.category] ?? "text-muted-foreground";
+  const colorClass = CATEGORY_COLORS[a.category] ?? 'text-muted-foreground';
   const hidden = isHidden(a) && !a.unlocked;
 
   return (
     <div
       className={cn(
-        "rounded-xl p-3 flex flex-col gap-1.5 transition-[background-color,box-shadow] duration-150 min-h-[128px]",
-        a.unlocked || a.progress > 0 || hidden ? "bg-card shadow-neumorphic-sm" : "bg-muted/30",
-        hidden && "border border-dashed",
+        'rounded-xl p-3 flex flex-col gap-1.5 transition-[background-color,box-shadow] duration-150 min-h-[128px]',
+        a.unlocked || a.progress > 0 || hidden ? 'bg-card shadow-neumorphic-sm' : 'bg-muted/30',
+        hidden && 'border border-dashed',
       )}
     >
       <div className="flex items-start justify-between">
         <div
           className={cn(
-            "w-7 h-7 rounded-full flex items-center justify-center",
+            'w-7 h-7 rounded-full flex items-center justify-center',
             a.unlocked
-              ? `${CATEGORY_COLORS[a.category] ?? "text-primary"}/10`
+              ? `${CATEGORY_COLORS[a.category] ?? 'text-primary'}/10`
               : hidden
-                ? "bg-muted/60"
-                : "bg-muted",
+                ? 'bg-muted/60'
+                : 'bg-muted',
           )}
         >
           {a.unlocked ? (
-            <Icon aria-hidden="true" className={cn("w-3.5 h-3.5", colorClass)} />
+            <Icon aria-hidden="true" className={cn('w-3.5 h-3.5', colorClass)} />
           ) : (
             <Lock aria-hidden="true" className="w-3 h-3 text-muted-foreground" />
           )}
@@ -125,11 +125,11 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
       <div className="min-w-0">
         <p
           className={cn(
-            "text-xs font-semibold truncate",
-            a.unlocked || !hidden ? "text-foreground" : "text-muted-foreground",
+            'text-xs font-semibold truncate',
+            a.unlocked || !hidden ? 'text-foreground' : 'text-muted-foreground',
           )}
         >
-          {hidden ? t("progress.mysteryHint") : t(a.titleKey)}
+          {hidden ? t('progress.mysteryHint') : t(a.titleKey)}
         </p>
         <p className="text-[11px] leading-tight mt-0.5 line-clamp-2 text-muted-foreground">
           {t(a.descKey)}
@@ -139,7 +139,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
         <div className="inline-flex items-center gap-1 self-start rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
           <Medal aria-hidden="true" className="w-3 h-3 shrink-0" />
           <span className="truncate">
-            {TITLE_EMOJI[a.titleReward] ?? "🎖️"} {t(TITLE_MAP[a.titleReward] ?? a.titleReward)}
+            {TITLE_EMOJI[a.titleReward] ?? '🎖️'} {t(TITLE_MAP[a.titleReward] ?? a.titleReward)}
           </span>
         </div>
       )}

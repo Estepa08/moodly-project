@@ -1,7 +1,7 @@
-import { uuidv7 } from "@moodly/shared";
-import { api, type SyncAction, type SyncChange } from "../api";
-import { getDb, getCursor, setCursor, type PushEntity, type SyncOutboxItem } from "./db";
-import { emit, setSyncStatus } from "./syncStatus";
+import { uuidv7 } from '@moodly/shared';
+import { api, type SyncAction, type SyncChange } from '../api';
+import { getDb, getCursor, setCursor, type PushEntity, type SyncOutboxItem } from './db';
+import { emit, setSyncStatus } from './syncStatus';
 
 let flushing = false;
 let pulling = false;
@@ -13,7 +13,7 @@ function nowIso(): string {
 /** Ставит операцию в офлайн-очередь и сразу пытается отправить её на сервер. */
 export async function enqueue(
   entity: PushEntity,
-  action: "upsert" | "delete",
+  action: 'upsert' | 'delete',
   entityId: string,
   payload: Record<string, unknown> = {},
 ): Promise<void> {
@@ -40,9 +40,9 @@ export async function flushOutbox(): Promise<number> {
   if (flushing) return 0;
   flushing = true;
   try {
-    const items = await getDb().outbox.orderBy("createdAt").toArray();
+    const items = await getDb().outbox.orderBy('createdAt').toArray();
     if (items.length === 0) return 0;
-    setSyncStatus("syncing");
+    setSyncStatus('syncing');
 
     const actions: SyncAction[] = items.map((it) => ({
       entity: it.entity,
@@ -65,15 +65,15 @@ export async function flushOutbox(): Promise<number> {
 
 async function applyLocal(entity: string, c: SyncChange): Promise<void> {
   const db = getDb();
-  if (c.action === "delete") {
+  if (c.action === 'delete') {
     switch (entity) {
-      case "entry":
+      case 'entry':
         await db.entries.delete(c.id);
         return;
-      case "feedback":
+      case 'feedback':
         await db.feedback.delete(c.id);
         return;
-      case "testResult":
+      case 'testResult':
         await db.testResults.delete(c.id);
         return;
     }
@@ -83,40 +83,40 @@ async function applyLocal(entity: string, c: SyncChange): Promise<void> {
   // LWW: локальная запись с более новым updatedAt не затирается дельтой сервера.
   const record = { id: c.id, ...c.data, updatedAt: c.updatedAt };
   switch (entity) {
-    case "entry": {
+    case 'entry': {
       const existing = await db.entries.get(c.id);
-      if (!existing || (existing.updatedAt ?? "") <= c.updatedAt) {
+      if (!existing || (existing.updatedAt ?? '') <= c.updatedAt) {
         await db.entries.put(record as never);
       }
       return;
     }
-    case "feedback": {
+    case 'feedback': {
       const existing = await db.feedback.get(c.id);
-      if (!existing || (existing.updatedAt ?? "") <= c.updatedAt) {
+      if (!existing || (existing.updatedAt ?? '') <= c.updatedAt) {
         await db.feedback.put(record as never);
       }
       return;
     }
-    case "testResult": {
+    case 'testResult': {
       const existing = await db.testResults.get(c.id);
-      if (!existing || (existing.updatedAt ?? "") <= c.updatedAt) {
+      if (!existing || (existing.updatedAt ?? '') <= c.updatedAt) {
         await db.testResults.put(record as never);
       }
       return;
     }
-    case "creatureState": {
+    case 'creatureState': {
       // Локальное зеркало singleton-строки: фиксированный ключ, LWW по updatedAt.
-      const existing = await db.creature.get("creature-profile");
-      if (!existing || (existing.updatedAt ?? "") <= c.updatedAt) {
-        await db.creature.put({ ...record, id: "creature-profile" } as never);
+      const existing = await db.creature.get('creature-profile');
+      if (!existing || (existing.updatedAt ?? '') <= c.updatedAt) {
+        await db.creature.put({ ...record, id: 'creature-profile' } as never);
       }
       return;
     }
-    case "userAchievement": {
+    case 'userAchievement': {
       // Ключ локально — achievementId (стабильный id достижения из каталога).
       const achievementId = (c.data.achievementId as string | undefined) ?? c.id;
       const existing = await db.achievements.get(achievementId);
-      if (!existing || (existing.updatedAt ?? "") <= c.updatedAt) {
+      if (!existing || (existing.updatedAt ?? '') <= c.updatedAt) {
         await db.achievements.put({ ...record, id: achievementId } as never);
       }
       return;
@@ -132,7 +132,7 @@ export async function pullChanges(): Promise<number> {
   pulling = true;
   try {
     let since = await getCursor();
-    let sinceId = "";
+    let sinceId = '';
     let total = 0;
 
     for (;;) {

@@ -1,14 +1,14 @@
-import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { BrainCircuit } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import PeriodSelect from "../components/ui/PeriodSelect";
-import Spinner from "../components/ui/spinner";
-import { Period } from "../lib/constants";
-import { getDateRange } from "../lib/utils";
-import { useEntries } from "../hooks/useEntries";
-import { useParameters } from "../hooks/useParameters";
-import { computeDistortionStats, type DistortionStat } from "../lib/distortionStats";
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BrainCircuit } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import PeriodSelect from '../components/ui/PeriodSelect';
+import Spinner from '../components/ui/spinner';
+import { Period } from '../lib/constants';
+import { getDateRange } from '../lib/utils';
+import { useEntries } from '../hooks/useEntries';
+import { useParameters } from '../hooks/useParameters';
+import { computeDistortionStats, type DistortionStat } from '../lib/distortionStats';
 
 interface DistortionStatsCardProps {
   period: Period;
@@ -47,16 +47,16 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
           </p>
           {s.avgMood !== null && s.moodDelta !== null && (
             <p className="text-xs text-muted-foreground">
-              {t("distortionStats.moodVsBaseline", {
+              {t('distortionStats.moodVsBaseline', {
                 value: formatMood(s.avgMood),
-                delta: `${positive ? "+" : ""}${formatMood(s.moodDelta)}`,
+                delta: `${positive ? '+' : ''}${formatMood(s.moodDelta)}`,
               })}
             </p>
           )}
         </div>
         <span
           className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
-          style={{ color: "#7B5BF2", backgroundColor: "#EDE7FC" }}
+          style={{ color: '#7B5BF2', backgroundColor: '#EDE7FC' }}
         >
           {s.count}
         </span>
@@ -70,15 +70,15 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
         <div className="space-y-1">
           <CardTitle className="text-base flex items-center gap-2">
             <BrainCircuit aria-hidden="true" className="w-4 h-4 text-accent" />
-            {t("distortionStats.title")}
+            {t('distortionStats.title')}
           </CardTitle>
-          <p className="text-xs text-muted-foreground">{t("distortionStats.subtitle")}</p>
+          <p className="text-xs text-muted-foreground">{t('distortionStats.subtitle')}</p>
         </div>
         <PeriodSelect value={period} onChange={onPeriodChange} className="w-full sm:w-44" />
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="flex justify-center py-10" aria-label={t("dashboard.practicesLoading")}>
+          <div className="flex justify-center py-10" aria-label={t('dashboard.practicesLoading')}>
             <Spinner />
           </div>
         ) : result && result.sufficient ? (
@@ -86,15 +86,15 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
             {result.baseline !== null && (
               <div className="flex items-center justify-between rounded-lg bg-muted/60 px-3 py-2">
                 <span className="text-xs text-muted-foreground">
-                  {t("distortionStats.baseline", { value: formatMood(result.baseline) })}
+                  {t('distortionStats.baseline', { value: formatMood(result.baseline) })}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {t("distortionStats.taggedDays", { count: result.stats.length })}
+                  {t('distortionStats.taggedDays', { count: result.stats.length })}
                 </span>
               </div>
             )}
             <div className="space-y-2">{result.stats.slice(0, 5).map(renderRow)}</div>
-            <p className="text-xs text-muted-foreground">{t("distortionStats.statsHint")}</p>
+            <p className="text-xs text-muted-foreground">{t('distortionStats.statsHint')}</p>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-10 px-6 text-center">
@@ -102,10 +102,10 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
               <BrainCircuit aria-hidden="true" className="w-6 h-6 text-muted-foreground" />
             </div>
             <p className="text-sm font-medium text-foreground mb-1">
-              {t("distortionStats.emptyTitle")}
+              {t('distortionStats.emptyTitle')}
             </p>
             <p className="text-xs text-muted-foreground max-w-xs">
-              {t("distortionStats.emptyDesc")}
+              {t('distortionStats.emptyDesc')}
             </p>
           </div>
         )}

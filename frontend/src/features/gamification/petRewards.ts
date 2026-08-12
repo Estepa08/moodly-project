@@ -1,16 +1,16 @@
-import { isEmpathyMood } from "@moodly/shared";
-import type { PetResponse } from "../../lib/api";
+import { isEmpathyMood } from '@moodly/shared';
+import type { PetResponse } from '../../lib/api';
 
 // Типы наград-анимаций: каждая механика клика по компаньону имеет уникальную
 // анимацию (см. docs/companion-gamified-rewards.svg).
 export type PetRewardKind =
-  | "none"
-  | "standard" // каждый 3-й клик: +1 XP, золотые звёздочки
-  | "morning" // «Бодрое утро» (6–12): +2 XP, солнечные зайчики
-  | "evening" // «Спокойный вечер» (20–23): +1 XP +1 calmness, волны
-  | "combo" // «Комбо» x5: +3 XP, взрыв искр
-  | "welcome" // «Возвращение» (пауза > 4 ч): +2 XP, сердечки
-  | "empathy"; // «Эмпатия» (грусть/тревога): +1 XP +2 comfort, капли → звёзды
+  | 'none'
+  | 'standard' // каждый 3-й клик: +1 XP, золотые звёздочки
+  | 'morning' // «Бодрое утро» (6–12): +2 XP, солнечные зайчики
+  | 'evening' // «Спокойный вечер» (20–23): +1 XP +1 calmness, волны
+  | 'combo' // «Комбо» x5: +3 XP, взрыв искр
+  | 'welcome' // «Возвращение» (пауза > 4 ч): +2 XP, сердечки
+  | 'empathy'; // «Эмпатия» (грусть/тревога): +1 XP +2 comfort, капли → звёзды
 
 export interface PetRewardSignal {
   /** Уникальный id события — по нему рестартует анимация частиц */
@@ -52,13 +52,13 @@ export function buildRewardSignal(data: PetResponse): PetRewardSignal {
   const evening = b?.evening ?? false;
   const empathy = b?.empathy ?? false;
 
-  let kind: PetRewardKind = "none";
-  if (welcome) kind = "welcome";
-  else if (comboBonusAwarded) kind = "combo";
-  else if (morning) kind = "morning";
-  else if (evening) kind = "evening";
-  else if (empathy) kind = "empathy";
-  else if (data.xpAwarded > 0) kind = "standard";
+  let kind: PetRewardKind = 'none';
+  if (welcome) kind = 'welcome';
+  else if (comboBonusAwarded) kind = 'combo';
+  else if (morning) kind = 'morning';
+  else if (evening) kind = 'evening';
+  else if (empathy) kind = 'empathy';
+  else if (data.xpAwarded > 0) kind = 'standard';
 
   return {
     id: Date.now() + Math.random(),

@@ -13,21 +13,21 @@ export function asBufferSource(bytes: Uint8Array): BufferSource {
  * 600k итераций PBKDF2-SHA256 — приемлемый компромисс для WebCrypto.
  */
 export async function deriveKek(secret: string, salt: Uint8Array): Promise<CryptoKey> {
-  const baseKey = await crypto.subtle.importKey("raw", encoder.encode(secret), "PBKDF2", false, [
-    "deriveKey",
+  const baseKey = await crypto.subtle.importKey('raw', encoder.encode(secret), 'PBKDF2', false, [
+    'deriveKey',
   ]);
 
   return crypto.subtle.deriveKey(
     {
-      name: "PBKDF2",
-      hash: "SHA-256",
+      name: 'PBKDF2',
+      hash: 'SHA-256',
       salt: asBufferSource(salt),
       iterations: PBKDF2_ITERATIONS,
     },
     baseKey,
-    { name: "AES-GCM", length: KEY_LENGTH_BITS },
+    { name: 'AES-GCM', length: KEY_LENGTH_BITS },
     false,
-    ["encrypt", "decrypt"],
+    ['encrypt', 'decrypt'],
   );
 }
 
@@ -37,7 +37,7 @@ export function generateSalt(bytes = 16): Uint8Array {
 }
 
 export function toBase64(bytes: Uint8Array): string {
-  let binary = "";
+  let binary = '';
   for (const b of bytes) binary += String.fromCharCode(b);
   return btoa(binary);
 }

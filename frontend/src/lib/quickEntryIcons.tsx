@@ -11,19 +11,19 @@ export interface ParamIconConfig {
 
 export const PARAM_ICON_CONFIGS: ParamIconConfig[] = [
   {
-    parameterName: "Mood",
-    labelKey: "dashboard.quickEntry.paramMood",
+    parameterName: 'Mood',
+    labelKey: 'dashboard.quickEntry.paramMood',
   },
   {
-    parameterName: "Anxiety",
-    labelKey: "dashboard.quickEntry.paramAnxiety",
+    parameterName: 'Anxiety',
+    labelKey: 'dashboard.quickEntry.paramAnxiety',
   },
   {
-    parameterName: "Sleep",
-    labelKey: "dashboard.quickEntry.paramSleep",
+    parameterName: 'Sleep',
+    labelKey: 'dashboard.quickEntry.paramSleep',
   },
   {
-    parameterName: "Energy",
-    labelKey: "dashboard.quickEntry.paramEnergy",
+    parameterName: 'Energy',
+    labelKey: 'dashboard.quickEntry.paramEnergy',
   },
 ];

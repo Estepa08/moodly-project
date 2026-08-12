@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
-import ru from "../../../i18n/locales/ru/translation.json";
-import en from "../../../i18n/locales/en/translation.json";
+import { describe, it, expect } from 'vitest';
+import ru from '../../../i18n/locales/ru/translation.json';
+import en from '../../../i18n/locales/en/translation.json';
 
-const KEYS = ["replay", "close", "thanks"] as const;
+const KEYS = ['replay', 'close', 'thanks'] as const;
 
-describe("petSpeech i18n phrases", () => {
-  it("RU содержит все ключи petSpeech с непустыми значениями", () => {
+describe('petSpeech i18n phrases', () => {
+  it('RU содержит все ключи petSpeech с непустыми значениями', () => {
     const section = (ru as unknown as Record<string, Record<string, string>>).petSpeech;
     expect(section).toBeDefined();
     for (const key of KEYS) {
@@ -14,7 +14,7 @@ describe("petSpeech i18n phrases", () => {
     }
   });
 
-  it("EN содержит все ключи petSpeech с непустыми значениями", () => {
+  it('EN содержит все ключи petSpeech с непустыми значениями', () => {
     const section = (en as unknown as Record<string, Record<string, string>>).petSpeech;
     expect(section).toBeDefined();
     for (const key of KEYS) {

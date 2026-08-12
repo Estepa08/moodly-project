@@ -14,7 +14,7 @@ import {
   BarChart3,
   type LucideIcon,
   FlaskConical,
-} from "lucide-react";
+} from 'lucide-react';
 
 export interface NavItem {
   labelKey: string;
@@ -24,60 +24,60 @@ export interface NavItem {
 }
 
 export const DASHBOARD_ITEM: NavItem = {
-  labelKey: "nav.myDay",
-  shortLabelKey: "nav.short.myDay",
-  path: "/my-day",
+  labelKey: 'nav.myDay',
+  shortLabelKey: 'nav.short.myDay',
+  path: '/my-day',
   icon: LayoutDashboard,
 };
 
 export const STATISTICS_ITEM: NavItem = {
-  labelKey: "nav.statistics",
-  shortLabelKey: "nav.short.statistics",
-  path: "/statistics",
+  labelKey: 'nav.statistics',
+  shortLabelKey: 'nav.short.statistics',
+  path: '/statistics',
   icon: BarChart3,
 };
 
 export const PRACTICE_ITEMS: NavItem[] = [
   {
-    labelKey: "nav.thoughtJournal",
-    shortLabelKey: "nav.short.thoughtJournal",
-    path: "/practices/thought-journal",
+    labelKey: 'nav.thoughtJournal',
+    shortLabelKey: 'nav.short.thoughtJournal',
+    path: '/practices/thought-journal',
     icon: BookOpen,
   },
   {
-    labelKey: "nav.gratitude",
-    shortLabelKey: "nav.short.gratitude",
-    path: "/practices/gratitude",
+    labelKey: 'nav.gratitude',
+    shortLabelKey: 'nav.short.gratitude',
+    path: '/practices/gratitude',
     icon: Heart,
   },
   {
-    labelKey: "nav.distortions",
-    shortLabelKey: "nav.short.distortions",
-    path: "/practices/distortions",
+    labelKey: 'nav.distortions',
+    shortLabelKey: 'nav.short.distortions',
+    path: '/practices/distortions',
     icon: BrainCircuit,
   },
   {
-    labelKey: "nav.sleepHygiene",
-    shortLabelKey: "nav.short.sleepHygiene",
-    path: "/practices/sleep-hygiene",
+    labelKey: 'nav.sleepHygiene',
+    shortLabelKey: 'nav.short.sleepHygiene',
+    path: '/practices/sleep-hygiene',
     icon: Moon,
   },
   {
-    labelKey: "nav.cba",
-    shortLabelKey: "nav.short.cba",
-    path: "/practices/cost-benefit-analysis",
+    labelKey: 'nav.cba',
+    shortLabelKey: 'nav.short.cba',
+    path: '/practices/cost-benefit-analysis',
     icon: Scale,
   },
   {
-    labelKey: "nav.breathing",
-    shortLabelKey: "nav.short.breathing",
-    path: "/practices/breathing",
+    labelKey: 'nav.breathing',
+    shortLabelKey: 'nav.short.breathing',
+    path: '/practices/breathing',
     icon: Wind,
   },
   {
-    labelKey: "nav.emotionLab",
-    shortLabelKey: "nav.short.emotionLab",
-    path: "/practices/emotion-lab",
+    labelKey: 'nav.emotionLab',
+    shortLabelKey: 'nav.short.emotionLab',
+    path: '/practices/emotion-lab',
     icon: FlaskConical,
   },
 ];
@@ -85,15 +85,15 @@ export const PRACTICE_ITEMS: NavItem[] = [
 export const OTHER_ITEMS: NavItem[] = [
   STATISTICS_ITEM,
   {
-    labelKey: "nav.progress",
-    shortLabelKey: "nav.short.progress",
-    path: "/progress",
+    labelKey: 'nav.progress',
+    shortLabelKey: 'nav.short.progress',
+    path: '/progress',
     icon: Trophy,
   },
   {
-    labelKey: "nav.settings",
-    shortLabelKey: "nav.short.settings",
-    path: "/settings",
+    labelKey: 'nav.settings',
+    shortLabelKey: 'nav.short.settings',
+    path: '/settings',
     icon: Settings,
   },
 ];
@@ -101,24 +101,24 @@ export const OTHER_ITEMS: NavItem[] = [
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
   DASHBOARD_ITEM,
   {
-    labelKey: "nav.practices",
-    shortLabelKey: "nav.short.practices",
-    path: "/practices",
+    labelKey: 'nav.practices',
+    shortLabelKey: 'nav.short.practices',
+    path: '/practices',
     icon: Sparkles,
   },
   STATISTICS_ITEM,
   {
-    labelKey: "nav.progress",
-    shortLabelKey: "nav.short.progress",
-    path: "/progress",
+    labelKey: 'nav.progress',
+    shortLabelKey: 'nav.short.progress',
+    path: '/progress',
     icon: Trophy,
   },
-  { labelKey: "nav.profile", shortLabelKey: "nav.short.profile", path: "/settings", icon: User },
+  { labelKey: 'nav.profile', shortLabelKey: 'nav.short.profile', path: '/settings', icon: User },
 ];
 
 export const ADMIN_ITEM: NavItem = {
-  labelKey: "nav.admin",
-  shortLabelKey: "nav.short.admin",
-  path: "/admin",
+  labelKey: 'nav.admin',
+  shortLabelKey: 'nav.short.admin',
+  path: '/admin',
   icon: ShieldCheck,
 };

@@ -1,16 +1,16 @@
-import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { Sparkles } from "lucide-react";
-import PetAvatar from "./PetAvatar";
-import { PET_DEFINITIONS } from "./pets";
-import { usePets } from "./useCreature";
-import { usePetReward } from "./usePetReward";
-import { StreakIndicator } from "./index";
-import { ProgressBar } from "../../components/ui/progress-bar";
-import { EXP_PER_LEVEL, ENERGY_COLOR } from "../../lib/constants";
-import { PET_CYCLE } from "@moodly/shared";
-import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
-import type { CreatureState } from "../../lib/api";
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Sparkles } from 'lucide-react';
+import PetAvatar from './PetAvatar';
+import { PET_DEFINITIONS } from './pets';
+import { usePets } from './useCreature';
+import { usePetReward } from './usePetReward';
+import { StreakIndicator } from './index';
+import { ProgressBar } from '../../components/ui/progress-bar';
+import { EXP_PER_LEVEL, ENERGY_COLOR } from '../../lib/constants';
+import { PET_CYCLE } from '@moodly/shared';
+import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
+import type { CreatureState } from '../../lib/api';
 
 interface ProgressHeroProps {
   creature: CreatureState;
@@ -21,18 +21,18 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { data: pets } = usePets();
   const { reward, glow, handlePet } = usePetReward();
 
-  const petType = pets?.activePetType ?? "puff";
+  const petType = pets?.activePetType ?? 'puff';
   const petName =
     pets?.petName?.trim() ||
-    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
+    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? 'pets.puff');
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
 
   const petCount = creature.petCount ?? 0;
   const cyclePosition = (petCount % PET_CYCLE) + 1;
   const title = creature.activeTitle ?? null;
-  const titleEmoji = title ? (TITLE_EMOJI[title] ?? "🎖️") : null;
-  const titleLabel = title ? t(TITLE_MAP[title] ?? "progress.noTitle") : null;
+  const titleEmoji = title ? (TITLE_EMOJI[title] ?? '🎖️') : null;
+  const titleLabel = title ? t(TITLE_MAP[title] ?? 'progress.noTitle') : null;
 
   const energy = creature.energy ?? 100;
   const energyPercent = Math.max(0, Math.min(100, energy));
@@ -78,11 +78,11 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <span className="px-3 py-0.5 rounded-full bg-primary/10 text-xs font-bold text-primary">
-              {t("creature.level", { level: creature.level })}
+              {t('creature.level', { level: creature.level })}
             </span>
             <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-accent/10 text-xs font-semibold text-accent">
               <Sparkles aria-hidden="true" className="w-3 h-3" />
-              {t(`petStage.${creature.stage ?? "baby"}`)}
+              {t(`petStage.${creature.stage ?? 'baby'}`)}
             </span>
             {title && titleEmoji && (
               <span
@@ -106,7 +106,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
                   {
                     value: expPercent,
                     className:
-                      "rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300",
+                      'rounded-full bg-primary shadow-neumorphic-sm transition-[width] duration-300',
                   },
                 ]}
                 height={4}

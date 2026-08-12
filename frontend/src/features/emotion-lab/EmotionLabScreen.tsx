@@ -1,22 +1,22 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { FlaskConical } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { Card, CardContent } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { ProgressBar } from "../../components/ui/progress-bar";
-import Spinner from "../../components/ui/spinner";
-import { useRewardPractice, PracticeSource } from "../gamification";
-import EmotionWheel from "./EmotionWheel";
-import EmotionResult from "./EmotionResult";
-import EmotionJournal from "./EmotionJournal";
-import EmotionLimit from "./EmotionLimit";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { FlaskConical } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { ProgressBar } from '../../components/ui/progress-bar';
+import Spinner from '../../components/ui/spinner';
+import { useRewardPractice, PracticeSource } from '../gamification';
+import EmotionWheel from './EmotionWheel';
+import EmotionResult from './EmotionResult';
+import EmotionJournal from './EmotionJournal';
+import EmotionLimit from './EmotionLimit';
 import {
   useEmotionLabState,
   useEmotionLabAttempt,
   type EmotionLabAttemptResponse,
-} from "./useEmotionLab";
+} from './useEmotionLab';
 
 export default function EmotionLabScreen() {
   const { t } = useTranslation();
@@ -65,7 +65,7 @@ export default function EmotionLabScreen() {
   if (isError || !state) {
     return (
       <div className="text-center py-16 text-sm text-muted-foreground">
-        {t("emotionLab.loadError")}
+        {t('emotionLab.loadError')}
       </div>
     );
   }
@@ -75,18 +75,18 @@ export default function EmotionLabScreen() {
       {/* Заголовок */}
       <div className="text-center">
         <h2 className="text-xl font-semibold text-foreground font-serif">
-          {t("emotionLab.title")}
+          {t('emotionLab.title')}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">{t("emotionLab.subtitle")}</p>
+        <p className="text-sm text-muted-foreground mt-1">{t('emotionLab.subtitle')}</p>
       </div>
 
       {/* Попытки на сегодня */}
       <Card className="shadow-elevation-2">
         <CardContent className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-foreground">{t("emotionLab.attemptsTitle")}</p>
+            <p className="text-sm font-medium text-foreground">{t('emotionLab.attemptsTitle')}</p>
             <p className="text-sm font-bold text-primary">
-              {state.attemptsUsed} {t("emotionLab.of")} {state.dailyLimit}
+              {state.attemptsUsed} {t('emotionLab.of')} {state.dailyLimit}
             </p>
           </div>
           <ProgressBar
@@ -95,7 +95,7 @@ export default function EmotionLabScreen() {
             segments={[
               {
                 value: state.dailyLimit > 0 ? (state.attemptsUsed / state.dailyLimit) * 100 : 0,
-                className: "bg-primary",
+                className: 'bg-primary',
               },
             ]}
             className="w-full"
@@ -105,7 +105,7 @@ export default function EmotionLabScreen() {
 
       {/* Результат последней попытки */}
       {result && (
-        <div className={cn("animate-in fade-in slide-in-from-bottom-2 duration-300")}>
+        <div className={cn('animate-in fade-in slide-in-from-bottom-2 duration-300')}>
           <EmotionResult result={result} />
         </div>
       )}
@@ -116,7 +116,7 @@ export default function EmotionLabScreen() {
           tier={state.tier}
           dailyLimit={state.dailyLimit}
           resetsAt={state.resetsAt}
-          onLearnMore={() => navigate("/settings")}
+          onLearnMore={() => navigate('/settings')}
         />
       ) : (
         <>
@@ -125,26 +125,26 @@ export default function EmotionLabScreen() {
             <CardContent className="p-5">
               <EmotionWheel selected={selected} onSelect={toggleEmotion} />
               <p className="text-center text-xs text-muted-foreground mt-4">
-                {t("emotionLab.pickHint")}
+                {t('emotionLab.pickHint')}
               </p>
 
               <div className="mt-4 flex items-center justify-center gap-3">
                 {selected.length === 0 ? (
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <FlaskConical aria-hidden="true" className="w-4 h-4" />
-                    {t("emotionLab.mixPlaceholder")}
+                    {t('emotionLab.mixPlaceholder')}
                   </div>
                 ) : (
                   <>
                     <span className="text-sm font-medium text-foreground">
-                      {t("emotionLab.mixReady")}
+                      {t('emotionLab.mixReady')}
                     </span>
                     <Button
                       onClick={handleMix}
                       disabled={selected.length !== 2 || attempt.isPending}
                       size="lg"
                     >
-                      {attempt.isPending ? t("emotionLab.mixing") : t("emotionLab.mix")}
+                      {attempt.isPending ? t('emotionLab.mixing') : t('emotionLab.mix')}
                     </Button>
                   </>
                 )}
@@ -154,7 +154,7 @@ export default function EmotionLabScreen() {
 
           {/* Журнал открытий */}
           <Card className="shadow-elevation-2">
-            <CardContent className={cn("p-5")}>
+            <CardContent className={cn('p-5')}>
               <EmotionJournal state={state} />
             </CardContent>
           </Card>

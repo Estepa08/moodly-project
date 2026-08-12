@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { ArrowRight, Wind, BookOpen, Heart, Moon, HeartHandshake } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Card } from "../../components/ui/card";
-import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Wind, BookOpen, Heart, Moon, HeartHandshake } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
+import Reveal from '../../components/Reveal';
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from '../../lib/seo';
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -13,7 +13,7 @@ import {
   CtaBanner,
   SeoDisclaimer,
   SeoFooter,
-} from "./seo-components";
+} from './seo-components';
 
 const PRACTICE_ICONS = [Wind, BookOpen, Heart, Moon];
 
@@ -26,15 +26,15 @@ export default function AnxietySelfHelpPage() {
   }));
 
   useSeo({
-    title: t("seoPages.anxietySelfHelp.meta.title"),
-    description: t("seoPages.anxietySelfHelp.meta.description"),
-    canonical: withCanonical("/anxiety-self-help"),
+    title: t('seoPages.anxietySelfHelp.meta.title'),
+    description: t('seoPages.anxietySelfHelp.meta.description'),
+    canonical: withCanonical('/anxiety-self-help'),
     jsonLd: [
       breadcrumbLd([
-        { name: t("seoPages.anxietySelfHelp.breadcrumb.home"), url: withCanonical("/") },
+        { name: t('seoPages.anxietySelfHelp.breadcrumb.home'), url: withCanonical('/') },
         {
-          name: t("seoPages.anxietySelfHelp.breadcrumb.current"),
-          url: withCanonical("/anxiety-self-help"),
+          name: t('seoPages.anxietySelfHelp.breadcrumb.current'),
+          url: withCanonical('/anxiety-self-help'),
         },
       ]),
       faqPageLd(faq),
@@ -46,8 +46,8 @@ export default function AnxietySelfHelpPage() {
       <SeoHeader />
       <SeoBreadcrumbs
         items={[
-          { label: t("seoPages.anxietySelfHelp.breadcrumb.home"), to: "/" },
-          { label: t("seoPages.anxietySelfHelp.breadcrumb.current") },
+          { label: t('seoPages.anxietySelfHelp.breadcrumb.home'), to: '/' },
+          { label: t('seoPages.anxietySelfHelp.breadcrumb.current') },
         ]}
       />
 
@@ -57,24 +57,24 @@ export default function AnxietySelfHelpPage() {
           <Reveal>
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-                {t("seoPages.anxietySelfHelp.hero.title")}{" "}
-                <span className="text-primary">{t("seoPages.anxietySelfHelp.hero.accent")}</span>
+                {t('seoPages.anxietySelfHelp.hero.title')}{' '}
+                <span className="text-primary">{t('seoPages.anxietySelfHelp.hero.accent')}</span>
               </h1>
               <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
-                {t("seoPages.anxietySelfHelp.hero.sub1")}
+                {t('seoPages.anxietySelfHelp.hero.sub1')}
               </p>
               <p className="mt-2 text-muted-foreground text-base leading-relaxed max-w-xl">
-                {t("seoPages.anxietySelfHelp.hero.sub2")}
+                {t('seoPages.anxietySelfHelp.hero.sub2')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" asChild>
                   <Link to="/register">
-                    {t("seoPages.anxietySelfHelp.hero.ctaPrimary")}
+                    {t('seoPages.anxietySelfHelp.hero.ctaPrimary')}
                     <ArrowRight aria-hidden="true" className="w-5 h-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/anxiety-test">{t("seoPages.anxietySelfHelp.hero.ctaSecondary")}</Link>
+                  <Link to="/anxiety-test">{t('seoPages.anxietySelfHelp.hero.ctaSecondary')}</Link>
                 </Button>
               </div>
             </div>
@@ -85,15 +85,15 @@ export default function AnxietySelfHelpPage() {
               <div className="flex items-center gap-2">
                 <HeartHandshake aria-hidden="true" className="w-5 h-5 text-primary" />
                 <p className="font-bold text-foreground">
-                  {t("seoPages.anxietySelfHelp.mock.title")}
+                  {t('seoPages.anxietySelfHelp.mock.title')}
                 </p>
               </div>
               <p className="mt-4 text-sm text-foreground">
-                {t("seoPages.anxietySelfHelp.mock.text")}
+                {t('seoPages.anxietySelfHelp.mock.text')}
               </p>
               <div className="mt-4 rounded-xl bg-secondary/70 p-4">
                 <p className="text-xs font-semibold text-primary uppercase tracking-wide">
-                  {t("seoPages.anxietySelfHelp.mock.stepTitle")}
+                  {t('seoPages.anxietySelfHelp.mock.stepTitle')}
                 </p>
                 {[1, 2, 3].map((i) => (
                   <p key={i} className="mt-1 text-sm text-foreground">
@@ -108,8 +108,8 @@ export default function AnxietySelfHelpPage() {
         {/* Practices */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.anxietySelfHelp.practices.kicker")}
-            title={t("seoPages.anxietySelfHelp.practices.title")}
+            kicker={t('seoPages.anxietySelfHelp.practices.kicker')}
+            title={t('seoPages.anxietySelfHelp.practices.title')}
           />
           <div className="mt-8 grid sm:grid-cols-2 gap-4">
             {[0, 1, 2, 3].map((i) => {
@@ -135,11 +135,11 @@ export default function AnxietySelfHelpPage() {
         {/* When to seek help */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.anxietySelfHelp.help.kicker")}
-            title={t("seoPages.anxietySelfHelp.help.title")}
+            kicker={t('seoPages.anxietySelfHelp.help.kicker')}
+            title={t('seoPages.anxietySelfHelp.help.title')}
             text={[
-              t("seoPages.anxietySelfHelp.help.text1"),
-              t("seoPages.anxietySelfHelp.help.text2"),
+              t('seoPages.anxietySelfHelp.help.text1'),
+              t('seoPages.anxietySelfHelp.help.text2'),
             ]}
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
@@ -161,8 +161,8 @@ export default function AnxietySelfHelpPage() {
         {/* How moodly helps */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.anxietySelfHelp.how.kicker")}
-            title={t("seoPages.anxietySelfHelp.how.title")}
+            kicker={t('seoPages.anxietySelfHelp.how.kicker')}
+            title={t('seoPages.anxietySelfHelp.how.title')}
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
@@ -182,13 +182,13 @@ export default function AnxietySelfHelpPage() {
         </section>
 
         {/* FAQ */}
-        <FaqAccordion title={t("seoPages.anxietySelfHelp.faq.title")} items={faq} />
+        <FaqAccordion title={t('seoPages.anxietySelfHelp.faq.title')} items={faq} />
 
         {/* CTA */}
         <CtaBanner
-          title={t("seoPages.anxietySelfHelp.cta.title")}
-          text={t("seoPages.anxietySelfHelp.cta.text")}
-          button={t("seoPages.anxietySelfHelp.cta.button")}
+          title={t('seoPages.anxietySelfHelp.cta.title')}
+          text={t('seoPages.anxietySelfHelp.cta.text')}
+          button={t('seoPages.anxietySelfHelp.cta.button')}
         />
       </main>
 

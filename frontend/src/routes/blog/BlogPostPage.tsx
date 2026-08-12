@@ -1,21 +1,21 @@
-import { useTranslation } from "react-i18next";
-import { useParams, Navigate } from "react-router-dom";
-import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical, breadcrumbLd, blogPostingLd } from "../../lib/seo";
+import { useTranslation } from 'react-i18next';
+import { useParams, Navigate } from 'react-router-dom';
+import Reveal from '../../components/Reveal';
+import { useSeo, withCanonical, breadcrumbLd, blogPostingLd } from '../../lib/seo';
 import {
   SeoHeader,
   SeoBreadcrumbs,
   CtaBanner,
   SeoDisclaimer,
   SeoFooter,
-} from "../seo/seo-components";
-import { PostCard } from "./PostCard";
-import { getPostBySlug, getRelatedPosts, getCategoryName, formatDate } from "./posts";
+} from '../seo/seo-components';
+import { PostCard } from './PostCard';
+import { getPostBySlug, getRelatedPosts, getCategoryName, formatDate } from './posts';
 
 const CATEGORY_KEYS: Record<string, string> = {
-  journal: "seoPages.blog.categories.journal",
-  anxiety: "seoPages.blog.categories.anxiety",
-  sleep: "seoPages.blog.categories.sleep",
+  journal: 'seoPages.blog.categories.journal',
+  anxiety: 'seoPages.blog.categories.anxiety',
+  sleep: 'seoPages.blog.categories.sleep',
 };
 
 export default function BlogPostPage() {
@@ -24,15 +24,15 @@ export default function BlogPostPage() {
   const post = slug ? getPostBySlug(slug) : undefined;
 
   useSeo({
-    title: post ? `${post.title} — ${t("seoPages.blog.shortTitle")}` : t("seoPages.blog.notFound"),
+    title: post ? `${post.title} — ${t('seoPages.blog.shortTitle')}` : t('seoPages.blog.notFound'),
     description: post?.excerpt,
-    canonical: post ? withCanonical(`/blog/${post.slug}`) : withCanonical("/blog"),
-    og: post ? { type: "article", title: post.title } : undefined,
+    canonical: post ? withCanonical(`/blog/${post.slug}`) : withCanonical('/blog'),
+    og: post ? { type: 'article', title: post.title } : undefined,
     jsonLd: post
       ? [
           breadcrumbLd([
-            { name: t("seoPages.blog.breadcrumb.home"), url: withCanonical("/") },
-            { name: t("seoPages.blog.breadcrumb.blog"), url: withCanonical("/blog") },
+            { name: t('seoPages.blog.breadcrumb.home'), url: withCanonical('/') },
+            { name: t('seoPages.blog.breadcrumb.blog'), url: withCanonical('/blog') },
             {
               name: t(CATEGORY_KEYS[post.category]),
               url: withCanonical(`/blog/category/${post.category}`),
@@ -58,8 +58,8 @@ export default function BlogPostPage() {
       <SeoHeader />
       <SeoBreadcrumbs
         items={[
-          { label: t("seoPages.blog.breadcrumb.home"), to: "/" },
-          { label: t("seoPages.blog.breadcrumb.blog"), to: "/blog" },
+          { label: t('seoPages.blog.breadcrumb.home'), to: '/' },
+          { label: t('seoPages.blog.breadcrumb.blog'), to: '/blog' },
           {
             label: t(CATEGORY_KEYS[post.category]),
             to: `/blog/category/${post.category}`,
@@ -93,7 +93,7 @@ export default function BlogPostPage() {
         {related.length > 0 && (
           <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-12">
             <h2 className="text-center text-2xl font-extrabold text-foreground">
-              {t("seoPages.blog.related")}
+              {t('seoPages.blog.related')}
             </h2>
             <div className="mt-6 grid sm:grid-cols-2 gap-4">
               {related.map((p, i) => (
@@ -104,9 +104,9 @@ export default function BlogPostPage() {
         )}
 
         <CtaBanner
-          title={t("seoPages.blog.cta.title")}
-          text={t("seoPages.blog.cta.text")}
-          button={t("seoPages.blog.cta.button")}
+          title={t('seoPages.blog.cta.title')}
+          text={t('seoPages.blog.cta.text')}
+          button={t('seoPages.blog.cta.button')}
         />
       </main>
 

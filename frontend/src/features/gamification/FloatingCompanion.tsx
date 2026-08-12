@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
-import PetAvatar from "./PetAvatar";
-import { usePets, useCreatureState } from "./useCreature";
-import { usePetReward } from "./usePetReward";
-import { PET_DEFINITIONS } from "./pets";
-import { PET_CYCLE } from "@moodly/shared";
-import { isCompanionHidden, subscribeCompanionVisibility } from "./companionVisibility";
-import { PET_AWAY_KEY, shouldPetBeAway, todayKey } from "./petAway";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { cn } from "../../lib/utils";
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import PetAvatar from './PetAvatar';
+import { usePets, useCreatureState } from './useCreature';
+import { usePetReward } from './usePetReward';
+import { PET_DEFINITIONS } from './pets';
+import { PET_CYCLE } from '@moodly/shared';
+import { isCompanionHidden, subscribeCompanionVisibility } from './companionVisibility';
+import { PET_AWAY_KEY, shouldPetBeAway, todayKey } from './petAway';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { cn } from '../../lib/utils';
 
-const HIDDEN_PATHS = ["/tests/", "/practices/breathing", "/onboarding"];
+const HIDDEN_PATHS = ['/tests/', '/practices/breathing', '/onboarding'];
 
 export default function FloatingCompanion() {
   const { t } = useTranslation();
@@ -23,7 +23,7 @@ export default function FloatingCompanion() {
   const [hidden, setHidden] = useState(isCompanionHidden);
   const [away, setAway] = useState(() =>
     shouldPetBeAway(
-      typeof localStorage !== "undefined" ? localStorage.getItem(PET_AWAY_KEY) : null,
+      typeof localStorage !== 'undefined' ? localStorage.getItem(PET_AWAY_KEY) : null,
       isReducedMotion,
     ),
   );
@@ -35,10 +35,10 @@ export default function FloatingCompanion() {
   if (hidden) return null;
   if (HIDDEN_PATHS.some((path) => location.pathname.startsWith(path))) return null;
 
-  const petType = pets?.activePetType ?? "puff";
+  const petType = pets?.activePetType ?? 'puff';
   const petName =
     pets?.petName?.trim() ||
-    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? "pets.puff");
+    t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? 'pets.puff');
   const petCount = creature?.petCount ?? 0;
   const cyclePosition = (petCount % PET_CYCLE) + 1;
 
@@ -56,8 +56,8 @@ export default function FloatingCompanion() {
   return (
     <div
       className={cn(
-        "fixed right-4 bottom-[calc(5rem+var(--sab))] md:bottom-6 md:right-6 z-40",
-        !isReducedMotion && !away && "animate-pet-float",
+        'fixed right-4 bottom-[calc(5rem+var(--sab))] md:bottom-6 md:right-6 z-40',
+        !isReducedMotion && !away && 'animate-pet-float',
       )}
       role="presentation"
     >
@@ -66,7 +66,7 @@ export default function FloatingCompanion() {
           <button
             type="button"
             onClick={handleReturn}
-            aria-label={t("companion.petAwayAria")}
+            aria-label={t('companion.petAwayAria')}
             className="flex flex-col items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer transition-[transform] duration-150 active:scale-95"
           >
             <span
@@ -76,9 +76,9 @@ export default function FloatingCompanion() {
               💤
             </span>
             <span className="mt-2 max-w-[170px] rounded-2xl bg-card shadow-neumorphic-sm px-3 py-2 text-center text-xs font-semibold text-foreground">
-              {t("companion.petAwayHint")}
+              {t('companion.petAwayHint')}
               <span className="mt-0.5 block text-[11px] font-medium text-muted-foreground">
-                {t("companion.petAwaySub")}
+                {t('companion.petAwaySub')}
               </span>
             </span>
           </button>

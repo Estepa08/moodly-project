@@ -1,11 +1,11 @@
-import type { ActivitySelection } from "./crypto/records";
-import type { DecryptedEntry } from "../hooks/useEntries";
+import type { ActivitySelection } from './crypto/records';
+import type { DecryptedEntry } from '../hooks/useEntries';
 
-export const MOOD_PARAM = "Mood";
-export const SLEEP_PARAM = "Sleep";
-export const ENERGY_PARAM = "Energy";
-export const ANXIETY_PARAM = "Anxiety";
-export const DAY_ACTIVITIES_PARAM = "Day Activities";
+export const MOOD_PARAM = 'Mood';
+export const SLEEP_PARAM = 'Sleep';
+export const ENERGY_PARAM = 'Energy';
+export const ANXIETY_PARAM = 'Anxiety';
+export const DAY_ACTIVITIES_PARAM = 'Day Activities';
 export const CORRELATION_WINDOW_DAYS = 30;
 /**
  * Минимальное число дней, по которому считается сигнал по конкретной активности.
@@ -16,29 +16,29 @@ export const CORRELATION_WINDOW_DAYS = 30;
  */
 export const MIN_ACTIVITY_DAYS = 5;
 
-export type CorrelationMetric = "mood" | "sleep" | "energy" | "anxiety";
+export type CorrelationMetric = 'mood' | 'sleep' | 'energy' | 'anxiety';
 
-export const CORRELATION_METRICS: CorrelationMetric[] = ["mood", "sleep", "energy", "anxiety"];
+export const CORRELATION_METRICS: CorrelationMetric[] = ['mood', 'sleep', 'energy', 'anxiety'];
 
 export function metricParamName(metric: CorrelationMetric): string {
   switch (metric) {
-    case "mood":
+    case 'mood':
       return MOOD_PARAM;
-    case "sleep":
+    case 'sleep':
       return SLEEP_PARAM;
-    case "energy":
+    case 'energy':
       return ENERGY_PARAM;
-    case "anxiety":
+    case 'anxiety':
       return ANXIETY_PARAM;
   }
 }
 
 /** Тревожность выше = хуже: инвертируем, чтобы везде «больше — лучше». */
 function normalizeMetric(metric: CorrelationMetric, value: number): number {
-  return metric === "anxiety" ? 10 - value : value;
+  return metric === 'anxiety' ? 10 - value : value;
 }
 
-export type Confidence = "low" | "medium" | "high";
+export type Confidence = 'low' | 'medium' | 'high';
 
 export interface ActivityScore {
   key: string;
@@ -57,9 +57,9 @@ export interface ActivityScore {
  * сигнал в пределах шума — понижаем на один уровень (но не ниже low).
  */
 function confidenceFor(n: number, stdDev: number, absLift: number): Confidence {
-  const base: Confidence = n < 7 ? "low" : n <= 14 ? "medium" : "high";
-  if (stdDev >= absLift && base !== "low") {
-    return base === "high" ? "medium" : "low";
+  const base: Confidence = n < 7 ? 'low' : n <= 14 ? 'medium' : 'high';
+  if (stdDev >= absLift && base !== 'low') {
+    return base === 'high' ? 'medium' : 'low';
   }
   return base;
 }
@@ -81,9 +81,9 @@ interface DayPoint {
 function dayKeyLocal(createdAt: string): string {
   const d = new Date(createdAt);
   if (Number.isNaN(d.getTime())) return createdAt.slice(0, 10);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
     d.getDate(),
-  ).padStart(2, "0")}`;
+  ).padStart(2, '0')}`;
 }
 
 export function computeActivityCorrelation(
@@ -91,7 +91,7 @@ export function computeActivityCorrelation(
   paramNameById: (id: string) => string | undefined,
   labelFor: (key: string, customLabel?: string) => string,
 ): MetricCorrelation {
-  return computeMetricCorrelation(entries, paramNameById, labelFor, "mood");
+  return computeMetricCorrelation(entries, paramNameById, labelFor, 'mood');
 }
 
 export function computeMetricCorrelation(
@@ -109,7 +109,7 @@ export function computeMetricCorrelation(
     const day = dayKeyLocal(e.createdAt);
 
     if (name === paramName) {
-      if (typeof e.value !== "number") continue;
+      if (typeof e.value !== 'number') continue;
       if (!byDay.has(day)) byDay.set(day, { values: [], activities: [] });
       byDay.get(day)!.values.push(e.value);
     } else if (name === DAY_ACTIVITIES_PARAM) {

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 import {
   LineChart,
   Line,
@@ -15,13 +15,13 @@ import {
   ResponsiveContainer,
   Legend,
   Cell,
-} from "recharts";
-import { ChartTooltip } from "./chart-tooltip";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import EmptyState from "../components/ui/empty-state";
-import PeriodSelector from "../components/ui/PeriodSelector";
-import type { LucideIcon } from "lucide-react";
-import { cn } from "./utils";
+} from 'recharts';
+import { ChartTooltip } from './chart-tooltip';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import EmptyState from '../components/ui/empty-state';
+import PeriodSelector from '../components/ui/PeriodSelector';
+import type { LucideIcon } from 'lucide-react';
+import { cn } from './utils';
 
 export interface ChartSeries {
   dataKey: string;
@@ -30,7 +30,7 @@ export interface ChartSeries {
 }
 
 export interface ChartProps {
-  type: "line" | "bar" | "pie" | "area";
+  type: 'line' | 'bar' | 'pie' | 'area';
   data: Record<string, unknown>[];
   series: ChartSeries[];
   xKey: string;
@@ -111,11 +111,11 @@ export function Chart({
       )}
 
       {!hasData ? (
-        <EmptyState icon={emptyIcon} title={emptyMessage ?? title ?? ""} />
+        <EmptyState icon={emptyIcon} title={emptyMessage ?? title ?? ''} />
       ) : (
         <>
           <ResponsiveContainer width="100%" height={height}>
-            {type === "line" ? (
+            {type === 'line' ? (
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
                 <XAxis dataKey={xKey} fontSize={11} stroke="hsl(var(--chart-tick))" />
@@ -125,7 +125,7 @@ export function Chart({
                   <Legend
                     wrapperStyle={{
                       fontSize: 11,
-                      color: "hsl(var(--muted-foreground))",
+                      color: 'hsl(var(--muted-foreground))',
                     }}
                   />
                 )}
@@ -141,7 +141,7 @@ export function Chart({
                   />
                 ))}
               </LineChart>
-            ) : type === "bar" ? (
+            ) : type === 'bar' ? (
               <BarChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
                 <XAxis dataKey={xKey} fontSize={11} stroke="hsl(var(--chart-tick))" />
@@ -151,7 +151,7 @@ export function Chart({
                   <Legend
                     wrapperStyle={{
                       fontSize: 11,
-                      color: "hsl(var(--muted-foreground))",
+                      color: 'hsl(var(--muted-foreground))',
                     }}
                   />
                 )}
@@ -159,7 +159,7 @@ export function Chart({
                   <Bar key={s.dataKey} dataKey={s.dataKey} fill={s.color} radius={barRadius} />
                 ))}
               </BarChart>
-            ) : type === "area" ? (
+            ) : type === 'area' ? (
               <AreaChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
                 <XAxis dataKey={xKey} fontSize={11} stroke="hsl(var(--chart-tick))" />
@@ -169,7 +169,7 @@ export function Chart({
                   <Legend
                     wrapperStyle={{
                       fontSize: 11,
-                      color: "hsl(var(--muted-foreground))",
+                      color: 'hsl(var(--muted-foreground))',
                     }}
                   />
                 )}
@@ -190,7 +190,7 @@ export function Chart({
               <PieChart>
                 <Pie
                   data={data}
-                  dataKey={series[0]?.dataKey ?? "value"}
+                  dataKey={series[0]?.dataKey ?? 'value'}
                   nameKey={xKey}
                   cx="50%"
                   cy="50%"
@@ -200,7 +200,7 @@ export function Chart({
                   {data.map((_, i) => (
                     <Cell
                       key={i}
-                      fill={pieColors?.[i] ?? series[0]?.color ?? "hsl(var(--primary))"}
+                      fill={pieColors?.[i] ?? series[0]?.color ?? 'hsl(var(--primary))'}
                     />
                   ))}
                 </Pie>
@@ -218,7 +218,7 @@ export function Chart({
   if (noCard) return chart;
 
   return (
-    <Card className={cn("shadow-neumorphic", className)}>
+    <Card className={cn('shadow-neumorphic', className)}>
       {title && (
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">

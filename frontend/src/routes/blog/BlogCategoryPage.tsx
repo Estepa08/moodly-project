@@ -1,15 +1,15 @@
-import { useTranslation } from "react-i18next";
-import { Link, useParams, Navigate } from "react-router-dom";
-import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical, breadcrumbLd } from "../../lib/seo";
-import { SeoHeader, SeoBreadcrumbs, SeoFooter } from "../seo/seo-components";
-import { PostCard } from "./PostCard";
-import { CATEGORIES, getPostsByCategory } from "./posts";
+import { useTranslation } from 'react-i18next';
+import { Link, useParams, Navigate } from 'react-router-dom';
+import Reveal from '../../components/Reveal';
+import { useSeo, withCanonical, breadcrumbLd } from '../../lib/seo';
+import { SeoHeader, SeoBreadcrumbs, SeoFooter } from '../seo/seo-components';
+import { PostCard } from './PostCard';
+import { CATEGORIES, getPostsByCategory } from './posts';
 
 const CATEGORY_KEYS: Record<string, string> = {
-  journal: "seoPages.blog.categories.journal",
-  anxiety: "seoPages.blog.categories.anxiety",
-  sleep: "seoPages.blog.categories.sleep",
+  journal: 'seoPages.blog.categories.journal',
+  anxiety: 'seoPages.blog.categories.anxiety',
+  sleep: 'seoPages.blog.categories.sleep',
 };
 
 export default function BlogCategoryPage() {
@@ -21,14 +21,14 @@ export default function BlogCategoryPage() {
 
   useSeo({
     title: category
-      ? `${t(CATEGORY_KEYS[category])} — ${t("seoPages.blog.shortTitle")}`
-      : t("seoPages.blog.shortTitle"),
-    canonical: category ? withCanonical(`/blog/category/${category}`) : withCanonical("/blog"),
+      ? `${t(CATEGORY_KEYS[category])} — ${t('seoPages.blog.shortTitle')}`
+      : t('seoPages.blog.shortTitle'),
+    canonical: category ? withCanonical(`/blog/category/${category}`) : withCanonical('/blog'),
     jsonLd:
       category !== null
         ? breadcrumbLd([
-            { name: t("seoPages.blog.breadcrumb.home"), url: withCanonical("/") },
-            { name: t("seoPages.blog.breadcrumb.blog"), url: withCanonical("/blog") },
+            { name: t('seoPages.blog.breadcrumb.home'), url: withCanonical('/') },
+            { name: t('seoPages.blog.breadcrumb.blog'), url: withCanonical('/blog') },
             { name: t(CATEGORY_KEYS[category]), url: withCanonical(`/blog/category/${category}`) },
           ])
         : undefined,
@@ -42,8 +42,8 @@ export default function BlogCategoryPage() {
       <SeoHeader />
       <SeoBreadcrumbs
         items={[
-          { label: t("seoPages.blog.breadcrumb.home"), to: "/" },
-          { label: t("seoPages.blog.breadcrumb.blog"), to: "/blog" },
+          { label: t('seoPages.blog.breadcrumb.home'), to: '/' },
+          { label: t('seoPages.blog.breadcrumb.blog'), to: '/blog' },
           { label: t(CATEGORY_KEYS[category]) },
         ]}
       />
@@ -52,7 +52,7 @@ export default function BlogCategoryPage() {
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-12">
           <Reveal>
             <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary">
-              ← {t("seoPages.blog.backToBlog")}
+              ← {t('seoPages.blog.backToBlog')}
             </Link>
             <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold text-foreground text-balance">
               {t(CATEGORY_KEYS[category])}

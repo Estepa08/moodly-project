@@ -1,11 +1,11 @@
-import { useTranslation } from "react-i18next";
-import { Trash2, Scale } from "lucide-react";
-import { ProgressBar } from "../../components/ui/progress-bar";
-import { Card, CardContent } from "../../components/ui/card";
-import { IconButton } from "../../components/ui/icon-button";
-import EmptyState from "../../components/ui/empty-state";
-import type { CbaEntry } from "./cba.types";
-import type { useDeleteCbaEntry } from "./useCba";
+import { useTranslation } from 'react-i18next';
+import { Trash2, Scale } from 'lucide-react';
+import { ProgressBar } from '../../components/ui/progress-bar';
+import { Card, CardContent } from '../../components/ui/card';
+import { IconButton } from '../../components/ui/icon-button';
+import EmptyState from '../../components/ui/empty-state';
+import type { CbaEntry } from './cba.types';
+import type { useDeleteCbaEntry } from './useCba';
 
 interface CbaHistoryProps {
   entries: CbaEntry[];
@@ -16,7 +16,7 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
   const { t } = useTranslation();
 
   if (entries.length === 0) {
-    return <EmptyState icon={Scale} title={t("cba.historyEmpty")} />;
+    return <EmptyState icon={Scale} title={t('cba.historyEmpty')} />;
   }
 
   return (
@@ -28,8 +28,8 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
             <div className="flex items-center gap-3">
               <ProgressBar
                 segments={[
-                  { value: entry.prosWeight, className: "bg-success" },
-                  { value: entry.consWeight, className: "bg-destructive" },
+                  { value: entry.prosWeight, className: 'bg-success' },
+                  { value: entry.consWeight, className: 'bg-destructive' },
                 ]}
                 className="flex-1 h-2"
                 rounded={false}
@@ -41,7 +41,7 @@ export default function CbaHistory({ entries, deleteEntry }: CbaHistoryProps) {
               <IconButton
                 variant="ghost"
                 size="icon-sm"
-                label={t("cba.deleteEntry")}
+                label={t('cba.deleteEntry')}
                 onClick={() => deleteEntry.mutate(entry.id)}
                 className="text-muted-foreground hover:text-destructive"
               >

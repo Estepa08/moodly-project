@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useTests } from "../hooks/useTests";
-import { Button } from "../components/ui/button";
-import { Card, CardHeader, CardTitle } from "../components/ui/card";
-import Spinner from "../components/ui/spinner";
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useTests } from '../hooks/useTests';
+import { Button } from '../components/ui/button';
+import { Card, CardHeader, CardTitle } from '../components/ui/card';
+import Spinner from '../components/ui/spinner';
 export default function TestsPage() {
   const { t } = useTranslation();
   const { data: tests, isLoading } = useTests();
@@ -19,9 +19,9 @@ export default function TestsPage() {
   return (
     <div className="space-y-4">
       <header className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-foreground font-serif">{t("tests.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground font-serif">{t('tests.title')}</h1>
         <Button variant="ghost" asChild>
-          <Link to="/my-day">{t("common.back")}</Link>
+          <Link to="/my-day">{t('common.back')}</Link>
         </Button>
       </header>
 

@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Sparkles, ChevronDown, ChevronUp } from "lucide-react";
-import { DISTORTION_KEYS, DistortionKey } from "../../lib/distortionsQuiz";
-import { suggestDistortion } from "../../lib/distortionKeywordHints";
-import { cn } from "../../lib/utils";
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
+import { DISTORTION_KEYS, DistortionKey } from '../../lib/distortionsQuiz';
+import { suggestDistortion } from '../../lib/distortionKeywordHints';
+import { cn } from '../../lib/utils';
 
 interface DistortionTagsSelectorProps {
   value: DistortionKey[];
@@ -69,7 +69,7 @@ export default function DistortionTagsSelector({
             aria-expanded={expanded}
             className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {t(expanded ? "cognitiveDistortions.less" : "cognitiveDistortions.more")}
+            {t(expanded ? 'cognitiveDistortions.less' : 'cognitiveDistortions.more')}
             {expanded ? (
               <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
             ) : (
@@ -83,7 +83,7 @@ export default function DistortionTagsSelector({
         <p className="flex items-start gap-1.5 text-xs text-amber-700 dark:text-amber-400">
           <Sparkles aria-hidden="true" className="w-3.5 h-3.5 mt-0.5 shrink-0" />
           <span>
-            {t("cognitiveDistortions.suggestHint", {
+            {t('cognitiveDistortions.suggestHint', {
               name: t(`cognitiveDistortions.${suggested}`),
             })}
           </span>
@@ -109,18 +109,18 @@ function DistortionChip({ label, selected, suggested, onClick }: DistortionChipP
       aria-pressed={selected}
       aria-label={
         selected
-          ? `${label} — ${t("cognitiveDistortions.remove")}`
+          ? `${label} — ${t('cognitiveDistortions.remove')}`
           : suggested
-            ? `${label} — ${t("cognitiveDistortions.addSuggested")}`
-            : `${label} — ${t("cognitiveDistortions.add")}`
+            ? `${label} — ${t('cognitiveDistortions.addSuggested')}`
+            : `${label} — ${t('cognitiveDistortions.add')}`
       }
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium transition-[color,background-color,border-color,box-shadow] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        selected && "border-primary bg-primary text-primary-foreground shadow-neumorphic-sm",
-        suggested && !selected && "border-amber-300 bg-amber-50 text-amber-800",
+        'inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium transition-[color,background-color,border-color,box-shadow] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        selected && 'border-primary bg-primary text-primary-foreground shadow-neumorphic-sm',
+        suggested && !selected && 'border-amber-300 bg-amber-50 text-amber-800',
         !selected &&
           !suggested &&
-          "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground",
+          'border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground',
       )}
     >
       <span>#{label}</span>

@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { Heart, ChevronDown } from "lucide-react";
-import { Card, CardContent } from "../components/ui/card";
+import { useTranslation } from 'react-i18next';
+import { Heart, ChevronDown } from 'lucide-react';
+import { Card, CardContent } from '../components/ui/card';
 
 interface WellbeingCardProps {
   average: number | null;
@@ -22,11 +22,11 @@ export default function WellbeingCard({
   const colorClass =
     average !== null
       ? average >= 7
-        ? "text-primary"
+        ? 'text-primary'
         : average >= 4
-          ? "text-primary-muted"
-          : "text-primary-dim"
-      : "text-muted-foreground";
+          ? 'text-primary-muted'
+          : 'text-primary-dim'
+      : 'text-muted-foreground';
 
   return (
     <Card className="shadow-neumorphic">
@@ -44,24 +44,24 @@ export default function WellbeingCard({
               className="w-6 h-6 text-primary shrink-0 animate-heart-beat"
             />
             <span className="text-base font-medium text-foreground">
-              {t("dashboard.wellbeing")}
+              {t('dashboard.wellbeing')}
             </span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             {isLoading ? (
               <span className="text-sm text-muted-foreground">
-                {t("dashboard.practicesLoading")}
+                {t('dashboard.practicesLoading')}
               </span>
             ) : (
               <div className="flex items-end gap-2">
                 <span className={`text-5xl font-bold font-serif ${colorClass}`}>
-                  {average !== null ? average.toFixed(1) : "—"}
+                  {average !== null ? average.toFixed(1) : '—'}
                 </span>
               </div>
             )}
             <ChevronDown
               aria-hidden="true"
-              className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
+              className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
             />
           </div>
         </button>

@@ -1,34 +1,34 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { useIsMobile } from "../hooks/useIsMobile";
-import { api } from "../lib/api";
-import { getErrorMessage } from "../lib/error-messages";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { Card, CardContent } from "../components/ui/card";
-import { useSeo, withCanonical } from "../lib/seo";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
+import { api } from '../lib/api';
+import { getErrorMessage } from '../lib/error-messages';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Card, CardContent } from '../components/ui/card';
+import { useSeo, withCanonical } from '../lib/seo';
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
   useSeo({
-    title: t("forgotPassword.seo.title"),
-    description: t("forgotPassword.seo.description"),
-    canonical: withCanonical("/forgot-password"),
+    title: t('forgotPassword.seo.title'),
+    description: t('forgotPassword.seo.description'),
+    canonical: withCanonical('/forgot-password'),
     noindex: true,
   });
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setError('');
     try {
       await api.auth.forgotPassword({ email });
       setSent(true);
@@ -46,26 +46,26 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <>
               <h2 className="text-xl font-serif font-semibold text-center text-foreground">
-                {t("forgotPassword.checkEmail")}
+                {t('forgotPassword.checkEmail')}
               </h2>
               <p className="text-sm text-muted-foreground text-center">
-                {t("forgotPassword.sent")}
+                {t('forgotPassword.sent')}
               </p>
               <Button variant="secondary" className="w-full" asChild>
-                <Link to="/login">{t("forgotPassword.backToLogin")}</Link>
+                <Link to="/login">{t('forgotPassword.backToLogin')}</Link>
               </Button>
             </>
           ) : (
             <>
               <h2 className="text-xl font-serif font-semibold text-center text-foreground">
-                {t("forgotPassword.title")}
+                {t('forgotPassword.title')}
               </h2>
               <p className="text-sm text-muted-foreground text-center">
-                {t("forgotPassword.subtitle")}
+                {t('forgotPassword.subtitle')}
               </p>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">{t("forgotPassword.email")}</Label>
+                  <Label htmlFor="email">{t('forgotPassword.email')}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -85,14 +85,14 @@ export default function ForgotPasswordPage() {
                   </p>
                 )}
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? t("forgotPassword.sending") : t("forgotPassword.send")}
+                  {loading ? t('forgotPassword.sending') : t('forgotPassword.send')}
                 </Button>
                 <p className="text-center text-sm text-muted-foreground">
                   <Link
                     to="/login"
                     className="text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                   >
-                    {t("forgotPassword.backToLogin")}
+                    {t('forgotPassword.backToLogin')}
                   </Link>
                 </p>
               </form>

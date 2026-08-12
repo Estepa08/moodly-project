@@ -1,16 +1,16 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import { useEntries } from "./useEntries";
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useEntries } from './useEntries';
 
 const LOW_THRESHOLD = 3;
 const CONSECUTIVE_DAYS = 3;
 const LOOKBACK_DAYS = 7;
 const DEBOUNCE_MS = 3000;
 
-const SESSION_KEY = "moodly_low_mood_shown";
+const SESSION_KEY = 'moodly_low_mood_shown';
 
 function isSessionShown(): boolean {
   try {
-    return sessionStorage.getItem(SESSION_KEY) === "1";
+    return sessionStorage.getItem(SESSION_KEY) === '1';
   } catch {
     /* sessionStorage may throw in private browsing */
     return false;
@@ -19,7 +19,7 @@ function isSessionShown(): boolean {
 
 function markSessionShown() {
   try {
-    sessionStorage.setItem(SESSION_KEY, "1");
+    sessionStorage.setItem(SESSION_KEY, '1');
   } catch {
     /* sessionStorage may throw in private browsing */
   }

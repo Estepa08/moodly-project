@@ -2,7 +2,7 @@
 // Компонент FloatingCompanion показывает placeholder «Отлучился перекусить 🍙»,
 // по тапу питомец возвращается (pop-in + слово) и даёт обычную награду.
 
-export const PET_AWAY_KEY = "moodly.petAwayDate";
+export const PET_AWAY_KEY = 'moodly.petAwayDate';
 
 // Шанс отлучки при заходе (не чаще раза в день).
 export const PET_AWAY_CHANCE = 0.25;

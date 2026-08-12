@@ -1,13 +1,13 @@
-import { useState, useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useTest } from "./useTests";
-import { uuidv7 } from "@moodly/shared";
-import { computeScore, resolveInterpretation, type Interpretation } from "@moodly/shared";
-import { enqueue } from "../lib/offline/sync";
-import { encryptTestResultPayload } from "../lib/crypto/records";
-import type { components } from "../lib/api-types";
+import { useState, useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTest } from './useTests';
+import { uuidv7 } from '@moodly/shared';
+import { computeScore, resolveInterpretation, type Interpretation } from '@moodly/shared';
+import { enqueue } from '../lib/offline/sync';
+import { encryptTestResultPayload } from '../lib/crypto/records';
+import type { components } from '../lib/api-types';
 
-type Test = components["schemas"]["Test"];
+type Test = components['schemas']['Test'];
 
 export interface ResultFlags {
   distortions?: Record<string, { score: number; level: string }>;
@@ -88,7 +88,7 @@ export function useTestFlow(testId?: string) {
         },
         resultId,
       );
-      await enqueue("testResult", "upsert", resultId, {
+      await enqueue('testResult', 'upsert', resultId, {
         testId: test.id,
         encryptedData,
         completedAt: new Date().toISOString(),
@@ -99,7 +99,7 @@ export function useTestFlow(testId?: string) {
         recommendation: interpreted.recommendation,
         flags: interpreted.flags as ResultFlags,
       });
-      queryClient.invalidateQueries({ queryKey: ["testResults"] });
+      queryClient.invalidateQueries({ queryKey: ['testResults'] });
     } finally {
       setIsSubmitting(false);
     }

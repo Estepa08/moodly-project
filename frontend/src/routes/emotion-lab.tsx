@@ -1,4 +1,4 @@
-import { EmotionLabScreen } from "../features/emotion-lab";
+import { EmotionLabScreen } from '../features/emotion-lab';
 
 export default function EmotionLabPage() {
   return (

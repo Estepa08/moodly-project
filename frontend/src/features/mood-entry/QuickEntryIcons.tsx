@@ -1,23 +1,23 @@
-import { useState, useRef, useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { Plus, Sparkles, Check } from "lucide-react";
-import type { CreateEntryMutation } from "../../lib/app-types";
-import type { components } from "../../lib/api-types";
-import { reportError } from "../../lib/errorReporter";
-import { PARAM_ICON_CONFIGS } from "../../lib/quickEntryIcons";
-import { PARAM_ICONS } from "../../lib/constants";
-import { ParameterName } from "../../lib/constants";
-import { RATING_LEVELS, levelForValue } from "../../lib/ratingLevels";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { RatingScaleSelector } from "./RatingScaleSelector";
-import DistortionTagsSelector from "./DistortionTagsSelector";
-import { Button } from "../../components/ui/button";
-import type { DistortionKey } from "../../lib/distortionsQuiz";
+import { useState, useRef, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { Plus, Sparkles, Check } from 'lucide-react';
+import type { CreateEntryMutation } from '../../lib/app-types';
+import type { components } from '../../lib/api-types';
+import { reportError } from '../../lib/errorReporter';
+import { PARAM_ICON_CONFIGS } from '../../lib/quickEntryIcons';
+import { PARAM_ICONS } from '../../lib/constants';
+import { ParameterName } from '../../lib/constants';
+import { RATING_LEVELS, levelForValue } from '../../lib/ratingLevels';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { RatingScaleSelector } from './RatingScaleSelector';
+import DistortionTagsSelector from './DistortionTagsSelector';
+import { Button } from '../../components/ui/button';
+import type { DistortionKey } from '../../lib/distortionsQuiz';
 
 interface QuickEntryIconsProps {
   createEntry: CreateEntryMutation;
-  numericParams: components["schemas"]["Parameter"][] | undefined;
+  numericParams: components['schemas']['Parameter'][] | undefined;
   savedTodayParamIds: Set<string>;
 }
 
@@ -30,7 +30,7 @@ export default function QuickEntryIcons({
   const [selectedParam, setSelectedParam] = useState<string | null>(null);
   const [sliderValue, setSliderValue] = useState(5);
   const [showNote, setShowNote] = useState(false);
-  const [noteText, setNoteText] = useState("");
+  const [noteText, setNoteText] = useState('');
   const [distortions, setDistortions] = useState<DistortionKey[]>([]);
   const noteInputRef = useRef<HTMLInputElement>(null);
 
@@ -48,7 +48,7 @@ export default function QuickEntryIcons({
     setSelectedParam((prev) => (prev === name ? null : name));
     setSliderValue(5);
     setShowNote(false);
-    setNoteText("");
+    setNoteText('');
     setDistortions([]);
   }, []);
 
@@ -77,10 +77,10 @@ export default function QuickEntryIcons({
 
       createEntry.mutate(payload, {
         onSuccess: () => {
-          toast.success(t("dashboard.quickEntry.entrySaved"));
+          toast.success(t('dashboard.quickEntry.entrySaved'));
           setSelectedParam(null);
           setShowNote(false);
-          setNoteText("");
+          setNoteText('');
           setDistortions([]);
         },
         onError: (err) => {
@@ -89,7 +89,7 @@ export default function QuickEntryIcons({
               ? `saveError [quick-entry] ${err.name}: ${err.message}`
               : `saveError [quick-entry] Unexpected error: ${String(err)}`;
           reportError({ message, stack: err instanceof Error ? err.stack : undefined });
-          toast.error(t("dashboard.quickEntry.saveError"));
+          toast.error(t('dashboard.quickEntry.saveError'));
         },
       });
     },
@@ -101,9 +101,9 @@ export default function QuickEntryIcons({
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2 font-serif">
           <Sparkles aria-hidden="true" className="w-5 h-5 text-accent" />
-          <span>{t("dashboard.quickEntry.title")}</span>
+          <span>{t('dashboard.quickEntry.title')}</span>
         </CardTitle>
-        <p className="text-xs text-muted-foreground ml-7">{t("dashboard.quickEntry.subtitle")}</p>
+        <p className="text-xs text-muted-foreground ml-7">{t('dashboard.quickEntry.subtitle')}</p>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
@@ -119,11 +119,11 @@ export default function QuickEntryIcons({
                 onClick={() => handleParamTap(cfg.parameterName)}
                 className={`relative flex flex-col items-center gap-1.5 p-2 sm:p-3 rounded-xl transition-[color,background-color,box-shadow,transform] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
-                    ? "bg-primary/10 text-primary shadow-neumorphic-sm scale-105"
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-neumorphic-sm"
+                    ? 'bg-primary/10 text-primary shadow-neumorphic-sm scale-105'
+                    : 'text-muted-foreground hover:text-primary hover:bg-primary/5 hover:shadow-neumorphic-sm'
                 }`}
                 aria-label={
-                  isSaved ? `${label} — ${t("dashboard.quickEntry.savedIndicator")}` : label
+                  isSaved ? `${label} — ${t('dashboard.quickEntry.savedIndicator')}` : label
                 }
                 aria-pressed={isActive}
               >
@@ -182,7 +182,7 @@ export default function QuickEntryIcons({
                             onClick={() => handleSave(cfg.parameterName, sliderValue)}
                             disabled={createEntry.isPending}
                           >
-                            {t("dashboard.quickEntry.save")}
+                            {t('dashboard.quickEntry.save')}
                           </Button>
                         </div>
                       </>
@@ -199,16 +199,16 @@ export default function QuickEntryIcons({
                           setTimeout(() => noteInputRef.current?.focus(), 100);
                         }}
                         className="h-auto px-2 min-h-[44px] text-xs text-muted-foreground hover:text-primary"
-                        aria-label={t("dashboard.quickEntry.addNote")}
+                        aria-label={t('dashboard.quickEntry.addNote')}
                       >
                         <Plus aria-hidden="true" className="w-3 h-3" />
-                        {t("dashboard.quickEntry.addNote")}
+                        {t('dashboard.quickEntry.addNote')}
                       </Button>
                     ) : (
                       <div className="space-y-3 w-full">
                         <div className="flex items-center gap-2">
                           <label className="sr-only" htmlFor="quick-entry-note">
-                            {t("dashboard.quickEntry.notePlaceholder")}
+                            {t('dashboard.quickEntry.notePlaceholder')}
                           </label>
                           <input
                             id="quick-entry-note"
@@ -216,12 +216,12 @@ export default function QuickEntryIcons({
                             type="text"
                             value={noteText}
                             onChange={(e) => setNoteText(e.target.value)}
-                            placeholder={t("dashboard.quickEntry.notePlaceholder")}
+                            placeholder={t('dashboard.quickEntry.notePlaceholder')}
                             autoComplete="off"
                             enterKeyHint="done"
                             className="w-full md:w-40 text-sm bg-muted rounded-lg px-3 py-2 border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             onKeyDown={(e) => {
-                              if (e.key === "Enter") {
+                              if (e.key === 'Enter') {
                                 handleSave(cfg.parameterName, sliderValue);
                               }
                             }}
@@ -230,7 +230,7 @@ export default function QuickEntryIcons({
 
                         <div className="space-y-1.5">
                           <p className="text-[11px] font-semibold text-muted-foreground">
-                            {t("cognitiveDistortions.tagsTitle")}
+                            {t('cognitiveDistortions.tagsTitle')}
                           </p>
                           <DistortionTagsSelector
                             value={distortions}

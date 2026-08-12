@@ -1,16 +1,16 @@
-import { useTranslation } from "react-i18next";
-import { useCreatureState, useCreatureStats } from "./index";
-import ProgressHero from "./ProgressHero";
-import CreatureStatsBlock from "./CreatureStatsBlock";
-import PetCollection from "./PetCollection";
-import AchievementGrid from "./AchievementGrid";
-import DailyMissions from "./DailyMissions";
-import ActivityHeatmap from "./ActivityHeatmap";
-import { Trophy, Target, PawPrint, ListChecks, Activity, Medal } from "lucide-react";
-import CollapsibleSection from "../../components/ui/collapsible-section";
-import TitleSelector from "./TitleSelector";
-import { api } from "../../lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from 'react-i18next';
+import { useCreatureState, useCreatureStats } from './index';
+import ProgressHero from './ProgressHero';
+import CreatureStatsBlock from './CreatureStatsBlock';
+import PetCollection from './PetCollection';
+import AchievementGrid from './AchievementGrid';
+import DailyMissions from './DailyMissions';
+import ActivityHeatmap from './ActivityHeatmap';
+import { Trophy, Target, PawPrint, ListChecks, Activity, Medal } from 'lucide-react';
+import CollapsibleSection from '../../components/ui/collapsible-section';
+import TitleSelector from './TitleSelector';
+import { api } from '../../lib/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function ProgressPage() {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ export default function ProgressPage() {
   const setTitle = useMutation({
     mutationFn: (title: string | null) => api.creature.setTitle(title),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["creature"] });
+      queryClient.invalidateQueries({ queryKey: ['creature'] });
     },
   });
 
@@ -40,7 +40,7 @@ export default function ProgressPage() {
       <div className="flex items-center gap-2">
         <Trophy aria-hidden="true" className="w-5 h-5 text-accent" />
         <h2 className="text-lg font-semibold text-foreground font-serif">
-          {t("progress.pageTitle")}
+          {t('progress.pageTitle')}
         </h2>
       </div>
 
@@ -48,8 +48,8 @@ export default function ProgressPage() {
 
       {stats && (
         <CollapsibleSection
-          title={t("progress.statsTitle")}
-          subtitle={t("progress.statsSubtitle")}
+          title={t('progress.statsTitle')}
+          subtitle={t('progress.statsSubtitle')}
           icon={Target}
           iconClassName="bg-primary/10 text-primary"
           railClassName="bg-primary/80"
@@ -61,8 +61,8 @@ export default function ProgressPage() {
       )}
 
       <CollapsibleSection
-        title={t("progress.missionsTitle")}
-        subtitle={t("progress.missionsSubtitle")}
+        title={t('progress.missionsTitle')}
+        subtitle={t('progress.missionsSubtitle')}
         icon={ListChecks}
         iconClassName="bg-accent/10 text-accent"
         railClassName="bg-accent/80"
@@ -73,8 +73,8 @@ export default function ProgressPage() {
       </CollapsibleSection>
 
       <CollapsibleSection
-        title={t("progress.petsTitle")}
-        subtitle={t("progress.petsSubtitle")}
+        title={t('progress.petsTitle')}
+        subtitle={t('progress.petsSubtitle')}
         icon={PawPrint}
         iconClassName="bg-pet-1/10 text-pet-1"
         railClassName="bg-pet-1/80"
@@ -86,8 +86,8 @@ export default function ProgressPage() {
 
       {creature && creature.unlockedTitles && creature.unlockedTitles.length > 0 && (
         <CollapsibleSection
-          title={t("progress.titlesTitle")}
-          subtitle={t("progress.titlesSubtitle")}
+          title={t('progress.titlesTitle')}
+          subtitle={t('progress.titlesSubtitle')}
           icon={Medal}
           iconClassName="bg-info/10 text-info"
           railClassName="bg-info/80"
@@ -103,8 +103,8 @@ export default function ProgressPage() {
       )}
 
       <CollapsibleSection
-        title={t("progress.achievementsTitle")}
-        subtitle={t("progress.achievementsSubtitle")}
+        title={t('progress.achievementsTitle')}
+        subtitle={t('progress.achievementsSubtitle')}
         icon={Trophy}
         iconClassName="bg-warning/10 text-warning"
         railClassName="bg-warning/80"
@@ -115,8 +115,8 @@ export default function ProgressPage() {
       </CollapsibleSection>
 
       <CollapsibleSection
-        title={t("progress.activityTitle")}
-        subtitle={t("progress.activitySubtitle")}
+        title={t('progress.activityTitle')}
+        subtitle={t('progress.activitySubtitle')}
         icon={Activity}
         iconClassName="bg-success/10 text-success"
         railClassName="bg-success/80"

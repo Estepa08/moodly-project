@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState, useRef } from "react";
-import { useTranslation } from "react-i18next";
-import { X, Volume2 } from "lucide-react";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { subscribeSpeech, type PetSpeech } from "./celebration";
-import { cn } from "../../lib/utils";
+import { useCallback, useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { X, Volume2 } from 'lucide-react';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { subscribeSpeech, type PetSpeech } from './celebration';
+import { cn } from '../../lib/utils';
 
 export interface SpeechState {
   current: PetSpeech | null;
@@ -12,7 +12,7 @@ export interface SpeechState {
 
 const DEFAULT_AUTO_HIDE_MS = 6000;
 
-export type BubbleAnchor = "left" | "right";
+export type BubbleAnchor = 'left' | 'right';
 
 interface PetSpeechBubbleProps extends SpeechState {
   autoHideMs?: number;
@@ -33,7 +33,7 @@ export default function PetSpeechBubble({
   onReplay,
   draggable = false,
   defaultPosition = { x: 0, y: 0 },
-  anchor = "left",
+  anchor = 'left',
 }: PetSpeechBubbleProps) {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotion();
@@ -77,32 +77,32 @@ export default function PetSpeechBubble({
 
       const onMouseUp = () => {
         setIsDragging(false);
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("mouseup", onMouseUp);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
       };
 
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     };
 
-    dragElement.addEventListener("mousedown", onMouseDown);
-    return () => dragElement.removeEventListener("mousedown", onMouseDown);
+    dragElement.addEventListener('mousedown', onMouseDown);
+    return () => dragElement.removeEventListener('mousedown', onMouseDown);
   }, [draggable]);
 
   if (!current) return null;
 
   const chatStyles = {
     left: {
-      container: "rounded-2xl rounded-bl-sm",
-      bg: "bg-gradient-to-br from-card to-card/95",
-      text: "text-foreground",
-      border: "border-primary/10",
+      container: 'rounded-2xl rounded-bl-sm',
+      bg: 'bg-gradient-to-br from-card to-card/95',
+      text: 'text-foreground',
+      border: 'border-primary/10',
     },
     right: {
-      container: "rounded-2xl rounded-br-sm",
-      bg: "bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5",
-      text: "text-foreground",
-      border: "border-primary/20",
+      container: 'rounded-2xl rounded-br-sm',
+      bg: 'bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5',
+      text: 'text-foreground',
+      border: 'border-primary/20',
     },
   };
 
@@ -114,22 +114,22 @@ export default function PetSpeechBubble({
       role="status"
       aria-live="polite"
       style={{
-        transform: draggable ? `translate(${position.x}px, ${position.y}px)` : "none",
-        position: draggable ? "fixed" : "relative",
+        transform: draggable ? `translate(${position.x}px, ${position.y}px)` : 'none',
+        position: draggable ? 'fixed' : 'relative',
         zIndex: 9999,
         top: 0,
         left: 0,
-        touchAction: "none",
-        maxWidth: "320px",
+        touchAction: 'none',
+        maxWidth: '320px',
       }}
       className={cn(
         style.bg,
         style.border,
-        "border shadow-elevation-3",
-        "px-4 py-3.5 pr-10",
-        "transition-shadow duration-200",
-        isDragging && "shadow-elevation-4 scale-[1.02]",
-        reducedMotion ? "" : "animate-bubble-in",
+        'border shadow-elevation-3',
+        'px-4 py-3.5 pr-10',
+        'transition-shadow duration-200',
+        isDragging && 'shadow-elevation-4 scale-[1.02]',
+        reducedMotion ? '' : 'animate-bubble-in',
         style.container,
         className,
       )}
@@ -137,7 +137,7 @@ export default function PetSpeechBubble({
       {/* Текст */}
       <div className="flex items-start gap-2.5">
         <div className="flex-1 min-w-0">
-          <p className={cn("text-sm font-medium leading-relaxed", style.text)}>{current.text}</p>
+          <p className={cn('text-sm font-medium leading-relaxed', style.text)}>{current.text}</p>
         </div>
       </div>
 
@@ -145,8 +145,8 @@ export default function PetSpeechBubble({
       <button
         type="button"
         onClick={dismiss}
-        aria-label={t("petSpeech.close")}
-        title={t("petSpeech.close")}
+        aria-label={t('petSpeech.close')}
+        title={t('petSpeech.close')}
         className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
       >
         <X aria-hidden="true" className="h-3 w-3" />
@@ -156,8 +156,8 @@ export default function PetSpeechBubble({
         <button
           type="button"
           onClick={onReplay}
-          aria-label={t("petSpeech.replay")}
-          title={t("petSpeech.replay")}
+          aria-label={t('petSpeech.replay')}
+          title={t('petSpeech.replay')}
           className="absolute right-9 top-1.5 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
         >
           <Volume2 aria-hidden="true" className="h-3 w-3" />

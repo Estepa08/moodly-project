@@ -1,6 +1,6 @@
-import { lazy, Suspense } from "react";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { lazy, Suspense } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Heart,
   BarChart3,
@@ -18,32 +18,32 @@ import {
   CalendarRange,
   Check,
   Plus,
-} from "lucide-react";
-import { Button } from "../components/ui/button";
-import { Card } from "../components/ui/card";
-import Reveal from "../components/Reveal";
-import { useLoginForm } from "../hooks/useLoginForm";
-import { useSeo, withCanonical } from "../lib/seo";
-import { cn } from "../lib/utils";
-import { ACTIVITY_CATALOG } from "../lib/dayActivities";
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
+import Reveal from '../components/Reveal';
+import { useLoginForm } from '../hooks/useLoginForm';
+import { useSeo, withCanonical } from '../lib/seo';
+import { cn } from '../lib/utils';
+import { ACTIVITY_CATALOG } from '../lib/dayActivities';
 
 const PetAvatar = lazy(() =>
-  import("../features/gamification/PetAvatar").then((m) => ({ default: m.default })),
+  import('../features/gamification/PetAvatar').then((m) => ({ default: m.default })),
 );
 
 const COLLECTION_PET_TYPES = [
-  "puff",
-  "sloth",
-  "fox",
-  "giraffe",
-  "dove",
-  "tiger",
-  "turtle",
-  "monkey",
-  "koala",
-  "cow",
-  "robot",
-  "tucan",
+  'puff',
+  'sloth',
+  'fox',
+  'giraffe',
+  'dove',
+  'tiger',
+  'turtle',
+  'monkey',
+  'koala',
+  'cow',
+  'robot',
+  'tucan',
 ];
 
 const MOOD_BAR_HEIGHTS = [86, 106, 86, 124, 100, 66, 134];
@@ -51,17 +51,17 @@ const MOOD_BAR_HEIGHTS = [86, 106, 86, 124, 100, 66, 134];
 function useLandingSeo() {
   const { t } = useTranslation();
   useSeo({
-    title: t("landing.seo.title"),
-    description: t("landing.seo.description"),
-    canonical: withCanonical("/"),
+    title: t('landing.seo.title'),
+    description: t('landing.seo.description'),
+    canonical: withCanonical('/'),
   });
 }
 
 function LangSwitch({ className }: { className?: string }) {
   const { i18n, t } = useTranslation();
-  const items = ["ru", "en"] as const;
+  const items = ['ru', 'en'] as const;
   return (
-    <div className={cn("flex items-center gap-1 text-xs", className)}>
+    <div className={cn('flex items-center gap-1 text-xs', className)}>
       {items.map((lng, i) => (
         <span key={lng} className="flex items-center gap-1">
           {i > 0 && <span className="text-muted-foreground">|</span>}
@@ -69,11 +69,11 @@ function LangSwitch({ className }: { className?: string }) {
             type="button"
             onClick={() => i18n.changeLanguage(lng)}
             className={cn(
-              "px-1.5 py-0.5 rounded cursor-pointer transition-[color,transform] duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              i18n.language === lng ? "text-primary font-semibold" : "text-muted-foreground",
+              'px-1.5 py-0.5 rounded cursor-pointer transition-[color,transform] duration-150 ease-out active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              i18n.language === lng ? 'text-primary font-semibold' : 'text-muted-foreground',
             )}
           >
-            {lng === "en" ? t("common.languageEn") : t("common.languageRu")}
+            {lng === 'en' ? t('common.languageEn') : t('common.languageRu')}
           </button>
         </span>
       ))}
@@ -84,10 +84,10 @@ function LangSwitch({ className }: { className?: string }) {
 function LandingHeader() {
   const { t } = useTranslation();
   const nav = [
-    { href: "#features", label: t("landing.navInside") },
-    { href: "#pets", label: t("landing.navPets") },
-    { href: "#tests", label: t("landing.navTests") },
-    { href: "#privacy", label: t("landing.navPrivacy") },
+    { href: '#features', label: t('landing.navInside') },
+    { href: '#pets', label: t('landing.navPets') },
+    { href: '#tests', label: t('landing.navTests') },
+    { href: '#privacy', label: t('landing.navPrivacy') },
   ];
 
   return (
@@ -120,10 +120,10 @@ function LandingHeader() {
         <div className="flex items-center gap-2">
           <LangSwitch className="md:hidden" />
           <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
-            <Link to="/login">{t("landing.signIn")}</Link>
+            <Link to="/login">{t('landing.signIn')}</Link>
           </Button>
           <Button size="sm" asChild>
-            <Link to="/register">{t("landing.start")}</Link>
+            <Link to="/register">{t('landing.start')}</Link>
           </Button>
         </div>
       </div>
@@ -140,7 +140,7 @@ function HeroMock() {
           <span className="text-xs font-bold text-foreground" translate="no">
             Moodly
           </span>
-          <span className="text-[10px] text-muted-foreground">{t("landing.hero.mockMood")}</span>
+          <span className="text-[10px] text-muted-foreground">{t('landing.hero.mockMood')}</span>
         </div>
 
         <div className="flex items-center gap-4">
@@ -149,23 +149,23 @@ function HeroMock() {
           </Suspense>
           <div className="space-y-1">
             <p className="text-sm font-semibold text-foreground">
-              {t("landing.hero.mockCompanion")}
+              {t('landing.hero.mockCompanion')}
             </p>
-            <p className="text-xs text-muted-foreground">{t("landing.hero.mockStreak")}</p>
+            <p className="text-xs text-muted-foreground">{t('landing.hero.mockStreak')}</p>
           </div>
         </div>
 
         <div className="rounded-xl bg-secondary/70 p-3">
           <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-2">
-            {t("landing.hero.mockMood")}
+            {t('landing.hero.mockMood')}
           </p>
           <div className="flex items-end gap-1.5 h-[134px]">
             {MOOD_BAR_HEIGHTS.map((h, i) => (
               <span
                 key={i}
                 className={cn(
-                  "w-full rounded-md animate-bar-grow",
-                  i === 3 || i === 6 ? "bg-primary" : "bg-primary/30",
+                  'w-full rounded-md animate-bar-grow',
+                  i === 3 || i === 6 ? 'bg-primary' : 'bg-primary/30',
                 )}
                 style={{ height: `${h}px`, animationDelay: `${i * 120}ms` }}
               />
@@ -179,9 +179,9 @@ function HeroMock() {
           </span>
           <div>
             <p className="text-xs font-semibold text-foreground">
-              {t("landing.hero.mockPractice")}
+              {t('landing.hero.mockPractice')}
             </p>
-            <p className="text-[11px] text-muted-foreground">{t("landing.hero.mockPracticeSub")}</p>
+            <p className="text-[11px] text-muted-foreground">{t('landing.hero.mockPracticeSub')}</p>
           </div>
         </div>
       </div>
@@ -199,28 +199,28 @@ function LandingHero() {
         <Reveal>
           <div className="text-center lg:text-left">
             <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-xs font-semibold px-3.5 py-1.5 mb-5">
-              ⏱ {t("landing.badge")}
+              ⏱ {t('landing.badge')}
             </span>
             <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-              {t("landing.hero.titlePrefix")}{" "}
-              <span className="text-primary">{t("landing.hero.accent")}</span>{" "}
-              {t("landing.hero.titleSuffix")}
+              {t('landing.hero.titlePrefix')}{' '}
+              <span className="text-primary">{t('landing.hero.accent')}</span>{' '}
+              {t('landing.hero.titleSuffix')}
             </h1>
             <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-              {t("landing.hero.text")}
+              {t('landing.hero.text')}
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
               <Button size="lg" asChild>
                 <Link to="/register">
-                  {t("landing.start")}
+                  {t('landing.start')}
                   <ArrowRight aria-hidden="true" className="w-5 h-5" />
                 </Link>
               </Button>
               {demoMode && (
                 <Button size="lg" variant="secondary" onClick={handleDemo} disabled={demoLoading}>
                   <Play aria-hidden="true" className="w-4 h-4" />
-                  {demoLoading ? "..." : t("landing.demo")}
+                  {demoLoading ? '...' : t('landing.demo')}
                 </Button>
               )}
             </div>
@@ -238,10 +238,10 @@ function LandingHero() {
 function LandingStats() {
   const { t } = useTranslation();
   const stats = [
-    { value: "27", label: t("landing.stats.pets") },
-    { value: "6", label: t("landing.stats.practices") },
-    { value: "4", label: t("landing.stats.params") },
-    { value: "3", label: t("landing.stats.tests") },
+    { value: '27', label: t('landing.stats.pets') },
+    { value: '6', label: t('landing.stats.practices') },
+    { value: '4', label: t('landing.stats.params') },
+    { value: '3', label: t('landing.stats.tests') },
   ];
 
   return (
@@ -265,37 +265,37 @@ function LandingFeatures() {
   const features = [
     {
       icon: Smile,
-      color: "text-primary bg-primary/10",
-      title: t("landing.features.checkin.title"),
-      text: t("landing.features.checkin.text"),
+      color: 'text-primary bg-primary/10',
+      title: t('landing.features.checkin.title'),
+      text: t('landing.features.checkin.text'),
     },
     {
       icon: BarChart3,
-      color: "text-accent bg-accent/10",
-      title: t("landing.features.analytics.title"),
-      text: t("landing.features.analytics.text"),
+      color: 'text-accent bg-accent/10',
+      title: t('landing.features.analytics.title'),
+      text: t('landing.features.analytics.text'),
     },
     {
       icon: PawPrint,
-      color: "text-emerald-600 bg-emerald-500/10",
-      title: t("landing.features.pet.title"),
-      text: t("landing.features.pet.text"),
+      color: 'text-emerald-600 bg-emerald-500/10',
+      title: t('landing.features.pet.title'),
+      text: t('landing.features.pet.text'),
     },
     {
       icon: Brain,
-      color: "text-primary bg-primary/10",
-      title: t("landing.features.tests.title"),
-      text: t("landing.features.tests.text"),
+      color: 'text-primary bg-primary/10',
+      title: t('landing.features.tests.title'),
+      text: t('landing.features.tests.text'),
     },
   ];
 
   return (
     <section id="features" className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
       <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
-        {t("landing.features.kicker")}
+        {t('landing.features.kicker')}
       </p>
       <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
-        {t("landing.features.title")}
+        {t('landing.features.title')}
       </h2>
 
       <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -303,7 +303,7 @@ function LandingFeatures() {
           <Reveal key={f.title} delay={i * 120}>
             <Card className="p-6 h-full">
               <span
-                className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", f.color)}
+                className={cn('w-12 h-12 rounded-2xl flex items-center justify-center', f.color)}
               >
                 <f.icon aria-hidden="true" className="w-6 h-6" />
               </span>
@@ -320,13 +320,13 @@ function LandingFeatures() {
 function LandingDayActivities() {
   const { t } = useTranslation();
   const chipKeys = [
-    "movement_walk",
-    "movement_gym",
-    "work_meeting",
-    "rest_read",
-    "wellbeing_stress",
+    'movement_walk',
+    'movement_gym',
+    'work_meeting',
+    'rest_read',
+    'wellbeing_stress',
   ];
-  const selectedChips = ["movement_walk", "movement_gym"];
+  const selectedChips = ['movement_walk', 'movement_gym'];
   const chips = chipKeys.map((k) => {
     const def = ACTIVITY_CATALOG.find((a) => a.labelKey === `dayActivities.activities.${k}`);
     return {
@@ -336,22 +336,22 @@ function LandingDayActivities() {
     };
   });
   const badges = [
-    { icon: CheckCircle2, text: t("landing.day.tag180") },
-    { icon: Plus, text: t("landing.day.tagCustom") },
-    { icon: BarChart3, text: t("landing.day.tagCorrelation") },
+    { icon: CheckCircle2, text: t('landing.day.tag180') },
+    { icon: Plus, text: t('landing.day.tagCustom') },
+    { icon: BarChart3, text: t('landing.day.tagCorrelation') },
   ];
-  const points = [t("landing.day.p1"), t("landing.day.p2"), t("landing.day.p3")];
+  const points = [t('landing.day.p1'), t('landing.day.p2'), t('landing.day.p3')];
 
   return (
     <section className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
       <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
-        {t("landing.day.kicker")}
+        {t('landing.day.kicker')}
       </p>
       <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
-        {t("landing.day.title")}
+        {t('landing.day.title')}
       </h2>
       <p className="mt-3 text-center text-sm text-muted-foreground max-w-xl mx-auto">
-        {t("landing.day.subtitle")}
+        {t('landing.day.subtitle')}
       </p>
 
       <div className="mt-10 grid lg:grid-cols-2 gap-8 items-center">
@@ -359,17 +359,17 @@ function LandingDayActivities() {
           <div className="rounded-3xl border border-border bg-card p-6 shadow-neumorphic">
             <div className="flex items-center gap-2 text-sm font-bold text-foreground">
               <CalendarRange aria-hidden="true" className="w-4 h-4 text-accent" />
-              {t("dayActivities.title")}
+              {t('dayActivities.title')}
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {chips.map((c) => (
                 <span
                   key={c.key}
                   className={cn(
-                    "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium",
+                    'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium',
                     c.active
-                      ? "bg-accent/15 text-accent ring-1 ring-accent/40"
-                      : "bg-muted text-muted-foreground",
+                      ? 'bg-accent/15 text-accent ring-1 ring-accent/40'
+                      : 'bg-muted text-muted-foreground',
                   )}
                 >
                   {c.active && <Check className="mr-1 w-3 h-3" aria-hidden="true" />}
@@ -414,13 +414,13 @@ function LandingCollection() {
     <section id="pets" className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
       <div className="rounded-2xl bg-secondary/60 p-6 sm:p-10">
         <p className="text-xs font-bold text-primary uppercase tracking-wider">
-          {t("landing.collection.kicker")}
+          {t('landing.collection.kicker')}
         </p>
         <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-balance">
-          {t("landing.collection.title")}
+          {t('landing.collection.title')}
         </h2>
         <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
-          {t("landing.collection.text")}
+          {t('landing.collection.text')}
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
@@ -458,34 +458,34 @@ function LandingTests() {
   const tests = [
     {
       icon: Smile,
-      title: t("landing.tests.mood.title"),
-      duration: t("landing.tests.duration", { minutes: "3" }),
-      text: t("landing.tests.mood.text"),
-      foot: t("landing.tests.mood.foot"),
+      title: t('landing.tests.mood.title'),
+      duration: t('landing.tests.duration', { minutes: '3' }),
+      text: t('landing.tests.mood.text'),
+      foot: t('landing.tests.mood.foot'),
     },
     {
       icon: Heart,
-      title: t("landing.tests.anxiety.title"),
-      duration: t("landing.tests.duration", { minutes: "3" }),
-      text: t("landing.tests.anxiety.text"),
-      foot: t("landing.tests.anxiety.foot"),
+      title: t('landing.tests.anxiety.title'),
+      duration: t('landing.tests.duration', { minutes: '3' }),
+      text: t('landing.tests.anxiety.text'),
+      foot: t('landing.tests.anxiety.foot'),
     },
     {
       icon: Brain,
-      title: t("landing.tests.mind.title"),
-      duration: t("landing.tests.duration", { minutes: "4" }),
-      text: t("landing.tests.mind.text"),
-      foot: t("landing.tests.mind.foot"),
+      title: t('landing.tests.mind.title'),
+      duration: t('landing.tests.duration', { minutes: '4' }),
+      text: t('landing.tests.mind.text'),
+      foot: t('landing.tests.mind.foot'),
     },
   ];
 
   return (
     <section id="tests" className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
       <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
-        {t("landing.tests.kicker")}
+        {t('landing.tests.kicker')}
       </p>
       <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
-        {t("landing.tests.title")}
+        {t('landing.tests.title')}
       </h2>
 
       <div className="mt-10 grid md:grid-cols-3 gap-4">
@@ -524,38 +524,38 @@ function LandingPrivacy() {
   const items = [
     {
       icon: Lock,
-      title: t("landing.privacy.servers.title"),
-      text: t("landing.privacy.servers.text"),
+      title: t('landing.privacy.servers.title'),
+      text: t('landing.privacy.servers.text'),
     },
     {
       icon: FileText,
-      title: t("landing.privacy.consent.title"),
-      text: t("landing.privacy.consent.text"),
+      title: t('landing.privacy.consent.title'),
+      text: t('landing.privacy.consent.text'),
     },
     {
       icon: ShieldCheck,
-      title: t("landing.privacy.ads.title"),
-      text: t("landing.privacy.ads.text"),
+      title: t('landing.privacy.ads.title'),
+      text: t('landing.privacy.ads.text'),
     },
     {
       icon: CheckCircle2,
-      title: t("landing.privacy.disclaimer.title"),
-      text: t("landing.privacy.disclaimer.text"),
+      title: t('landing.privacy.disclaimer.title'),
+      text: t('landing.privacy.disclaimer.text'),
     },
     {
       icon: Lock,
-      title: t("landing.privacy.encryption.title"),
-      text: t("landing.privacy.encryption.text"),
+      title: t('landing.privacy.encryption.title'),
+      text: t('landing.privacy.encryption.text'),
     },
     {
       icon: KeyRound,
-      title: t("landing.privacy.keyOnly.title"),
-      text: t("landing.privacy.keyOnly.text"),
+      title: t('landing.privacy.keyOnly.title'),
+      text: t('landing.privacy.keyOnly.text'),
     },
     {
       icon: ShieldCheck,
-      title: t("landing.privacy.recovery.title"),
-      text: t("landing.privacy.recovery.text"),
+      title: t('landing.privacy.recovery.title'),
+      text: t('landing.privacy.recovery.text'),
     },
   ];
 
@@ -563,10 +563,10 @@ function LandingPrivacy() {
     <section id="privacy" className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
       <div className="rounded-2xl bg-card border border-border shadow-clay p-6 sm:p-10">
         <p className="text-xs font-bold text-primary uppercase tracking-wider">
-          {t("landing.privacy.kicker")}
+          {t('landing.privacy.kicker')}
         </p>
         <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-balance">
-          {t("landing.privacy.title")}
+          {t('landing.privacy.title')}
         </h2>
 
         <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -592,9 +592,9 @@ function LandingCta() {
       <Reveal>
         <div className="rounded-3xl bg-btn-gradient shadow-clay-lg p-8 sm:p-12 text-center">
           <h2 className="text-2xl sm:text-[38px] font-extrabold text-white text-balance">
-            {t("landing.cta.title")}
+            {t('landing.cta.title')}
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-white/85">{t("landing.cta.text")}</p>
+          <p className="mt-3 text-sm sm:text-base text-white/85">{t('landing.cta.text')}</p>
           <Button
             size="lg"
             variant="secondary"
@@ -602,7 +602,7 @@ function LandingCta() {
             asChild
           >
             <Link to="/register">
-              {t("landing.cta.button")}
+              {t('landing.cta.button')}
               <ArrowRight aria-hidden="true" className="w-5 h-5" />
             </Link>
           </Button>
@@ -626,26 +626,26 @@ function LandingFooter() {
               <p className="text-sm font-bold text-foreground" translate="no">
                 Moodly
               </p>
-              <p className="text-xs text-muted-foreground">{t("landing.footer.about")}</p>
+              <p className="text-xs text-muted-foreground">{t('landing.footer.about')}</p>
             </div>
           </div>
           <div className="flex items-center gap-5 text-xs text-muted-foreground">
             <Link to="/mood-diary" className="hover:text-primary transition-colors duration-150">
-              {t("landing.footer.diary")}
+              {t('landing.footer.diary')}
             </Link>
             <Link to="/anxiety-test" className="hover:text-primary transition-colors duration-150">
-              {t("landing.footer.anxiety")}
+              {t('landing.footer.anxiety')}
             </Link>
             <Link to="/privacy" className="hover:text-primary transition-colors duration-150">
-              {t("nav.privacy")}
+              {t('nav.privacy')}
             </Link>
             <Link to="/terms" className="hover:text-primary transition-colors duration-150">
-              {t("nav.terms")}
+              {t('nav.terms')}
             </Link>
           </div>
         </div>
         <p className="mt-6 text-[11px] text-muted-foreground leading-relaxed text-center sm:text-left">
-          © 2026 Moodly. {t("landing.footer.disclaimer")}
+          © 2026 Moodly. {t('landing.footer.disclaimer')}
         </p>
       </div>
     </footer>
@@ -661,7 +661,7 @@ export default function LandingPage() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-3 focus:py-2 focus:rounded-lg focus:text-primary"
       >
-        {t("common.skipToContent")}
+        {t('common.skipToContent')}
       </a>
       <LandingHeader />
       <main id="main-content">

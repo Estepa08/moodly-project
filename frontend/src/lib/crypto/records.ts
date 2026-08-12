@@ -1,6 +1,6 @@
-import { encryptJson, decryptJson } from "./codec";
-import { getSessionKey, getSessionUserId } from "./session";
-import { DISTORTION_KEYS, DistortionKey } from "../distortionsQuiz";
+import { encryptJson, decryptJson } from './codec';
+import { getSessionKey, getSessionUserId } from './session';
+import { DISTORTION_KEYS, DistortionKey } from '../distortionsQuiz';
 
 export interface ActivitySelection {
   key: string;
@@ -30,7 +30,7 @@ export interface EncryptContext {
 
 async function ctxFor(entityId: string): Promise<EncryptContext> {
   const userId = getSessionUserId();
-  if (!userId) throw new Error("Data key context is not initialized");
+  if (!userId) throw new Error('Data key context is not initialized');
   return { userId, entityId };
 }
 
@@ -50,22 +50,22 @@ export async function decryptEntryPayload(
   const raw = await decryptJson(key, encryptedData, await ctxFor(entityId));
   const value = (raw as { value?: unknown }).value;
   const note = (raw as { note?: unknown }).note ?? null;
-  if (typeof value !== "number") {
-    throw new Error("Decrypted entry payload is malformed");
+  if (typeof value !== 'number') {
+    throw new Error('Decrypted entry payload is malformed');
   }
   const activities = (raw as { activities?: unknown }).activities;
   const parsedActivities = Array.isArray(activities)
-    ? (activities as ActivitySelection[]).filter((a) => a && typeof a.key === "string")
+    ? (activities as ActivitySelection[]).filter((a) => a && typeof a.key === 'string')
     : [];
   const distortions = (raw as { distortions?: unknown }).distortions;
   const parsedDistortions = Array.isArray(distortions)
     ? (distortions as DistortionKey[]).filter(
-        (d) => typeof d === "string" && (DISTORTION_KEYS as string[]).includes(d),
+        (d) => typeof d === 'string' && (DISTORTION_KEYS as string[]).includes(d),
       )
     : [];
   return {
     value,
-    note: typeof note === "string" ? note : null,
+    note: typeof note === 'string' ? note : null,
     activities: parsedActivities,
     distortions: parsedDistortions,
   };
@@ -80,12 +80,12 @@ export async function decryptEntryPayload(
 export function parseLegacyActivities(note: string | null | undefined): ActivitySelection[] {
   if (!note) return [];
   const trimmed = note.trim();
-  if (!trimmed.startsWith("[")) return [];
+  if (!trimmed.startsWith('[')) return [];
   try {
     const parsed: unknown = JSON.parse(trimmed);
     if (!Array.isArray(parsed)) return [];
     return parsed.filter(
-      (a): a is ActivitySelection => !!a && typeof (a as ActivitySelection).key === "string",
+      (a): a is ActivitySelection => !!a && typeof (a as ActivitySelection).key === 'string',
     );
   } catch {
     return [];
@@ -107,8 +107,8 @@ export async function decryptTestResultPayload(
   const key = await getSessionKey();
   const raw = await decryptJson(key, encryptedData, await ctxFor(entityId));
   const r = raw as TestResultCipherPayload;
-  if (typeof r.score !== "number" || typeof r.interpretation !== "string") {
-    throw new Error("Decrypted test result payload is malformed");
+  if (typeof r.score !== 'number' || typeof r.interpretation !== 'string') {
+    throw new Error('Decrypted test result payload is malformed');
   }
   return r;
 }

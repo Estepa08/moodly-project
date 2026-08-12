@@ -1,35 +1,35 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { Wind, Heart, Moon, Brain, Scale, BookOpen, Sparkles } from "lucide-react";
-import { useCompletions } from "./useCreature";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { LoadingCard } from "../../components/ui/loading-card";
-import EmptyState from "../../components/ui/empty-state";
-import { PracticeSource } from "./practice.enums";
-import { FlaskConical } from "lucide-react";
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Wind, Heart, Moon, Brain, Scale, BookOpen, Sparkles } from 'lucide-react';
+import { useCompletions } from './useCreature';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { LoadingCard } from '../../components/ui/loading-card';
+import EmptyState from '../../components/ui/empty-state';
+import { PracticeSource } from './practice.enums';
+import { FlaskConical } from 'lucide-react';
 
 interface PracticeProgressProps {
   breathingSessionCount?: number;
 }
 
 const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: string }> = {
-  [PracticeSource.Breathing]: { icon: Wind, labelKey: "progress.activityBreathing" },
-  [PracticeSource.Gratitude]: { icon: Heart, labelKey: "progress.activityGratitude" },
-  [PracticeSource.SleepHygiene]: { icon: Moon, labelKey: "progress.activitySleepHygiene" },
-  [PracticeSource.Distortions]: { icon: Brain, labelKey: "progress.activityDistortions" },
-  [PracticeSource.Cba]: { icon: Scale, labelKey: "progress.activityCba" },
-  [PracticeSource.ThoughtJournal]: { icon: BookOpen, labelKey: "progress.activityThoughtJournal" },
-  [PracticeSource.EmotionLab]: { icon: FlaskConical, labelKey: "progress.activityEmotionLab" },
+  [PracticeSource.Breathing]: { icon: Wind, labelKey: 'progress.activityBreathing' },
+  [PracticeSource.Gratitude]: { icon: Heart, labelKey: 'progress.activityGratitude' },
+  [PracticeSource.SleepHygiene]: { icon: Moon, labelKey: 'progress.activitySleepHygiene' },
+  [PracticeSource.Distortions]: { icon: Brain, labelKey: 'progress.activityDistortions' },
+  [PracticeSource.Cba]: { icon: Scale, labelKey: 'progress.activityCba' },
+  [PracticeSource.ThoughtJournal]: { icon: BookOpen, labelKey: 'progress.activityThoughtJournal' },
+  [PracticeSource.EmotionLab]: { icon: FlaskConical, labelKey: 'progress.activityEmotionLab' },
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
-  [PracticeSource.Breathing]: "/practices/breathing",
-  [PracticeSource.Gratitude]: "/practices/gratitude",
-  [PracticeSource.SleepHygiene]: "/practices/sleep-hygiene",
-  [PracticeSource.Distortions]: "/practices/distortions",
-  [PracticeSource.Cba]: "/practices/cost-benefit-analysis",
-  [PracticeSource.ThoughtJournal]: "/practices/thought-journal",
-  [PracticeSource.EmotionLab]: "/practices/emotion-lab",
+  [PracticeSource.Breathing]: '/practices/breathing',
+  [PracticeSource.Gratitude]: '/practices/gratitude',
+  [PracticeSource.SleepHygiene]: '/practices/sleep-hygiene',
+  [PracticeSource.Distortions]: '/practices/distortions',
+  [PracticeSource.Cba]: '/practices/cost-benefit-analysis',
+  [PracticeSource.ThoughtJournal]: '/practices/thought-journal',
+  [PracticeSource.EmotionLab]: '/practices/emotion-lab',
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);
@@ -63,7 +63,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
   return (
     <Card className="shadow-neumorphic">
       <CardHeader>
-        <CardTitle className="text-base">{t("progress.completionsTitle")}</CardTitle>
+        <CardTitle className="text-base">{t('progress.completionsTitle')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid grid-cols-2 gap-3 max-sm:gap-2">
@@ -96,7 +96,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{t(config.labelKey)}</p>
                   <p className="text-sm font-semibold text-foreground truncate">
-                    {t("progress.totalCompletions", { count: data.count })} · +{data.xp} XP
+                    {t('progress.totalCompletions', { count: data.count })} · +{data.xp} XP
                   </p>
                 </div>
               </Link>
@@ -107,21 +107,21 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
         {hasAnyData && (
           <>
             <div className="text-center text-xs text-muted-foreground font-medium pt-1 border-t border-border">
-              {t("progress.completionsTotal", { xp: totalXp })}
+              {t('progress.completionsTotal', { xp: totalXp })}
             </div>
 
             {recent.length > 0 && (
               <div className="border-t border-border pt-3 mt-1">
                 <p className="text-xs font-medium text-muted-foreground mb-2">
-                  {t("progress.recentActivity")}
+                  {t('progress.recentActivity')}
                 </p>
                 <div className="space-y-1.5">
                   {recent.map((c, idx) => {
                     const config = SOURCE_CONFIG[c.source as PracticeSource];
                     const date = new Date(c.createdAt);
                     const dateStr = date.toLocaleDateString(i18n.language, {
-                      month: "short",
-                      day: "numeric",
+                      month: 'short',
+                      day: 'numeric',
                     });
                     return (
                       <div
@@ -144,7 +144,7 @@ export default function PracticeProgress({ breathingSessionCount }: PracticeProg
           </>
         )}
 
-        {!hasAnyData && <EmptyState icon={Sparkles} title={t("progress.noData")} />}
+        {!hasAnyData && <EmptyState icon={Sparkles} title={t('progress.noData')} />}
       </CardContent>
     </Card>
   );

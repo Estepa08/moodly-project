@@ -1,15 +1,15 @@
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { CalendarRange, Pencil, Plus } from "lucide-react";
-import { useParameters } from "../../hooks/useParameters";
-import { useEntries } from "../../hooks/useEntries";
-import { ParameterName } from "../../lib/constants";
-import { ACTIVITY_CATALOG, ACTIVITY_ICONS } from "../../lib/dayActivities";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { ModalShell } from "../../components/ui/modal-shell";
-import { ComponentSize } from "../../lib/constants";
-import DayActivitiesSection from "./DayActivitiesSection";
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CalendarRange, Pencil, Plus } from 'lucide-react';
+import { useParameters } from '../../hooks/useParameters';
+import { useEntries } from '../../hooks/useEntries';
+import { ParameterName } from '../../lib/constants';
+import { ACTIVITY_CATALOG, ACTIVITY_ICONS } from '../../lib/dayActivities';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { ModalShell } from '../../components/ui/modal-shell';
+import { ComponentSize } from '../../lib/constants';
+import DayActivitiesSection from './DayActivitiesSection';
 
 function isToday(dateStr: string): boolean {
   const d = new Date(dateStr);
@@ -48,7 +48,7 @@ export default function DayActivitiesCard() {
   }, [paramId, todayEntries]);
 
   const labelFor = (key: string) => {
-    if (key.startsWith("custom:")) {
+    if (key.startsWith('custom:')) {
       const custom = activities.find((a) => a.key === key);
       return custom?.label ? (`${custom.label}` as string) : key;
     }
@@ -64,12 +64,12 @@ export default function DayActivitiesCard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CalendarRange aria-hidden="true" className="w-4 h-4 text-primary" />
-            {t("dayActivities.title")}
+            {t('dayActivities.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           {activities.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("dayActivities.empty")}</p>
+            <p className="text-sm text-muted-foreground">{t('dayActivities.empty')}</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {activities.map((a) => {
@@ -92,7 +92,7 @@ export default function DayActivitiesCard() {
             ) : (
               <Pencil aria-hidden="true" className="mr-1 h-4 w-4" />
             )}
-            {activities.length === 0 ? t("dayActivities.addCustom") : t("dayActivities.edit")}
+            {activities.length === 0 ? t('dayActivities.addCustom') : t('dayActivities.edit')}
           </Button>
         </CardContent>
       </Card>
@@ -104,8 +104,8 @@ export default function DayActivitiesCard() {
         iconSize={ComponentSize.Md}
         iconBg="bg-primary/10"
         iconColor="text-primary"
-        title={t("dayActivities.sectionHeading")}
-        description={t("dayActivities.subtitle")}
+        title={t('dayActivities.sectionHeading')}
+        description={t('dayActivities.subtitle')}
       >
         <DayActivitiesSection onClose={() => setOpen(false)} />
       </ModalShell>

@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Flame } from "lucide-react";
-import { Dialog, DialogContent } from "../../components/ui/dialog";
-import PetAvatar from "../gamification/PetAvatar";
-import { usePets, useCreatureState, celebrate, emitSpeech } from "../gamification";
-import { PET_DEFINITIONS } from "../gamification/pets";
-import { api } from "../../lib/api";
-import { useParameters } from "../../hooks/useParameters";
-import { useCreateEntry } from "../../hooks/useEntries";
-import { useDayPhase, getDayPhase, type DayPhase } from "../../hooks/useDayPhase";
-import { ParameterName, PARAM_NAME_KEYS } from "../../lib/constants";
-import { RATING_LEVELS, type RatingLevel } from "../../lib/ratingLevels";
-import { cn } from "../../lib/utils";
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Flame } from 'lucide-react';
+import { Dialog, DialogContent } from '../../components/ui/dialog';
+import PetAvatar from '../gamification/PetAvatar';
+import { usePets, useCreatureState, celebrate, emitSpeech } from '../gamification';
+import { PET_DEFINITIONS } from '../gamification/pets';
+import { api } from '../../lib/api';
+import { useParameters } from '../../hooks/useParameters';
+import { useCreateEntry } from '../../hooks/useEntries';
+import { useDayPhase, getDayPhase, type DayPhase } from '../../hooks/useDayPhase';
+import { ParameterName, PARAM_NAME_KEYS } from '../../lib/constants';
+import { RATING_LEVELS, type RatingLevel } from '../../lib/ratingLevels';
+import { cn } from '../../lib/utils';
 
 const FLOWS: Record<DayPhase, ParameterName[]> = {
   morning: [ParameterName.Sleep, ParameterName.Mood, ParameterName.Anxiety, ParameterName.Energy],
@@ -51,10 +51,10 @@ export default function PetCheckInDialog({
     mutationFn: () => api.creature.checkIn(),
     onSuccess: (data) => {
       setCheckIn({ streak: data.state.streak ?? 0, leveledUp: data.leveledUp });
-      queryClient.invalidateQueries({ queryKey: ["creature"] });
+      queryClient.invalidateQueries({ queryKey: ['creature'] });
       if (data.leveledUp) {
-        celebrate(t("dailyCheckIn.levelUpBody", { level: data.state.level }), {
-          title: t("dailyCheckIn.levelUpTitle"),
+        celebrate(t('dailyCheckIn.levelUpBody', { level: data.state.level }), {
+          title: t('dailyCheckIn.levelUpTitle'),
         });
       }
     },
@@ -83,10 +83,10 @@ export default function PetCheckInDialog({
   const levels = RATING_LEVELS[currentParam] ?? RATING_LEVELS[ParameterName.Mood]!;
   const paramId = paramIdByName.get(currentParam);
 
-  const activePetType = pets?.activePetType ?? creature?.petType ?? "puff";
+  const activePetType = pets?.activePetType ?? creature?.petType ?? 'puff';
   const petName =
     pets?.petName?.trim() ||
-    t(PET_DEFINITIONS.find((p) => p.type === activePetType)?.labelKey ?? "pets.puff");
+    t(PET_DEFINITIONS.find((p) => p.type === activePetType)?.labelKey ?? 'pets.puff');
 
   const handleSelect = (value: number) => {
     if (!paramId || createEntry.isPending) return;
@@ -97,7 +97,7 @@ export default function PetCheckInDialog({
           setFeedSignal((s) => s + 1);
           if (step >= flow.length - 1) {
             setDone(true);
-            emitSpeech(t("petSpeech.thanks"));
+            emitSpeech(t('petSpeech.thanks'));
             // Завершение флоу = дневной чек-ин (сервер сам защищает от повтора в день).
             checkInMutation.mutate(undefined);
           } else {
@@ -131,10 +131,10 @@ export default function PetCheckInDialog({
         {done ? (
           <div className="space-y-3">
             <p className="text-lg font-bold font-serif text-foreground">
-              {t("petCheckIn.thanksTitle")}
+              {t('petCheckIn.thanksTitle')}
             </p>
             <p className="text-sm text-muted-foreground leading-snug">
-              {t("petCheckIn.thanksText")}
+              {t('petCheckIn.thanksText')}
             </p>
 
             {checkIn && (
@@ -142,12 +142,12 @@ export default function PetCheckInDialog({
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-accent/10 py-2.5">
                     <span className="text-sm font-bold text-accent">
-                      {t("petCheckIn.rewardXp")}
+                      {t('petCheckIn.rewardXp')}
                     </span>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-primary/10 py-2.5">
                     <span className="text-sm font-bold text-primary">
-                      {t("petCheckIn.rewardEnergy")}
+                      {t('petCheckIn.rewardEnergy')}
                     </span>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function PetCheckInDialog({
                   <div className="flex items-center justify-center gap-1.5 rounded-2xl bg-card shadow-neumorphic-sm py-2">
                     <Flame aria-hidden="true" className="w-4 h-4 text-accent" />
                     <span className="text-xs font-semibold text-foreground">
-                      {t("petCheckIn.rewardStreak", { count: checkIn.streak })}
+                      {t('petCheckIn.rewardStreak', { count: checkIn.streak })}
                     </span>
                   </div>
                 )}
@@ -167,7 +167,7 @@ export default function PetCheckInDialog({
               onClick={close}
               className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-neumorphic-sm transition-[transform,filter] duration-150 hover:brightness-105 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {t("petCheckIn.done")}
+              {t('petCheckIn.done')}
             </button>
           </div>
         ) : (
@@ -176,7 +176,7 @@ export default function PetCheckInDialog({
               <p className="text-sm font-semibold text-foreground leading-snug">
                 {t(`petGreeter.question.${phase}`)}
               </p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{t("petCheckIn.instantHint")}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{t('petCheckIn.instantHint')}</p>
             </div>
 
             <div className="flex items-center justify-center gap-1.5 pt-1">
@@ -185,15 +185,15 @@ export default function PetCheckInDialog({
                   key={p}
                   aria-hidden="true"
                   className={cn(
-                    "h-1.5 rounded-full transition-all duration-200",
-                    i === step ? "w-5 bg-primary" : "w-2 bg-primary/30",
+                    'h-1.5 rounded-full transition-all duration-200',
+                    i === step ? 'w-5 bg-primary' : 'w-2 bg-primary/30',
                   )}
                 />
               ))}
             </div>
 
             <p className="text-xs font-semibold text-muted-foreground">
-              {t("petCheckIn.stepOf", { current: step + 1, total: flow.length })} ·{" "}
+              {t('petCheckIn.stepOf', { current: step + 1, total: flow.length })} ·{' '}
               {t(PARAM_NAME_KEYS[currentParam])}
             </p>
 
@@ -207,9 +207,9 @@ export default function PetCheckInDialog({
                     onClick={() => handleSelect(lv.value)}
                     disabled={createEntry.isPending}
                     className={cn(
-                      "flex flex-col items-center justify-center gap-1 rounded-2xl bg-card shadow-neumorphic-sm h-16 px-1",
-                      "transition-[transform,box-shadow] duration-150 active:scale-95 hover:shadow-neumorphic",
-                      "cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      'flex flex-col items-center justify-center gap-1 rounded-2xl bg-card shadow-neumorphic-sm h-16 px-1',
+                      'transition-[transform,box-shadow] duration-150 active:scale-95 hover:shadow-neumorphic',
+                      'cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     )}
                   >
                     <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
@@ -227,9 +227,9 @@ export default function PetCheckInDialog({
                 onClick={close}
                 className="text-xs font-semibold text-muted-foreground underline underline-offset-2 hover:text-foreground py-1 px-2 min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
               >
-                {t("petCheckIn.skip")}
+                {t('petCheckIn.skip')}
               </button>
-              {phase !== "morning" && onMarkActivities && (
+              {phase !== 'morning' && onMarkActivities && (
                 <button
                   type="button"
                   onClick={() => {
@@ -238,7 +238,7 @@ export default function PetCheckInDialog({
                   }}
                   className="text-xs font-semibold text-primary underline underline-offset-2 hover:text-primary/80 py-1 px-2 min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
                 >
-                  {t("petCheckIn.markActivities")}
+                  {t('petCheckIn.markActivities')}
                 </button>
               )}
             </div>
@@ -260,7 +260,7 @@ export function shouldAutoOpenCheckIn(
   const today = new Date().toISOString().slice(0, 10);
   const key = `moodly_pet_checkin_${phase}_${today}`;
   try {
-    return localStorage.getItem(key) !== "1";
+    return localStorage.getItem(key) !== '1';
   } catch {
     return true;
   }
@@ -270,7 +270,7 @@ export function markCheckInDone() {
   const phase = getDayPhase();
   const today = new Date().toISOString().slice(0, 10);
   try {
-    localStorage.setItem(`moodly_pet_checkin_${phase}_${today}`, "1");
+    localStorage.setItem(`moodly_pet_checkin_${phase}_${today}`, '1');
   } catch {
     /* noop */
   }

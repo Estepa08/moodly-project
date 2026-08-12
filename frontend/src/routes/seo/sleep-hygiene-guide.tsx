@@ -1,10 +1,10 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { ArrowRight, Moon, CheckCircle2 } from "lucide-react";
-import { Button } from "../../components/ui/button";
-import { Card } from "../../components/ui/card";
-import Reveal from "../../components/Reveal";
-import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from "../../lib/seo";
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Moon, CheckCircle2 } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
+import Reveal from '../../components/Reveal';
+import { useSeo, withCanonical, breadcrumbLd, faqPageLd } from '../../lib/seo';
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -13,7 +13,7 @@ import {
   CtaBanner,
   SeoDisclaimer,
   SeoFooter,
-} from "./seo-components";
+} from './seo-components';
 
 export default function SleepHygieneGuidePage() {
   const { t } = useTranslation();
@@ -24,15 +24,15 @@ export default function SleepHygieneGuidePage() {
   }));
 
   useSeo({
-    title: t("seoPages.sleepHygiene.meta.title"),
-    description: t("seoPages.sleepHygiene.meta.description"),
-    canonical: withCanonical("/sleep-hygiene-guide"),
+    title: t('seoPages.sleepHygiene.meta.title'),
+    description: t('seoPages.sleepHygiene.meta.description'),
+    canonical: withCanonical('/sleep-hygiene-guide'),
     jsonLd: [
       breadcrumbLd([
-        { name: t("seoPages.sleepHygiene.breadcrumb.home"), url: withCanonical("/") },
+        { name: t('seoPages.sleepHygiene.breadcrumb.home'), url: withCanonical('/') },
         {
-          name: t("seoPages.sleepHygiene.breadcrumb.current"),
-          url: withCanonical("/sleep-hygiene-guide"),
+          name: t('seoPages.sleepHygiene.breadcrumb.current'),
+          url: withCanonical('/sleep-hygiene-guide'),
         },
       ]),
       faqPageLd(faq),
@@ -44,8 +44,8 @@ export default function SleepHygieneGuidePage() {
       <SeoHeader />
       <SeoBreadcrumbs
         items={[
-          { label: t("seoPages.sleepHygiene.breadcrumb.home"), to: "/" },
-          { label: t("seoPages.sleepHygiene.breadcrumb.current") },
+          { label: t('seoPages.sleepHygiene.breadcrumb.home'), to: '/' },
+          { label: t('seoPages.sleepHygiene.breadcrumb.current') },
         ]}
       />
 
@@ -55,21 +55,21 @@ export default function SleepHygieneGuidePage() {
           <Reveal>
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-                {t("seoPages.sleepHygiene.hero.title")}{" "}
-                <span className="text-primary">{t("seoPages.sleepHygiene.hero.accent")}</span>
+                {t('seoPages.sleepHygiene.hero.title')}{' '}
+                <span className="text-primary">{t('seoPages.sleepHygiene.hero.accent')}</span>
               </h1>
               <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl">
-                {t("seoPages.sleepHygiene.hero.text")}
+                {t('seoPages.sleepHygiene.hero.text')}
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-3">
                 <Button size="lg" asChild>
                   <Link to="/register">
-                    {t("seoPages.sleepHygiene.hero.ctaPrimary")}
+                    {t('seoPages.sleepHygiene.hero.ctaPrimary')}
                     <ArrowRight aria-hidden="true" className="w-5 h-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="secondary" asChild>
-                  <Link to="/mood-diary">{t("seoPages.sleepHygiene.hero.ctaSecondary")}</Link>
+                  <Link to="/mood-diary">{t('seoPages.sleepHygiene.hero.ctaSecondary')}</Link>
                 </Button>
               </div>
             </div>
@@ -79,7 +79,7 @@ export default function SleepHygieneGuidePage() {
             <Card className="p-6 bg-card-gradient shadow-clay-lg">
               <div className="flex items-center gap-2">
                 <Moon aria-hidden="true" className="w-5 h-5 text-primary" />
-                <p className="font-bold text-foreground">{t("seoPages.sleepHygiene.mock.title")}</p>
+                <p className="font-bold text-foreground">{t('seoPages.sleepHygiene.mock.title')}</p>
               </div>
               <div className="mt-4 space-y-3">
                 {[1, 2, 3, 4].map((i) => (
@@ -101,9 +101,9 @@ export default function SleepHygieneGuidePage() {
         {/* Why sleep matters */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.sleepHygiene.why.kicker")}
-            title={t("seoPages.sleepHygiene.why.title")}
-            text={[t("seoPages.sleepHygiene.why.text1"), t("seoPages.sleepHygiene.why.text2")]}
+            kicker={t('seoPages.sleepHygiene.why.kicker')}
+            title={t('seoPages.sleepHygiene.why.title')}
+            text={[t('seoPages.sleepHygiene.why.text1'), t('seoPages.sleepHygiene.why.text2')]}
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
@@ -124,8 +124,8 @@ export default function SleepHygieneGuidePage() {
         {/* Habit checklist */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.sleepHygiene.habits.kicker")}
-            title={t("seoPages.sleepHygiene.habits.title")}
+            kicker={t('seoPages.sleepHygiene.habits.kicker')}
+            title={t('seoPages.sleepHygiene.habits.title')}
           />
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -156,8 +156,8 @@ export default function SleepHygieneGuidePage() {
         {/* How moodly helps */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
           <SeoSectionHeading
-            kicker={t("seoPages.sleepHygiene.how.kicker")}
-            title={t("seoPages.sleepHygiene.how.title")}
+            kicker={t('seoPages.sleepHygiene.how.kicker')}
+            title={t('seoPages.sleepHygiene.how.title')}
           />
           <div className="mt-8 grid md:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
@@ -177,13 +177,13 @@ export default function SleepHygieneGuidePage() {
         </section>
 
         {/* FAQ */}
-        <FaqAccordion title={t("seoPages.sleepHygiene.faq.title")} items={faq} />
+        <FaqAccordion title={t('seoPages.sleepHygiene.faq.title')} items={faq} />
 
         {/* CTA */}
         <CtaBanner
-          title={t("seoPages.sleepHygiene.cta.title")}
-          text={t("seoPages.sleepHygiene.cta.text")}
-          button={t("seoPages.sleepHygiene.cta.button")}
+          title={t('seoPages.sleepHygiene.cta.title')}
+          text={t('seoPages.sleepHygiene.cta.text')}
+          button={t('seoPages.sleepHygiene.cta.button')}
         />
       </main>
 

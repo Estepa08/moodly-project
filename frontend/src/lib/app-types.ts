@@ -1,7 +1,7 @@
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { components } from "./api-types";
+import type { UseMutationResult } from '@tanstack/react-query';
+import type { components } from './api-types';
 
-type Entry = components["schemas"]["Entry"];
+type Entry = components['schemas']['Entry'];
 
 export type CreateEntryMutation = UseMutationResult<
   Entry,

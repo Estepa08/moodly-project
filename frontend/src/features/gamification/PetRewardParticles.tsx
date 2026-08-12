@@ -1,8 +1,8 @@
-import { useMemo } from "react";
-import { motion } from "framer-motion";
-import { Sparkle, Star, Heart, Sun, Flower, CloudRain } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import type { PetRewardSignal } from "./petRewards";
+import { useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkle, Star, Heart, Sun, Flower, CloudRain } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import type { PetRewardSignal } from './petRewards';
 
 // Компонент «частиц награды»: рендерит уникальную анимацию для каждого типа
 // клика по компаньону (см. docs/companion-gamified-rewards.svg). Частицы
@@ -10,12 +10,12 @@ import type { PetRewardSignal } from "./petRewards";
 
 const rand = (min: number, max: number) => Math.random() * (max - min) + min;
 
-const GOLD = "#F5A623";
-const SUN = "#FF9F0A";
-const PINK = "#E0509C";
-const BLUE = "#5E8FD8";
-const PURPLE = "#8F5ED8";
-const COMBO_COLORS = ["#7B5BF2", "#D63A85", "#F5A623", "#4CC38A", "#5E8FD8", "#8F5ED8"];
+const GOLD = '#F5A623';
+const SUN = '#FF9F0A';
+const PINK = '#E0509C';
+const BLUE = '#5E8FD8';
+const PURPLE = '#8F5ED8';
+const COMBO_COLORS = ['#7B5BF2', '#D63A85', '#F5A623', '#4CC38A', '#5E8FD8', '#8F5ED8'];
 const COMBO_ICONS: Array<typeof Sparkle> = [Sparkle, Star, Heart, Flower, Sun];
 
 // Микс-пулы «иконка + цвет»: внутри одного залпа частицы не повторяются,
@@ -28,16 +28,16 @@ const STANDARD_MIX: Array<{ icon: typeof Sparkle; color: string }> = [
 const MORNING_MIX: Array<{ icon: typeof Sparkle; color: string }> = [
   { icon: Sun, color: SUN },
   { icon: Sparkle, color: GOLD },
-  { icon: Star, color: "#F2A71B" },
-  { icon: Sun, color: "#FFC53D" },
-  { icon: Sparkle, color: "#F0803C" },
+  { icon: Star, color: '#F2A71B' },
+  { icon: Sun, color: '#FFC53D' },
+  { icon: Sparkle, color: '#F0803C' },
 ];
 const WELCOME_MIX: Array<{ icon: typeof Sparkle; color: string }> = [
   { icon: Heart, color: PINK },
   { icon: Sparkle, color: PURPLE },
   { icon: Star, color: GOLD },
-  { icon: Heart, color: "#D63A85" },
-  { icon: Sparkle, color: "#B26AE8" },
+  { icon: Heart, color: '#D63A85' },
+  { icon: Sparkle, color: '#B26AE8' },
 ];
 
 // Фиксированные количества частиц (ровно, без случайных диапазонов — без перебора).
@@ -93,13 +93,13 @@ export default function PetRewardParticles({
   const { t } = useTranslation();
   const particles = useMemo(() => {
     switch (signal.kind) {
-      case "standard":
+      case 'standard':
         return makeParticles(PARTICLE_COUNTS.standard, 40, 150);
-      case "morning":
+      case 'morning':
         return makeParticles(PARTICLE_COUNTS.morning, 60, 150, true);
-      case "combo":
+      case 'combo':
         return makeParticles(PARTICLE_COUNTS.combo, 60, 180);
-      case "welcome":
+      case 'welcome':
         return makeParticles(PARTICLE_COUNTS.welcome, 40, 110, true);
       default:
         return [];
@@ -115,25 +115,25 @@ export default function PetRewardParticles({
       {signal.xpText && !reducedMotion && (
         <motion.span
           className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
-          style={{ color: signal.kind === "welcome" ? PINK : GOLD }}
+          style={{ color: signal.kind === 'welcome' ? PINK : GOLD }}
           initial={{ y: 0, opacity: 0, scale: 0.7 }}
           animate={{ y: -64, opacity: [0, 1, 1, 0], scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.05, ease: "easeOut" }}
+          transition={{ duration: 1.2, delay: 0.05, ease: 'easeOut' }}
         >
           {signal.xpText}
-          {signal.kind === "welcome" && " 💖"}
+          {signal.kind === 'welcome' && ' 💖'}
         </motion.span>
       )}
 
       {/* Подзаголовок «С возвращением!» */}
-      {signal.kind === "welcome" && !reducedMotion && (
+      {signal.kind === 'welcome' && !reducedMotion && (
         <motion.span
           className="absolute -translate-x-1/2 -translate-y-1/2 text-xs font-bold whitespace-nowrap text-pink-500"
           initial={{ y: 8, opacity: 0 }}
           animate={{ y: -30, opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 1.4, delay: 0.25, ease: "easeOut" }}
+          transition={{ duration: 1.4, delay: 0.25, ease: 'easeOut' }}
         >
-          {t("companion.petReward.welcome")}
+          {t('companion.petReward.welcome')}
         </motion.span>
       )}
 
@@ -144,21 +144,21 @@ export default function PetRewardParticles({
           style={{
             background:
               comboCount >= 5
-                ? "linear-gradient(90deg, #7B5BF2, #D63A85)"
-                : "linear-gradient(90deg, #B26AE8, #7B5BF2)",
+                ? 'linear-gradient(90deg, #7B5BF2, #D63A85)'
+                : 'linear-gradient(90deg, #B26AE8, #7B5BF2)',
           }}
           initial={{ y: 0, opacity: 0, scale: 0.6 }}
           animate={{ y: -28, opacity: [0, 1, 1, 0], scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.05, ease: "easeOut" }}
+          transition={{ duration: 1.1, delay: 0.05, ease: 'easeOut' }}
         >
           {comboCount >= 5
-            ? t("companion.petReward.comboBig", { count: comboCount })
-            : t("companion.petReward.combo", { count: comboCount })}
+            ? t('companion.petReward.comboBig', { count: comboCount })
+            : t('companion.petReward.combo', { count: comboCount })}
         </motion.span>
       )}
 
       {/* Волны вечера */}
-      {signal.kind === "evening" &&
+      {signal.kind === 'evening' &&
         !reducedMotion &&
         Array.from({ length: PARTICLE_COUNTS.eveningWaves }, (_, i) => (
           <motion.span
@@ -171,12 +171,12 @@ export default function PetRewardParticles({
             }}
             initial={{ x: -17, y: -17, scale: 0.3, opacity: 0.7 }}
             animate={{ x: -17, y: -17, scale: 3, opacity: 0 }}
-            transition={{ duration: 1, delay: i * 0.06, ease: "easeOut" }}
+            transition={{ duration: 1, delay: i * 0.06, ease: 'easeOut' }}
           />
         ))}
 
       {/* Капли → звёзды (эмпатия) */}
-      {signal.kind === "empathy" &&
+      {signal.kind === 'empathy' &&
         !reducedMotion &&
         Array.from({ length: PARTICLE_COUNTS.empathyDrops }, (_, i) => {
           const x = rand(-90, 90);
@@ -187,7 +187,7 @@ export default function PetRewardParticles({
                 style={{ color: BLUE }}
                 initial={{ x, y: -100, opacity: 0 }}
                 animate={{ y: 56, opacity: [0, 1, 1] }}
-                transition={{ duration: 0.65, delay: i * 0.05, ease: "easeIn" }}
+                transition={{ duration: 0.65, delay: i * 0.05, ease: 'easeIn' }}
               >
                 <CloudRain className="w-4 h-4" />
               </motion.span>
@@ -196,7 +196,7 @@ export default function PetRewardParticles({
                 style={{ color: GOLD }}
                 initial={{ x, y: 56, opacity: 0, scale: 0 }}
                 animate={{ opacity: [0, 1, 1, 0], scale: [0, 1.2, 0.8, 0] }}
-                transition={{ duration: 0.55, delay: 0.65 + i * 0.05, ease: "easeOut" }}
+                transition={{ duration: 0.55, delay: 0.65 + i * 0.05, ease: 'easeOut' }}
               >
                 <Sparkle className="w-3 h-3" />
               </motion.span>
@@ -205,7 +205,7 @@ export default function PetRewardParticles({
         })}
 
       {/* Солнечные зайчики утра (микс: солнце/звёзды в тёплых цветах) */}
-      {signal.kind === "morning" &&
+      {signal.kind === 'morning' &&
         !reducedMotion &&
         particles.map((p, i) => {
           const { icon: Icon, color } = MORNING_MIX[i % MORNING_MIX.length];
@@ -213,7 +213,7 @@ export default function PetRewardParticles({
             <motion.span
               key={`sun-${p.id}`}
               className="absolute left-0 top-0"
-              style={{ color, filter: "drop-shadow(0 0 6px rgba(255, 159, 10, 0.45))" }}
+              style={{ color, filter: 'drop-shadow(0 0 6px rgba(255, 159, 10, 0.45))' }}
               initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
               animate={{
                 x: [0, p.x * 0.4, p.x],
@@ -222,7 +222,7 @@ export default function PetRewardParticles({
                 scale: [0.4, 1.15, 0.85, 0],
                 rotate: p.rotate,
               }}
-              transition={{ duration: 1.6, delay: p.delay, ease: "easeOut" }}
+              transition={{ duration: 1.6, delay: p.delay, ease: 'easeOut' }}
             >
               <Icon className="w-5 h-5" />
             </motion.span>
@@ -230,7 +230,7 @@ export default function PetRewardParticles({
         })}
 
       {/* Сердечки возвращения (микс: сердца/звёзды) */}
-      {signal.kind === "welcome" &&
+      {signal.kind === 'welcome' &&
         !reducedMotion &&
         particles.map((p, i) => {
           const { icon: Icon, color } = WELCOME_MIX[i % WELCOME_MIX.length];
@@ -238,7 +238,7 @@ export default function PetRewardParticles({
             <motion.span
               key={`heart-${p.id}`}
               className="absolute left-0 top-0"
-              style={{ color, filter: "drop-shadow(0 0 5px rgba(224, 80, 156, 0.45))" }}
+              style={{ color, filter: 'drop-shadow(0 0 5px rgba(224, 80, 156, 0.45))' }}
               initial={{ x: 0, y: 0, opacity: 0, scale: 0.5 }}
               animate={{
                 x: p.x,
@@ -247,7 +247,7 @@ export default function PetRewardParticles({
                 opacity: [0, 1, 1, 1, 0],
                 rotate: p.rotate,
               }}
-              transition={{ duration: 1.6, delay: p.delay, ease: "easeOut" }}
+              transition={{ duration: 1.6, delay: p.delay, ease: 'easeOut' }}
             >
               <Icon className="w-4 h-4" fill="currentColor" />
             </motion.span>
@@ -255,7 +255,7 @@ export default function PetRewardParticles({
         })}
 
       {/* Звёздочки стандартного клика (микс: искры/звёзды/сердца — без повторов) */}
-      {signal.kind === "standard" &&
+      {signal.kind === 'standard' &&
         !reducedMotion &&
         particles.map((p, i) => {
           const { icon: Icon, color } = STANDARD_MIX[i % STANDARD_MIX.length];
@@ -272,7 +272,7 @@ export default function PetRewardParticles({
                 scale: p.scale,
                 rotate: p.rotate,
               }}
-              transition={{ duration: 0.8, delay: p.delay, ease: "easeOut" }}
+              transition={{ duration: 0.8, delay: p.delay, ease: 'easeOut' }}
             >
               <Icon className="w-4 h-4" />
             </motion.span>
@@ -280,7 +280,7 @@ export default function PetRewardParticles({
         })}
 
       {/* Взрыв комбо */}
-      {signal.kind === "combo" &&
+      {signal.kind === 'combo' &&
         !reducedMotion &&
         particles.map((p, i) => {
           const Icon = COMBO_ICONS[i % COMBO_ICONS.length];
@@ -297,7 +297,7 @@ export default function PetRewardParticles({
                 scale: p.scale,
                 rotate: rand(-360, 360),
               }}
-              transition={{ duration: 1.2, delay: p.delay, ease: "easeOut" }}
+              transition={{ duration: 1.2, delay: p.delay, ease: 'easeOut' }}
             >
               <Icon className="w-5 h-5" />
             </motion.span>

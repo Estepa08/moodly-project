@@ -1,23 +1,23 @@
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-import { useIsMobile } from "../hooks/useIsMobile";
-import { useLoginForm } from "../hooks/useLoginForm";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { PasswordInput } from "../components/ui/password-input";
-import { Label } from "../components/ui/label";
-import { ShieldCheck, KeyRound, Info } from "lucide-react";
-import { AuthPage, AuthHeader, AuthDisclaimer } from "../features/auth";
-import { useSeo, withCanonical } from "../lib/seo";
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
+import { useLoginForm } from '../hooks/useLoginForm';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
+import { Label } from '../components/ui/label';
+import { ShieldCheck, KeyRound, Info } from 'lucide-react';
+import { AuthPage, AuthHeader, AuthDisclaimer } from '../features/auth';
+import { useSeo, withCanonical } from '../lib/seo';
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
   useSeo({
-    title: t("login.seo.title"),
-    description: t("login.seo.description"),
-    canonical: withCanonical("/login"),
+    title: t('login.seo.title'),
+    description: t('login.seo.description'),
+    canonical: withCanonical('/login'),
   });
 
   const {
@@ -36,17 +36,17 @@ export default function LoginPage() {
     handleRecoveryConfirmed,
   } = useLoginForm();
 
-  if (step === "recovery") {
+  if (step === 'recovery') {
     return (
       <AuthPage>
-        <AuthHeader title={t("register.recoveryTitle")} />
+        <AuthHeader title={t('register.recoveryTitle')} />
         <div className="space-y-4">
-          <p className="text-sm text-muted-foreground leading-relaxed">{t("login.legacyIntro")}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{t('login.legacyIntro')}</p>
           <div className="rounded-lg bg-muted p-4">
             <div className="flex items-center gap-2 mb-2">
               <KeyRound aria-hidden="true" className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">
-                {t("register.recoveryLabel")}
+                {t('register.recoveryLabel')}
               </span>
             </div>
             <p className="font-mono text-lg tracking-wider break-all text-center select-all">
@@ -56,15 +56,15 @@ export default function LoginPage() {
           <div className="rounded-lg border border-amber-300/50 bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
             <div className="flex items-center gap-2 mb-1">
               <ShieldCheck aria-hidden="true" className="w-4 h-4 shrink-0" />
-              <span className="font-medium">{t("register.recoveryWarningTitle")}</span>
+              <span className="font-medium">{t('register.recoveryWarningTitle')}</span>
             </div>
-            <p>{t("register.recoveryWarning")}</p>
+            <p>{t('register.recoveryWarning')}</p>
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            {t("login.legacyRecoveryNote")}
+            {t('login.legacyRecoveryNote')}
           </p>
           <Button className="w-full" onClick={handleRecoveryConfirmed}>
-            {t("register.recoveryConfirmed")}
+            {t('register.recoveryConfirmed')}
           </Button>
         </div>
       </AuthPage>
@@ -73,7 +73,7 @@ export default function LoginPage() {
 
   return (
     <AuthPage>
-      <AuthHeader title={t("login.title")} subtitle={t("login.tagline")} />
+      <AuthHeader title={t('login.title')} subtitle={t('login.tagline')} />
 
       {unlockRequired && (
         <div
@@ -83,19 +83,19 @@ export default function LoginPage() {
         >
           <div className="flex items-center gap-2 font-medium">
             <ShieldCheck aria-hidden="true" className="w-4 h-4 shrink-0" />
-            <span>{t("login.unlockReasonTitle")}</span>
+            <span>{t('login.unlockReasonTitle')}</span>
           </div>
-          <p className="leading-relaxed">{t("login.unlockReason")}</p>
+          <p className="leading-relaxed">{t('login.unlockReason')}</p>
           <p className="flex items-start gap-1.5 text-xs text-amber-800 dark:text-amber-200">
             <Info aria-hidden="true" className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-            <span>{t("login.unlockReasonHint")}</span>
+            <span>{t('login.unlockReasonHint')}</span>
           </p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">{t("login.email")}</Label>
+          <Label htmlFor="email">{t('login.email')}</Label>
           <Input
             id="email"
             type="email"
@@ -111,12 +111,12 @@ export default function LoginPage() {
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">{t("login.password")}</Label>
+            <Label htmlFor="password">{t('login.password')}</Label>
             <Link
               to="/forgot-password"
               className="text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
             >
-              {t("login.forgotPassword")}
+              {t('login.forgotPassword')}
             </Link>
           </div>
           <PasswordInput
@@ -126,8 +126,8 @@ export default function LoginPage() {
             autoComplete="current-password"
             enterKeyHint="go"
             required
-            showLabel={t("common.showPassword")}
-            hideLabel={t("common.hidePassword")}
+            showLabel={t('common.showPassword')}
+            hideLabel={t('common.hidePassword')}
           />
         </div>
         {error && (
@@ -136,14 +136,14 @@ export default function LoginPage() {
           </p>
         )}
         <Button type="submit" className="w-full">
-          {t("login.signIn")}
+          {t('login.signIn')}
         </Button>
 
         {demoMode && (
           <>
             <div className="flex items-center gap-2">
               <span className="flex-1 h-px bg-border" />
-              <span className="text-xs text-muted-foreground">{t("login.or")}</span>
+              <span className="text-xs text-muted-foreground">{t('login.or')}</span>
               <span className="flex-1 h-px bg-border" />
             </div>
             <Button
@@ -153,15 +153,15 @@ export default function LoginPage() {
               disabled={demoLoading}
               onClick={handleDemo}
             >
-              {demoLoading ? t("login.starting") : t("login.quickDemo")}
+              {demoLoading ? t('login.starting') : t('login.quickDemo')}
             </Button>
           </>
         )}
 
         <p className="text-center text-sm text-muted-foreground">
-          {t("login.noAccount")}{" "}
+          {t('login.noAccount')}{' '}
           <Link to="/register" className="text-primary font-semibold hover:underline">
-            {t("login.signUp")}
+            {t('login.signUp')}
           </Link>
         </p>
       </form>

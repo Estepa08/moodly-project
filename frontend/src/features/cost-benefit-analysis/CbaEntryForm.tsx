@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Plus, X } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import { IconButton } from "../../components/ui/icon-button";
-import { Input } from "../../components/ui/input";
-import { Textarea } from "../../components/ui/textarea";
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Plus, X } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
+import { IconButton } from '../../components/ui/icon-button';
+import { Input } from '../../components/ui/input';
+import { Textarea } from '../../components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -13,11 +13,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import CbaWeightSlider from "./CbaWeightSlider";
-import SuggestCombobox from "./SuggestCombobox";
-import type { useCreateCbaEntry } from "./useCba";
-import type { CbaCommonItem, CbaItemCategory } from "./cba.types";
+} from '../../components/ui/select';
+import CbaWeightSlider from './CbaWeightSlider';
+import SuggestCombobox from './SuggestCombobox';
+import type { useCreateCbaEntry } from './useCba';
+import type { CbaCommonItem, CbaItemCategory } from './cba.types';
 
 interface CbaEntryFormProps {
   commonItems: CbaCommonItem[];
@@ -25,12 +25,12 @@ interface CbaEntryFormProps {
 }
 
 const CATEGORIES: CbaItemCategory[] = [
-  "anxiety",
-  "self-esteem",
-  "relationships",
-  "work",
-  "health",
-  "habit",
+  'anxiety',
+  'self-esteem',
+  'relationships',
+  'work',
+  'health',
+  'habit',
 ];
 
 function CategoryPicker({
@@ -43,10 +43,10 @@ function CategoryPicker({
   const { t } = useTranslation();
   return (
     <div className="space-y-1.5">
-      <span className="text-xs font-medium text-muted-foreground">{t("cba.categoryLabel")}</span>
+      <span className="text-xs font-medium text-muted-foreground">{t('cba.categoryLabel')}</span>
       <Select value={value} onValueChange={(v) => onChange(v as CbaItemCategory)}>
         <SelectTrigger>
-          <SelectValue placeholder={t("cba.categoryPlaceholder")} />
+          <SelectValue placeholder={t('cba.categoryPlaceholder')} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
@@ -82,13 +82,13 @@ function ItemSuggest({
   accentClassName: string;
 }) {
   const { t } = useTranslation();
-  const [customText, setCustomText] = useState("");
+  const [customText, setCustomText] = useState('');
 
   const handleAdd = () => {
     const trimmed = customText.trim();
     if (!trimmed) return;
     onAddCustom(trimmed);
-    setCustomText("");
+    setCustomText('');
   };
 
   return (
@@ -102,9 +102,9 @@ function ItemSuggest({
         }))}
         selected={Array.from(checked)}
         onToggle={onToggle}
-        placeholder={t("cba.suggestionsPlaceholder")}
-        searchPlaceholder={t("cba.suggestionsSearch")}
-        emptyText={t("cba.suggestionsEmpty")}
+        placeholder={t('cba.suggestionsPlaceholder')}
+        searchPlaceholder={t('cba.suggestionsSearch')}
+        emptyText={t('cba.suggestionsEmpty')}
         selectedCountLabel="cba.selectedCount"
       />
 
@@ -120,7 +120,7 @@ function ItemSuggest({
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                label={t("cba.removeItem")}
+                label={t('cba.removeItem')}
                 onClick={() => onRemoveCustom(i)}
                 className="text-muted-foreground hover:text-destructive"
               >
@@ -135,12 +135,12 @@ function ItemSuggest({
         <Input
           value={customText}
           onChange={(e) => setCustomText(e.target.value)}
-          placeholder={t("cba.addItemPlaceholder")}
+          placeholder={t('cba.addItemPlaceholder')}
           className="h-9 text-sm"
           enterKeyHint="done"
           inputMode="text"
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               e.preventDefault();
               handleAdd();
             }
@@ -156,8 +156,8 @@ function ItemSuggest({
 
 export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormProps) {
   const { t } = useTranslation();
-  const [thoughtText, setThoughtText] = useState("");
-  const [category, setCategory] = useState<CbaItemCategory>("anxiety");
+  const [thoughtText, setThoughtText] = useState('');
+  const [category, setCategory] = useState<CbaItemCategory>('anxiety');
   const [checkedAdvantages, setCheckedAdvantages] = useState<Set<string>>(new Set());
   const [checkedDisadvantages, setCheckedDisadvantages] = useState<Set<string>>(new Set());
   const [customAdvantages, setCustomAdvantages] = useState<string[]>([]);
@@ -165,8 +165,8 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
   const [prosWeight, setProsWeight] = useState(50);
 
   const categoryItems = commonItems.filter((i) => i.category === category);
-  const advantageBank = categoryItems.filter((i) => i.itemType === "advantage");
-  const disadvantageBank = categoryItems.filter((i) => i.itemType === "disadvantage");
+  const advantageBank = categoryItems.filter((i) => i.itemType === 'advantage');
+  const disadvantageBank = categoryItems.filter((i) => i.itemType === 'disadvantage');
 
   const toggle = (set: Set<string>, setter: (s: Set<string>) => void, id: string) => {
     const next = new Set(set);
@@ -198,18 +198,18 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
         prosWeight,
         consWeight: 100 - prosWeight,
         items: [
-          ...advantageItems.map((itemText) => ({ itemType: "advantage" as const, itemText })),
-          ...disadvantageItems.map((itemText) => ({ itemType: "disadvantage" as const, itemText })),
+          ...advantageItems.map((itemText) => ({ itemType: 'advantage' as const, itemText })),
+          ...disadvantageItems.map((itemText) => ({ itemType: 'disadvantage' as const, itemText })),
         ],
       },
       {
         onSuccess: () => {
-          setThoughtText("");
+          setThoughtText('');
           setCheckedAdvantages(new Set());
           setCheckedDisadvantages(new Set());
           setCustomAdvantages([]);
           setCustomDisadvantages([]);
-          setCategory("anxiety");
+          setCategory('anxiety');
           setProsWeight(50);
         },
       },
@@ -219,15 +219,15 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
   return (
     <Card className="shadow-neumorphic">
       <CardHeader>
-        <CardTitle className="text-base">{t("cba.formTitle")}</CardTitle>
+        <CardTitle className="text-base">{t('cba.formTitle')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
         <div className="space-y-1.5">
-          <p className="text-xs text-muted-foreground">{t("cba.thoughtLabel")}</p>
+          <p className="text-xs text-muted-foreground">{t('cba.thoughtLabel')}</p>
           <Textarea
             value={thoughtText}
             onChange={(e) => setThoughtText(e.target.value)}
-            placeholder={t("cba.thoughtPlaceholder")}
+            placeholder={t('cba.thoughtPlaceholder')}
             rows={2}
             enterKeyHint="done"
             inputMode="text"
@@ -238,7 +238,7 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <ItemSuggest
-            title={t("cba.pros")}
+            title={t('cba.pros')}
             options={advantageBank}
             checked={checkedAdvantages}
             onToggle={(id) => toggle(checkedAdvantages, setCheckedAdvantages, id)}
@@ -250,7 +250,7 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
             accentClassName="text-success"
           />
           <ItemSuggest
-            title={t("cba.cons")}
+            title={t('cba.cons')}
             options={disadvantageBank}
             checked={checkedDisadvantages}
             onToggle={(id) => toggle(checkedDisadvantages, setCheckedDisadvantages, id)}
@@ -270,7 +270,7 @@ export default function CbaEntryForm({ commonItems, createEntry }: CbaEntryFormP
           disabled={!canSave || createEntry.isPending}
           onClick={handleSave}
         >
-          {createEntry.isPending ? t("common.saving") : t("cba.save")}
+          {createEntry.isPending ? t('common.saving') : t('cba.save')}
         </Button>
       </CardContent>
     </Card>

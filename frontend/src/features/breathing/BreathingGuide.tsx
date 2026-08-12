@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslation } from "react-i18next";
-import { CircleArrowUp, Timer, Wind } from "lucide-react";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
-import { Button } from "../../components/ui/button";
-import { SegmentGroup, SegmentButton } from "../../components/ui/segment-button";
-import { BreathPhase, BreathingTechnique } from "./breathing.enums";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CircleArrowUp, Timer, Wind } from 'lucide-react';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { Button } from '../../components/ui/button';
+import { SegmentGroup, SegmentButton } from '../../components/ui/segment-button';
+import { BreathPhase, BreathingTechnique } from './breathing.enums';
 
 interface BreathingGuideProps {
   onComplete: (duration: number) => void;
@@ -121,15 +121,15 @@ export default function BreathingGuide({
   useEffect(() => {
     if (!running) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         completedRef.current = true;
         cancelAnimationFrame(rafRef.current);
         setRunning(false);
         onCancelRef.current();
       }
     };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, [running]);
 
   const circleScale = reducedMotion
@@ -144,16 +144,16 @@ export default function BreathingGuide({
     <div className="flex flex-col items-center gap-4">
       <div className="relative flex items-center justify-center w-40 h-40">
         <div
-          className={`rounded-full ${reducedMotion ? "" : "transition-[width,height] duration-100"}`}
+          className={`rounded-full ${reducedMotion ? '' : 'transition-[width,height] duration-100'}`}
           style={{
             width: `${40 + circleScale * 80}px`,
             height: `${40 + circleScale * 80}px`,
             backgroundColor:
-              isInhale || isHold ? "hsl(var(--primary) / 0.3)" : "hsl(var(--accent) / 0.3)",
+              isInhale || isHold ? 'hsl(var(--primary) / 0.3)' : 'hsl(var(--accent) / 0.3)',
             boxShadow: isExhale
-              ? "0 0 40px hsl(var(--accent) / 0.2)"
-              : "0 0 40px hsl(var(--primary) / 0.2)",
-            transition: reducedMotion ? "none" : "background-color 0.4s ease, box-shadow 0.4s ease",
+              ? '0 0 40px hsl(var(--accent) / 0.2)'
+              : '0 0 40px hsl(var(--primary) / 0.2)',
+            transition: reducedMotion ? 'none' : 'background-color 0.4s ease, box-shadow 0.4s ease',
           }}
         />
         <div className="absolute inset-0 flex items-center justify-center">
@@ -173,10 +173,10 @@ export default function BreathingGuide({
             key={i}
             className={`w-2.5 h-2.5 rounded-full transition-[background-color,box-shadow] duration-300 ${
               i + 1 < cycle
-                ? "bg-accent"
+                ? 'bg-accent'
                 : i + 1 === cycle
-                  ? "bg-primary shadow-neumorphic-sm"
-                  : "bg-secondary"
+                  ? 'bg-primary shadow-neumorphic-sm'
+                  : 'bg-secondary'
             }`}
           />
         ))}
@@ -187,7 +187,7 @@ export default function BreathingGuide({
           {t(`breathing.${phase.key}`)}
         </p>
         <p className="text-sm text-muted-foreground mt-1">
-          {t("breathing.cycle")} {cycle}/{TOTAL_CYCLES}
+          {t('breathing.cycle')} {cycle}/{TOTAL_CYCLES}
         </p>
       </div>
 
@@ -199,22 +199,22 @@ export default function BreathingGuide({
                 active={technique === BreathingTechnique.Box}
                 onClick={() => setTechnique(BreathingTechnique.Box)}
               >
-                {t("breathing.techniqueBox")}
+                {t('breathing.techniqueBox')}
               </SegmentButton>
               <SegmentButton
                 active={technique === BreathingTechnique.FourSevenEight}
                 onClick={() => setTechnique(BreathingTechnique.FourSevenEight)}
               >
-                {t("breathing.technique478")}
+                {t('breathing.technique478')}
               </SegmentButton>
               <SegmentButton
                 active={technique === BreathingTechnique.Quick}
                 onClick={() => setTechnique(BreathingTechnique.Quick)}
               >
-                {t("breathing.techniqueQuick")}
+                {t('breathing.techniqueQuick')}
               </SegmentButton>
             </SegmentGroup>
-            <Button onClick={() => setRunning(true)}>{t("breathing.start")}</Button>
+            <Button onClick={() => setRunning(true)}>{t('breathing.start')}</Button>
           </>
         ) : (
           <Button
@@ -226,7 +226,7 @@ export default function BreathingGuide({
               onCancel();
             }}
           >
-            {t("breathing.cancel")}
+            {t('breathing.cancel')}
           </Button>
         )}
       </div>

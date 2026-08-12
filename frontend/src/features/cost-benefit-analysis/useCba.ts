@@ -1,11 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api } from "../../lib/api";
-import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
-import { reportError } from "../../lib/errorReporter";
-import type { components } from "../../lib/api-types";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '../../lib/api';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import { reportError } from '../../lib/errorReporter';
+import type { components } from '../../lib/api-types';
 
-type CbaEntryCreate = components["schemas"]["CbaEntryCreate"];
+type CbaEntryCreate = components['schemas']['CbaEntryCreate'];
 
 // Логирует реальную причину ошибки сохранения CBA-записи (как и в useEntries).
 function reportCbaSaveError(operation: string, err: unknown): void {
@@ -18,7 +18,7 @@ function reportCbaSaveError(operation: string, err: unknown): void {
 
 export function useCbaExamples() {
   return useQuery({
-    queryKey: ["cba-examples"],
+    queryKey: ['cba-examples'],
     queryFn: () => api.cba.examples(),
     staleTime: 60_000,
   });
@@ -26,7 +26,7 @@ export function useCbaExamples() {
 
 export function useCbaCommonItems() {
   return useQuery({
-    queryKey: ["cba-common-items"],
+    queryKey: ['cba-common-items'],
     queryFn: () => api.cba.commonItems(),
     staleTime: 60_000,
   });
@@ -34,7 +34,7 @@ export function useCbaCommonItems() {
 
 export function useCbaEntries() {
   return useQuery({
-    queryKey: ["cba-entries"],
+    queryKey: ['cba-entries'],
     queryFn: () => api.cba.entries.list(),
     staleTime: 30_000,
   });
@@ -47,12 +47,12 @@ export function useCreateCbaEntry(onSuccess?: () => void) {
   return useMutation({
     mutationFn: (data: CbaEntryCreate) => api.cba.entries.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cba-entries"] });
+      queryClient.invalidateQueries({ queryKey: ['cba-entries'] });
       onSuccess?.();
     },
     onError: (err) => {
-      reportCbaSaveError("create", err);
-      toast.error(t("cba.saveError"));
+      reportCbaSaveError('create', err);
+      toast.error(t('cba.saveError'));
     },
   });
 }
@@ -64,11 +64,11 @@ export function useDeleteCbaEntry() {
   return useMutation({
     mutationFn: (id: string) => api.cba.entries.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cba-entries"] });
+      queryClient.invalidateQueries({ queryKey: ['cba-entries'] });
     },
     onError: (err) => {
-      reportCbaSaveError("delete", err);
-      toast.error(t("cba.saveError"));
+      reportCbaSaveError('delete', err);
+      toast.error(t('cba.saveError'));
     },
   });
 }

@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { Flame } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { useTranslation } from 'react-i18next';
+import { Flame } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 interface StreakIndicatorProps {
   streak: number;
@@ -15,13 +15,13 @@ export default function StreakIndicator({ streak, className }: StreakIndicatorPr
   return (
     <div
       className={cn(
-        "flex items-center gap-1 px-2.5 py-1 rounded-full bg-card shadow-elevation-inset text-xs font-medium transition-[color] duration-150",
-        streak >= 7 ? "text-accent" : "text-muted-foreground",
+        'flex items-center gap-1 px-2.5 py-1 rounded-full bg-card shadow-elevation-inset text-xs font-medium transition-[color] duration-150',
+        streak >= 7 ? 'text-accent' : 'text-muted-foreground',
         className,
       )}
-      title={t("dailyCheckIn.streak", { count: streak })}
+      title={t('dailyCheckIn.streak', { count: streak })}
     >
-      <Flame aria-hidden="true" className={cn("w-3.5 h-3.5", streak >= 7 && "text-accent")} />
+      <Flame aria-hidden="true" className={cn('w-3.5 h-3.5', streak >= 7 && 'text-accent')} />
       <span>{streak}</span>
     </div>
   );

@@ -13,8 +13,8 @@ interface ResultLike {
 }
 
 export function isSevereInterpretation(_interpretation: string, flags?: ResultFlags): boolean {
-  const key = flags?.bandKey || flags?.templateKey || "";
-  return ["severe", "extreme", "high"].includes(key);
+  const key = flags?.bandKey || flags?.templateKey || '';
+  return ['severe', 'extreme', 'high'].includes(key);
 }
 
 export function useTestResultText() {

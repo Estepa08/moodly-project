@@ -1,21 +1,21 @@
-import { useState, useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
-import { useRewardPractice, PracticeSource, useCreatureState } from "../features/gamification";
-import { useParameters } from "../hooks/useParameters";
-import { useEntries, useCreateEntry, useDeleteEntry } from "../hooks/useEntries";
-import { RatingScaleSelector } from "../features/mood-entry";
-import { RATING_LEVELS, levelForValue } from "../lib/ratingLevels";
-import { ParameterName } from "../lib/constants";
-import { Button } from "../components/ui/button";
-import { Textarea } from "../components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { IconButton } from "../components/ui/icon-button";
-import { Flame, ClipboardList, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
-import EmptyState from "../components/ui/empty-state";
-import { LoadingCard } from "../components/ui/loading-card";
+import { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { useRewardPractice, PracticeSource, useCreatureState } from '../features/gamification';
+import { useParameters } from '../hooks/useParameters';
+import { useEntries, useCreateEntry, useDeleteEntry } from '../hooks/useEntries';
+import { RatingScaleSelector } from '../features/mood-entry';
+import { RATING_LEVELS, levelForValue } from '../lib/ratingLevels';
+import { ParameterName } from '../lib/constants';
+import { Button } from '../components/ui/button';
+import { Textarea } from '../components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { IconButton } from '../components/ui/icon-button';
+import { Flame, ClipboardList, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import EmptyState from '../components/ui/empty-state';
+import { LoadingCard } from '../components/ui/loading-card';
 
-const PARAM_NAME = "Mood";
+const PARAM_NAME = 'Mood';
 const MOOD_LEVELS = RATING_LEVELS[ParameterName.Mood]!;
 
 export default function ThoughtJournalPage() {
@@ -29,10 +29,10 @@ export default function ThoughtJournalPage() {
     moodParam ? { parameterId: moodParam.id } : undefined,
   );
 
-  const [situation, setSituation] = useState("");
-  const [thought, setThought] = useState("");
+  const [situation, setSituation] = useState('');
+  const [thought, setThought] = useState('');
   const [value, setValue] = useState(5);
-  const [alternative, setAlternative] = useState("");
+  const [alternative, setAlternative] = useState('');
   const [streak, setStreak] = useState(0);
   const [showAllHistory, setShowAllHistory] = useState(false);
 
@@ -57,15 +57,15 @@ export default function ThoughtJournalPage() {
   const buildNote = () => {
     const parts: string[] = [];
     if (situation.trim()) {
-      parts.push(`${t("thoughtJournal.lblSituation")}\n${situation.trim()}`);
+      parts.push(`${t('thoughtJournal.lblSituation')}\n${situation.trim()}`);
     }
     if (thought.trim()) {
-      parts.push(`${t("thoughtJournal.lblThought")}\n${thought.trim()}`);
+      parts.push(`${t('thoughtJournal.lblThought')}\n${thought.trim()}`);
     }
     if (alternative.trim()) {
-      parts.push(`${t("thoughtJournal.lblAlternative")}\n${alternative.trim()}`);
+      parts.push(`${t('thoughtJournal.lblAlternative')}\n${alternative.trim()}`);
     }
-    return parts.join("\n\n");
+    return parts.join('\n\n');
   };
 
   const handleSave = () => {
@@ -78,10 +78,10 @@ export default function ThoughtJournalPage() {
       },
       {
         onSuccess: () => {
-          toast.success(t("thoughtJournal.saved"));
-          setSituation("");
-          setThought("");
-          setAlternative("");
+          toast.success(t('thoughtJournal.saved'));
+          setSituation('');
+          setThought('');
+          setAlternative('');
           setValue(5);
         },
       },
@@ -99,11 +99,11 @@ export default function ThoughtJournalPage() {
     const d = new Date(iso);
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return t("thoughtJournal.today");
-    if (diffDays === 1) return t("thoughtJournal.yesterday");
-    return d.toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US", {
-      month: "short",
-      day: "numeric",
+    if (diffDays === 0) return t('thoughtJournal.today');
+    if (diffDays === 1) return t('thoughtJournal.yesterday');
+    return d.toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US', {
+      month: 'short',
+      day: 'numeric',
     });
   };
 
@@ -121,13 +121,13 @@ export default function ThoughtJournalPage() {
     <div className="max-w-lg mx-auto space-y-6">
       <div className="text-center">
         <h2 className="text-xl font-semibold text-foreground font-serif">
-          {t("thoughtJournal.title")}
+          {t('thoughtJournal.title')}
         </h2>
-        <p className="text-sm text-muted-foreground mt-1">{t("thoughtJournal.subtitle")}</p>
+        <p className="text-sm text-muted-foreground mt-1">{t('thoughtJournal.subtitle')}</p>
         {streak > 0 && (
           <div className="flex items-center justify-center gap-1.5 text-sm text-accent font-medium mt-2">
             <Flame aria-hidden="true" className="w-4 h-4" />
-            <span>{t("thoughtJournal.streak", { count: streak })}</span>
+            <span>{t('thoughtJournal.streak', { count: streak })}</span>
           </div>
         )}
       </div>
@@ -136,38 +136,38 @@ export default function ThoughtJournalPage() {
         <CardContent className="p-6 space-y-5">
           <div className="space-y-2">
             <label htmlFor="tj-situation" className="text-sm font-medium text-foreground">
-              {t("thoughtJournal.lblSituation")}
+              {t('thoughtJournal.lblSituation')}
             </label>
             <Textarea
               id="tj-situation"
               value={situation}
               onChange={(e) => setSituation(e.target.value)}
-              placeholder={t("thoughtJournal.situationPlaceholder")}
+              placeholder={t('thoughtJournal.situationPlaceholder')}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="tj-thought" className="text-sm font-medium text-foreground">
-              {t("thoughtJournal.lblThought")}
+              {t('thoughtJournal.lblThought')}
             </label>
             <Textarea
               id="tj-thought"
               value={thought}
               onChange={(e) => setThought(e.target.value)}
-              placeholder={t("thoughtJournal.thoughtPlaceholder")}
+              placeholder={t('thoughtJournal.thoughtPlaceholder')}
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground">{t("thoughtJournal.lblFeel")}</p>
+            <p className="text-sm font-medium text-foreground">{t('thoughtJournal.lblFeel')}</p>
             <RatingScaleSelector
               levels={MOOD_LEVELS}
               value={value}
               onChange={setValue}
               disabled={createEntry.isPending}
-              ariaLabel={t("thoughtJournal.lblFeel")}
+              ariaLabel={t('thoughtJournal.lblFeel')}
               compact
             />
           </div>
@@ -175,27 +175,27 @@ export default function ThoughtJournalPage() {
           <div className="space-y-2">
             <div className="flex items-baseline justify-between">
               <label htmlFor="tj-alternative" className="text-sm font-medium text-foreground">
-                {t("thoughtJournal.lblAlternative")}
+                {t('thoughtJournal.lblAlternative')}
               </label>
               <span className="text-xs text-muted-foreground">
-                {t("thoughtJournal.alternativeOptional")}
+                {t('thoughtJournal.alternativeOptional')}
               </span>
             </div>
             <Textarea
               id="tj-alternative"
               value={alternative}
               onChange={(e) => setAlternative(e.target.value)}
-              placeholder={t("thoughtJournal.alternativePlaceholder")}
+              placeholder={t('thoughtJournal.alternativePlaceholder')}
               rows={3}
             />
           </div>
 
           <div className="space-y-1.5">
             <Button onClick={handleSave} disabled={createEntry.isPending} className="w-full">
-              {t("thoughtJournal.save")}
+              {t('thoughtJournal.save')}
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              {t("thoughtJournal.saveHint")}
+              {t('thoughtJournal.saveHint')}
             </p>
           </div>
         </CardContent>
@@ -205,7 +205,7 @@ export default function ThoughtJournalPage() {
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <ClipboardList aria-hidden="true" className="w-4 h-4 text-primary" />
-            {t("thoughtJournal.historyTitle")}
+            {t('thoughtJournal.historyTitle')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -224,10 +224,10 @@ export default function ThoughtJournalPage() {
                         aria-hidden="true"
                         className={`w-5 h-5 ${
                           e.value >= 7.5
-                            ? "text-accent"
+                            ? 'text-accent'
                             : e.value >= 5
-                              ? "text-primary"
-                              : "text-destructive/70"
+                              ? 'text-primary'
+                              : 'text-destructive/70'
                         }`}
                       />
                     </span>
@@ -239,14 +239,14 @@ export default function ThoughtJournalPage() {
                         </p>
                       ) : (
                         <p className="text-sm text-muted-foreground italic">
-                          {t("thoughtJournal.noNote")}
+                          {t('thoughtJournal.noNote')}
                         </p>
                       )}
                     </div>
                     <IconButton
                       variant="ghost"
                       size="icon-sm"
-                      label={t("thoughtJournal.deleteEntry")}
+                      label={t('thoughtJournal.deleteEntry')}
                       onClick={() => deleteEntry.mutate(e.id)}
                       disabled={deleteEntry.isPending}
                       className="text-muted-foreground shrink-0 hover:text-destructive"
@@ -258,7 +258,7 @@ export default function ThoughtJournalPage() {
               })}
             </div>
           ) : (
-            <EmptyState icon={ClipboardList} title={t("thoughtJournal.noEntries")} />
+            <EmptyState icon={ClipboardList} title={t('thoughtJournal.noEntries')} />
           )}
           {historyEntries.length > 3 && (
             <button
@@ -268,8 +268,8 @@ export default function ThoughtJournalPage() {
               className="mt-3 flex items-center justify-center gap-1 w-full py-2 rounded-lg bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {showAllHistory
-                ? t("thoughtJournal.hideAll")
-                : t("thoughtJournal.showAll", { count: historyEntries.length })}
+                ? t('thoughtJournal.hideAll')
+                : t('thoughtJournal.showAll', { count: historyEntries.length })}
               {showAllHistory ? (
                 <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
               ) : (

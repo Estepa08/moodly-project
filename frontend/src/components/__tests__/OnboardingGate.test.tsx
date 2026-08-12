@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import { screen, waitFor } from "../../test/test-utils";
-import { renderWithProviders } from "../../test/test-utils";
-import OnboardingGate from "../OnboardingGate";
-import { api } from "../../lib/api";
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { screen, waitFor } from '../../test/test-utils';
+import { renderWithProviders } from '../../test/test-utils';
+import OnboardingGate from '../OnboardingGate';
+import { api } from '../../lib/api';
 
-vi.mock("../../lib/api", () => ({
+vi.mock('../../lib/api', () => ({
   api: {
     auth: {
-      refresh: vi.fn().mockRejectedValue(new Error("no session")),
+      refresh: vi.fn().mockRejectedValue(new Error('no session')),
     },
     users: {
       getPreferences: vi.fn(),
@@ -22,15 +22,15 @@ vi.mock("../../lib/api", () => ({
   getToken: vi.fn(() => null),
 }));
 
-const CHILD_TEXT = "protected-content";
+const CHILD_TEXT = 'protected-content';
 
-describe("OnboardingGate", () => {
+describe('OnboardingGate', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
   });
 
-  it("redirects away when onboarding is not done yet", async () => {
+  it('redirects away when onboarding is not done yet', async () => {
     (api.users.getPreferences as Mock).mockResolvedValue(null);
     renderWithProviders(
       <OnboardingGate>
@@ -42,10 +42,10 @@ describe("OnboardingGate", () => {
     expect(screen.queryByText(CHILD_TEXT)).not.toBeInTheDocument();
   });
 
-  it("renders children when onboarding is done", async () => {
+  it('renders children when onboarding is done', async () => {
     (api.users.getPreferences as Mock).mockResolvedValue({
       goals: [],
-      experienceLevel: "beginner",
+      experienceLevel: 'beginner',
       dailyReminder: false,
       onboardingDone: true,
       showSupportResources: true,
@@ -59,7 +59,7 @@ describe("OnboardingGate", () => {
     expect(await screen.findByText(CHILD_TEXT)).toBeInTheDocument();
   });
 
-  it("shows a loader while preferences are loading", () => {
+  it('shows a loader while preferences are loading', () => {
     (api.users.getPreferences as Mock).mockReturnValue(new Promise(() => {}));
     renderWithProviders(
       <OnboardingGate>

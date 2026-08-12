@@ -1,13 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 // События активности пользователя: любое из них сбрасывает таймер бездействия.
 const ACTIVITY_EVENTS = [
-  "pointerdown",
-  "mousemove",
-  "keydown",
-  "touchstart",
-  "scroll",
-  "wheel",
+  'pointerdown',
+  'mousemove',
+  'keydown',
+  'touchstart',
+  'scroll',
+  'wheel',
 ] as const;
 
 /**
@@ -41,7 +41,7 @@ export function useIdleLogout(onIdle: () => void, timeoutMs: number) {
     };
 
     const interval = setInterval(check, 30_000);
-    document.addEventListener("visibilitychange", check);
+    document.addEventListener('visibilitychange', check);
 
     const onActivity = () => reset();
     for (const event of ACTIVITY_EVENTS) {
@@ -50,7 +50,7 @@ export function useIdleLogout(onIdle: () => void, timeoutMs: number) {
 
     return () => {
       clearInterval(interval);
-      document.removeEventListener("visibilitychange", check);
+      document.removeEventListener('visibilitychange', check);
       for (const event of ACTIVITY_EVENTS) {
         window.removeEventListener(event, onActivity);
       }

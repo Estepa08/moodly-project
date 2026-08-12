@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll } from 'vitest';
 import {
   encryptEntryPayload,
   decryptEntryPayload,
@@ -6,32 +6,32 @@ import {
   decryptTestResultPayload,
   EntryCipherPayload,
   TestResultCipherPayload,
-} from "../crypto/records";
-import { generateDataKey } from "../crypto/keys";
-import { setSessionKey, setSessionUserId, getSessionKey } from "../crypto/session";
-import { encryptJson } from "../crypto/codec";
-import { DistortionKey } from "../distortionsQuiz";
+} from '../crypto/records';
+import { generateDataKey } from '../crypto/keys';
+import { setSessionKey, setSessionUserId, getSessionKey } from '../crypto/session';
+import { encryptJson } from '../crypto/codec';
+import { DistortionKey } from '../distortionsQuiz';
 
-const dummyEntityId = "test-id-123";
-const dummyUserId = "user-1";
+const dummyEntityId = 'test-id-123';
+const dummyUserId = 'user-1';
 
-const entryPayload: EntryCipherPayload = { value: 42, note: "Test note" };
+const entryPayload: EntryCipherPayload = { value: 42, note: 'Test note' };
 const testResultPayload: TestResultCipherPayload = {
   score: 85,
   maxScore: 100,
-  interpretation: "Good",
-  recommendation: "Keep it up",
-  flags: { severity: "medium" },
+  interpretation: 'Good',
+  recommendation: 'Keep it up',
+  flags: { severity: 'medium' },
 };
 
-describe("crypto/records encryption and decryption", () => {
+describe('crypto/records encryption and decryption', () => {
   beforeAll(async () => {
     const key = await generateDataKey();
     await setSessionKey(key);
     setSessionUserId(dummyUserId);
   });
 
-  it("should encrypt and decrypt EntryCipherPayload correctly", async () => {
+  it('should encrypt and decrypt EntryCipherPayload correctly', async () => {
     const encrypted = await encryptEntryPayload(entryPayload, dummyEntityId);
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
     expect(decrypted.value).toBe(entryPayload.value);
@@ -39,21 +39,21 @@ describe("crypto/records encryption and decryption", () => {
     expect(decrypted.activities).toEqual([]);
   });
 
-  it("should encrypt and decrypt day activities in EntryCipherPayload", async () => {
+  it('should encrypt and decrypt day activities in EntryCipherPayload', async () => {
     const payload: EntryCipherPayload = {
       value: 0,
       note: null,
-      activities: [{ key: "movement.walk" }, { key: "custom:abc", custom: true, label: "Ретрит" }],
+      activities: [{ key: 'movement.walk' }, { key: 'custom:abc', custom: true, label: 'Ретрит' }],
     };
     const encrypted = await encryptEntryPayload(payload, dummyEntityId);
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
     expect(decrypted.activities).toEqual(payload.activities);
   });
 
-  it("should encrypt and decrypt cognitive distortion tags in EntryCipherPayload", async () => {
+  it('should encrypt and decrypt cognitive distortion tags in EntryCipherPayload', async () => {
     const payload: EntryCipherPayload = {
       value: 4,
-      note: "Опять всё испортил",
+      note: 'Опять всё испортил',
       distortions: [DistortionKey.Magnification, DistortionKey.AllOrNothing],
     };
     const encrypted = await encryptEntryPayload(payload, dummyEntityId);
@@ -64,33 +64,33 @@ describe("crypto/records encryption and decryption", () => {
     ]);
   });
 
-  it("should ignore malformed distortion tags in EntryCipherPayload", async () => {
+  it('should ignore malformed distortion tags in EntryCipherPayload', async () => {
     const key = await getSessionKey();
     const encrypted = await encryptJson(
       key,
       {
         value: 4,
         note: null,
-        distortions: ["magnification", "not-a-real-key", 42, null],
+        distortions: ['magnification', 'not-a-real-key', 42, null],
       },
       { userId: dummyUserId, entityId: dummyEntityId },
     );
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
-    expect(decrypted.distortions).toEqual(["magnification"]);
+    expect(decrypted.distortions).toEqual(['magnification']);
   });
 
-  it("should ignore malformed activities list in EntryCipherPayload", async () => {
+  it('should ignore malformed activities list in EntryCipherPayload', async () => {
     const key = await getSessionKey();
     const encrypted = await encryptJson(
       key,
-      { value: 0, note: null, activities: [{ bad: "x" }, null, { key: "ok" }] },
+      { value: 0, note: null, activities: [{ bad: 'x' }, null, { key: 'ok' }] },
       { userId: dummyUserId, entityId: dummyEntityId },
     );
     const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
-    expect(decrypted.activities).toEqual([{ key: "ok" }]);
+    expect(decrypted.activities).toEqual([{ key: 'ok' }]);
   });
 
-  it("should encrypt and decrypt TestResultCipherPayload correctly", async () => {
+  it('should encrypt and decrypt TestResultCipherPayload correctly', async () => {
     const encrypted = await encryptTestResultPayload(testResultPayload, dummyEntityId);
     const decrypted = await decryptTestResultPayload(encrypted, dummyEntityId);
     expect(decrypted.score).toBe(testResultPayload.score);
@@ -100,31 +100,31 @@ describe("crypto/records encryption and decryption", () => {
     expect(decrypted.flags).toEqual(testResultPayload.flags);
   });
 
-  it("should throw error on malformed EntryCipherPayload decryption", async () => {
+  it('should throw error on malformed EntryCipherPayload decryption', async () => {
     // корректно зашифрованный, но «битый» по структуре plaintext
     const key = await getSessionKey();
     const malformedEncrypted = await encryptJson(
       key,
-      { value: "not a number", note: null },
+      { value: 'not a number', note: null },
       {
         userId: dummyUserId,
         entityId: dummyEntityId,
       },
     );
     await expect(decryptEntryPayload(malformedEncrypted, dummyEntityId)).rejects.toThrow(
-      "Decrypted entry payload is malformed",
+      'Decrypted entry payload is malformed',
     );
   });
 
-  it("should throw error on malformed TestResultCipherPayload decryption", async () => {
+  it('should throw error on malformed TestResultCipherPayload decryption', async () => {
     const key = await getSessionKey();
     const malformedEncrypted = await encryptJson(
       key,
-      { score: "not a number", interpretation: 123 },
+      { score: 'not a number', interpretation: 123 },
       { userId: dummyUserId, entityId: dummyEntityId },
     );
     await expect(decryptTestResultPayload(malformedEncrypted, dummyEntityId)).rejects.toThrow(
-      "Decrypted test result payload is malformed",
+      'Decrypted test result payload is malformed',
     );
   });
 });

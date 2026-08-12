@@ -1,17 +1,17 @@
-import { useState, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { ClipboardList, ChevronDown } from "lucide-react";
-import { useTests } from "../hooks/useTests";
-import { useTestResultText } from "../hooks/useTestResultText";
-import type { DecryptedTestResult } from "../hooks/useTests";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { LoadingCard } from "../components/ui/loading-card";
-import EmptyState from "../components/ui/empty-state";
-import { Button } from "../components/ui/button";
-import PeriodSelect from "../components/ui/PeriodSelect";
-import { Period } from "../lib/constants";
-import { cn } from "../lib/utils";
+import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { ClipboardList, ChevronDown } from 'lucide-react';
+import { useTests } from '../hooks/useTests';
+import { useTestResultText } from '../hooks/useTestResultText';
+import type { DecryptedTestResult } from '../hooks/useTests';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { LoadingCard } from '../components/ui/loading-card';
+import EmptyState from '../components/ui/empty-state';
+import { Button } from '../components/ui/button';
+import PeriodSelect from '../components/ui/PeriodSelect';
+import { Period } from '../lib/constants';
+import { cn } from '../lib/utils';
 
 type TestResult = DecryptedTestResult;
 
@@ -69,7 +69,7 @@ export default function TestsResultsSection({
   }, [results]);
 
   const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(i18n.language === "ru" ? "ru-RU" : "en-US");
+    new Date(iso).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US');
 
   if (isLoading) {
     return <LoadingCard className="shadow-neumorphic" />;
@@ -81,17 +81,17 @@ export default function TestsResultsSection({
         <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0">
           <CardTitle className="text-base flex items-center gap-2">
             <ClipboardList aria-hidden="true" className="w-4 h-4 text-primary" />
-            {t("dashboard.testsTaken")}
+            {t('dashboard.testsTaken')}
           </CardTitle>
           <PeriodSelect value={period} onChange={onPeriodChange} className="w-full sm:w-44" />
         </CardHeader>
         <CardContent>
           <EmptyState
             icon={ClipboardList}
-            title={t("dashboard.noTestData")}
+            title={t('dashboard.noTestData')}
             action={{
-              label: t("testResults.takeTest"),
-              onClick: () => navigate("/tests"),
+              label: t('testResults.takeTest'),
+              onClick: () => navigate('/tests'),
             }}
           />
         </CardContent>
@@ -105,10 +105,10 @@ export default function TestsResultsSection({
         <div className="space-y-1">
           <CardTitle className="text-base flex items-center gap-2">
             <ClipboardList aria-hidden="true" className="w-4 h-4 text-primary" />
-            {t("dashboard.testsTaken")}
+            {t('dashboard.testsTaken')}
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            {t("testResults.summaryCount", { count: results.length })}
+            {t('testResults.summaryCount', { count: results.length })}
           </p>
         </div>
         <PeriodSelect value={period} onChange={onPeriodChange} className="w-full sm:w-44" />
@@ -131,16 +131,16 @@ export default function TestsResultsSection({
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium text-foreground truncate">{testName(latest)}</p>
                   <p className="text-xs text-muted-foreground truncate">
-                    {latest.interpretation} ·{" "}
-                    {t("testResults.summaryCount", { count: group.results.length })}
+                    {latest.interpretation} ·{' '}
+                    {t('testResults.summaryCount', { count: group.results.length })}
                   </p>
                 </div>
                 <span className="text-sm font-semibold tabular-nums ml-2">{latest.score}</span>
                 <ChevronDown
                   aria-hidden="true"
                   className={cn(
-                    "w-5 h-5 text-muted-foreground transition-transform duration-200 shrink-0",
-                    open && "rotate-180",
+                    'w-5 h-5 text-muted-foreground transition-transform duration-200 shrink-0',
+                    open && 'rotate-180',
                   )}
                 />
               </button>
@@ -177,15 +177,15 @@ export default function TestsResultsSection({
                           <ChevronDown
                             aria-hidden="true"
                             className={cn(
-                              "w-4 h-4 text-muted-foreground transition-transform duration-150 shrink-0",
-                              attemptOpen && "rotate-180",
+                              'w-4 h-4 text-muted-foreground transition-transform duration-150 shrink-0',
+                              attemptOpen && 'rotate-180',
                             )}
                           />
                         </button>
 
                         {attemptOpen && (
                           <div className="px-3 pb-3">
-                            <div className={showFull[r.id] ? "" : "line-clamp-2"}>
+                            <div className={showFull[r.id] ? '' : 'line-clamp-2'}>
                               <p className="text-sm">{interpretationText}</p>
                             </div>
                             {isLongText && (
@@ -199,8 +199,8 @@ export default function TestsResultsSection({
                                 }
                               >
                                 {showFull[r.id]
-                                  ? t("testResults.showLess")
-                                  : t("testResults.showFull")}
+                                  ? t('testResults.showLess')
+                                  : t('testResults.showFull')}
                               </Button>
                             )}
                             <p className="text-sm mt-2 text-muted-foreground">

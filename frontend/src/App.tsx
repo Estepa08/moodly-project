@@ -1,47 +1,47 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
-import { Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "./hooks/useAuth";
-import { useCurrentUser } from "./hooks/useCurrentUser";
-import { hasSessionKey } from "./lib/crypto/session";
-import SyncCoordinator from "./lib/offline/SyncCoordinator";
-import Layout from "./components/Layout";
-import OnboardingGate from "./components/OnboardingGate";
-import Spinner from "./components/ui/spinner";
-import { trackPageView } from "./lib/metrika";
-import LoginPage from "./routes/login";
-import RegisterPage from "./routes/register";
-import ForgotPasswordPage from "./routes/forgot-password";
-import ResetPasswordPage from "./routes/reset-password";
-import PrivacyPage from "./routes/privacy";
-import TermsPage from "./routes/terms";
-import LandingPage from "./routes/landing";
+import { lazy, Suspense, useEffect, useRef } from 'react';
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
+import { useCurrentUser } from './hooks/useCurrentUser';
+import { hasSessionKey } from './lib/crypto/session';
+import SyncCoordinator from './lib/offline/SyncCoordinator';
+import Layout from './components/Layout';
+import OnboardingGate from './components/OnboardingGate';
+import Spinner from './components/ui/spinner';
+import { trackPageView } from './lib/metrika';
+import LoginPage from './routes/login';
+import RegisterPage from './routes/register';
+import ForgotPasswordPage from './routes/forgot-password';
+import ResetPasswordPage from './routes/reset-password';
+import PrivacyPage from './routes/privacy';
+import TermsPage from './routes/terms';
+import LandingPage from './routes/landing';
 
-const MyDayPage = lazy(() => import("./routes/my-day"));
-const StatisticsPage = lazy(() => import("./routes/statistics"));
-const OnboardingPage = lazy(() => import("./routes/onboarding"));
-const TestsPage = lazy(() => import("./routes/tests"));
-const TestDetailPage = lazy(() => import("./routes/test-detail"));
-const BreathingPage = lazy(() => import("./routes/breathing"));
-const PracticesPage = lazy(() => import("./routes/practices"));
-const GratitudeJournalPage = lazy(() => import("./routes/gratitude-journal"));
-const DistortionsPage = lazy(() => import("./routes/distortions"));
-const SleepHygienePage = lazy(() => import("./routes/sleep-hygiene"));
-const ThoughtJournalPage = lazy(() => import("./routes/thought-journal"));
-const CostBenefitAnalysisPage = lazy(() => import("./routes/cost-benefit-analysis"));
-const EmotionLabPage = lazy(() => import("./routes/emotion-lab"));
-const SettingsPage = lazy(() => import("./routes/settings"));
-const ProgressPage = lazy(() => import("./routes/progress"));
-const AdminPanelPage = lazy(() => import("./routes/admin-panel"));
-const ContentPage = lazy(() => import("./routes/content"));
-const NotFoundPage = lazy(() => import("./routes/not-found"));
-const MoodDiaryPage = lazy(() => import("./routes/seo/mood-diary"));
-const AnxietyTestPage = lazy(() => import("./routes/seo/anxiety-test"));
-const ThinkingHabitsTestPage = lazy(() => import("./routes/seo/thinking-habits-test"));
-const SleepHygieneGuidePage = lazy(() => import("./routes/seo/sleep-hygiene-guide"));
-const AnxietySelfHelpPage = lazy(() => import("./routes/seo/anxiety-self-help"));
-const BlogPage = lazy(() => import("./routes/blog/BlogPage"));
-const BlogCategoryPage = lazy(() => import("./routes/blog/BlogCategoryPage"));
-const BlogPostPage = lazy(() => import("./routes/blog/BlogPostPage"));
+const MyDayPage = lazy(() => import('./routes/my-day'));
+const StatisticsPage = lazy(() => import('./routes/statistics'));
+const OnboardingPage = lazy(() => import('./routes/onboarding'));
+const TestsPage = lazy(() => import('./routes/tests'));
+const TestDetailPage = lazy(() => import('./routes/test-detail'));
+const BreathingPage = lazy(() => import('./routes/breathing'));
+const PracticesPage = lazy(() => import('./routes/practices'));
+const GratitudeJournalPage = lazy(() => import('./routes/gratitude-journal'));
+const DistortionsPage = lazy(() => import('./routes/distortions'));
+const SleepHygienePage = lazy(() => import('./routes/sleep-hygiene'));
+const ThoughtJournalPage = lazy(() => import('./routes/thought-journal'));
+const CostBenefitAnalysisPage = lazy(() => import('./routes/cost-benefit-analysis'));
+const EmotionLabPage = lazy(() => import('./routes/emotion-lab'));
+const SettingsPage = lazy(() => import('./routes/settings'));
+const ProgressPage = lazy(() => import('./routes/progress'));
+const AdminPanelPage = lazy(() => import('./routes/admin-panel'));
+const ContentPage = lazy(() => import('./routes/content'));
+const NotFoundPage = lazy(() => import('./routes/not-found'));
+const MoodDiaryPage = lazy(() => import('./routes/seo/mood-diary'));
+const AnxietyTestPage = lazy(() => import('./routes/seo/anxiety-test'));
+const ThinkingHabitsTestPage = lazy(() => import('./routes/seo/thinking-habits-test'));
+const SleepHygieneGuidePage = lazy(() => import('./routes/seo/sleep-hygiene-guide'));
+const AnxietySelfHelpPage = lazy(() => import('./routes/seo/anxiety-self-help'));
+const BlogPage = lazy(() => import('./routes/blog/BlogPage'));
+const BlogCategoryPage = lazy(() => import('./routes/blog/BlogCategoryPage'));
+const BlogPostPage = lazy(() => import('./routes/blog/BlogPostPage'));
 
 function SuspenseFallback() {
   return (
@@ -73,7 +73,7 @@ function ProtectedRoute() {
   // «мёртвую» авторизацию: без ключа запись и чтение данных невозможны, а
   // сохранение падало бы с «Не удалось сохранить запись». Просим повторить вход.
   if (!hasSessionKey()) {
-    return <Navigate to="/login" replace state={{ reason: "unlock-required" }} />;
+    return <Navigate to="/login" replace state={{ reason: 'unlock-required' }} />;
   }
   return (
     <Layout>
@@ -90,7 +90,7 @@ function ProtectedRoute() {
 function AdminRoute() {
   const { data: user, isLoading } = useCurrentUser();
   if (isLoading) return <BootstrapSpinner />;
-  if (user?.role !== "admin") return <Navigate to="/my-day" replace />;
+  if (user?.role !== 'admin') return <Navigate to="/my-day" replace />;
   return <Outlet />;
 }
 
@@ -102,8 +102,8 @@ function PublicRoute() {
   // Авторизованный, но DEK потерян (новая вкладка/браузер): на защищённые
   // маршруты не ведём (ProtectedRoute и так уведёт на /login с разблокировкой),
   // но и лендинг не показываем — только сам /login, чтобы не было цикла.
-  if (isAuthenticated && location.pathname !== "/login") {
-    return <Navigate to="/login" replace state={{ reason: "unlock-required" }} />;
+  if (isAuthenticated && location.pathname !== '/login') {
+    return <Navigate to="/login" replace state={{ reason: 'unlock-required' }} />;
   }
   return <Outlet />;
 }

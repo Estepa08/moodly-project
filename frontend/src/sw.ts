@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
-import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
-import { NavigationRoute, registerRoute } from "workbox-routing";
+import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
+import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -8,10 +8,10 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // SPA-navigation: любой переход (в т.ч. офлайн deep-link при чистом кэше)
 // отдаём из precache index.html, чтобы маршруты React открывались всегда.
-registerRoute(new NavigationRoute(createHandlerBoundToURL("/index.html")));
+registerRoute(new NavigationRoute(createHandlerBoundToURL('/index.html')));
 
-self.addEventListener("push", (event) => {
-  let data: { title: string; body: string; url?: string } = { title: "Moodly", body: "" };
+self.addEventListener('push', (event) => {
+  let data: { title: string; body: string; url?: string } = { title: 'Moodly', body: '' };
   if (event.data) {
     try {
       data = event.data.json();
@@ -22,20 +22,20 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: "/icons/icon-192.svg",
-      badge: "/icons/icon-192.svg",
-      data: { url: data.url || "/" },
+      icon: '/icons/icon-192.svg',
+      badge: '/icons/icon-192.svg',
+      data: { url: data.url || '/' },
     }),
   );
 });
 
-self.addEventListener("notificationclick", (event) => {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const urlToOpen = (event.notification.data as { url?: string })?.url || "/";
+  const urlToOpen = (event.notification.data as { url?: string })?.url || '/';
   event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientsList) => {
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientsList) => {
       const matchingClient = clientsList.find(
-        (c) => "url" in c && c.url === urlToOpen && "focus" in c,
+        (c) => 'url' in c && c.url === urlToOpen && 'focus' in c,
       );
       if (matchingClient) {
         return matchingClient.focus();

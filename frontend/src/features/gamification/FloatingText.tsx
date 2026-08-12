@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { cn } from "../../lib/utils";
+import { useEffect, useState } from 'react';
+import { cn } from '../../lib/utils';
 
 interface FloatingTextProps {
   text: string;
@@ -37,15 +37,15 @@ export default function FloatingText({
   return (
     <div
       className={cn(
-        "fixed pointer-events-none z-[9999]",
-        "text-lg font-bold",
-        "animate-float-up",
+        'fixed pointer-events-none z-[9999]',
+        'text-lg font-bold',
+        'animate-float-up',
         className,
       )}
       style={{
         left: `calc(50% + ${position.x}px)`,
         top: `calc(50% + ${position.y}px)`,
-        transform: "translate(-50%, -50%)",
+        transform: 'translate(-50%, -50%)',
       }}
     >
       {text}
