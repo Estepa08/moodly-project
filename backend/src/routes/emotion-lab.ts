@@ -9,7 +9,6 @@ import {
   getNextMidnight,
 } from '../services/emotion-lab.js';
 
-// Определяем тип для пользователя из JWT
 interface JWTUser {
   userId: string;
   email?: string;
@@ -17,23 +16,17 @@ interface JWTUser {
 }
 
 export default async function emotionLabRoutes(fastify: FastifyInstance) {
-  // Получение состояния
   fastify.get('/emotion-lab/state', { preHandler: [fastify.authenticate] }, async (req, reply) => {
     try {
       const user = req.user as JWTUser;
-
       if (!user || !user.userId) {
         return reply.code(401).send({ error: 'Unauthorized - user not found' });
       }
 
       const userId = user.userId;
-
       const dbUser = await prisma.user.findUnique({
         where: { id: userId },
-        select: {
-          subscriptionTier: true,
-          subscriptionExpiresAt: true,
-        },
+        select: { subscriptionTier: true, subscriptionExpiresAt: true },
       });
 
       if (!dbUser) {
@@ -46,11 +39,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
       if (!progress) {
         progress = await prisma.emotionLabProgress.create({
-          data: {
-            userId,
-            dailyAttemptsUsed: 0,
-            discoveredDyads: [],
-          },
+          data: { userId, dailyAttemptsUsed: 0, discoveredDyads: [] },
         });
       }
 
@@ -59,7 +48,6 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
       const isNewDay = !progress.lastAttemptDate || !isSameDay(progress.lastAttemptDate, now);
       const usedToday = isNewDay ? 0 : progress.dailyAttemptsUsed;
       const limitReached = usedToday >= limit;
-
       const discovered = progress.discoveredDyads || [];
       const availableLevel = getAvailableLevel(discovered);
 
@@ -84,14 +72,12 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Попытка смешивания
   fastify.post(
     '/emotion-lab/attempt',
     { preHandler: [fastify.authenticate] },
     async (req, reply) => {
       try {
         const user = req.user as JWTUser;
-
         if (!user || !user.userId) {
           return reply.code(401).send({ error: 'Unauthorized - user not found' });
         }
@@ -105,10 +91,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
         const dbUser = await prisma.user.findUnique({
           where: { id: userId },
-          select: {
-            subscriptionTier: true,
-            subscriptionExpiresAt: true,
-          },
+          select: { subscriptionTier: true, subscriptionExpiresAt: true },
         });
 
         if (!dbUser) {
@@ -121,11 +104,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
         if (!progress) {
           progress = await prisma.emotionLabProgress.create({
-            data: {
-              userId,
-              dailyAttemptsUsed: 0,
-              discoveredDyads: [],
-            },
+            data: { userId, dailyAttemptsUsed: 0, discoveredDyads: [] },
           });
         }
 
@@ -154,6 +133,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
         if (dyad.level > availableLevel) {
           return reply.code(403).send({
             error: 'LEVEL_LOCKED',
+            code: 'LEVEL_LOCKED',
             message: `Unlock all ${dyad.level - 1} level dyads first`,
           });
         }
