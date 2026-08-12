@@ -1,7 +1,7 @@
-import { type LucideIcon, Inbox } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { Button } from "./button";
-import PetAvatar from "../../features/gamification/PetAvatar";
+import { type LucideIcon, Inbox } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { Button } from './button';
+import PetAvatar from '../../features/gamification/PetAvatar';
 
 interface EmptyStateProps {
   icon?: LucideIcon;
@@ -28,7 +28,7 @@ export default function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center py-12 px-6 text-center animate-in fade-in duration-300",
+        'flex flex-col items-center justify-center py-12 px-6 text-center animate-in fade-in duration-300',
         className,
       )}
     >

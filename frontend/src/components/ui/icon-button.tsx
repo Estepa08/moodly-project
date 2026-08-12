@@ -1,18 +1,18 @@
-import { Button, type ButtonProps } from "./button";
-import { cn } from "../../lib/utils";
+import { Button, type ButtonProps } from './button';
+import { cn } from '../../lib/utils';
 
-interface IconButtonProps extends Omit<ButtonProps, "size"> {
+interface IconButtonProps extends Omit<ButtonProps, 'size'> {
   label: string;
-  size?: "icon" | "icon-sm";
+  size?: 'icon' | 'icon-sm';
 }
 
-export function IconButton({ label, size = "icon", className, ...props }: IconButtonProps) {
+export function IconButton({ label, size = 'icon', className, ...props }: IconButtonProps) {
   return (
     <Button
       type="button"
       size={size}
       aria-label={label}
-      className={cn("shrink-0", className)}
+      className={cn('shrink-0', className)}
       {...props}
     />
   );

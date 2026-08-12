@@ -1,4 +1,4 @@
-import { cn } from "../../lib/utils";
+import { cn } from '../../lib/utils';
 
 interface ProgressBarSegment {
   value: number;
@@ -24,8 +24,8 @@ export function ProgressBar({
   return (
     <div
       className={cn(
-        "flex overflow-hidden shadow-neumorphic-inset bg-muted",
-        rounded && "rounded-full",
+        'flex overflow-hidden shadow-neumorphic-inset bg-muted',
+        rounded && 'rounded-full',
         trackClassName,
         className,
       )}
@@ -34,7 +34,7 @@ export function ProgressBar({
       {segments.map((seg, i) => (
         <div
           key={i}
-          className={cn("h-full transition-[width] duration-150", seg.className)}
+          className={cn('h-full transition-[width] duration-150', seg.className)}
           style={{ width: `${seg.value}%`, ...seg.style }}
         />
       ))}

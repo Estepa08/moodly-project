@@ -1,7 +1,7 @@
-import { forwardRef, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { Input } from "./input";
-import { IconButton } from "./icon-button";
+import { forwardRef, useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { Input } from './input';
+import { IconButton } from './icon-button';
 
 interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   showLabel?: string;
@@ -10,14 +10,14 @@ interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement>
 
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   (
-    { showLabel = "Show password", hideLabel = "Hide password", className: _className, ...props },
+    { showLabel = 'Show password', hideLabel = 'Hide password', className: _className, ...props },
     ref,
   ) => {
     const [visible, setVisible] = useState(false);
 
     return (
       <div className="relative">
-        <Input ref={ref} type={visible ? "text" : "password"} className="pr-12" {...props} />
+        <Input ref={ref} type={visible ? 'text' : 'password'} className="pr-12" {...props} />
         <IconButton
           size="icon-sm"
           variant="ghost"
@@ -32,6 +32,6 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   },
 );
 
-PasswordInput.displayName = "PasswordInput";
+PasswordInput.displayName = 'PasswordInput';
 
 export { PasswordInput };

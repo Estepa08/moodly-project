@@ -1,4 +1,4 @@
-import { SegmentControl, SegmentControlItem } from "./segment-control";
+import { SegmentControl, SegmentControlItem } from './segment-control';
 
 export { SegmentControl };
 export const SegmentGroup = SegmentControl;
