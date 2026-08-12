@@ -1,4 +1,4 @@
-import { emotionAlchemy, DYADS, findDyadByEmotions, type DyadInfo } from "@moodly/shared";
+import { emotionAlchemy, DYADS, findDyadByEmotions, type DyadInfo } from '@moodly/shared';
 
 export function findDyad(emotionA: string, emotionB: string): DyadInfo | undefined {
   // Используем встроенную функцию из shared

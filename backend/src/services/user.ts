@@ -1,8 +1,8 @@
-import bcrypt from "bcryptjs";
-import { prisma } from "../lib/prisma.js";
-import { AppError, ConflictError, NotFoundError } from "../lib/errors.js";
+import bcrypt from 'bcryptjs';
+import { prisma } from '../lib/prisma.js';
+import { AppError, ConflictError, NotFoundError } from '../lib/errors.js';
 
-export const CONSENT_VERSION = "2.0";
+export const CONSENT_VERSION = '2.0';
 
 export interface RegisterInput {
   email: string;
@@ -51,20 +51,20 @@ function stripUser(user: {
 export const userService = {
   async register(input: RegisterInput) {
     if (!input.ageConfirmed) {
-      throw new AppError("CONSENT_REQUIRED", 400, "You must confirm you are 18+");
+      throw new AppError('CONSENT_REQUIRED', 400, 'You must confirm you are 18+');
     }
     if (!input.pdpConsent) {
       throw new AppError(
-        "PDP_CONSENT_REQUIRED",
+        'PDP_CONSENT_REQUIRED',
         400,
-        "Consent to personal data processing is required",
+        'Consent to personal data processing is required',
       );
     }
     if (input.birthYear != null && new Date().getFullYear() - input.birthYear < 18) {
-      throw new AppError("AGE_REQUIRED", 400, "You must be at least 18 years old");
+      throw new AppError('AGE_REQUIRED', 400, 'You must be at least 18 years old');
     }
     const existing = await prisma.user.findUnique({ where: { email: input.email } });
-    if (existing) throw new ConflictError("Email already registered");
+    if (existing) throw new ConflictError('Email already registered');
 
     const hashed = await bcrypt.hash(input.password, 10);
 
@@ -90,10 +90,10 @@ export const userService = {
 
   async login(input: LoginInput) {
     const user = await prisma.user.findUnique({ where: { email: input.email } });
-    if (!user) throw new AppError("INVALID_CREDENTIALS", 401, "Invalid email or password");
+    if (!user) throw new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password');
 
     const valid = await bcrypt.compare(input.password, user.password);
-    if (!valid) throw new AppError("INVALID_CREDENTIALS", 401, "Invalid email or password");
+    if (!valid) throw new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password');
 
     return {
       user: stripUser(user),
@@ -106,9 +106,9 @@ export const userService = {
   // только если их ещё нет. Предотвращает перезапись существующих ключей.
   async setE2EKeys(userId: string, input: SetKeysInput) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundError("User");
+    if (!user) throw new NotFoundError('User');
     if (user.wrappedKey) {
-      throw new AppError("KEYS_ALREADY_SET", 409, "Encryption keys already configured");
+      throw new AppError('KEYS_ALREADY_SET', 409, 'Encryption keys already configured');
     }
     await prisma.user.update({
       where: { id: userId },
@@ -124,7 +124,7 @@ export const userService = {
 
   async findById(id: string) {
     const user = await prisma.user.findUnique({ where: { id } });
-    if (!user) throw new NotFoundError("User");
+    if (!user) throw new NotFoundError('User');
     return stripUser(user);
   },
 

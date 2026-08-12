@@ -1,7 +1,7 @@
-import { prisma } from "../lib/prisma.js";
-import { AppError } from "../lib/errors.js";
-import { lockUser } from "../lib/user-lock.js";
-import { achievementsService } from "./achievements.js";
+import { prisma } from '../lib/prisma.js';
+import { AppError } from '../lib/errors.js';
+import { lockUser } from '../lib/user-lock.js';
+import { achievementsService } from './achievements.js';
 import {
   applyLevelUp,
   stageForLevel,
@@ -34,7 +34,7 @@ import {
   isMorningWindow,
   isEveningWindow,
   computeComboCount,
-} from "@moodly/shared";
+} from '@moodly/shared';
 
 export const creatureService = {
   async getState(userId: string) {
@@ -49,7 +49,7 @@ export const creatureService = {
     const level = state.level ?? 1;
     // E2E: настроение питомца считает клиент (сервер не видит entry.value).
     // Fallback для старых аккаунтов без значения.
-    const petMood = (state.petMood ?? (state.calmness ?? 50) >= 70) ? "happy" : "calm";
+    const petMood = (state.petMood ?? (state.calmness ?? 50) >= 70) ? 'happy' : 'calm';
     const petSummary = this._petSummary(state);
     return {
       ...state,
@@ -97,12 +97,12 @@ export const creatureService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
-      (c) => c.source !== "moodEntry" && c.source !== "feed",
+      (c) => c.source !== 'moodEntry' && c.source !== 'feed',
     );
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
     const totalPractices = practiceCompletions.length;
     const totalCheckins = await prisma.practiceCompletion.count({
-      where: { userId, source: "checkin" },
+      where: { userId, source: 'checkin' },
     });
     const firstActivity =
       practiceCompletions.length > 0
@@ -138,15 +138,15 @@ export const creatureService = {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
       return {
-        unlockedPetTypes: ["puff"],
-        activePetType: "puff",
+        unlockedPetTypes: ['puff'],
+        activePetType: 'puff',
         petName: null,
         feedCounts: {},
       };
     }
     return {
-      unlockedPetTypes: creature.unlockedPetTypes ?? ["puff"],
-      activePetType: creature.petType ?? "puff",
+      unlockedPetTypes: creature.unlockedPetTypes ?? ['puff'],
+      activePetType: creature.petType ?? 'puff',
       petName: creature.petName ?? null,
       feedCounts: (creature.feedCounts as Record<string, number>) ?? {},
     };
@@ -156,17 +156,17 @@ export const creatureService = {
     const creature = await this.getState(userId);
 
     if (petType === undefined && petName === undefined) {
-      throw new AppError("BAD_REQUEST", 400, "petType or petName is required");
+      throw new AppError('BAD_REQUEST', 400, 'petType or petName is required');
     }
 
     const data: Record<string, unknown> = {};
     if (petType !== undefined) {
-      const unlocked = creature.unlockedPetTypes ?? ["puff"];
+      const unlocked = creature.unlockedPetTypes ?? ['puff'];
       if (!unlocked.includes(petType)) {
         if (STARTER_PET_TYPES.includes(petType)) {
           data.unlockedPetTypes = [...unlocked, petType];
         } else {
-          throw new AppError("LOCKED", 403, "Pet type not unlocked");
+          throw new AppError('LOCKED', 403, 'Pet type not unlocked');
         }
       }
       data.petType = petType;
@@ -181,8 +181,8 @@ export const creatureService = {
       data,
     });
     return {
-      unlockedPetTypes: updated.unlockedPetTypes ?? ["puff"],
-      activePetType: updated.petType ?? "puff",
+      unlockedPetTypes: updated.unlockedPetTypes ?? ['puff'],
+      activePetType: updated.petType ?? 'puff',
       petName: updated.petName ?? null,
     };
   },
@@ -265,7 +265,7 @@ export const creatureService = {
         where: { userId, createdAt: { gte: today, lt: todayEnd } },
         select: { source: true },
       })
-    ).filter((c) => c.source !== "moodEntry" && c.source !== "feed");
+    ).filter((c) => c.source !== 'moodEntry' && c.source !== 'feed');
     const todayEntries = await prisma.entry.count({
       where: { userId, createdAt: { gte: today, lt: todayEnd } },
     });
@@ -275,34 +275,34 @@ export const creatureService = {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
 
     const completedSources = new Set(todayCompletions.map((c) => c.source));
-    const breathingCount = todayCompletions.filter((c) => c.source === "breathing").length;
+    const breathingCount = todayCompletions.filter((c) => c.source === 'breathing').length;
 
     const MISSION_SOURCE: Record<string, string> = {
-      checkin: "checkin",
-      practice_breathing: "breathing",
-      practice_gratitude: "gratitude",
-      practice_sleepHygiene: "sleepHygiene",
-      practice_distortions: "distortions",
-      practice_cba: "cba",
-      practice_thoughtJournal: "thoughtJournal",
+      checkin: 'checkin',
+      practice_breathing: 'breathing',
+      practice_gratitude: 'gratitude',
+      practice_sleepHygiene: 'sleepHygiene',
+      practice_distortions: 'distortions',
+      practice_cba: 'cba',
+      practice_thoughtJournal: 'thoughtJournal',
     };
 
     return missions.map((m) => {
       let progress = 0;
 
-      if (m.missionKey === "complete_3_practices") {
+      if (m.missionKey === 'complete_3_practices') {
         progress = Math.min(3, todayCompletions.length) / 3;
-      } else if (m.missionKey === "complete_5_practices") {
+      } else if (m.missionKey === 'complete_5_practices') {
         progress = Math.min(5, todayCompletions.length) / 5;
-      } else if (m.missionKey === "log_mood_entry") {
+      } else if (m.missionKey === 'log_mood_entry') {
         progress = todayEntries > 0 ? 1 : 0;
-      } else if (m.missionKey === "log_3_mood_entries") {
+      } else if (m.missionKey === 'log_3_mood_entries') {
         progress = Math.min(3, todayEntries) / 3;
-      } else if (m.missionKey === "complete_test") {
+      } else if (m.missionKey === 'complete_test') {
         progress = todayTests > 0 ? 1 : 0;
-      } else if (m.missionKey === "breathing_2") {
+      } else if (m.missionKey === 'breathing_2') {
         progress = Math.min(2, breathingCount) / 2;
-      } else if (m.missionKey === "streak_2") {
+      } else if (m.missionKey === 'streak_2') {
         progress = (creature?.streak ?? 0) >= 2 ? 1 : 0;
       } else {
         const source = MISSION_SOURCE[m.missionKey];
@@ -329,16 +329,16 @@ export const creatureService = {
 
       const mission = await tx.dailyMission.findUnique({ where: { id: missionId } });
       if (!mission || mission.userId !== userId) {
-        throw new AppError("NOT_FOUND", 404, "Mission not found");
+        throw new AppError('NOT_FOUND', 404, 'Mission not found');
       }
       if (mission.claimed) {
-        throw new AppError("ALREADY_CLAIMED", 409, "Mission already claimed");
+        throw new AppError('ALREADY_CLAIMED', 409, 'Mission already claimed');
       }
 
       const evaluated = await this.getMissions(userId);
       const match = evaluated.find((m) => m.id === missionId);
       if (!match || match.progress < 1) {
-        throw new AppError("NOT_COMPLETED", 400, "Mission not yet completed");
+        throw new AppError('NOT_COMPLETED', 400, 'Mission not yet completed');
       }
 
       let state = await tx.creatureState.findUnique({ where: { userId } });
@@ -386,7 +386,7 @@ export const creatureService = {
         data: { userId, duration, initialCalmness, finalCalmness },
       }),
       prisma.practiceCompletion.create({
-        data: { userId, source: "breathing", xpAwarded: EXERCISE_EXP },
+        data: { userId, source: 'breathing', xpAwarded: EXERCISE_EXP },
       }),
     ]);
 
@@ -422,7 +422,7 @@ export const creatureService = {
         const lastDate = new Date(lastCheckIn);
         lastDate.setHours(0, 0, 0, 0);
         if (lastDate.getTime() === today.getTime()) {
-          throw new AppError("ALREADY_CHECKED_IN", 409, "Already checked in today");
+          throw new AppError('ALREADY_CHECKED_IN', 409, 'Already checked in today');
         }
       }
 
@@ -448,7 +448,7 @@ export const creatureService = {
         },
       });
       await tx.practiceCompletion.create({
-        data: { userId, source: "checkin", xpAwarded: CHECKIN_EXP },
+        data: { userId, source: 'checkin', xpAwarded: CHECKIN_EXP },
       });
 
       return { updated, leveledUp };
@@ -467,7 +467,7 @@ export const creatureService = {
   async rewardPractice(userId: string, source: string) {
     const xp = PRACTICE_XP[source];
     if (xp === undefined) {
-      throw new AppError("INVALID_SOURCE", 400, `Unknown practice source: ${source}`);
+      throw new AppError('INVALID_SOURCE', 400, `Unknown practice source: ${source}`);
     }
 
     const state = await this.getState(userId);
@@ -504,11 +504,11 @@ export const creatureService = {
 
     const completions = await prisma.practiceCompletion.findMany({
       where: { userId, createdAt: { gte: since } },
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       select: { source: true, xpAwarded: true, createdAt: true },
     });
 
-    return completions.filter((c) => c.source !== "feed");
+    return completions.filter((c) => c.source !== 'feed');
   },
 
   async rewardMoodEntry(userId: string) {
@@ -518,7 +518,7 @@ export const creatureService = {
     todayEnd.setDate(todayEnd.getDate() + 1);
 
     const moodCount = await prisma.practiceCompletion.count({
-      where: { userId, source: "moodEntry", createdAt: { gte: today, lt: todayEnd } },
+      where: { userId, source: 'moodEntry', createdAt: { gte: today, lt: todayEnd } },
     });
     if (moodCount >= MOOD_ENTRY_DAILY_LIMIT) return null;
 
@@ -531,7 +531,7 @@ export const creatureService = {
         data: { experience, level },
       }),
       prisma.practiceCompletion.create({
-        data: { userId, source: "moodEntry", xpAwarded: MOOD_ENTRY_XP },
+        data: { userId, source: 'moodEntry', xpAwarded: MOOD_ENTRY_XP },
       }),
     ]);
 
@@ -542,7 +542,7 @@ export const creatureService = {
 
   async feed(userId: string) {
     const state = await this.getState(userId);
-    const petType = state.petType ?? "puff";
+    const petType = state.petType ?? 'puff';
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -550,7 +550,7 @@ export const creatureService = {
     todayEnd.setDate(todayEnd.getDate() + 1);
 
     const todayFeeds = await prisma.practiceCompletion.count({
-      where: { userId, source: "feed", createdAt: { gte: today, lt: todayEnd } },
+      where: { userId, source: 'feed', createdAt: { gte: today, lt: todayEnd } },
     });
     const xpAwarded = todayFeeds < FEED_XP_DAILY_LIMIT ? FEED_XP : 0;
 
@@ -570,7 +570,7 @@ export const creatureService = {
         },
       }),
       prisma.practiceCompletion.create({
-        data: { userId, source: "feed", xpAwarded },
+        data: { userId, source: 'feed', xpAwarded },
       }),
     ]);
 

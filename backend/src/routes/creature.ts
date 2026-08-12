@@ -1,5 +1,5 @@
-import type { FastifyInstance } from "fastify";
-import { creatureService } from "../services/creature.js";
+import type { FastifyInstance } from 'fastify';
+import { creatureService } from '../services/creature.js';
 
 interface ExerciseCompleteBody {
   duration: number;
@@ -31,16 +31,16 @@ interface ClaimMissionParams {
 }
 
 export default async function creatureRoutes(fastify: FastifyInstance) {
-  fastify.get("/creature", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.get('/creature', { preHandler: [fastify.authenticate] }, async (request) => {
     return creatureService.getState(request.userId);
   });
 
-  fastify.post("/creature/check-in", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.post('/creature/check-in', { preHandler: [fastify.authenticate] }, async (request) => {
     return creatureService.checkIn(request.userId);
   });
 
   fastify.post<{ Body: ExerciseCompleteBody }>(
-    "/creature/exercise/complete",
+    '/creature/exercise/complete',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       return creatureService.completeExercise(request.userId, request.body.duration);
@@ -48,19 +48,19 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
   );
 
   fastify.post<{ Body: RewardBody }>(
-    "/creature/reward",
+    '/creature/reward',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       return creatureService.rewardPractice(request.userId, request.body.source);
     },
   );
 
-  fastify.post("/creature/feed", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.post('/creature/feed', { preHandler: [fastify.authenticate] }, async (request) => {
     return creatureService.feed(request.userId);
   });
 
   fastify.post<{ Body: PetTapBody }>(
-    "/creature/pet",
+    '/creature/pet',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       return creatureService.pet(request.userId, request.body?.empathy === true);
@@ -68,7 +68,7 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get<{ Querystring: CompletionsQuery }>(
-    "/creature/completions",
+    '/creature/completions',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       const days = request.query.days ? parseInt(request.query.days, 10) : 30;
@@ -76,16 +76,16 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get("/creature/stats", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.get('/creature/stats', { preHandler: [fastify.authenticate] }, async (request) => {
     return creatureService.getStats(request.userId);
   });
 
-  fastify.get("/creature/pets", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.get('/creature/pets', { preHandler: [fastify.authenticate] }, async (request) => {
     return creatureService.getPets(request.userId);
   });
 
   fastify.patch<{ Body: PetBody }>(
-    "/creature/pet",
+    '/creature/pet',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       return creatureService.setPet(request.userId, request.body.petType, request.body.petName);
@@ -93,7 +93,7 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get<{ Querystring: HeatmapQuery }>(
-    "/creature/heatmap",
+    '/creature/heatmap',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       const days = request.query.days ? parseInt(request.query.days, 10) : 90;
@@ -101,12 +101,12 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
-  fastify.get("/creature/missions", { preHandler: [fastify.authenticate] }, async (request) => {
+  fastify.get('/creature/missions', { preHandler: [fastify.authenticate] }, async (request) => {
     return creatureService.getMissions(request.userId);
   });
 
   fastify.post<{ Params: ClaimMissionParams }>(
-    "/creature/missions/:id/claim",
+    '/creature/missions/:id/claim',
     { preHandler: [fastify.authenticate] },
     async (request, reply) => {
       try {

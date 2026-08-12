@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { Resend } from 'resend';
 
 const resendApiKey = process.env.RESEND_API_KEY;
 let resend: Resend | null = null;
@@ -8,11 +8,11 @@ if (resendApiKey) {
 }
 
 function isDev(): boolean {
-  return process.env.NODE_ENV !== "production";
+  return process.env.NODE_ENV !== 'production';
 }
 
 function getFromAddress(): string {
-  return process.env.EMAIL_FROM || "noreply@moodly.app";
+  return process.env.EMAIL_FROM || 'noreply@moodly.app';
 }
 
 export async function sendEmail({
@@ -31,7 +31,7 @@ export async function sendEmail({
   }
 
   if (!resend) {
-    console.warn("RESEND_API_KEY not set — skipping email send");
+    console.warn('RESEND_API_KEY not set — skipping email send');
     return;
   }
 

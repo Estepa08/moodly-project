@@ -1,7 +1,7 @@
-import { prisma } from "../lib/prisma.js";
+import { prisma } from '../lib/prisma.js';
 
 export const onboardingService = {
   async list() {
-    return prisma.onboardingStory.findMany({ orderBy: { order: "asc" } });
+    return prisma.onboardingStory.findMany({ orderBy: { order: 'asc' } });
   },
 };

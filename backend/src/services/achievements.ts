@@ -1,10 +1,10 @@
-import { prisma } from "../lib/prisma.js";
-import { lockUser } from "../lib/user-lock.js";
+import { prisma } from '../lib/prisma.js';
+import { lockUser } from '../lib/user-lock.js';
 
 export const achievementsService = {
   async getAll(userId: string) {
     const all = await prisma.achievement.findMany({
-      orderBy: { sortOrder: "asc" },
+      orderBy: { sortOrder: 'asc' },
     });
 
     const unlocked = await prisma.userAchievement.findMany({
@@ -20,7 +20,7 @@ export const achievementsService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
-      (c) => c.source !== "moodEntry" && c.source !== "feed",
+      (c) => c.source !== 'moodEntry' && c.source !== 'feed',
     );
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
@@ -73,7 +73,7 @@ export const achievementsService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
-      (c) => c.source !== "moodEntry" && c.source !== "feed",
+      (c) => c.source !== 'moodEntry' && c.source !== 'feed',
     );
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
@@ -172,22 +172,22 @@ export const achievementsService = {
   async getSkins(userId: string) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      return { unlockedSkins: ["default"], activeSkin: "default" };
+      return { unlockedSkins: ['default'], activeSkin: 'default' };
     }
     return {
-      unlockedSkins: creature.unlockedSkins ?? ["default"],
-      activeSkin: creature.activeSkin ?? "default",
+      unlockedSkins: creature.unlockedSkins ?? ['default'],
+      activeSkin: creature.activeSkin ?? 'default',
     };
   },
 
   async setSkin(userId: string, skin: string) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      throw new Error("Creature state not found");
+      throw new Error('Creature state not found');
     }
-    const unlocked = creature.unlockedSkins ?? ["default"];
+    const unlocked = creature.unlockedSkins ?? ['default'];
     if (!unlocked.includes(skin)) {
-      throw new Error("Skin not unlocked");
+      throw new Error('Skin not unlocked');
     }
     const updated = await prisma.creatureState.update({
       where: { userId },
@@ -199,12 +199,12 @@ export const achievementsService = {
   async setTitle(userId: string, title: string | null) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      throw new Error("Creature state not found");
+      throw new Error('Creature state not found');
     }
     if (title !== null) {
       const unlocked = creature.unlockedTitles ?? [];
       if (!unlocked.includes(title)) {
-        throw new Error("Title not unlocked");
+        throw new Error('Title not unlocked');
       }
     }
     const updated = await prisma.creatureState.update({
@@ -228,7 +228,7 @@ interface ExtraMetrics {
 }
 
 async function collectExtraMetrics(
-  prisma: typeof import("../lib/prisma.js").prisma,
+  prisma: typeof import('../lib/prisma.js').prisma,
   userId: string,
   completions: { source: string; createdAt: Date }[],
 ): Promise<ExtraMetrics> {
@@ -236,7 +236,7 @@ async function collectExtraMetrics(
   let nightCount = 0;
   for (const c of completions) {
     sourceCounts[c.source] = (sourceCounts[c.source] ?? 0) + 1;
-    if (c.source !== "feed" && c.source !== "moodEntry") {
+    if (c.source !== 'feed' && c.source !== 'moodEntry') {
       const hour = c.createdAt.getHours();
       if (hour >= 22 || hour < 6) nightCount += 1;
     }
@@ -245,9 +245,9 @@ async function collectExtraMetrics(
     where: { userId, deletedAt: null },
   });
   return {
-    moodEntryCount: sourceCounts["moodEntry"] ?? 0,
-    gratitudeCount: sourceCounts["gratitude"] ?? 0,
-    thoughtJournalCount: sourceCounts["thoughtJournal"] ?? 0,
+    moodEntryCount: sourceCounts['moodEntry'] ?? 0,
+    gratitudeCount: sourceCounts['gratitude'] ?? 0,
+    thoughtJournalCount: sourceCounts['thoughtJournal'] ?? 0,
     testCount,
     nightCount,
   };
@@ -269,29 +269,29 @@ function calculateProgress(
   if (value === 0) return 0;
 
   switch (type) {
-    case "streak":
+    case 'streak':
       return percentOf(creature?.streak ?? 0, value);
-    case "level":
+    case 'level':
       return percentOf(creature?.level ?? 0, value);
-    case "breathing_count":
+    case 'breathing_count':
       return percentOf(breathingCount, value);
-    case "total_completions":
+    case 'total_completions':
       return percentOf(totalCompletions, value);
-    case "total_xp":
+    case 'total_xp':
       return percentOf(totalXp, value);
-    case "feed_count":
+    case 'feed_count':
       return percentOf(feedCount, value);
-    case "all_practices":
+    case 'all_practices':
       return (uniquePractices?.size ?? 0) >= 6 ? 100 : 0;
-    case "mood_entries":
+    case 'mood_entries':
       return percentOf(extra?.moodEntryCount ?? 0, value);
-    case "gratitude_count":
+    case 'gratitude_count':
       return percentOf(extra?.gratitudeCount ?? 0, value);
-    case "thought_journal_count":
+    case 'thought_journal_count':
       return percentOf(extra?.thoughtJournalCount ?? 0, value);
-    case "test_count":
+    case 'test_count':
       return percentOf(extra?.testCount ?? 0, value);
-    case "night_practices":
+    case 'night_practices':
       return percentOf(extra?.nightCount ?? 0, value);
     default:
       return 0;

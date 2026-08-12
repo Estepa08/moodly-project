@@ -1,13 +1,13 @@
-import { FastifyInstance } from "fastify";
-import { getDailyAttemptLimit } from "../entitlements.js";
-import { prisma } from "../lib/prisma.js";
-import { emotionAlchemy } from "@moodly/shared";
+import { FastifyInstance } from 'fastify';
+import { getDailyAttemptLimit } from '../entitlements.js';
+import { prisma } from '../lib/prisma.js';
+import { emotionAlchemy } from '@moodly/shared';
 import {
   findDyad,
   getAvailableLevel,
   isSameDay,
   getNextMidnight,
-} from "../services/emotion-lab.js";
+} from '../services/emotion-lab.js';
 
 // Определяем тип для пользователя из JWT
 interface JWTUser {
@@ -18,12 +18,12 @@ interface JWTUser {
 
 export default async function emotionLabRoutes(fastify: FastifyInstance) {
   // Получение состояния
-  fastify.get("/emotion-lab/state", { preHandler: [fastify.authenticate] }, async (req, reply) => {
+  fastify.get('/emotion-lab/state', { preHandler: [fastify.authenticate] }, async (req, reply) => {
     try {
       const user = req.user as JWTUser;
 
       if (!user || !user.userId) {
-        return reply.code(401).send({ error: "Unauthorized - user not found" });
+        return reply.code(401).send({ error: 'Unauthorized - user not found' });
       }
 
       const userId = user.userId;
@@ -37,7 +37,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
       });
 
       if (!dbUser) {
-        return reply.code(404).send({ error: "User not found" });
+        return reply.code(404).send({ error: 'User not found' });
       }
 
       let progress = await prisma.emotionLabProgress.findUnique({
@@ -76,9 +76,9 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
         availableLevel,
       };
     } catch (error) {
-      console.error("Error in /emotion-lab/state:", error);
+      console.error('Error in /emotion-lab/state:', error);
       return reply.code(500).send({
-        error: "Internal server error",
+        error: 'Internal server error',
         details: error instanceof Error ? error.message : String(error),
       });
     }
@@ -86,21 +86,21 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
   // Попытка смешивания
   fastify.post(
-    "/emotion-lab/attempt",
+    '/emotion-lab/attempt',
     { preHandler: [fastify.authenticate] },
     async (req, reply) => {
       try {
         const user = req.user as JWTUser;
 
         if (!user || !user.userId) {
-          return reply.code(401).send({ error: "Unauthorized - user not found" });
+          return reply.code(401).send({ error: 'Unauthorized - user not found' });
         }
 
         const userId = user.userId;
         const { emotionA, emotionB } = req.body as { emotionA: string; emotionB: string };
 
         if (!emotionA || !emotionB) {
-          return reply.code(400).send({ error: "emotionA and emotionB are required" });
+          return reply.code(400).send({ error: 'emotionA and emotionB are required' });
         }
 
         const dbUser = await prisma.user.findUnique({
@@ -112,7 +112,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
         });
 
         if (!dbUser) {
-          return reply.code(404).send({ error: "User not found" });
+          return reply.code(404).send({ error: 'User not found' });
         }
 
         let progress = await prisma.emotionLabProgress.findUnique({
@@ -136,7 +136,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
         if (usedToday >= limit) {
           return reply.code(403).send({
-            error: "daily_limit_reached",
+            error: 'daily_limit_reached',
             limit,
             tier: dbUser.subscriptionTier,
             resetsAt: getNextMidnight(),
@@ -145,7 +145,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
         const dyad = findDyad(emotionA, emotionB);
         if (!dyad) {
-          return reply.code(400).send({ error: "Invalid emotion pair" });
+          return reply.code(400).send({ error: 'Invalid emotion pair' });
         }
 
         const discovered = progress.discoveredDyads || [];
@@ -153,7 +153,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
 
         if (dyad.level > availableLevel) {
           return reply.code(403).send({
-            error: "LEVEL_LOCKED",
+            error: 'LEVEL_LOCKED',
             message: `Unlock all ${dyad.level - 1} level dyads first`,
           });
         }
@@ -189,9 +189,9 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
           limitReached: newUsed >= newLimit,
         };
       } catch (error) {
-        console.error("Error in /emotion-lab/attempt:", error);
+        console.error('Error in /emotion-lab/attempt:', error);
         return reply.code(500).send({
-          error: "Internal server error",
+          error: 'Internal server error',
           details: error instanceof Error ? error.message : String(error),
         });
       }

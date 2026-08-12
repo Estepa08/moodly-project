@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma.js";
+import { prisma } from '../lib/prisma.js';
 
 export interface PushPayload {
   title: string;
@@ -6,14 +6,14 @@ export interface PushPayload {
   url?: string;
 }
 
-const PUBLIC_VAPID_KEY = process.env.VAPID_PUBLIC_KEY || "";
-const PRIVATE_VAPID_KEY = process.env.VAPID_PRIVATE_KEY || "";
-const VAPID_SUBJECT = process.env.VAPID_SUBJECT || "mailto:hello@moodly.app";
+const PUBLIC_VAPID_KEY = process.env.VAPID_PUBLIC_KEY || '';
+const PRIVATE_VAPID_KEY = process.env.VAPID_PRIVATE_KEY || '';
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:hello@moodly.app';
 
 function getWebPush() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const webPush = require("web-push");
+    const webPush = require('web-push');
     webPush.setVapidDetails(VAPID_SUBJECT, PUBLIC_VAPID_KEY, PRIVATE_VAPID_KEY);
     return webPush;
   } catch {

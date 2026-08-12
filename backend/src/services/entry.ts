@@ -1,7 +1,7 @@
-import { prisma } from "../lib/prisma.js";
-import { NotFoundError, AppError } from "../lib/errors.js";
-import { lockUser } from "../lib/user-lock.js";
-import { creatureService } from "./creature.js";
+import { prisma } from '../lib/prisma.js';
+import { NotFoundError, AppError } from '../lib/errors.js';
+import { lockUser } from '../lib/user-lock.js';
+import { creatureService } from './creature.js';
 
 export interface EntryCreateInput {
   id: string;
@@ -35,7 +35,7 @@ export const entryService = {
     const [data, total] = await Promise.all([
       prisma.entry.findMany({
         where,
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
         skip: params.skip,
         take: params.take ?? 200,
       }),
@@ -58,7 +58,7 @@ export const entryService = {
       });
 
       if (todayCount >= 100) {
-        throw new AppError("DAILY_LIMIT", 429, "Daily entry limit reached");
+        throw new AppError('DAILY_LIMIT', 429, 'Daily entry limit reached');
       }
 
       return tx.entry.create({
@@ -79,7 +79,7 @@ export const entryService = {
   async rewardMoodIfNeeded(userId: string, parameterId: string) {
     try {
       const parameter = await prisma.parameter.findUnique({ where: { id: parameterId } });
-      if (parameter?.name === "Mood") {
+      if (parameter?.name === 'Mood') {
         await creatureService.rewardMoodEntry(userId);
       }
     } catch {
@@ -89,18 +89,18 @@ export const entryService = {
 
   async getById(id: string, userId: string) {
     const entry = await prisma.entry.findFirst({ where: { id, userId } });
-    if (!entry) throw new NotFoundError("Entry");
+    if (!entry) throw new NotFoundError('Entry');
     return entry;
   },
 
   async update(id: string, userId: string, data: EntryUpdateInput) {
     const entry = await prisma.entry.findFirst({ where: { id, userId } });
-    if (!entry) throw new NotFoundError("Entry");
+    if (!entry) throw new NotFoundError('Entry');
     return prisma.entry.update({ where: { id }, data });
   },
 
   async delete(id: string, userId: string) {
     const deleted = await prisma.entry.deleteMany({ where: { id, userId } });
-    if (deleted.count === 0) throw new NotFoundError("Entry");
+    if (deleted.count === 0) throw new NotFoundError('Entry');
   },
 };

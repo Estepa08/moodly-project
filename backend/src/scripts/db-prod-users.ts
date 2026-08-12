@@ -1,18 +1,18 @@
-import { prisma } from "../lib/prisma.js";
+import { prisma } from '../lib/prisma.js';
 
 function dbHost(): string {
   const url = process.env.DATABASE_URL;
-  if (!url) return "не задан (нужен DATABASE_URL)";
+  if (!url) return 'не задан (нужен DATABASE_URL)';
   try {
     return new URL(url).host;
   } catch {
-    return url.split("@").pop() ?? url;
+    return url.split('@').pop() ?? url;
   }
 }
 
 async function main() {
   const users = await prisma.user.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     select: {
       email: true,
       name: true,
@@ -32,15 +32,15 @@ async function main() {
 
   console.log(`Хост БД: ${dbHost()}`);
   console.log(`Всего пользователей: ${users.length}`);
-  console.log("");
+  console.log('');
 
   console.table(
     users.map((u) => ({
       email: u.email,
-      имя: u.name ?? "",
+      имя: u.name ?? '',
       зарегистрирован: u.createdAt.toISOString(),
-      "email подтверждён": u.emailVerified ? "да" : "нет",
-      "18+": u.ageConfirmed ? "да" : "нет",
+      'email подтверждён': u.emailVerified ? 'да' : 'нет',
+      '18+': u.ageConfirmed ? 'да' : 'нет',
       записей: u._count.entries,
       тестов: u._count.testResults,
       дыхание: u._count.breathingSessions,

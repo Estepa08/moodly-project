@@ -1,5 +1,5 @@
-import type { FastifyInstance } from "fastify";
-import { syncService, type SyncAction } from "../services/sync.js";
+import type { FastifyInstance } from 'fastify';
+import { syncService, type SyncAction } from '../services/sync.js';
 
 interface PushBody {
   actions: SyncAction[];
@@ -13,7 +13,7 @@ interface PullQuery {
 
 export default async function syncRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: PushBody }>(
-    "/sync/push",
+    '/sync/push',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       return syncService.push(request.userId, request.body.actions);
@@ -21,7 +21,7 @@ export default async function syncRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get<{ Querystring: PullQuery }>(
-    "/sync/pull",
+    '/sync/pull',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       const limit = request.query.limit ? parseInt(request.query.limit, 10) : undefined;

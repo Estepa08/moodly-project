@@ -1,5 +1,5 @@
-import type { FastifyInstance } from "fastify";
-import { z } from "zod";
+import type { FastifyInstance } from 'fastify';
+import { z } from 'zod';
 
 const clientErrorSchema = z.object({
   message: z.string().min(1).max(2000),
@@ -17,24 +17,24 @@ const clientErrorSchema = z.object({
 // данных (тело валидируется zod, stack обрезается схемой).
 export default async function clientErrorRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: unknown }>(
-    "/client-errors",
+    '/client-errors',
     {
       config: {
-        rateLimit: { max: 60, timeWindow: "1 minute" },
+        rateLimit: { max: 60, timeWindow: '1 minute' },
       },
     },
     async (request, reply) => {
       const parsed = clientErrorSchema.safeParse(request.body);
       if (!parsed.success) {
-        return reply.status(400).send({ code: "BAD_REQUEST", message: "Invalid error payload" });
+        return reply.status(400).send({ code: 'BAD_REQUEST', message: 'Invalid error payload' });
       }
       const { message, source, lineno, colno, stack, url, userAgent } = parsed.data;
       request.log.warn(
         {
           clientError: { message, source, lineno, colno, stack, url },
-          userAgent: userAgent ?? request.headers["user-agent"],
+          userAgent: userAgent ?? request.headers['user-agent'],
         },
-        "client-side error reported",
+        'client-side error reported',
       );
       return { ok: true };
     },

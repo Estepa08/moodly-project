@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp, registerAndLogin } from "../../test/helpers.js";
-import { PrismaClient } from "@prisma/client";
-import type { FastifyInstance } from "fastify";
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { buildApp, registerAndLogin } from '../../test/helpers.js';
+import { PrismaClient } from '@prisma/client';
+import type { FastifyInstance } from 'fastify';
 
 let app: FastifyInstance;
 let token: string;
@@ -27,7 +27,7 @@ async function createMission(missionKey: string, labelKey: string, xpReward: num
 
 beforeAll(async () => {
   app = await buildApp();
-  const result = await registerAndLogin(app, "missions-test@example.com", "secret123");
+  const result = await registerAndLogin(app, 'missions-test@example.com', 'secret123');
   token = result.token;
   userId = result.userId;
 });
@@ -37,46 +37,46 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-describe("Creature missions", () => {
-  it("GET /creature/missions — creates 3 random missions for the day", async () => {
+describe('Creature missions', () => {
+  it('GET /creature/missions — creates 3 random missions for the day', async () => {
     const res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
     const missions = res.json();
     expect(missions).toHaveLength(3);
     for (const m of missions) {
-      expect(m).toHaveProperty("missionKey");
-      expect(m).toHaveProperty("labelKey");
-      expect(m).toHaveProperty("xpReward");
-      expect(m).toHaveProperty("progress");
-      expect(m).toHaveProperty("claimed");
+      expect(m).toHaveProperty('missionKey');
+      expect(m).toHaveProperty('labelKey');
+      expect(m).toHaveProperty('xpReward');
+      expect(m).toHaveProperty('progress');
+      expect(m).toHaveProperty('claimed');
     }
   });
 
-  it("practice source mission — progress 0 -> 1 after rewardPractice, claim awards XP", async () => {
-    const mission = await createMission("practice_gratitude", "missions.practiceGratitude", 10);
+  it('practice source mission — progress 0 -> 1 after rewardPractice, claim awards XP', async () => {
+    const mission = await createMission('practice_gratitude', 'missions.practiceGratitude', 10);
 
     let res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const before = res.json().find((m: { id: string }) => m.id === mission.id);
     expect(before.progress).toBe(0);
 
     await app.inject({
-      method: "POST",
-      url: "/creature/reward",
+      method: 'POST',
+      url: '/creature/reward',
       headers: { authorization: `Bearer ${token}` },
-      payload: { source: "gratitude" },
+      payload: { source: 'gratitude' },
     });
 
     res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const after = res.json().find((m: { id: string }) => m.id === mission.id);
@@ -86,7 +86,7 @@ describe("Creature missions", () => {
     const xpBefore = stateBefore?.experience ?? 0;
 
     res = await app.inject({
-      method: "POST",
+      method: 'POST',
       url: `/creature/missions/${mission.id}/claim`,
       headers: { authorization: `Bearer ${token}` },
     });
@@ -99,77 +99,77 @@ describe("Creature missions", () => {
     expect(stateAfter?.experience).toBe(xpBefore + 10);
   });
 
-  it("log_mood_entry mission — progresses after an entry is created", async () => {
-    const mission = await createMission("log_mood_entry", "missions.logMoodEntry", 5);
+  it('log_mood_entry mission — progresses after an entry is created', async () => {
+    const mission = await createMission('log_mood_entry', 'missions.logMoodEntry', 5);
 
-    const param = await prisma.parameter.create({ data: { name: "MissionEnergy" } });
+    const param = await prisma.parameter.create({ data: { name: 'MissionEnergy' } });
 
     await app.inject({
-      method: "POST",
-      url: "/entries",
+      method: 'POST',
+      url: '/entries',
       headers: { authorization: `Bearer ${token}` },
-      payload: { id: `mission-entry-${Date.now()}`, parameterId: param.id, encryptedData: "ENC:1" },
+      payload: { id: `mission-entry-${Date.now()}`, parameterId: param.id, encryptedData: 'ENC:1' },
     });
 
     const res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const missionState = res.json().find((m: { id: string }) => m.id === mission.id);
     expect(missionState.progress).toBe(1);
   });
 
-  it("complete_test mission — progresses after a test result exists today", async () => {
-    const mission = await createMission("complete_test", "missions.completeTest", 15);
+  it('complete_test mission — progresses after a test result exists today', async () => {
+    const mission = await createMission('complete_test', 'missions.completeTest', 15);
 
     const test = await prisma.test.create({
-      data: { title: "Mission test", questions: [] },
+      data: { title: 'Mission test', questions: [] },
     });
     await prisma.testResult.create({
       data: {
         testId: test.id,
         userId,
-        encryptedData: "ENC:mission",
+        encryptedData: 'ENC:mission',
       },
     });
 
     const res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const missionState = res.json().find((m: { id: string }) => m.id === mission.id);
     expect(missionState.progress).toBe(1);
   });
 
-  it("complete_5_practices mission — progress scales with completions", async () => {
-    const mission = await createMission("complete_5_practices", "missions.complete5Practices", 20);
+  it('complete_5_practices mission — progress scales with completions', async () => {
+    const mission = await createMission('complete_5_practices', 'missions.complete5Practices', 20);
 
     for (let i = 0; i < 5; i++) {
       await app.inject({
-        method: "POST",
-        url: "/creature/reward",
+        method: 'POST',
+        url: '/creature/reward',
         headers: { authorization: `Bearer ${token}` },
-        payload: { source: "thoughtJournal" },
+        payload: { source: 'thoughtJournal' },
       });
     }
 
     const res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const missionState = res.json().find((m: { id: string }) => m.id === mission.id);
     expect(missionState.progress).toBe(1);
   });
 
-  it("streak_2 mission — progress 0 until a 2-day streak is reached", async () => {
-    const mission = await createMission("streak_2", "missions.streak2", 10);
+  it('streak_2 mission — progress 0 until a 2-day streak is reached', async () => {
+    const mission = await createMission('streak_2', 'missions.streak2', 10);
 
     let res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const before = res.json().find((m: { id: string }) => m.id === mission.id);
@@ -181,64 +181,64 @@ describe("Creature missions", () => {
     });
 
     res = await app.inject({
-      method: "GET",
-      url: "/creature/missions",
+      method: 'GET',
+      url: '/creature/missions',
       headers: { authorization: `Bearer ${token}` },
     });
     const after = res.json().find((m: { id: string }) => m.id === mission.id);
     expect(after.progress).toBe(1);
   });
 
-  it("claiming an incomplete mission is rejected", async () => {
+  it('claiming an incomplete mission is rejected', async () => {
     const mission = await createMission(
-      "practice_sleepHygiene",
-      "missions.practiceSleepHygiene",
+      'practice_sleepHygiene',
+      'missions.practiceSleepHygiene',
       10,
     );
     const res = await app.inject({
-      method: "POST",
+      method: 'POST',
       url: `/creature/missions/${mission.id}/claim`,
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(400);
   });
 
-  it("claiming the same mission twice is rejected", async () => {
-    const mission = await createMission("checkin", "missions.checkin", 10);
+  it('claiming the same mission twice is rejected', async () => {
+    const mission = await createMission('checkin', 'missions.checkin', 10);
     await app.inject({
-      method: "POST",
-      url: "/creature/check-in",
+      method: 'POST',
+      url: '/creature/check-in',
       headers: { authorization: `Bearer ${token}` },
     });
 
     const first = await app.inject({
-      method: "POST",
+      method: 'POST',
       url: `/creature/missions/${mission.id}/claim`,
       headers: { authorization: `Bearer ${token}` },
     });
     expect(first.statusCode).toBe(200);
 
     const second = await app.inject({
-      method: "POST",
+      method: 'POST',
       url: `/creature/missions/${mission.id}/claim`,
       headers: { authorization: `Bearer ${token}` },
     });
     expect(second.statusCode).toBe(400);
   });
 
-  it("claiming a mission levels up the creature at the XP threshold", async () => {
-    const mission = await createMission("practice_breathing", "missions.practiceBreathing", 100);
+  it('claiming a mission levels up the creature at the XP threshold', async () => {
+    const mission = await createMission('practice_breathing', 'missions.practiceBreathing', 100);
 
     await prisma.creatureState.update({
       where: { userId },
       data: { experience: 95, level: 1 },
     });
     await prisma.practiceCompletion.create({
-      data: { userId, source: "breathing", xpAwarded: 10 },
+      data: { userId, source: 'breathing', xpAwarded: 10 },
     });
 
     const res = await app.inject({
-      method: "POST",
+      method: 'POST',
       url: `/creature/missions/${mission.id}/claim`,
       headers: { authorization: `Bearer ${token}` },
     });

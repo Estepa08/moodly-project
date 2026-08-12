@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp, registerAndLogin } from "../../test/helpers.js";
-import { PrismaClient } from "@prisma/client";
-import type { FastifyInstance } from "fastify";
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { buildApp, registerAndLogin } from '../../test/helpers.js';
+import { PrismaClient } from '@prisma/client';
+import type { FastifyInstance } from 'fastify';
 
 let app: FastifyInstance;
 let token: string;
@@ -12,12 +12,12 @@ beforeAll(async () => {
 
   await prisma.parameter.createMany({
     data: [
-      { name: "Anxiety", unit: "/10" },
-      { name: "Sleep", unit: "/10" },
+      { name: 'Anxiety', unit: '/10' },
+      { name: 'Sleep', unit: '/10' },
     ],
   });
 
-  const result = await registerAndLogin(app, "params-test@example.com", "secret123");
+  const result = await registerAndLogin(app, 'params-test@example.com', 'secret123');
   token = result.token;
 });
 
@@ -26,11 +26,11 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-describe("Parameters", () => {
-  it("GET /parameters — returns all parameters", async () => {
+describe('Parameters', () => {
+  it('GET /parameters — returns all parameters', async () => {
     const res = await app.inject({
-      method: "GET",
-      url: "/parameters",
+      method: 'GET',
+      url: '/parameters',
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);

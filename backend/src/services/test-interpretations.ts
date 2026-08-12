@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma.js";
-import { resolveInterpretation, type Interpretation } from "@moodly/shared";
+import { prisma } from '../lib/prisma.js';
+import { resolveInterpretation, type Interpretation } from '@moodly/shared';
 
 interface TestAnswer {
   questionId: string;
@@ -16,7 +16,7 @@ export async function getInterpretation(
 ): Promise<Interpretation> {
   const bands = await prisma.testScoreBand.findMany({
     where: { testId },
-    orderBy: { maxScore: "asc" },
+    orderBy: { maxScore: 'asc' },
   });
 
   return resolveInterpretation({

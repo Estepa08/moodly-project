@@ -1,12 +1,12 @@
-import crypto from "crypto";
-import { prisma } from "../lib/prisma.js";
-import { AppError } from "../lib/errors.js";
+import crypto from 'crypto';
+import { prisma } from '../lib/prisma.js';
+import { AppError } from '../lib/errors.js';
 
 function hashToken(token: string): string {
-  return crypto.createHash("sha256").update(token).digest("hex");
+  return crypto.createHash('sha256').update(token).digest('hex');
 }
 
-const ACCESS_TOKEN_EXPIRY = "15m";
+const ACCESS_TOKEN_EXPIRY = '15m';
 const REFRESH_TOKEN_DAYS = 7;
 const RESET_TOKEN_HOURS = 1;
 
@@ -25,15 +25,15 @@ export const authService = {
   async consumeRefreshToken(rawToken: string): Promise<string> {
     const tokenHash = hashToken(rawToken);
     const stored = await prisma.refreshToken.findUnique({ where: { tokenHash } });
-    if (!stored) throw new AppError("INVALID_REFRESH_TOKEN", 401, "Invalid refresh token");
+    if (!stored) throw new AppError('INVALID_REFRESH_TOKEN', 401, 'Invalid refresh token');
     if (stored.expiresAt < new Date()) {
       await prisma.refreshToken.delete({ where: { id: stored.id } });
-      throw new AppError("REFRESH_TOKEN_EXPIRED", 401, "Refresh token expired");
+      throw new AppError('REFRESH_TOKEN_EXPIRED', 401, 'Refresh token expired');
     }
 
     const userId = stored.userId;
     const { count } = await prisma.refreshToken.deleteMany({ where: { id: stored.id } });
-    if (count === 0) throw new AppError("INVALID_REFRESH_TOKEN", 401, "Invalid refresh token");
+    if (count === 0) throw new AppError('INVALID_REFRESH_TOKEN', 401, 'Invalid refresh token');
 
     return userId;
   },
@@ -59,10 +59,10 @@ export const authService = {
   async resolveResetToken(rawToken: string): Promise<string> {
     const tokenHash = hashToken(rawToken);
     const stored = await prisma.resetToken.findUnique({ where: { tokenHash } });
-    if (!stored) throw new AppError("INVALID_RESET_TOKEN", 400, "Invalid or expired reset token");
+    if (!stored) throw new AppError('INVALID_RESET_TOKEN', 400, 'Invalid or expired reset token');
     if (stored.expiresAt < new Date()) {
       await prisma.resetToken.delete({ where: { id: stored.id } });
-      throw new AppError("RESET_TOKEN_EXPIRED", 400, "Reset token expired");
+      throw new AppError('RESET_TOKEN_EXPIRED', 400, 'Reset token expired');
     }
     return stored.userId;
   },
@@ -70,10 +70,10 @@ export const authService = {
   async consumeResetToken(rawToken: string): Promise<string> {
     const tokenHash = hashToken(rawToken);
     const stored = await prisma.resetToken.findUnique({ where: { tokenHash } });
-    if (!stored) throw new AppError("INVALID_RESET_TOKEN", 400, "Invalid or expired reset token");
+    if (!stored) throw new AppError('INVALID_RESET_TOKEN', 400, 'Invalid or expired reset token');
     if (stored.expiresAt < new Date()) {
       await prisma.resetToken.delete({ where: { id: stored.id } });
-      throw new AppError("RESET_TOKEN_EXPIRED", 400, "Reset token expired");
+      throw new AppError('RESET_TOKEN_EXPIRED', 400, 'Reset token expired');
     }
 
     const userId = stored.userId;

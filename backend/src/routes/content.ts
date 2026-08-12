@@ -1,24 +1,24 @@
-import type { FastifyInstance } from "fastify";
-import { contentService, type MessageInput } from "../services/content.js";
-import { AppError, NotFoundError } from "../lib/errors.js";
+import type { FastifyInstance } from 'fastify';
+import { contentService, type MessageInput } from '../services/content.js';
+import { AppError, NotFoundError } from '../lib/errors.js';
 
-const MESSAGE_TYPES = ["morning", "day", "evening"];
-const LOCALES = ["ru", "en"];
+const MESSAGE_TYPES = ['morning', 'day', 'evening'];
+const LOCALES = ['ru', 'en'];
 
 export default async function contentRoutes(fastify: FastifyInstance) {
   fastify.get<{ Querystring: { type?: string; locale?: string } }>(
-    "/content/message-of-day",
+    '/content/message-of-day',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       const { type, locale } = request.query;
       if (!type || !MESSAGE_TYPES.includes(type)) {
-        throw new AppError("VALIDATION_ERROR", 400, "type must be 'morning', 'day' or 'evening'");
+        throw new AppError('VALIDATION_ERROR', 400, "type must be 'morning', 'day' or 'evening'");
       }
       if (!locale || !LOCALES.includes(locale)) {
-        throw new AppError("VALIDATION_ERROR", 400, "locale must be 'ru' or 'en'");
+        throw new AppError('VALIDATION_ERROR', 400, "locale must be 'ru' or 'en'");
       }
       const message = await contentService.messageOfDay(
-        type as "morning" | "day" | "evening",
+        type as 'morning' | 'day' | 'evening',
         locale,
         request.userId,
       );
@@ -34,38 +34,38 @@ export default async function contentRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get<{ Querystring: { type?: string; locale?: string; active?: string } }>(
-    "/content/messages",
+    '/content/messages',
     { preHandler: [fastify.requireContentManager] },
     async (request) => {
       const { type, locale, active } = request.query;
       return contentService.list({
         type,
         locale,
-        activeOnly: active === "true",
+        activeOnly: active === 'true',
       });
     },
   );
 
   fastify.post<{ Body: MessageInput }>(
-    "/content/messages",
+    '/content/messages',
     { preHandler: [fastify.requireContentManager] },
     async (request) => {
       const body = request.body ?? {};
-      if (!MESSAGE_TYPES.includes(body.type ?? "")) {
-        throw new AppError("VALIDATION_ERROR", 400, "type must be 'morning', 'day' or 'evening'");
+      if (!MESSAGE_TYPES.includes(body.type ?? '')) {
+        throw new AppError('VALIDATION_ERROR', 400, "type must be 'morning', 'day' or 'evening'");
       }
-      if (!LOCALES.includes(body.locale ?? "")) {
-        throw new AppError("VALIDATION_ERROR", 400, "locale must be 'ru' or 'en'");
+      if (!LOCALES.includes(body.locale ?? '')) {
+        throw new AppError('VALIDATION_ERROR', 400, "locale must be 'ru' or 'en'");
       }
       if (!body.text || !body.text.trim()) {
-        throw new AppError("VALIDATION_ERROR", 400, "text is required");
+        throw new AppError('VALIDATION_ERROR', 400, 'text is required');
       }
       return contentService.create(body);
     },
   );
 
   fastify.patch<{ Params: { id: string }; Body: Partial<MessageInput> }>(
-    "/content/messages/:id",
+    '/content/messages/:id',
     { preHandler: [fastify.requireContentManager] },
     async (request) => {
       try {
@@ -78,7 +78,7 @@ export default async function contentRoutes(fastify: FastifyInstance) {
   );
 
   fastify.delete<{ Params: { id: string } }>(
-    "/content/messages/:id",
+    '/content/messages/:id',
     { preHandler: [fastify.requireContentManager] },
     async (request, reply) => {
       await contentService.remove(request.params.id);

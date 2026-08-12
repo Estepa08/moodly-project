@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { buildApp, registerAndLogin } from "../../test/helpers.js";
-import { PrismaClient } from "@prisma/client";
-import type { FastifyInstance } from "fastify";
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { buildApp, registerAndLogin } from '../../test/helpers.js';
+import { PrismaClient } from '@prisma/client';
+import type { FastifyInstance } from 'fastify';
 
 let app: FastifyInstance;
 let token: string;
@@ -16,10 +16,10 @@ const entryIdFor = (label: string) => `entry-${label}-${Date.now()}-${seq++}`;
 beforeAll(async () => {
   app = await buildApp();
 
-  const param = await prisma.parameter.create({ data: { name: "Energy", unit: "/10" } });
+  const param = await prisma.parameter.create({ data: { name: 'Energy', unit: '/10' } });
   parameterId = param.id;
 
-  const result = await registerAndLogin(app, "entries-test@example.com", "secret123");
+  const result = await registerAndLogin(app, 'entries-test@example.com', 'secret123');
   token = result.token;
   userId = result.userId;
 });
@@ -29,40 +29,40 @@ afterAll(async () => {
   await prisma.$disconnect();
 });
 
-describe("Entries", () => {
-  it("POST /entries — creates an entry", async () => {
+describe('Entries', () => {
+  it('POST /entries — creates an entry', async () => {
     const res = await app.inject({
-      method: "POST",
-      url: "/entries",
+      method: 'POST',
+      url: '/entries',
       headers: { authorization: `Bearer ${token}` },
-      payload: { id: entryIdFor("one"), parameterId, encryptedData: "ENC:1" },
+      payload: { id: entryIdFor('one'), parameterId, encryptedData: 'ENC:1' },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().encryptedData).toBe("ENC:1");
+    expect(res.json().encryptedData).toBe('ENC:1');
     expect(res.json().value).toBeNull();
     entryId = res.json().id;
   });
 
-  it("POST /entries — ignores injected userId in body", async () => {
+  it('POST /entries — ignores injected userId in body', async () => {
     const res = await app.inject({
-      method: "POST",
-      url: "/entries",
+      method: 'POST',
+      url: '/entries',
       headers: { authorization: `Bearer ${token}` },
       payload: {
-        id: entryIdFor("two"),
+        id: entryIdFor('two'),
         parameterId,
-        encryptedData: "ENC:2",
-        userId: "00000000000000000000000000",
+        encryptedData: 'ENC:2',
+        userId: '00000000000000000000000000',
       },
     });
     expect(res.statusCode).toBe(200);
     expect(res.json().userId).toBe(userId);
   });
 
-  it("GET /entries — lists user entries", async () => {
+  it('GET /entries — lists user entries', async () => {
     const res = await app.inject({
-      method: "GET",
-      url: "/entries",
+      method: 'GET',
+      url: '/entries',
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
@@ -70,30 +70,30 @@ describe("Entries", () => {
     expect(res.json().length).toBeGreaterThanOrEqual(1);
   });
 
-  it("GET /entries/:id — returns single entry", async () => {
+  it('GET /entries/:id — returns single entry', async () => {
     const res = await app.inject({
-      method: "GET",
+      method: 'GET',
       url: `/entries/${entryId}`,
       headers: { authorization: `Bearer ${token}` },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().encryptedData).toBe("ENC:1");
+    expect(res.json().encryptedData).toBe('ENC:1');
   });
 
-  it("PATCH /entries/:id — updates entry", async () => {
+  it('PATCH /entries/:id — updates entry', async () => {
     const res = await app.inject({
-      method: "PATCH",
+      method: 'PATCH',
       url: `/entries/${entryId}`,
       headers: { authorization: `Bearer ${token}` },
-      payload: { encryptedData: "ENC:3" },
+      payload: { encryptedData: 'ENC:3' },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json().encryptedData).toBe("ENC:3");
+    expect(res.json().encryptedData).toBe('ENC:3');
   });
 
-  it("DELETE /entries/:id — deletes entry", async () => {
+  it('DELETE /entries/:id — deletes entry', async () => {
     const res = await app.inject({
-      method: "DELETE",
+      method: 'DELETE',
       url: `/entries/${entryId}`,
       headers: { authorization: `Bearer ${token}` },
     });
@@ -101,15 +101,15 @@ describe("Entries", () => {
   });
 });
 
-describe("Entries reward mood XP", () => {
-  it("POST /entries — Mood entry awards +5 XP (up to 3 per day)", async () => {
-    const moodParam = await prisma.parameter.create({ data: { name: "Mood" } });
-    const user = await registerAndLogin(app, "entries-mood@example.com", "secret123", "Moody");
+describe('Entries reward mood XP', () => {
+  it('POST /entries — Mood entry awards +5 XP (up to 3 per day)', async () => {
+    const moodParam = await prisma.parameter.create({ data: { name: 'Mood' } });
+    const user = await registerAndLogin(app, 'entries-mood@example.com', 'secret123', 'Moody');
 
     const getXp = async () => {
       const res = await app.inject({
-        method: "GET",
-        url: "/creature",
+        method: 'GET',
+        url: '/creature',
         headers: { authorization: `Bearer ${user.token}` },
       });
       return res.json().experience;
@@ -119,13 +119,13 @@ describe("Entries reward mood XP", () => {
 
     for (let i = 0; i < 3; i++) {
       const res = await app.inject({
-        method: "POST",
-        url: "/entries",
+        method: 'POST',
+        url: '/entries',
         headers: { authorization: `Bearer ${user.token}` },
         payload: {
           id: entryIdFor(`mood-${i}`),
           parameterId: moodParam.id,
-          encryptedData: "ENC:xp",
+          encryptedData: 'ENC:xp',
         },
       });
       expect(res.statusCode).toBe(200);
@@ -133,43 +133,43 @@ describe("Entries reward mood XP", () => {
     expect(await getXp()).toBe(15);
 
     const res = await app.inject({
-      method: "POST",
-      url: "/entries",
+      method: 'POST',
+      url: '/entries',
       headers: { authorization: `Bearer ${user.token}` },
-      payload: { id: entryIdFor("mood-x"), parameterId: moodParam.id, encryptedData: "ENC:xp" },
+      payload: { id: entryIdFor('mood-x'), parameterId: moodParam.id, encryptedData: 'ENC:xp' },
     });
     expect(res.statusCode).toBe(200);
     expect(await getXp()).toBe(15);
   });
 
-  it("POST /entries — non-Mood entry awards no XP", async () => {
-    const user = await registerAndLogin(app, "entries-nonmood@example.com", "secret123", "Energy");
+  it('POST /entries — non-Mood entry awards no XP', async () => {
+    const user = await registerAndLogin(app, 'entries-nonmood@example.com', 'secret123', 'Energy');
     const res = await app.inject({
-      method: "POST",
-      url: "/entries",
+      method: 'POST',
+      url: '/entries',
       headers: { authorization: `Bearer ${user.token}` },
-      payload: { id: entryIdFor("nonmood"), parameterId, encryptedData: "ENC:xp" },
+      payload: { id: entryIdFor('nonmood'), parameterId, encryptedData: 'ENC:xp' },
     });
     expect(res.statusCode).toBe(200);
     const state = await app.inject({
-      method: "GET",
-      url: "/creature",
+      method: 'GET',
+      url: '/creature',
       headers: { authorization: `Bearer ${user.token}` },
     });
     expect(state.json().experience).toBe(0);
   });
 });
 
-describe("Entries daily limit — race safety", () => {
-  it("POST /entries — concurrent creates cannot exceed 100/day", async () => {
-    const user = await registerAndLogin(app, "entries-limit@example.com", "secret123", "Limit");
+describe('Entries daily limit — race safety', () => {
+  it('POST /entries — concurrent creates cannot exceed 100/day', async () => {
+    const user = await registerAndLogin(app, 'entries-limit@example.com', 'secret123', 'Limit');
 
     const requests = Array.from({ length: 130 }, () =>
       app.inject({
-        method: "POST",
-        url: "/entries",
+        method: 'POST',
+        url: '/entries',
         headers: { authorization: `Bearer ${user.token}` },
-        payload: { id: entryIdFor("limit"), parameterId, encryptedData: "ENC:xp" },
+        payload: { id: entryIdFor('limit'), parameterId, encryptedData: 'ENC:xp' },
       }),
     );
     const results = await Promise.all(requests);

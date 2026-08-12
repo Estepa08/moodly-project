@@ -1,4 +1,4 @@
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 interface WelcomeContent {
   preheader: string;
@@ -10,67 +10,67 @@ interface WelcomeContent {
   privacy: string;
 }
 
-const content: Record<"ru" | "en", WelcomeContent> = {
+const content: Record<'ru' | 'en', WelcomeContent> = {
   ru: {
     preheader:
-      "Ваш первый день с Moodly: 30 секунд в день, чтобы замечать, как вы себя чувствуете.",
+      'Ваш первый день с Moodly: 30 секунд в день, чтобы замечать, как вы себя чувствуете.',
     greeting: (name) => `${name}, добро пожаловать в Moodly!`,
     intro:
-      "Moodly — это дневник настроения, который заботится о вас. Начните с простого: всего 30 секунд в день. Вот что стоит попробовать в первый день.",
+      'Moodly — это дневник настроения, который заботится о вас. Начните с простого: всего 30 секунд в день. Вот что стоит попробовать в первый день.',
     steps: [
       {
-        title: "Пройдите тест настроения",
-        text: "Три минуты — и вы лучше понимаете своё состояние. Это отправная точка.",
+        title: 'Пройдите тест настроения',
+        text: 'Три минуты — и вы лучше понимаете своё состояние. Это отправная точка.',
       },
       {
-        title: "Попробуйте дыхательную практику",
-        text: "Две минуты спокойствия, когда тревога поднимается. Работает офлайн.",
+        title: 'Попробуйте дыхательную практику',
+        text: 'Две минуты спокойствия, когда тревога поднимается. Работает офлайн.',
       },
       {
-        title: "Выберите компаньона",
-        text: "Он станет вашим спутником и будет расти вместе с вами.",
+        title: 'Выберите компаньона',
+        text: 'Он станет вашим спутником и будет расти вместе с вами.',
       },
       {
-        title: "Включите напоминание",
-        text: "Пусть Moodly сам напомнит отметить настроение — привычка закрепится.",
+        title: 'Включите напоминание',
+        text: 'Пусть Moodly сам напомнит отметить настроение — привычка закрепится.',
       },
     ],
-    cta: "Открыть Moodly",
+    cta: 'Открыть Moodly',
     ctaLink: FRONTEND_URL,
     privacy:
-      "Ваши данные доступны только вам: записи настроения и результаты тестов зашифрованы на устройстве (сквозное шифрование) — ключ никто не видит, кроме вас. Обязательно сохраните recovery-код: без него восстановить данные после сброса пароля невозможно. Обработка персональных данных — по 152-ФЗ. Подробности в политике конфиденциальности.",
+      'Ваши данные доступны только вам: записи настроения и результаты тестов зашифрованы на устройстве (сквозное шифрование) — ключ никто не видит, кроме вас. Обязательно сохраните recovery-код: без него восстановить данные после сброса пароля невозможно. Обработка персональных данных — по 152-ФЗ. Подробности в политике конфиденциальности.',
   },
   en: {
-    preheader: "Your first day with Moodly: 30 seconds a day to notice how you feel.",
+    preheader: 'Your first day with Moodly: 30 seconds a day to notice how you feel.',
     greeting: (name) => `${name}, welcome to Moodly!`,
     intro:
       "Moodly is a mood journal that cares about you. Start simple: just 30 seconds a day. Here's what to try on your first day.",
     steps: [
       {
-        title: "Take the mood test",
+        title: 'Take the mood test',
         text: "Three minutes — and you understand your state better. It's a good starting point.",
       },
       {
-        title: "Try a breathing practice",
-        text: "Two minutes of calm when anxiety rises. Works offline.",
+        title: 'Try a breathing practice',
+        text: 'Two minutes of calm when anxiety rises. Works offline.',
       },
       {
-        title: "Pick your companion",
-        text: "It will grow together with you.",
+        title: 'Pick your companion',
+        text: 'It will grow together with you.',
       },
       {
-        title: "Turn on reminders",
-        text: "Let Moodly remind you to log your mood — the habit will stick.",
+        title: 'Turn on reminders',
+        text: 'Let Moodly remind you to log your mood — the habit will stick.',
       },
     ],
-    cta: "Open Moodly",
+    cta: 'Open Moodly',
     ctaLink: FRONTEND_URL,
     privacy:
-      "Your data is available only to you: mood entries and test results are encrypted on your device (end-to-end encryption) — no one sees your key except you. Be sure to save your recovery code: without it, your data cannot be restored if you reset your password. Personal data processing is GDPR-aligned. See the privacy policy for details.",
+      'Your data is available only to you: mood entries and test results are encrypted on your device (end-to-end encryption) — no one sees your key except you. Be sure to save your recovery code: without it, your data cannot be restored if you reset your password. Personal data processing is GDPR-aligned. See the privacy policy for details.',
   },
 };
 
-function renderSteps(steps: WelcomeContent["steps"]): string {
+function renderSteps(steps: WelcomeContent['steps']): string {
   return steps
     .map(
       (step, i) => `
@@ -82,10 +82,10 @@ function renderSteps(steps: WelcomeContent["steps"]): string {
         </td>
       </tr>`,
     )
-    .join("");
+    .join('');
 }
 
-export function welcomeEmailHtml({ name, lang }: { name: string; lang: "ru" | "en" }): string {
+export function welcomeEmailHtml({ name, lang }: { name: string; lang: 'ru' | 'en' }): string {
   const c = content[lang] ?? content.en;
   const steps = renderSteps(c.steps);
   return `
@@ -110,8 +110,8 @@ export function welcomeEmailHtml({ name, lang }: { name: string; lang: "ru" | "e
 </html>`;
 }
 
-export function detectLang(acceptLanguage?: string): "ru" | "en" {
-  const header = acceptLanguage || "";
-  if (/^ru\b|(^|,)\s*ru[;,-]/i.test(header)) return "ru";
-  return "en";
+export function detectLang(acceptLanguage?: string): 'ru' | 'en' {
+  const header = acceptLanguage || '';
+  if (/^ru\b|(^|,)\s*ru[;,-]/i.test(header)) return 'ru';
+  return 'en';
 }

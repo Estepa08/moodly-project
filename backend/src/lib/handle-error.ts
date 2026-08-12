@@ -1,5 +1,5 @@
-import type { FastifyInstance, FastifyError, FastifyRequest, FastifyReply } from "fastify";
-import { AppError } from "./errors.js";
+import type { FastifyInstance, FastifyError, FastifyRequest, FastifyReply } from 'fastify';
+import { AppError } from './errors.js';
 
 export function setErrorHandler(fastify: FastifyInstance) {
   fastify.setErrorHandler(
@@ -10,7 +10,7 @@ export function setErrorHandler(fastify: FastifyInstance) {
 
       const statusCode = (error as FastifyError).statusCode || 500;
       request.log.error(error);
-      return reply.status(statusCode).send({ code: "INTERNAL", message: "Something went wrong" });
+      return reply.status(statusCode).send({ code: 'INTERNAL', message: 'Something went wrong' });
     },
   );
 }

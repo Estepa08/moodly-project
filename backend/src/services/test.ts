@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma.js";
-import { NotFoundError } from "../lib/errors.js";
+import { prisma } from '../lib/prisma.js';
+import { NotFoundError } from '../lib/errors.js';
 
 export const testService = {
   async list() {
@@ -13,10 +13,10 @@ export const testService = {
     const test = await prisma.test.findUnique({
       where: { id },
       include: {
-        scoreBands: { orderBy: { maxScore: "asc" } },
+        scoreBands: { orderBy: { maxScore: 'asc' } },
       },
     });
-    if (!test) throw new NotFoundError("Test");
+    if (!test) throw new NotFoundError('Test');
     return test;
   },
 
@@ -27,7 +27,7 @@ export const testService = {
       prisma.testResult
         .findMany({
           where,
-          orderBy: { completedAt: "desc" },
+          orderBy: { completedAt: 'desc' },
           skip,
           take: take ?? 200,
           include: { test: { select: { title: true } } },
@@ -40,7 +40,7 @@ export const testService = {
 
   async getResultById(id: string, userId: string) {
     const result = await prisma.testResult.findFirst({ where: { id, userId } });
-    if (!result) throw new NotFoundError("TestResult");
+    if (!result) throw new NotFoundError('TestResult');
     return result;
   },
 };

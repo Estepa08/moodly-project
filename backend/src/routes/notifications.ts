@@ -1,7 +1,7 @@
-import type { FastifyInstance } from "fastify";
-import { z } from "zod";
-import { notificationService, type PushPayload } from "../services/notification.js";
-import { ValidationError } from "../lib/errors.js";
+import type { FastifyInstance } from 'fastify';
+import { z } from 'zod';
+import { notificationService, type PushPayload } from '../services/notification.js';
+import { ValidationError } from '../lib/errors.js';
 
 interface SubscribeBody {
   endpoint: string;
@@ -20,7 +20,7 @@ const sendSchema = z.object({
 
 export default async function notificationRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: SubscribeBody }>(
-    "/push/subscribe",
+    '/push/subscribe',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       const { endpoint, keys } = request.body;
@@ -30,7 +30,7 @@ export default async function notificationRoutes(fastify: FastifyInstance) {
   );
 
   fastify.post<{ Body: UnsubscribeBody }>(
-    "/push/unsubscribe",
+    '/push/unsubscribe',
     { preHandler: [fastify.authenticate] },
     async (request) => {
       const { endpoint } = request.body;
@@ -40,12 +40,12 @@ export default async function notificationRoutes(fastify: FastifyInstance) {
   );
 
   fastify.post<{ Body: PushPayload }>(
-    "/push/send",
+    '/push/send',
     { preHandler: [fastify.requireAdmin] },
     async (request) => {
       const parsed = sendSchema.safeParse(request.body);
       if (!parsed.success) {
-        throw new ValidationError(parsed.error.issues[0]?.message ?? "INVALID_PAYLOAD");
+        throw new ValidationError(parsed.error.issues[0]?.message ?? 'INVALID_PAYLOAD');
       }
       const sent = await notificationService.sendToAll(parsed.data);
       return { ok: true, sent };
