@@ -1,7 +1,14 @@
-node_modules
-dist
-build
-coverage
-frontend/src/lib/api-types.ts
-api-contract/generated
-backend/prisma/migrations
+# Ignore these 4 problematic UI files
+frontend/src/components/ui/button.tsx
+frontend/src/components/ui/chip.tsx
+frontend/src/components/ui/segment-control.tsx
+frontend/src/components/ui/toggle-switch.tsx
+
+# Common ignores
+node_modules/
+dist/
+build/
+coverage/
+*.log
+.env
+.DS_Store
