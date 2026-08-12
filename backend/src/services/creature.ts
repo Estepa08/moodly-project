@@ -656,10 +656,7 @@ export const creatureService = {
       const welcomeUsed = freshPause ? 0 : (state.welcomeUsed ?? 0);
       const welcomeSessionActive = freshPause || welcomeUsed > 0;
       const welcomeApplied =
-        welcomeSessionActive &&
-        welcomeUsed < WELCOME_CLICK_COUNT &&
-        !limitReached &&
-        hasEnergy;
+        welcomeSessionActive && welcomeUsed < WELCOME_CLICK_COUNT && !limitReached && hasEnergy;
 
       // Базовый XP: «Возвращение» перекрывает цикл для первых кликов.
       let xp = 0;
@@ -679,8 +676,7 @@ export const creatureService = {
         : [];
       const times = [...prevTimes.slice(-(PET_TIMES_BUFFER - 1)), now.getTime()];
       const comboCount = computeComboCount(times);
-      const comboBonusAwarded =
-        comboCount >= COMBO_THRESHOLD && comboCount % COMBO_THRESHOLD === 0;
+      const comboBonusAwarded = comboCount >= COMBO_THRESHOLD && comboCount % COMBO_THRESHOLD === 0;
       if (comboBonusAwarded) xp += COMBO_XP;
 
       // XP и трата энергии — только на 3-м клике, когда энергия есть.
