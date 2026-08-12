@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-import { readdir, readFile } from "node:fs/promises";
-import { gzipSync } from "node:zlib";
-import path from "node:path";
+import { readdir, readFile } from 'node:fs/promises';
+import { gzipSync } from 'node:zlib';
+import path from 'node:path';
 
 const rootDir = process.argv[2] ?? process.cwd();
-const distDir = path.join(rootDir, "dist/assets");
+const distDir = path.join(rootDir, 'dist/assets');
 
 const LIMITS = {
   entryGzipKB: 150,
   initialTotalGzipKB: 520,
 };
 
-const files = (await readdir(distDir)).filter((f) => f.endsWith(".js"));
+const files = (await readdir(distDir)).filter((f) => f.endsWith('.js'));
 
 const gzipKB = (buf) => gzipSync(buf).byteLength / 1024;
 
@@ -24,7 +24,7 @@ const chunks = await Promise.all(
 
 let initialNames;
 try {
-  const html = await readFile(path.join(rootDir, "dist/index.html"), "utf8");
+  const html = await readFile(path.join(rootDir, 'dist/index.html'), 'utf8');
   initialNames = new Set(
     [
       ...html.matchAll(/src=["'](\/?assets\/[^"']+\.js)["']/g),
@@ -61,10 +61,10 @@ if (initialTotal > LIMITS.initialTotalGzipKB) {
 }
 
 if (problems.length) {
-  console.error("\nBundle budget exceeded:");
+  console.error('\nBundle budget exceeded:');
   for (const p of problems) console.error(`  - ${p}`);
   process.exit(1);
 }
 console.log(
-  `\nBundle budget OK (entry ${entry?.gzipKB.toFixed(1) ?? "?"} KB gzip, initial ${initialTotal.toFixed(1)} KB gzip)`,
+  `\nBundle budget OK (entry ${entry?.gzipKB.toFixed(1) ?? '?'} KB gzip, initial ${initialTotal.toFixed(1)} KB gzip)`,
 );
