@@ -425,6 +425,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/emotion-lab/attempt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Смешать две эмоции: проверяет дневной лимит и доступность уровня диады. При исчерпании лимита — 403 { error: 'daily_limit_reached', limit, tier, resetsAt } */
+        post: operations["EmotionLab_attempt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/emotion-lab/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Состояние лаборатории эмоций: открытые диады, доступный уровень, оставшиеся попытки сегодня */
+        get: operations["EmotionLab_getState"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/entries": {
         parameters: {
             query?: never;
@@ -900,6 +934,83 @@ export interface components {
              * @description «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
              */
             comfort: number;
+        };
+        /** @description Диада — результат смешивания двух эмоций (алхимия Плутчика) */
+        DyadInfo: {
+            key: string;
+            name: string;
+            /**
+             * Format: int32
+             * @description Уровень диады: 1 первичная, 2 вторичная, 3 третичная, 4 противоположность
+             */
+            level: number;
+            emotions: string[];
+        };
+        /** @description Эмоция из колеса Плутчика для «Лаборатории эмоций» */
+        EmotionInfo: {
+            key: string;
+            name: string;
+        };
+        /** @description Тело попытки смешивания двух эмоций */
+        EmotionLabAttemptRequest: {
+            emotionA: string;
+            emotionB: string;
+        };
+        /** @description Результат попытки смешивания эмоций */
+        EmotionLabAttemptResponse: {
+            dyad: components["schemas"]["DyadInfo"];
+            /** @description Открыта ли диада впервые */
+            isNewDiscovery: boolean;
+            discoveredDyads: string[];
+            /** Format: int32 */
+            discoveredCount: number;
+            /** Format: int32 */
+            totalDyads: number;
+            /**
+             * Format: int32
+             * @description Текущий доступный уровень (1-4) по открытым диадам
+             */
+            availableLevel: number;
+            /** Format: int32 */
+            dailyLimit: number;
+            /** Format: int32 */
+            attemptsUsed: number;
+            /** Format: int32 */
+            attemptsRemaining: number;
+            /**
+             * Format: date-time
+             * @description Момент сброса дневного лимита (начало следующего дня)
+             */
+            resetsAt: string;
+            tier: string;
+            limitReached: boolean;
+        };
+        /** @description Состояние «Лаборатории эмоций» пользователя */
+        EmotionLabState: {
+            /** @description Тариф пользователя: free | premium */
+            tier: string;
+            discoveredDyads: string[];
+            /** Format: int32 */
+            discoveredCount: number;
+            /** Format: int32 */
+            totalDyads: number;
+            /**
+             * Format: int32
+             * @description Текущий доступный уровень (1-4) по открытым диадам
+             */
+            availableLevel: number;
+            /** Format: int32 */
+            dailyLimit: number;
+            /** Format: int32 */
+            attemptsUsed: number;
+            /** Format: int32 */
+            attemptsRemaining: number;
+            /**
+             * Format: date-time
+             * @description Момент сброса дневного лимита (начало следующего дня)
+             */
+            resetsAt: string;
+            limitReached: boolean;
         };
         /** @description Запись значения параметра в конкретный момент времени */
         Entry: {
@@ -1976,6 +2087,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RewardResponse"];
+                };
+            };
+        };
+    };
+    EmotionLab_attempt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmotionLabAttemptRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmotionLabAttemptResponse"];
+                };
+            };
+        };
+    };
+    EmotionLab_getState: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmotionLabState"];
                 };
             };
         };
