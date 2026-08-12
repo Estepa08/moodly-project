@@ -389,7 +389,7 @@ describe("Creature pet bonuses (morning / evening / combo / welcome / empathy)",
       "secret123",
       "Combo",
     );
-    let res;
+    let res!: Awaited<ReturnType<typeof tap>>;
     for (let i = 1; i <= 5; i++) {
       res = await tap(user);
     }
