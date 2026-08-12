@@ -2,9 +2,6 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Sparkles } from "lucide-react";
 import PetAvatar from "./PetAvatar";
-import PetSpeechBubble, { usePetSpeech } from "./PetSpeechBubble";
-import { useSpeechBubbleHidden } from "./speechBubbleVisibility";
-import { emitSpeech } from "./celebration";
 import { PET_DEFINITIONS } from "./pets";
 import { usePets } from "./useCreature";
 import { usePetReward } from "./usePetReward";
@@ -23,8 +20,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();
   const { data: pets } = usePets();
   const { reward, glow, handlePet } = usePetReward();
-  const speech = usePetSpeech();
-  const speechHidden = useSpeechBubbleHidden();
+
   const petType = pets?.activePetType ?? "puff";
   const petName =
     pets?.petName?.trim() ||
@@ -40,27 +36,17 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
 
   const energy = creature.energy ?? 100;
   const energyPercent = Math.max(0, Math.min(100, energy));
-  const speechText = t("progress.speech", {
-    count: creature.streak,
-    level: creature.level,
-  });
-
-  useEffect(() => {
-    const timer = setTimeout(() => emitSpeech(speechText), 800);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creature.level, creature.streak]);
 
   const handleTap = () => {
     handlePet();
-    emitSpeech(speechText);
   };
 
   return (
     <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
+        {/* Аватар */}
         <div className="shrink-0 flex flex-col items-center gap-2">
-          <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center relative">
             <PetAvatar
               petType={petType}
               size="lg"
@@ -74,7 +60,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               onTap={handleTap}
             />
           </div>
-          {/* NEW: мини-бар энергии под аватаром */}
+          {/* Мини-бар энергии под аватаром */}
           <div className="w-[72px]">
             <div className="h-1.5 rounded-full bg-muted overflow-hidden">
               <div
@@ -87,6 +73,8 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
             </p>
           </div>
         </div>
+
+        {/* Информация о питомце */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <span className="px-3 py-0.5 rounded-full bg-primary/10 text-xs font-bold text-primary">
@@ -109,6 +97,8 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
             )}
             <StreakIndicator streak={creature.streak} />
           </div>
+
+          {/* Прогресс XP */}
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <ProgressBar
@@ -129,12 +119,6 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
           </div>
         </div>
       </div>
-
-      {!speechHidden && speech.current && (
-        <div className="mt-3">
-          <PetSpeechBubble current={speech.current} dismiss={speech.dismiss} />
-        </div>
-      )}
     </div>
   );
 }

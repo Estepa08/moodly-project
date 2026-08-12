@@ -14,6 +14,7 @@ tags:
   - name: Reports
   - name: Breathing
   - name: Cba
+  - name: EmotionLab
   - name: Admin
   - name: Content
 paths:
@@ -540,6 +541,40 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RewardRequest'
+  /emotion-lab/attempt:
+    post:
+      operationId: EmotionLab_attempt
+      description: "Смешать две эмоции: проверяет дневной лимит и доступность уровня диады. При исчерпании лимита — 403 { error: 'daily_limit_reached', limit, tier, resetsAt }"
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmotionLabAttemptResponse'
+      tags:
+        - EmotionLab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmotionLabAttemptRequest'
+  /emotion-lab/state:
+    get:
+      operationId: EmotionLab_getState
+      description: 'Состояние лаборатории эмоций: открытые диады, доступный уровень, оставшиеся попытки сегодня'
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmotionLabState'
+      tags:
+        - EmotionLab
   /entries:
     get:
       operationId: Entries_list
@@ -1353,6 +1388,149 @@ components:
           format: int32
           description: «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
       description: Текущее состояние существа пользователя
+    DyadInfo:
+      type: object
+      required:
+        - key
+        - name
+        - level
+        - emotions
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        level:
+          type: integer
+          format: int32
+          description: 'Уровень диады: 1 первичная, 2 вторичная, 3 третичная, 4 противоположность'
+        emotions:
+          type: array
+          items:
+            type: string
+      description: Диада — результат смешивания двух эмоций (алхимия Плутчика)
+    EmotionInfo:
+      type: object
+      required:
+        - key
+        - name
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+      description: Эмоция из колеса Плутчика для «Лаборатории эмоций»
+    EmotionLabAttemptRequest:
+      type: object
+      required:
+        - emotionA
+        - emotionB
+      properties:
+        emotionA:
+          type: string
+        emotionB:
+          type: string
+      description: Тело попытки смешивания двух эмоций
+    EmotionLabAttemptResponse:
+      type: object
+      required:
+        - dyad
+        - isNewDiscovery
+        - discoveredDyads
+        - discoveredCount
+        - totalDyads
+        - availableLevel
+        - dailyLimit
+        - attemptsUsed
+        - attemptsRemaining
+        - resetsAt
+        - tier
+        - limitReached
+      properties:
+        dyad:
+          $ref: '#/components/schemas/DyadInfo'
+        isNewDiscovery:
+          type: boolean
+          description: Открыта ли диада впервые
+        discoveredDyads:
+          type: array
+          items:
+            type: string
+        discoveredCount:
+          type: integer
+          format: int32
+        totalDyads:
+          type: integer
+          format: int32
+        availableLevel:
+          type: integer
+          format: int32
+          description: Текущий доступный уровень (1-4) по открытым диадам
+        dailyLimit:
+          type: integer
+          format: int32
+        attemptsUsed:
+          type: integer
+          format: int32
+        attemptsRemaining:
+          type: integer
+          format: int32
+        resetsAt:
+          type: string
+          format: date-time
+          description: Момент сброса дневного лимита (начало следующего дня)
+        tier:
+          type: string
+        limitReached:
+          type: boolean
+      description: Результат попытки смешивания эмоций
+    EmotionLabState:
+      type: object
+      required:
+        - tier
+        - discoveredDyads
+        - discoveredCount
+        - totalDyads
+        - availableLevel
+        - dailyLimit
+        - attemptsUsed
+        - attemptsRemaining
+        - resetsAt
+        - limitReached
+      properties:
+        tier:
+          type: string
+          description: 'Тариф пользователя: free | premium'
+        discoveredDyads:
+          type: array
+          items:
+            type: string
+        discoveredCount:
+          type: integer
+          format: int32
+        totalDyads:
+          type: integer
+          format: int32
+        availableLevel:
+          type: integer
+          format: int32
+          description: Текущий доступный уровень (1-4) по открытым диадам
+        dailyLimit:
+          type: integer
+          format: int32
+        attemptsUsed:
+          type: integer
+          format: int32
+        attemptsRemaining:
+          type: integer
+          format: int32
+        resetsAt:
+          type: string
+          format: date-time
+          description: Момент сброса дневного лимита (начало следующего дня)
+        limitReached:
+          type: boolean
+      description: Состояние «Лаборатории эмоций» пользователя
     Entry:
       type: object
       required:

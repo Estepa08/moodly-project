@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { LoadingCard } from "../../components/ui/loading-card";
 import EmptyState from "../../components/ui/empty-state";
 import { PracticeSource } from "./practice.enums";
+import { FlaskConical } from "lucide-react"; 
 
 interface PracticeProgressProps {
   breathingSessionCount?: number;
@@ -18,6 +19,7 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
   [PracticeSource.Distortions]: { icon: Brain, labelKey: "progress.activityDistortions" },
   [PracticeSource.Cba]: { icon: Scale, labelKey: "progress.activityCba" },
   [PracticeSource.ThoughtJournal]: { icon: BookOpen, labelKey: "progress.activityThoughtJournal" },
+  [PracticeSource.EmotionLab]: { icon: FlaskConical, labelKey: "progress.activityEmotionLab" },
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
@@ -27,6 +29,7 @@ const SOURCE_PATH: Record<PracticeSource, string> = {
   [PracticeSource.Distortions]: "/practices/distortions",
   [PracticeSource.Cba]: "/practices/cost-benefit-analysis",
   [PracticeSource.ThoughtJournal]: "/practices/thought-journal",
+  [PracticeSource.EmotionLab]: "/practices/emotion-lab",
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);

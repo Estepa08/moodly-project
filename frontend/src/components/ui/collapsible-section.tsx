@@ -21,7 +21,7 @@ export default function CollapsibleSection({
   icon: Icon,
   iconClassName,
   railClassName = "bg-primary/80",
-  defaultOpen = true,
+  defaultOpen = false,
   storageKey,
   children,
   className,

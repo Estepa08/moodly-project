@@ -32,7 +32,17 @@ dev-frontend:
 
 # «make admin dev» передаёт «dev» как аргумент — в этом случае запуск проекта не выполняется.
 dev:
-	@$(if $(filter admin,$(MAKECMDGOALS)),:,cd backend && npm run dev & cd frontend && npm run dev)
+	@echo "🚀 Запуск Moodly (бэкенд + фронтенд)..."
+	@echo ""
+	@echo "📦 Бэкенд: http://localhost:3002"
+	@echo "🎨 Фронтенд: http://localhost:5176"
+	@echo ""
+	@echo "Нажмите Ctrl+C для остановки"
+	@echo ""
+	@trap 'kill 0' EXIT; \
+	(cd backend && npm run dev) & \
+	(cd frontend && npm run dev) & \
+	wait
 
 # ─── Build ──────────────────────────────────────────────
 

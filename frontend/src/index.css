@@ -727,3 +727,17 @@
   will-change: transform;
   transform-origin: center;
 }
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 80px)) scale(1.2);
+  }
+}
+
+.animate-float-up {
+  animation: float-up 2s ease-out forwards;
+}

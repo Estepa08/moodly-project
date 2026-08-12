@@ -7,6 +7,7 @@ const RewardMoment = lazy(() => import("./RewardMoment"));
 export interface PetSpeech {
   id: string;
   text: string;
+  timestamp?: number;
 }
 
 type SpeechSubscriber = (speech: PetSpeech) => void;
@@ -22,7 +23,11 @@ export function subscribeSpeech(subscriber: SpeechSubscriber): () => void {
 }
 
 export function emitSpeech(text: string): PetSpeech {
-  const speech: PetSpeech = { id: `speech-${++speechSeq}`, text };
+  const speech: PetSpeech = {
+    id: `speech-${++speechSeq}`,
+    text,
+    timestamp: Date.now(),
+  };
   for (const subscriber of speechSubscribers) subscriber(speech);
   return speech;
 }

@@ -618,6 +618,65 @@ model MessageOfDay {
   question?: string | null;
 }
 
+// ---------- Emotion Lab ----------
+
+@doc("Эмоция из колеса Плутчика для «Лаборатории эмоций»")
+model EmotionInfo {
+  key: string;
+  name: string;
+}
+
+@doc("Диада — результат смешивания двух эмоций (алхимия Плутчика)")
+model DyadInfo {
+  key: string;
+  name: string;
+  @doc("Уровень диады: 1 первичная, 2 вторичная, 3 третичная, 4 противоположность")
+  level: int32;
+  emotions: string[];
+}
+
+@doc("Состояние «Лаборатории эмоций» пользователя")
+model EmotionLabState {
+  @doc("Тариф пользователя: free | premium")
+  tier: string;
+  discoveredDyads: string[];
+  discoveredCount: int32;
+  totalDyads: int32;
+  @doc("Текущий доступный уровень (1-4) по открытым диадам")
+  availableLevel: int32;
+  dailyLimit: int32;
+  attemptsUsed: int32;
+  attemptsRemaining: int32;
+  @doc("Момент сброса дневного лимита (начало следующего дня)")
+  resetsAt: utcDateTime;
+  limitReached: boolean;
+}
+
+@doc("Тело попытки смешивания двух эмоций")
+model EmotionLabAttemptRequest {
+  emotionA: string;
+  emotionB: string;
+}
+
+@doc("Результат попытки смешивания эмоций")
+model EmotionLabAttemptResponse {
+  dyad: DyadInfo;
+  @doc("Открыта ли диада впервые")
+  isNewDiscovery: boolean;
+  discoveredDyads: string[];
+  discoveredCount: int32;
+  totalDyads: int32;
+  @doc("Текущий доступный уровень (1-4) по открытым диадам")
+  availableLevel: int32;
+  dailyLimit: int32;
+  attemptsUsed: int32;
+  attemptsRemaining: int32;
+  @doc("Момент сброса дневного лимита (начало следующего дня)")
+  resetsAt: utcDateTime;
+  tier: string;
+  limitReached: boolean;
+}
+
 // ---------- Errors ----------
 
 @error

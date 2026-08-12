@@ -5,4 +5,5 @@ export enum PracticeSource {
   Cba = "cba",
   Breathing = "breathing",
   ThoughtJournal = "thoughtJournal",
+  EmotionLab = "emotion-lab",
 }

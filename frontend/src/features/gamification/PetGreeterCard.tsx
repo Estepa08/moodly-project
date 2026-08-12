@@ -6,13 +6,11 @@ import { usePetReward } from "./usePetReward";
 import { PET_DEFINITIONS } from "./pets";
 import { PET_CYCLE } from "@moodly/shared";
 import PetAvatar, { type PetHide, type PetHideVariant } from "./PetAvatar";
-import PetSpeechBubble, { usePetSpeech } from "./PetSpeechBubble";
-import { emitSpeech } from "./celebration";
 import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
-import { useSpeechBubbleHidden } from "./speechBubbleVisibility";
 import { useDayPhase } from "../../hooks/useDayPhase";
 import { useMessageOfDay } from "../../hooks/useMessageOfDay";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { cn } from "../../lib/utils";
 import { ENERGY_COLOR } from "../../lib/constants";
 
@@ -20,8 +18,6 @@ interface PetGreeterCardProps {
   onCheckIn: () => void;
 }
 
-// Idle-цикл скрытия питомца внутри круга (см. docs/pet-greeter-hide-animations.svg):
-// виден ~10s → медленно скрывается (3.5s, случайный вариант) → пауза → pop-in.
 const IDLE_VISIBLE_MS = 10_000;
 const IDLE_HIDE_MS = 3_600;
 const IDLE_PAUSE_MS = 1_500;
@@ -37,14 +33,13 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const { reward, glow, handlePet } = usePetReward();
   const phase = useDayPhase();
   const { data: message } = useMessageOfDay(phase);
-  const speech = usePetSpeech();
-  const speechHidden = useSpeechBubbleHidden();
   const isReducedMotion = useReducedMotion();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  
   const [idlePhase, setIdlePhase] = useState<IdlePhase>("visible");
   const [hide, setHide] = useState<PetHide | null>(null);
 
-  // Таймлайн idle-цикла: первый заход — питомец сразу виден, скрытие начинается
-  // после паузы. reduced-motion → цикл не запускается (только float).
+  // Таймлайн idle-цикла
   useEffect(() => {
     if (isReducedMotion) return;
     let timer: ReturnType<typeof setTimeout>;
@@ -74,16 +69,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
     return () => clearTimeout(timer);
   }, [idlePhase, isReducedMotion]);
 
-  const queue = [t(`petGreeter.question.${phase}`), message?.text, message?.question].filter(
-    (line): line is string => typeof line === "string" && line.trim().length > 0,
-  );
-
-  useEffect(() => {
-    const timers = queue.map((line, i) => setTimeout(() => emitSpeech(line), i * 900));
-    return () => timers.forEach(clearTimeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, message?.text, message?.question]);
-
   if (isLoading || !creature) return null;
 
   const activePetType = pets?.activePetType ?? creature.petType ?? "puff";
@@ -102,7 +87,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
 
   const handleTap = () => {
     handlePet();
-    queue.forEach((line) => setTimeout(() => emitSpeech(line), 0));
   };
 
   return (
@@ -125,9 +109,11 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             <span className="hidden sm:inline">{titleLabel}</span>
           </span>
         )}
-        <span className="ml-auto shrink-0 px-2.5 py-1 rounded-full bg-card shadow-neumorphic-sm text-xs font-semibold text-primary">
-          {t("companion.level", { level: creature.level })}
-        </span>
+        {!isMobile && (
+          <span className="ml-auto shrink-0 px-2.5 py-1 rounded-full bg-card shadow-neumorphic-sm text-xs font-semibold text-primary">
+            {t("companion.level", { level: creature.level })}
+          </span>
+        )}
       </div>
 
       <div className="relative flex flex-col items-center gap-2 pt-6 pb-1">
@@ -152,7 +138,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             ariaLabel={displayName}
           />
         </div>
-        {/* NEW: мини-бар энергии под аватаром */}
         <div className="w-[72px]">
           <div className="h-1.5 rounded-full bg-muted overflow-hidden">
             <div
@@ -165,10 +150,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
           </p>
         </div>
       </div>
-
-      {!speechHidden && speech.current && (
-        <PetSpeechBubble current={speech.current} dismiss={speech.dismiss} />
-      )}
 
       <button
         type="button"

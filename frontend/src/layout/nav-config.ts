@@ -13,6 +13,7 @@ import {
   Sparkles,
   BarChart3,
   type LucideIcon,
+  FlaskConical,
 } from "lucide-react";
 
 export interface NavItem {
@@ -72,6 +73,12 @@ export const PRACTICE_ITEMS: NavItem[] = [
     shortLabelKey: "nav.short.breathing",
     path: "/practices/breathing",
     icon: Wind,
+  },
+  {
+    labelKey: "nav.emotionLab",
+    shortLabelKey: "nav.short.emotionLab",
+    path: "/practices/emotion-lab",
+    icon: FlaskConical,
   },
 ];
 

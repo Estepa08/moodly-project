@@ -15,6 +15,7 @@ const PATH_TO_SOURCE: Record<string, PracticeSource> = {
   "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
   "/practices/cost-benefit-analysis": PracticeSource.Cba,
   "/practices/breathing": PracticeSource.Breathing,
+  "/practices/emotion-lab": PracticeSource.EmotionLab,
 };
 
 export default function Sidebar() {

@@ -9,14 +9,17 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  name      String?
-  role      String   @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+  id                    String                 @id @default(cuid())
+  email                 String                 @unique
+  password              String
+  name                  String?
+  role                  String                 @default("user")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  deletedAt             DateTime?
+  subscriptionTier      String                 @default("free")
+  subscriptionExpiresAt DateTime?
+  emotionLabProgress    EmotionLabProgress?
 
   // 18+ confirmation and personal-data processing consent, recorded at
   // registration time so consent can be demonstrated per account rather than
@@ -464,4 +467,16 @@ model CbaEntryItem {
   entry CbaEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
 
   @@index([entryId])
+}
+
+model EmotionLabProgress {
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dailyAttemptsUsed Int       @default(0)
+  lastAttemptDate   DateTime?
+  discoveredDyads   String[]  @default([])
+  updatedAt         DateTime  @updatedAt
+
+  @@map("emotion_lab_progress")
 }

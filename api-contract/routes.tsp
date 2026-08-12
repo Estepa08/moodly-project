@@ -228,6 +228,20 @@ interface Cba {
   deleteEntry(@path id: string): void;
 }
 
+@tag("EmotionLab")
+@route("/emotion-lab")
+interface EmotionLab {
+  @get
+  @route("/state")
+  @doc("Состояние лаборатории эмоций: открытые диады, доступный уровень, оставшиеся попытки сегодня")
+  getState(): EmotionLabState;
+
+  @post
+  @route("/attempt")
+  @doc("Смешать две эмоции: проверяет дневной лимит и доступность уровня диады. При исчерпании лимита — 403 { error: 'daily_limit_reached', limit, tier, resetsAt }")
+  attempt(@body body: EmotionLabAttemptRequest): EmotionLabAttemptResponse;
+}
+
 @tag("Admin")
 @route("/admin")
 interface AdminUsers {

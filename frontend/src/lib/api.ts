@@ -50,6 +50,9 @@ type CbaExample = components["schemas"]["CbaExample"];
 type CbaCommonItem = components["schemas"]["CbaCommonItem"];
 type CbaEntry = components["schemas"]["CbaEntry"];
 type CbaEntryCreate = components["schemas"]["CbaEntryCreate"];
+type EmotionLabState = components["schemas"]["EmotionLabState"];
+type EmotionLabAttemptRequest = components["schemas"]["EmotionLabAttemptRequest"];
+type EmotionLabAttemptResponse = components["schemas"]["EmotionLabAttemptResponse"];
 
 export interface UserPreference {
   goals: string[];
@@ -127,21 +130,13 @@ export interface CreatureState {
 }
 
 export interface PetBonus {
-  /** Бонус «Бодрое утро» (6:00–12:00): 3-й клик дал +2 XP */
   morning: boolean;
-  /** Бонус «Спокойный вечер» (20:00–23:00): 3-й клик дал +1 XP и +1 calmness */
   evening: boolean;
-  /** Бонус «Возвращение» (пауза > 4 ч): клик дал +2 XP */
   welcome: boolean;
-  /** Бонус «Эмпатия»: 3-й клик дал +1 XP и +2 comfort */
   empathy: boolean;
-  /** Текущая длина серии быстрых кликов (< 0.5 c) */
   comboCount: number;
-  /** На этом клике сработал бонус «Комбо» (+3 XP) */
   comboBonusAwarded: boolean;
-  /** На сколько вырос calmness этим кликом */
   calmnessGain: number;
-  /** На сколько вырос comfort этим кликом */
   comfortGain: number;
 }
 
@@ -165,17 +160,11 @@ export interface PetResponse {
   petCount: number;
   petCountRemaining: number;
   limitReached: boolean;
-  /** Позиция текущего клика в цикле поглаживаний 1-2-3 (3 → начислен XP) */
   cyclePosition?: number;
-  /** На сколько вырос calmness этим кликом (бонус «Спокойный вечер») */
   calmnessGain?: number;
-  /** На сколько вырос comfort этим кликом (бонус «Эмпатия») */
   comfortGain?: number;
-  /** Текущая длина серии быстрых кликов */
   comboCount?: number;
-  /** На этом клике сработал бонус «Комбо» (+3 XP) */
   comboBonusAwarded?: boolean;
-  /** Скрытые бонусы, сработавшие на этом клике */
   bonus?: PetBonus;
 }
 
@@ -259,11 +248,6 @@ export function getToken(): string | null {
   return accessToken;
 }
 
-// The refresh token itself lives in an httpOnly cookie set by the API and is
-// never readable from JS — the browser attaches it automatically on requests
-// made with credentials: "include". We can't check for its presence before
-// trying, so a 401 always gets one refresh attempt; the endpoint just
-// answers 401 itself if there's no valid cookie.
 async function attemptRefresh(): Promise<boolean> {
   try {
     const data = await api.auth.refresh();
@@ -275,20 +259,38 @@ async function attemptRefresh(): Promise<boolean> {
   }
 }
 
+// Добавляем логирование в request
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     ...(options.headers as Record<string, string>),
   };
+
   if (options.body && typeof options.body === "string") {
     headers["Content-Type"] = "application/json";
   }
+
   const token = getToken();
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  let res = await fetch(`${BASE_URL}${path}`, { ...options, headers, credentials: "include" });
+  // Логируем запрос
+  console.log(`📤 ${options.method || "GET"} ${path}`);
+  if (options.body) {
+    console.log("📦 Request body:", options.body);
+  }
+  console.log("🔑 Token:", token ? "present" : "missing");
+
+  let res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
+
+  // Логируем ответ
+  console.log(`📥 Response status: ${res.status} ${res.statusText}`);
 
   // 401 → attempt token refresh once
   if (res.status === 401 && path !== "/auth/refresh") {
+    console.log("🔄 Attempting token refresh...");
     if (!refreshPromise) {
       refreshPromise = attemptRefresh().finally(() => {
         refreshPromise = null;
@@ -296,17 +298,35 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     }
     const refreshed = await refreshPromise;
     if (refreshed) {
+      console.log("✅ Token refreshed, retrying request");
       headers["Authorization"] = `Bearer ${getToken()}`;
       res = await fetch(`${BASE_URL}${path}`, { ...options, headers, credentials: "include" });
+      console.log(`📥 Retry response status: ${res.status}`);
+    } else {
+      console.log("❌ Token refresh failed");
     }
   }
 
   if (res.status === 204) return undefined as T;
+
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: res.statusText }));
-    throw new ApiError(error.code || "UNKNOWN", error.message || "Request failed", res.status);
+    let errorData;
+    try {
+      errorData = await res.json();
+    } catch {
+      errorData = { message: res.statusText };
+    }
+    console.error(`❌ API Error ${res.status}:`, errorData);
+    throw new ApiError(
+      errorData.code || "UNKNOWN",
+      errorData.message || "Request failed",
+      res.status,
+    );
   }
-  return res.json();
+
+  const data = await res.json();
+  console.log(`✅ Response data:`, data);
+  return data;
 }
 
 export const api = {
@@ -317,9 +337,6 @@ export const api = {
       request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify(body) }),
     logout: () => request<void>("/auth/logout", { method: "POST" }),
     refresh: () => {
-      // Coalesce concurrent refresh calls (e.g. StrictMode double-invoke) so a
-      // single rotation of the one-time refresh token answers all callers
-      // instead of a second call racing it to a 401.
       if (!refreshSingleFlight) {
         refreshSingleFlight = request<RefreshResponse>("/auth/refresh", { method: "POST" }).finally(
           () => {
@@ -512,6 +529,19 @@ export const api = {
       if (opts?.limit) q.set("limit", String(opts.limit));
       const qs = q.toString();
       return request<PullResult>(`/sync/pull${qs ? `?${qs}` : ""}`);
+    },
+  },
+  emotionLab: {
+    state: () => {
+      console.log("🔬 Calling emotionLab.state()");
+      return request<EmotionLabState>("/emotion-lab/state");
+    },
+    attempt: (body: EmotionLabAttemptRequest) => {
+      console.log("🔬 Calling emotionLab.attempt() with:", body);
+      return request<EmotionLabAttemptResponse>("/emotion-lab/attempt", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
     },
   },
 };

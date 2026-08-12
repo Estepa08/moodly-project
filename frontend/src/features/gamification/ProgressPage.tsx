@@ -53,7 +53,7 @@ export default function ProgressPage() {
           icon={Target}
           iconClassName="bg-primary/10 text-primary"
           railClassName="bg-primary/80"
-          defaultOpen
+          defaultOpen={false}
           storageKey="moodly_collapse_progress_stats"
         >
           <CreatureStatsBlock stats={stats} />
@@ -66,7 +66,7 @@ export default function ProgressPage() {
         icon={ListChecks}
         iconClassName="bg-accent/10 text-accent"
         railClassName="bg-accent/80"
-        defaultOpen
+        defaultOpen={false}
         storageKey="moodly_collapse_progress_missions"
       >
         <DailyMissions />
@@ -78,7 +78,7 @@ export default function ProgressPage() {
         icon={PawPrint}
         iconClassName="bg-pet-1/10 text-pet-1"
         railClassName="bg-pet-1/80"
-        defaultOpen
+        defaultOpen={false}
         storageKey="moodly_collapse_progress_pets"
       >
         <PetCollection />
@@ -108,7 +108,7 @@ export default function ProgressPage() {
         icon={Trophy}
         iconClassName="bg-warning/10 text-warning"
         railClassName="bg-warning/80"
-        defaultOpen
+        defaultOpen={false}
         storageKey="moodly_collapse_progress_achievements"
       >
         <AchievementGrid />
