@@ -192,8 +192,8 @@ interface Creature {
 
   @post
   @route("/pet")
-  @doc("Погладить компаньона: +1 XP до исчерпания дневного лимита (100)")
-  pet(): PetResponse;
+  @doc("Погладить компаньона: цикл 1-2-3 с XP и скрытыми бонусами (утро/вечер/комбо/возвращение/эмпатия)")
+  pet(@body body: PetRequest): PetResponse;
 
   @patch
   @route("/pet")

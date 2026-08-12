@@ -28,6 +28,62 @@ export const PET_DAILY_CLICK_LIMIT = PET_XP_DAILY_LIMIT * PET_CYCLE;
 // считается уставшим: ниже порога показываем уведомление/подсказку.
 export const ENERGY_LOW_THRESHOLD = 20;
 
+// ===== Скрытые бонусы поглаживаний (время — по серверному/локальному часу) =====
+
+// «Бодрое утро»: с 6:00 до 12:00 каждый 3-й клик даёт +2 XP вместо +1.
+export const MORNING_BONUS_START_HOUR = 6;
+export const MORNING_BONUS_END_HOUR = 12;
+export const MORNING_XP = 2;
+
+// «Спокойный вечер»: с 20:00 до 23:00 каждый 3-й клик даёт +1 XP и +1 calmness.
+export const EVENING_BONUS_START_HOUR = 20;
+export const EVENING_BONUS_END_HOUR = 23;
+export const EVENING_CALMNESS_GAIN = 1;
+
+// «Комбо»: серия кликов с интервалом < COMBO_WINDOW_MS; на каждом
+// COMBO_THRESHOLD-м быстром клике начисляется COMBO_XP сверх обычного.
+export const COMBO_THRESHOLD = 5;
+export const COMBO_WINDOW_MS = 500;
+export const COMBO_XP = 3;
+// Сколько последних времен кликов храним в CreatureState.petTimes.
+export const PET_TIMES_BUFFER = 10;
+
+// «Возвращение»: после паузы > WELCOME_PAUSE_HOURS первые
+// WELCOME_CLICK_COUNT кликов дают по WELCOME_XP каждый.
+export const WELCOME_PAUSE_HOURS = 4;
+export const WELCOME_CLICK_COUNT = 3;
+export const WELCOME_XP = 2;
+
+// «Эмпатия»: клик даёт +EMPATHY_COMFORT_GAIN к параметру «Утешение» (comfort).
+export const EMPATHY_COMFORT_GAIN = 2;
+// Граница «грустного» настроения: значение записи Mood ≤ порога считается грустью/тревогой.
+export const EMPATHY_MOOD_THRESHOLD = 3;
+
+export function isMorningWindow(hour: number): boolean {
+  return hour >= MORNING_BONUS_START_HOUR && hour < MORNING_BONUS_END_HOUR;
+}
+
+export function isEveningWindow(hour: number): boolean {
+  return hour >= EVENING_BONUS_START_HOUR && hour < EVENING_BONUS_END_HOUR;
+}
+
+export function isEmpathyMood(value: number): boolean {
+  return value <= EMPATHY_MOOD_THRESHOLD;
+}
+
+// Длина текущей серии быстрых кликов: массив `times` — метки кликов по
+// возрастанию (последний элемент = текущий клик). Считаем подряд идущие
+// пары с интервалом < COMBO_WINDOW_MS.
+export function computeComboCount(times: number[]): number {
+  if (times.length === 0) return 0;
+  let count = 1;
+  for (let i = times.length - 1; i >= 1; i--) {
+    if (times[i] - times[i - 1] < COMBO_WINDOW_MS) count++;
+    else break;
+  }
+  return count;
+}
+
 // Восстановление энергии за завершение практики (зависит от вида).
 export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
   breathing: 25,

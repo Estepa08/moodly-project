@@ -1,16 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
-import { useCreatureState, usePets, usePet } from "./useCreature";
+import { useCreatureState, usePets } from "./useCreature";
+import { usePetReward } from "./usePetReward";
 import { PET_DEFINITIONS } from "./pets";
-import { PET_DAILY_CLICK_LIMIT, PET_CYCLE } from "@moodly/shared";
-import PetAvatar from "./PetAvatar";
+import { PET_CYCLE } from "@moodly/shared";
+import PetAvatar, { type PetHide, type PetHideVariant } from "./PetAvatar";
 import PetSpeechBubble, { usePetSpeech } from "./PetSpeechBubble";
 import { emitSpeech } from "./celebration";
 import { TITLE_MAP, TITLE_EMOJI } from "./TitleSelector";
 import { useSpeechBubbleHidden } from "./speechBubbleVisibility";
 import { useDayPhase } from "../../hooks/useDayPhase";
 import { useMessageOfDay } from "../../hooks/useMessageOfDay";
+import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { cn } from "../../lib/utils";
 import { ENERGY_COLOR } from "../../lib/constants";
 
@@ -18,15 +20,59 @@ interface PetGreeterCardProps {
   onCheckIn: () => void;
 }
 
+// Idle-цикл скрытия питомца внутри круга (см. docs/pet-greeter-hide-animations.svg):
+// виден ~10s → медленно скрывается (3.5s, случайный вариант) → пауза → pop-in.
+const IDLE_VISIBLE_MS = 10_000;
+const IDLE_HIDE_MS = 3_600;
+const IDLE_PAUSE_MS = 1_500;
+const IDLE_APPEAR_MS = 650;
+const HIDE_VARIANTS: PetHideVariant[] = ["sink", "melt", "dissolve", "collapse", "tumble"];
+
+type IdlePhase = "visible" | "hiding" | "hidden" | "appearing";
+
 export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const { t } = useTranslation();
   const { data: creature, isLoading } = useCreatureState();
   const { data: pets } = usePets();
-  const pet = usePet();
+  const { reward, glow, handlePet } = usePetReward();
   const phase = useDayPhase();
   const { data: message } = useMessageOfDay(phase);
   const speech = usePetSpeech();
   const speechHidden = useSpeechBubbleHidden();
+  const isReducedMotion = useReducedMotion();
+  const [idlePhase, setIdlePhase] = useState<IdlePhase>("visible");
+  const [hide, setHide] = useState<PetHide | null>(null);
+
+  // Таймлайн idle-цикла: первый заход — питомец сразу виден, скрытие начинается
+  // после паузы. reduced-motion → цикл не запускается (только float).
+  useEffect(() => {
+    if (isReducedMotion) return;
+    let timer: ReturnType<typeof setTimeout>;
+    switch (idlePhase) {
+      case "visible":
+        timer = setTimeout(() => {
+          setHide({
+            id: Date.now(),
+            variant: HIDE_VARIANTS[Math.floor(Math.random() * HIDE_VARIANTS.length)],
+          });
+          setIdlePhase("hiding");
+        }, IDLE_VISIBLE_MS);
+        break;
+      case "hiding":
+        timer = setTimeout(() => setIdlePhase("hidden"), IDLE_HIDE_MS);
+        break;
+      case "hidden":
+        timer = setTimeout(() => {
+          setHide(null);
+          setIdlePhase("appearing");
+        }, IDLE_PAUSE_MS);
+        break;
+      case "appearing":
+        timer = setTimeout(() => setIdlePhase("visible"), IDLE_APPEAR_MS);
+        break;
+    }
+    return () => clearTimeout(timer);
+  }, [idlePhase, isReducedMotion]);
 
   const queue = [t(`petGreeter.question.${phase}`), message?.text, message?.question].filter(
     (line): line is string => typeof line === "string" && line.trim().length > 0,
@@ -46,9 +92,7 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const displayName = petName?.trim() || (definition ? t(definition.labelKey) : "");
 
   const petCount = creature.petCount ?? 0;
-  const limitReached = petCount >= PET_DAILY_CLICK_LIMIT;
   const energy = creature.energy ?? 100;
-  const hasEnergy = energy > 0;
   const cyclePosition = (petCount % PET_CYCLE) + 1;
   const energyPercent = Math.max(0, Math.min(100, energy));
 
@@ -57,7 +101,7 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const titleLabel = title ? t(TITLE_MAP[title] ?? "progress.noTitle") : null;
 
   const handleTap = () => {
-    pet.mutate();
+    handlePet();
     queue.forEach((line) => setTimeout(() => emitSpeech(line), 0));
   };
 
@@ -87,15 +131,23 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
       </div>
 
       <div className="relative flex flex-col items-center gap-2 pt-6 pb-1">
-        <div className="h-28 w-28 rounded-full bg-card/60 flex items-center justify-center">
+        <div
+          className={cn(
+            "h-28 w-28 rounded-full bg-card/60 flex items-center justify-center",
+            !isReducedMotion && "animate-pet-float",
+            (idlePhase === "hiding" || idlePhase === "hidden") && "overflow-hidden",
+          )}
+        >
           <PetAvatar
             petType={activePetType}
             size="lg"
             plain
             interactive
-            xpEligible={!limitReached && hasEnergy}
             cyclePosition={cyclePosition}
-            className="animate-pet-float"
+            reward={reward}
+            glow={glow}
+            reappear={idlePhase === "appearing"}
+            hide={hide}
             onTap={handleTap}
             ariaLabel={displayName}
           />

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { Zap, Waves, Flame, Sparkles, Activity, Heart, Pencil, ArrowRight } from "lucide-react";
-import { useCreatureState, usePets, usePet, useSetPet } from "./useCreature";
+import { useCreatureState, usePets, useSetPet } from "./useCreature";
+import { usePetReward } from "./usePetReward";
 import { PET_DEFINITIONS } from "./pets";
 import { EXP_PER_LEVEL, ENERGY_COLOR } from "../../lib/constants";
 import { PET_DAILY_CLICK_LIMIT, PET_CYCLE, ENERGY_LOW_THRESHOLD } from "@moodly/shared";
@@ -25,7 +26,7 @@ export default function CompanionCard() {
   const { t } = useTranslation();
   const { data: creature, isLoading } = useCreatureState();
   const { data: pets } = usePets();
-  const pet = usePet();
+  const { reward, glow, handlePet } = usePetReward();
   const setPet = useSetPet();
   const [renameOpen, setRenameOpen] = useState(false);
   const [draftName, setDraftName] = useState("");
@@ -46,9 +47,6 @@ export default function CompanionCard() {
   const petCountRemaining = creature.petCountRemaining ?? PET_DAILY_CLICK_LIMIT - petCount;
   const limitReached = petCount >= PET_DAILY_CLICK_LIMIT;
   const energy = creature.energy ?? 100;
-  const hasEnergy = energy > 0;
-  // +1 XP доступен только на 3-м клике, при энергии > 0 и до исчерпания лимита.
-  const xpEligible = !limitReached && hasEnergy;
   const energyPercent = Math.max(0, Math.min(100, Math.round((energy / 100) * 100)));
   const isLowEnergy = energy <= ENERGY_LOW_THRESHOLD;
 
@@ -60,12 +58,10 @@ export default function CompanionCard() {
   const titleLabel = title ? t(TITLE_MAP[title] ?? "progress.noTitle") : null;
 
   const handleTap = () => {
-    pet.mutate(undefined, {
-      onSuccess: (data) => {
-        if (data.limitReached) {
-          toast.info(t("companion.petsLimitMessage", { limit: PET_DAILY_CLICK_LIMIT }));
-        }
-      },
+    handlePet((data) => {
+      if (data.limitReached) {
+        toast.info(t("companion.petsLimitMessage", { limit: PET_DAILY_CLICK_LIMIT }));
+      }
     });
   };
 
@@ -93,8 +89,9 @@ export default function CompanionCard() {
             interactive
             ariaLabel={displayName}
             emotion={petMood === "happy" ? "happy" : "idle"}
-            xpEligible={xpEligible}
             cyclePosition={cyclePosition}
+            reward={reward}
+            glow={glow}
             onTap={handleTap}
           />
           {/* NEW: бар энергии прямо под аватаром */}

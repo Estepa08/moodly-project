@@ -470,7 +470,7 @@ paths:
   /creature/pet:
     post:
       operationId: Creature_pet
-      description: 'Погладить компаньона: +1 XP до исчерпания дневного лимита (100)'
+      description: 'Погладить компаньона: цикл 1-2-3 с XP и скрытыми бонусами (утро/вечер/комбо/возвращение/эмпатия)'
       parameters: []
       responses:
         '200':
@@ -481,6 +481,12 @@ paths:
                 $ref: '#/components/schemas/PetResponse'
       tags:
         - Breathing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetRequest'
     patch:
       operationId: Creature_setPet
       description: Активировать питомца и/или задать имя
@@ -1261,6 +1267,7 @@ components:
         - feedCounts
         - petCount
         - petCountRemaining
+        - comfort
       properties:
         id:
           type: string
@@ -1341,6 +1348,10 @@ components:
           type: integer
           format: int32
           description: Сколько поглаживаний осталось сегодня (0 — лимит исчерпан)
+        comfort:
+          type: integer
+          format: int32
+          description: «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
       description: Текущее состояние существа пользователя
     Entry:
       type: object
@@ -1611,6 +1622,46 @@ components:
         unit:
           type: string
       description: Отслеживаемый параметр ментального здоровья (тревожность, сон, настроение и т.д.). Справочник, задаётся разработчиком/экспертом, не пользователем.
+    PetBonus:
+      type: object
+      required:
+        - morning
+        - evening
+        - welcome
+        - empathy
+        - comboCount
+        - comboBonusAwarded
+        - calmnessGain
+        - comfortGain
+      properties:
+        morning:
+          type: boolean
+          description: 'Бонус «Бодрое утро» (6:00–12:00 по серверу): 3-й клик дал +2 XP'
+        evening:
+          type: boolean
+          description: 'Бонус «Спокойный вечер» (20:00–23:00): 3-й клик дал +1 XP и +1 calmness'
+        welcome:
+          type: boolean
+          description: 'Бонус «Возвращение» (пауза > 4 ч): клик дал +2 XP'
+        empathy:
+          type: boolean
+          description: 'Бонус «Эмпатия» (грустное настроение): 3-й клик дал +1 XP и +2 comfort'
+        comboCount:
+          type: integer
+          format: int32
+          description: Текущая длина серии быстрых кликов (< 0.5 c)
+        comboBonusAwarded:
+          type: boolean
+          description: На этом клике сработал бонус «Комбо» (+3 XP)
+        calmnessGain:
+          type: integer
+          format: int32
+          description: На сколько вырос calmness этим кликом
+        comfortGain:
+          type: integer
+          format: int32
+          description: На сколько вырос comfort этим кликом
+      description: Информация о скрытых бонусах за клик по компаньону
     PetCollection:
       type: object
       required:
@@ -1630,6 +1681,13 @@ components:
         feedCounts:
           description: Скормленные единицы по каждому питомцу (map тип → количество)
       description: Коллекция питомцев пользователя
+    PetRequest:
+      type: object
+      properties:
+        empathy:
+          type: boolean
+          description: Пользователь записал грустное настроение/тревогу — активировать бонус «Эмпатия»
+      description: Тело запроса на поглаживание компаньона
     PetResponse:
       type: object
       required:
@@ -1640,6 +1698,11 @@ components:
         - petCountRemaining
         - limitReached
         - cyclePosition
+        - calmnessGain
+        - comfortGain
+        - comboCount
+        - comboBonusAwarded
+        - bonus
       properties:
         state:
           $ref: '#/components/schemas/CreatureState'
@@ -1665,6 +1728,25 @@ components:
           type: integer
           format: int32
           description: 'Позиция в цикле поглаживаний 1-2-3: на 3-й позиции начисляется XP'
+        calmnessGain:
+          type: integer
+          format: int32
+          description: На сколько вырос calmness этим кликом
+        comfortGain:
+          type: integer
+          format: int32
+          description: На сколько вырос comfort этим кликом
+        comboCount:
+          type: integer
+          format: int32
+          description: Текущая длина серии быстрых кликов (< 0.5 c)
+        comboBonusAwarded:
+          type: boolean
+          description: На этом клике сработал бонус «Комбо» (+3 XP)
+        bonus:
+          allOf:
+            - $ref: '#/components/schemas/PetBonus'
+          description: Скрытые бонусы, сработавшие на этом клике
       description: Результат поглаживания компаньона
     PetUpdateRequest:
       type: object
