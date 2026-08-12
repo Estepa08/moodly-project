@@ -1,0 +1,61 @@
+{
+  "emotions": [
+    { "key": "joy", "name": "Радость" },
+    { "key": "trust", "name": "Доверие" },
+    { "key": "fear", "name": "Страх" },
+    { "key": "surprise", "name": "Удивление" },
+    { "key": "sadness", "name": "Грусть" },
+    { "key": "disgust", "name": "Отвращение" },
+    { "key": "anger", "name": "Гнев" },
+    { "key": "anticipation", "name": "Ожидание" }
+  ],
+  "dyads": [
+    { "key": "love", "name": "Любовь", "level": 1, "emotions": ["joy", "trust"] },
+    { "key": "submission", "name": "Покорность", "level": 1, "emotions": ["trust", "fear"] },
+    { "key": "alarm", "name": "Настороженность", "level": 1, "emotions": ["fear", "surprise"] },
+    { "key": "disappointment", "name": "Разочарование", "level": 1, "emotions": ["surprise", "sadness"] },
+    { "key": "remorse", "name": "Раскаяние", "level": 1, "emotions": ["sadness", "disgust"] },
+    { "key": "contempt", "name": "Презрение", "level": 1, "emotions": ["disgust", "anger"] },
+    { "key": "aggressiveness", "name": "Агрессивность", "level": 1, "emotions": ["anger", "anticipation"] },
+    { "key": "optimism", "name": "Оптимизм", "level": 1, "emotions": ["anticipation", "joy"] },
+
+    { "key": "guilt", "name": "Вина", "level": 2, "emotions": ["joy", "fear"] },
+    { "key": "curiosity", "name": "Любопытство", "level": 2, "emotions": ["trust", "surprise"] },
+    { "key": "despair", "name": "Отчаяние", "level": 2, "emotions": ["fear", "sadness"] },
+    { "key": "unbelief", "name": "Недоверие", "level": 2, "emotions": ["surprise", "disgust"] },
+    { "key": "envy", "name": "Зависть", "level": 2, "emotions": ["sadness", "anger"] },
+    { "key": "cynicism", "name": "Цинизм", "level": 2, "emotions": ["disgust", "anticipation"] },
+    { "key": "pride", "name": "Гордость", "level": 2, "emotions": ["anger", "joy"] },
+    { "key": "hope", "name": "Надежда", "level": 2, "emotions": ["anticipation", "trust"] },
+
+    { "key": "delight", "name": "Восторг", "level": 3, "emotions": ["joy", "surprise"] },
+    { "key": "sentimentality", "name": "Сентиментальность", "level": 3, "emotions": ["trust", "sadness"] },
+    { "key": "shame", "name": "Стыд", "level": 3, "emotions": ["fear", "disgust"] },
+    { "key": "outrage", "name": "Возмущение", "level": 3, "emotions": ["surprise", "anger"] },
+    { "key": "pessimism", "name": "Пессимизм", "level": 3, "emotions": ["sadness", "anticipation"] },
+    { "key": "morbidness", "name": "Мрачность", "level": 3, "emotions": ["disgust", "joy"] },
+    { "key": "dominance", "name": "Властность", "level": 3, "emotions": ["anger", "trust"] },
+    { "key": "anxiety", "name": "Тревожность", "level": 3, "emotions": ["anticipation", "fear"] },
+
+    {
+      "key": "bittersweetness", "name": "Горько-сладкое чувство", "level": 4,
+      "emotions": ["joy", "sadness"],
+      "requiresDyads": ["love", "remorse"]
+    },
+    {
+      "key": "ambivalence", "name": "Амбивалентность", "level": 4,
+      "emotions": ["trust", "disgust"],
+      "requiresDyads": ["submission", "contempt"]
+    },
+    {
+      "key": "frozenness", "name": "Оцепенение", "level": 4,
+      "emotions": ["fear", "anger"],
+      "requiresDyads": ["alarm", "aggressiveness"]
+    },
+    {
+      "key": "confusion", "name": "Растерянность", "level": 4,
+      "emotions": ["surprise", "anticipation"],
+      "requiresDyads": ["disappointment", "optimism"]
+    }
+  ]
+}

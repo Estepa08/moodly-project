@@ -15,6 +15,7 @@ import {
   BookOpen,
   Clock,
   ClipboardList,
+  FlaskConical,
 } from "lucide-react";
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
@@ -24,6 +25,7 @@ const PATH_TO_SOURCE: Record<string, PracticeSource> = {
   "/practices/sleep-hygiene": PracticeSource.SleepHygiene,
   "/practices/cost-benefit-analysis": PracticeSource.Cba,
   "/practices/breathing": PracticeSource.Breathing,
+  "/practices/emotion-lab": PracticeSource.EmotionLab,
 };
 
 const PRACTICES = [
@@ -74,6 +76,14 @@ const PRACTICES = [
     descKey: "practices.descBreathing",
     timeKey: "practices.timeBreathing",
     categoryKey: "practices.categoryBody",
+  },
+  {
+    path: "/practices/emotion-lab",
+    icon: FlaskConical,
+    labelKey: "nav.emotionLab",
+    descKey: "practices.descEmotionLab",
+    timeKey: "practices.timeEmotionLab",
+    categoryKey: "practices.categoryMind",
   },
 ];
 

@@ -50,6 +50,9 @@ type CbaExample = components["schemas"]["CbaExample"];
 type CbaCommonItem = components["schemas"]["CbaCommonItem"];
 type CbaEntry = components["schemas"]["CbaEntry"];
 type CbaEntryCreate = components["schemas"]["CbaEntryCreate"];
+type EmotionLabState = components["schemas"]["EmotionLabState"];
+type EmotionLabAttemptRequest = components["schemas"]["EmotionLabAttemptRequest"];
+type EmotionLabAttemptResponse = components["schemas"]["EmotionLabAttemptResponse"];
 
 export interface UserPreference {
   goals: string[];
@@ -468,6 +471,14 @@ export const api = {
         request<CbaEntry>("/cba/entries", { method: "POST", body: JSON.stringify(body) }),
       delete: (id: string) => request<void>(`/cba/entries/${id}`, { method: "DELETE" }),
     },
+  },
+  emotionLab: {
+    state: () => request<EmotionLabState>("/emotion-lab/state"),
+    attempt: (body: EmotionLabAttemptRequest) =>
+      request<EmotionLabAttemptResponse>("/emotion-lab/attempt", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
   },
   admin: {
     listUsers: () => request<AdminUser[]>("/admin/users"),

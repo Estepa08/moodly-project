@@ -92,6 +92,7 @@ export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
   gratitude: 15,
   thoughtJournal: 15,
   sleepHygiene: 15,
+  emotionLab: 15,
 };
 
 export const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
@@ -110,6 +111,7 @@ export const PRACTICE_XP: Record<string, number> = {
   distortions: 10,
   cba: 10,
   thoughtJournal: 5,
+  emotionLab: 5,
 };
 
 export interface MissionDefinition {
