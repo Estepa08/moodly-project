@@ -47,9 +47,16 @@ function createStaticServer() {
   });
 }
 
-/** Набор публичных маршрутов из sitemap.xml + auth-формы. */
+/** Набор публичных маршрутов из sitemap.xml + auth-формы + 404. */
 function collectRoutes() {
-  const routes = new Set(['/', '/login', '/register']);
+  const routes = new Set([
+    '/',
+    '/login',
+    '/register',
+    '/forgot-password',
+    '/reset-password',
+    '/404',
+  ]);
   const sitemap = join(DIST, 'sitemap.xml');
   if (existsSync(sitemap)) {
     const xml = readFileSync(sitemap, 'utf8');

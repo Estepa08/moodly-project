@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { register, uniqueEmail, gotoApp, passTest } from "../helpers";
 
-test.setTimeout(300_000);
+test.describe.configure({ timeout: 300_000 });
 
 const PRIORITY: Record<string, number> = {
   log_mood_entry: 1,
@@ -211,7 +211,16 @@ test(
     const xpText = page.getByText(/\d+\/\d+ XP/).first();
     const before = await xpText.textContent();
 
-    await claimButton.click();
+    await page.locator('[aria-expanded="true"]').waitFor({ state: "hidden" });
+
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().includes("/api/missions/claim") && response.status() === 200,
+    );
+    await claimButton.click({ force: true });
+    const response = await responsePromise;
+    console.log(await response.json());
+
+    await claimButton.click({ force: true });
     await expect(claimButton).not.toBeVisible();
     await expect(card.locator(".text-success")).toBeVisible();
 

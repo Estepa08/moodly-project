@@ -83,6 +83,10 @@ export async function register(
   await checkboxes.nth(0).check();
   await checkboxes.nth(1).check();
   await page.getByRole("button", { name: "Зарегистрироваться" }).click();
+  // После регистрации показывается экран с recovery-кодом — уходим с /register
+  // только по явному подтверждению (см. PublicRoute в App.tsx: раньше редирект
+  // срезал этот экран за ~150мс, теперь он остаётся до подтверждения).
+  await page.getByRole("button", { name: "Я сохранил(а) код, продолжить" }).click();
   await expect(page).not.toHaveURL(/\/register/);
   await skipOnboarding(page);
   await dismissCheckIn(page);

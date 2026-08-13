@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -6,18 +7,20 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { PasswordInput } from '../components/ui/password-input';
 import { Label } from '../components/ui/label';
-import { ShieldCheck, KeyRound, Info } from 'lucide-react';
+import { ShieldCheck, KeyRound, Lock } from 'lucide-react';
 import { AuthPage, AuthHeader, AuthDisclaimer } from '../features/auth';
 import { useSeo, withCanonical } from '../lib/seo';
 
 export default function LoginPage() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const [unlockDetailsOpen, setUnlockDetailsOpen] = useState(false);
 
   useSeo({
     title: t('login.seo.title'),
     description: t('login.seo.description'),
     canonical: withCanonical('/login'),
+    noindex: true,
   });
 
   const {
@@ -76,20 +79,24 @@ export default function LoginPage() {
       <AuthHeader title={t('login.title')} subtitle={t('login.tagline')} />
 
       {unlockRequired && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="rounded-lg border border-amber-300/50 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-900/20 dark:text-amber-100 space-y-1.5"
-        >
-          <div className="flex items-center gap-2 font-medium">
-            <ShieldCheck aria-hidden="true" className="w-4 h-4 shrink-0" />
-            <span>{t('login.unlockReasonTitle')}</span>
-          </div>
-          <p className="leading-relaxed">{t('login.unlockReason')}</p>
-          <p className="flex items-start gap-1.5 text-xs text-amber-800 dark:text-amber-200">
-            <Info aria-hidden="true" className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-            <span>{t('login.unlockReasonHint')}</span>
+        <div role="status" aria-live="polite" className="text-center space-y-1">
+          <p className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground">
+            <Lock aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+            {t('login.unlockReasonTitle')}
           </p>
+          <button
+            type="button"
+            onClick={() => setUnlockDetailsOpen((v) => !v)}
+            aria-expanded={unlockDetailsOpen}
+            className="text-xs text-primary underline underline-offset-2 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          >
+            {t('login.unlockReasonToggle')}
+          </button>
+          {unlockDetailsOpen && (
+            <p className="mx-auto max-w-sm pt-1 text-xs text-muted-foreground leading-relaxed">
+              {t('login.unlockReason')}
+            </p>
+          )}
         </div>
       )}
 

@@ -1,6 +1,19 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import Lottie from 'lottie-react';
+import {
+  HeartHandshake,
+  Heart,
+  HeartPulse,
+  PartyPopper,
+  Star,
+  Sparkles,
+  Sparkle,
+  Flower,
+  Smile,
+  CircleDot,
+  type LucideIcon,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from './pets';
@@ -66,10 +79,30 @@ const HIDE_CLASS: Record<PetHideVariant, string> = {
   tumble: 'animate-pet-hide-tumble',
 };
 
-// Пулы эмодзи для кликов 1 и 2 цикла поглаживаний (3-й клик — частицы награды).
-const CYCLE_EMOJI_FIRST = ['🫶', '💜', '💞', '🎈'];
-const CYCLE_EMOJI_SECOND = ['⭐', '✨', '💖', '🎈'];
-const CYCLE_EMOJI_THIRD = ['🫧', '🌷', '💫', '🥰'];
+// Пулы иконок для кликов 1 и 2 цикла поглаживаний (3-й клик — частицы награды).
+interface CycleIcon {
+  icon: LucideIcon;
+  color: string;
+}
+
+const CYCLE_ICON_FIRST: CycleIcon[] = [
+  { icon: HeartHandshake, color: '#FF6B9D' },
+  { icon: Heart, color: '#E0509C' },
+  { icon: HeartPulse, color: '#B26AE8' },
+  { icon: PartyPopper, color: '#7B5BF2' },
+];
+const CYCLE_ICON_SECOND: CycleIcon[] = [
+  { icon: Star, color: '#F5A623' },
+  { icon: Sparkles, color: '#F2A71B' },
+  { icon: Heart, color: '#D63A85' },
+  { icon: PartyPopper, color: '#E0509C' },
+];
+const CYCLE_ICON_THIRD: CycleIcon[] = [
+  { icon: CircleDot, color: '#5E8FD8' },
+  { icon: Flower, color: '#E0509C' },
+  { icon: Sparkle, color: '#F5A623' },
+  { icon: Smile, color: '#4CC38A' },
+];
 
 type BubbleDepth = 'over' | 'under';
 
@@ -83,6 +116,10 @@ interface BubbleTrajectory {
 interface FloatItem {
   id: number;
   emoji?: string;
+  /** Иконка lucide вместо эмодзи (пузыри кликов по питомцу) */
+  icon?: LucideIcon;
+  /** Цвет иконки-пузыря */
+  iconColor?: string;
   /** Если задан — рендерится текстовый пузырь (например «+1 XP») вместо эмоджи */
   label?: string;
   offset: number;
@@ -118,6 +155,10 @@ interface PetAvatarProps {
   reappear?: boolean;
   /** Событие медленного скрытия внутри контейнера (idle-цикл PetGreeterCard) */
   hide?: PetHide | null;
+  /** Ограничивает нижний разлёт частиц награды (px) — для питомца у края экрана */
+  particleFallLimit?: number;
+  /** Максимальный радиус разлёта частиц награды (px) — ограничивает границей контейнера */
+  particleBoundary?: number;
 }
 
 export default function PetAvatar({
@@ -137,6 +178,8 @@ export default function PetAvatar({
   greetSignal,
   reappear = false,
   hide = null,
+  particleFallLimit,
+  particleBoundary,
 }: PetAvatarProps) {
   const { t } = useTranslation();
   const isReducedMotion = useReducedMotion();
@@ -222,31 +265,36 @@ export default function PetAvatar({
       // Слова поднимаются выше и медленнее — за 5.2s, чтобы успеть прочитать.
       by: label ? -(300 + Math.random() * 90) : -(220 + Math.random() * 70),
     };
-    // Цикл 1-2-3: на 1-2 клике вылетает эмодзи (свой пул у каждой позиции),
-    // на 3-м — тоже декоративная эмодзи (награду показывает PetRewardParticles).
-    // На кликах 1-2 с шансом ~35% вместо эмодзи вылетает слово-пилла (стиль XP).
+    // Цикл 1-2-3: на 1-2 клике вылетает иконка lucide (свой пул у каждой позиции),
+    // на 3-м — тоже декоративная иконка (награду показывает PetRewardParticles).
+    // На кликах 1-2 с шансом ~35% вместо иконки вылетает слово-пилла (стиль XP).
+    let icon: LucideIcon | undefined;
+    let iconColor: string | undefined;
     let emoji: string | undefined;
     if (label) {
-      emoji = undefined;
+      // уже задан — слово-пилла
     } else if (cyclePosition !== 3 && words.length > 0 && Math.random() < WORD_CHANCE) {
-      emoji = undefined;
       label = pickWord();
-    } else {
-      const emojiPool =
+    } else if (cyclePosition === 1 || cyclePosition === 2 || cyclePosition === 3) {
+      const iconPool =
         cyclePosition === 3
-          ? CYCLE_EMOJI_THIRD
+          ? CYCLE_ICON_THIRD
           : cyclePosition === 2
-            ? CYCLE_EMOJI_SECOND
-            : cyclePosition === 1
-              ? CYCLE_EMOJI_FIRST
-              : feedEmojis;
-      emoji = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+            ? CYCLE_ICON_SECOND
+            : CYCLE_ICON_FIRST;
+      const picked = iconPool[Math.floor(Math.random() * iconPool.length)];
+      icon = picked.icon;
+      iconColor = picked.color;
+    } else {
+      emoji = feedEmojis[Math.floor(Math.random() * feedEmojis.length)];
     }
     setBubbles((prev) => [
       ...prev,
       {
         id,
         emoji,
+        icon,
+        iconColor,
         label,
         offset: Math.random() * 60 - 30,
         delay: 0,
@@ -410,7 +458,13 @@ export default function PetAvatar({
               } as CSSProperties
             }
           >
-            {b.label ?? <span className="inline-block text-lg leading-none">{b.emoji}</span>}
+            {b.label ? (
+              b.label
+            ) : b.icon ? (
+              <b.icon aria-hidden="true" className="w-5 h-5" style={{ color: b.iconColor }} />
+            ) : (
+              <span className="inline-block text-lg leading-none">{b.emoji}</span>
+            )}
           </span>
         </span>
       ))}
@@ -442,7 +496,13 @@ export default function PetAvatar({
         ))}
 
       {signals.map((s) => (
-        <PetRewardParticles key={s.id} signal={s} reducedMotion={isReducedMotion} />
+        <PetRewardParticles
+          key={s.id}
+          signal={s}
+          reducedMotion={isReducedMotion}
+          fallLimit={particleFallLimit}
+          boundaryRadius={particleBoundary}
+        />
       ))}
     </button>
   );

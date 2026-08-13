@@ -139,6 +139,24 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mymoodly.ru/thinking-habits-test</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mymoodly.ru/sleep-hygiene-guide</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mymoodly.ru/anxiety-self-help</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mymoodly.ru/privacy</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>

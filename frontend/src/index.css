@@ -135,6 +135,15 @@
   h3[id] {
     scroll-margin-top: 6rem;
   }
+
+  /* Частицы награды компаньона (PetRewardParticles): светлая тема —
+     контрастная тень вместо свечения (цветной ореол на светлом фоне невидим),
+     тёмная — цветное свечение в цвет иконки. */
+  .pet-particle-icon {
+    filter: drop-shadow(0 1px 1px rgba(90, 60, 120, 0.4))
+      drop-shadow(0 3px 8px rgba(90, 60, 120, 0.22));
+    stroke-width: 2.75;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -207,6 +216,13 @@
     --aurora-1: 262 75% 70%;
     --aurora-2: 330 72% 68%;
     --aurora-3: 160 84% 50%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .pet-particle-icon {
+    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+    stroke-width: 2.5;
   }
 }
 
@@ -316,24 +332,28 @@
 @keyframes feed-fall {
   0% {
     opacity: 0;
-    transform: translateY(-160px) scale(0.4) rotate(-12deg);
+    top: 0%;
+    transform: translate(0, -100%) scale(0.4) rotate(-12deg);
   }
-  20% {
+  18% {
     opacity: 1;
   }
   60% {
     opacity: 1;
-    transform: translateY(0) scale(1.1) rotate(6deg);
+    top: 100%;
+    transform: translate(0, -100%) scale(1.1) rotate(6deg);
   }
   100% {
     opacity: 0;
-    transform: translateY(14px) scale(0.6);
+    top: 100%;
+    transform: translate(0, -100%) scale(0.6);
   }
 }
 
 .animate-feed-fall {
   animation: feed-fall 1.1s ease-in forwards;
   opacity: 0;
+  will-change: transform, opacity, top;
 }
 
 @keyframes pet-squash {

@@ -64,8 +64,7 @@ function confidenceFor(n: number, stdDev: number, absLift: number): Confidence {
   return base;
 }
 
-export interface MetricCorrelation {
-  metric: CorrelationMetric;
+export interface LiftResult {
   baseline: number;
   daysTracked: number;
   up: ActivityScore[];
@@ -73,74 +72,38 @@ export interface MetricCorrelation {
   sufficient: boolean;
 }
 
+export interface MetricCorrelation extends LiftResult {
+  metric: CorrelationMetric;
+  /**
+   * Связь активностей с внутридневным разбросом метрики (max-min за день),
+   * а не со средним. Считается только по дням с ≥2 отметками одной метрики —
+   * при одном чек-ине в день swing не определён, и такой день сюда не попадает.
+   */
+  volatility: LiftResult;
+}
+
 interface DayPoint {
   value: number;
+  /** Размах (max-min) значений метрики за день; null — если отметка была одна. */
+  swing: number | null;
   activities: ActivitySelection[];
 }
 
-function dayKeyLocal(createdAt: string): string {
-  const d = new Date(createdAt);
-  if (Number.isNaN(d.getTime())) return createdAt.slice(0, 10);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate(),
-  ).padStart(2, '0')}`;
-}
-
-export function computeActivityCorrelation(
-  entries: DecryptedEntry[],
-  paramNameById: (id: string) => string | undefined,
+/**
+ * Общее ядро подсчёта лифта: группирует активности по ключу, считает
+ * среднее/lift/confidence относительно baseline и берёт top-3 в каждую сторону.
+ * Используется и для среднего значения метрики за день, и для её
+ * внутридневного разброса (volatility) — отличается только тем, какое поле
+ * дня передано как `value`.
+ */
+function computeLift(
+  days: { value: number; activities: ActivitySelection[] }[],
   labelFor: (key: string, customLabel?: string) => string,
-): MetricCorrelation {
-  return computeMetricCorrelation(entries, paramNameById, labelFor, 'mood');
-}
-
-export function computeMetricCorrelation(
-  entries: DecryptedEntry[],
-  paramNameById: (id: string) => string | undefined,
-  labelFor: (key: string, customLabel?: string) => string,
-  metric: CorrelationMetric,
-): MetricCorrelation {
-  const paramName = metricParamName(metric);
-  const byDay = new Map<string, { values: number[]; activities: ActivitySelection[] }>();
-
-  for (const e of entries) {
-    const name = paramNameById(e.parameterId);
-    if (!name) continue;
-    const day = dayKeyLocal(e.createdAt);
-
-    if (name === paramName) {
-      if (typeof e.value !== 'number') continue;
-      if (!byDay.has(day)) byDay.set(day, { values: [], activities: [] });
-      byDay.get(day)!.values.push(e.value);
-    } else if (name === DAY_ACTIVITIES_PARAM) {
-      const acts = e.activities ?? [];
-      if (acts.length === 0) continue;
-      if (!byDay.has(day)) byDay.set(day, { values: [], activities: [] });
-      byDay.get(day)!.activities.push(...acts);
-    }
-  }
-
-  const days: DayPoint[] = [];
-  for (const point of byDay.values()) {
-    if (point.values.length === 0 || point.activities.length === 0) continue;
-    const raw = point.values.reduce((s, v) => s + v, 0) / point.values.length;
-    days.push({
-      value: normalizeMetric(metric, raw),
-      activities: point.activities,
-    });
-  }
-
+): LiftResult {
   const daysTracked = days.length;
 
   if (daysTracked < MIN_ACTIVITY_DAYS) {
-    return {
-      metric,
-      baseline: 0,
-      daysTracked,
-      up: [],
-      down: [],
-      sufficient: false,
-    };
+    return { baseline: 0, daysTracked, up: [], down: [], sufficient: false };
   }
 
   const baseline = days.reduce((s, d) => s + d.value, 0) / days.length;
@@ -189,7 +152,74 @@ export function computeMetricCorrelation(
     .sort((a, b) => a.lift - b.lift || b.days - a.days)
     .slice(0, 3);
 
-  return { metric, baseline, daysTracked, up, down, sufficient: true };
+  return { baseline, daysTracked, up, down, sufficient: true };
+}
+
+function dayKeyLocal(createdAt: string): string {
+  const d = new Date(createdAt);
+  if (Number.isNaN(d.getTime())) return createdAt.slice(0, 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+    d.getDate(),
+  ).padStart(2, '0')}`;
+}
+
+export function computeActivityCorrelation(
+  entries: DecryptedEntry[],
+  paramNameById: (id: string) => string | undefined,
+  labelFor: (key: string, customLabel?: string) => string,
+): MetricCorrelation {
+  return computeMetricCorrelation(entries, paramNameById, labelFor, 'mood');
+}
+
+export function computeMetricCorrelation(
+  entries: DecryptedEntry[],
+  paramNameById: (id: string) => string | undefined,
+  labelFor: (key: string, customLabel?: string) => string,
+  metric: CorrelationMetric,
+): MetricCorrelation {
+  const paramName = metricParamName(metric);
+  const byDay = new Map<string, { values: number[]; activities: ActivitySelection[] }>();
+
+  for (const e of entries) {
+    const name = paramNameById(e.parameterId);
+    if (!name) continue;
+    const day = dayKeyLocal(e.createdAt);
+
+    if (name === paramName) {
+      if (typeof e.value !== 'number') continue;
+      if (!byDay.has(day)) byDay.set(day, { values: [], activities: [] });
+      byDay.get(day)!.values.push(e.value);
+    } else if (name === DAY_ACTIVITIES_PARAM) {
+      const acts = e.activities ?? [];
+      if (acts.length === 0) continue;
+      if (!byDay.has(day)) byDay.set(day, { values: [], activities: [] });
+      byDay.get(day)!.activities.push(...acts);
+    }
+  }
+
+  const days: DayPoint[] = [];
+  for (const point of byDay.values()) {
+    if (point.values.length === 0 || point.activities.length === 0) continue;
+    const raw = point.values.reduce((s, v) => s + v, 0) / point.values.length;
+    // Инверсия метрики (anxiety) не меняет размах — только сдвигает знак,
+    // поэтому swing считаем по «сырым» значениям.
+    const swing =
+      point.values.length >= 2 ? Math.max(...point.values) - Math.min(...point.values) : null;
+    days.push({
+      value: normalizeMetric(metric, raw),
+      swing,
+      activities: point.activities,
+    });
+  }
+
+  const base = computeLift(days, labelFor);
+
+  const volatilityDays = days
+    .filter((d): d is DayPoint & { swing: number } => d.swing !== null)
+    .map((d) => ({ value: d.swing, activities: d.activities }));
+  const volatility = computeLift(volatilityDays, labelFor);
+
+  return { metric, ...base, volatility };
 }
 
 export function computeAllMetricCorrelations(

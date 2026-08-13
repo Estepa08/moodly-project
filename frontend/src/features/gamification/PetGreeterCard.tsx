@@ -95,7 +95,7 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
       className="pet-gradient-bg rounded-3xl shadow-neumorphic p-5 pt-4 space-y-3 text-foreground"
     >
       <div className="flex items-center gap-2 px-1">
-        <p className="font-serif font-bold text-foreground text-lg leading-tight truncate">
+        <p className="font-serif font-bold text-foreground text-lg leading-tight truncate min-w-0 flex-1">
           {displayName}
         </p>
         {title && titleEmoji && (
@@ -109,14 +109,30 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             <span className="hidden sm:inline">{titleLabel}</span>
           </span>
         )}
-        {!isMobile && (
-          <span className="ml-auto shrink-0 px-2.5 py-1 rounded-full bg-card shadow-neumorphic-sm text-xs font-semibold text-primary">
-            {t('companion.level', { level: creature.level })}
+        <span className="ml-auto flex items-center gap-1.5 shrink-0">
+          <span
+            className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm"
+            title={t('companion.energy', { value: energy })}
+          >
+            <span className="w-8 h-1.5 rounded-full bg-muted overflow-hidden">
+              <span
+                className="block h-full rounded-full transition-[width] duration-300"
+                style={{ width: `${energyPercent}%`, backgroundColor: ENERGY_COLOR }}
+              />
+            </span>
+            <span className="text-[10px] font-bold text-muted-foreground tabular-nums">
+              ⚡ {energy}
+            </span>
           </span>
-        )}
+          {!isMobile && (
+            <span className="px-2.5 py-1 rounded-full bg-card shadow-neumorphic-sm text-xs font-semibold text-primary">
+              {t('companion.level', { level: creature.level })}
+            </span>
+          )}
+        </span>
       </div>
 
-      <div className="relative flex flex-col items-center gap-2 pt-6 pb-1">
+      <div className="relative flex flex-col items-center gap-2 pt-6 pb-8">
         <div
           className={cn(
             'h-28 w-28 rounded-full bg-card/60 flex items-center justify-center',
@@ -136,18 +152,8 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             hide={hide}
             onTap={handleTap}
             ariaLabel={displayName}
+            particleFallLimit={100}
           />
-        </div>
-        <div className="w-[72px]">
-          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-            <div
-              className="h-full rounded-full transition-[width] duration-300"
-              style={{ width: `${energyPercent}%`, backgroundColor: ENERGY_COLOR }}
-            />
-          </div>
-          <p className="mt-0.5 text-center text-[10px] font-bold text-muted-foreground tabular-nums">
-            ⚡ {energy}
-          </p>
         </div>
       </div>
 
@@ -164,8 +170,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
         {t('petGreeter.cta')}
         <ArrowRight aria-hidden="true" className="w-4 h-4" />
       </button>
-
-      <p className="text-center text-[11px] text-muted-foreground">{t('petGreeter.hint')}</p>
     </section>
   );
 }

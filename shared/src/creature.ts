@@ -135,6 +135,7 @@ export const MISSION_DEFINITIONS: MissionDefinition[] = [
   { key: "complete_5_practices", labelKey: "missions.complete5Practices", xpReward: 20 },
   { key: "breathing_2", labelKey: "missions.breathing2", xpReward: 10 },
   { key: "streak_2", labelKey: "missions.streak2", xpReward: 10 },
+  { key: "log_day_activities", labelKey: "missions.logDayActivities", xpReward: 10 },
 ];
 
 export interface LevelState {

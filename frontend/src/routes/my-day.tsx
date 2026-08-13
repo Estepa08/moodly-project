@@ -1,16 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sunrise, Sunset, SunMedium, CheckCircle2 } from 'lucide-react';
+import { Sunrise, Sunset, SunMedium, CheckCircle2, CalendarRange, Moon } from 'lucide-react';
 import { useDayPhase } from '../hooks/useDayPhase';
 import { useEntries } from '../hooks/useEntries';
 import { useParameters } from '../hooks/useParameters';
+import { useSleepHygieneEntry } from '../hooks/useSleepHygieneEntry';
 import PetGreeterCard from '../features/gamification/PetGreeterCard';
 import PetCheckInDialog, {
   shouldAutoOpenCheckIn,
   markCheckInDone,
 } from '../features/check-in/PetCheckInDialog';
 import DayActivitiesCard from '../features/check-in/DayActivitiesCard';
+import DayActivitiesSection from '../features/check-in/DayActivitiesSection';
+import SleepHygieneChecklist from '../features/check-in/SleepHygieneChecklist';
 import ActivityCorrelationCard from '../features/analytics/ActivityCorrelationCard';
+import { ModalShell } from '../components/ui/modal-shell';
+import { ComponentSize, ParameterName } from '../lib/constants';
 
 function useTodayParamIds() {
   const { data: params } = useParameters();
@@ -90,7 +95,10 @@ export default function MyDay() {
   const phase = useDayPhase();
   const { paramIdByName, savedTodayParamIds } = useTodayParamIds();
   const [checkInOpen, setCheckInOpen] = useState(false);
+  const [activitiesModalOpen, setActivitiesModalOpen] = useState(false);
+  const [sleepHygieneModalOpen, setSleepHygieneModalOpen] = useState(false);
   const markActivitiesRef = useRef<HTMLDivElement>(null);
+  const sleepHygiene = useSleepHygieneEntry();
 
   useEffect(() => {
     const autoOpen = shouldAutoOpenCheckIn(savedTodayParamIds, paramIdByName);
@@ -109,6 +117,15 @@ export default function MyDay() {
   };
 
   const showMorningStatus = phase === 'day';
+
+  const activitiesParamId = paramIdByName.get(ParameterName.DayActivities);
+  const activitiesLoggedToday = activitiesParamId
+    ? savedTodayParamIds.has(activitiesParamId)
+    : false;
+  const sleepHygieneParamId = paramIdByName.get(ParameterName.SleepHygiene);
+  const sleepHygieneLoggedToday = sleepHygieneParamId
+    ? savedTodayParamIds.has(sleepHygieneParamId)
+    : false;
 
   return (
     <div className="space-y-4">
@@ -131,7 +148,42 @@ export default function MyDay() {
         open={checkInOpen}
         onOpenChange={handleCheckInClose}
         onMarkActivities={scrollToActivities}
+        onOpenActivities={() => setActivitiesModalOpen(true)}
+        onOpenSleepHygiene={() => setSleepHygieneModalOpen(true)}
+        activitiesLoggedToday={activitiesLoggedToday}
+        sleepHygieneLoggedToday={sleepHygieneLoggedToday}
       />
+
+      <ModalShell
+        open={activitiesModalOpen}
+        onOpenChange={setActivitiesModalOpen}
+        icon={CalendarRange}
+        iconSize={ComponentSize.Md}
+        iconBg="bg-primary/10"
+        iconColor="text-primary"
+        title={t('dayActivities.sectionHeading')}
+        description={t('dayActivities.subtitle')}
+      >
+        <DayActivitiesSection onClose={() => setActivitiesModalOpen(false)} />
+      </ModalShell>
+
+      <ModalShell
+        open={sleepHygieneModalOpen}
+        onOpenChange={setSleepHygieneModalOpen}
+        icon={Moon}
+        iconSize={ComponentSize.Md}
+        iconBg="bg-primary/10"
+        iconColor="text-primary"
+        title={t('sleepHygiene.title')}
+        description={t('sleepHygiene.subtitle')}
+      >
+        <SleepHygieneChecklist
+          parameterId={sleepHygiene.parameterId}
+          hygieneEntries={sleepHygiene.hygieneEntries}
+          createEntry={sleepHygiene.createEntry}
+          updateEntry={sleepHygiene.updateEntry}
+        />
+      </ModalShell>
     </div>
   );
 }

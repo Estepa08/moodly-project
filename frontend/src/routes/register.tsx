@@ -18,6 +18,7 @@ export default function RegisterPage() {
     title: t('register.seo.title'),
     description: t('register.seo.description'),
     canonical: withCanonical('/register'),
+    noindex: true,
   });
 
   const {

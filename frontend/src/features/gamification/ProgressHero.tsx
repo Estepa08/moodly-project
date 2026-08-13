@@ -45,7 +45,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
     <div className="rounded-xl bg-card shadow-neumorphic p-5">
       <div className="flex items-center gap-4">
         {/* Аватар */}
-        <div className="shrink-0 flex flex-col items-center gap-2">
+        <div className="shrink-0">
           <div className="w-24 h-24 rounded-full bg-primary/5 flex items-center justify-center relative">
             <PetAvatar
               petType={petType}
@@ -57,20 +57,10 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               reward={reward}
               glow={glow}
               className="animate-pet-float"
+              particleBoundary={36}
+              particleFallLimit={0}
               onTap={handleTap}
             />
-          </div>
-          {/* Мини-бар энергии под аватаром */}
-          <div className="w-[72px]">
-            <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full rounded-full transition-[width] duration-300"
-                style={{ width: `${energyPercent}%`, backgroundColor: ENERGY_COLOR }}
-              />
-            </div>
-            <p className="mt-0.5 text-center text-[10px] font-bold text-muted-foreground tabular-nums">
-              ⚡ {energy}
-            </p>
           </div>
         </div>
 
@@ -96,6 +86,20 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               </span>
             )}
             <StreakIndicator streak={creature.streak} />
+            <span
+              className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm"
+              title={t('companion.energy', { value: energy })}
+            >
+              <span className="w-8 h-1.5 rounded-full bg-muted overflow-hidden">
+                <span
+                  className="block h-full rounded-full transition-[width] duration-300"
+                  style={{ width: `${energyPercent}%`, backgroundColor: ENERGY_COLOR }}
+                />
+              </span>
+              <span className="text-[10px] font-bold text-muted-foreground tabular-nums">
+                ⚡ {energy}
+              </span>
+            </span>
           </div>
 
           {/* Прогресс XP */}
