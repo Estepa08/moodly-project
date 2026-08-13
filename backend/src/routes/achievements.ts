@@ -25,24 +25,16 @@ export default async function achievementRoutes(fastify: FastifyInstance) {
   fastify.patch<{ Body: SkinBody }>(
     '/creature/skin',
     { preHandler: [fastify.authenticate] },
-    async (request, reply) => {
-      try {
-        return await achievementsService.setSkin(request.userId, request.body.skin);
-      } catch (e) {
-        return reply.status(400).send({ error: (e as Error).message });
-      }
+    async (request) => {
+      return achievementsService.setSkin(request.userId, request.body.skin);
     },
   );
 
   fastify.patch<{ Body: TitleBody }>(
     '/creature/title',
     { preHandler: [fastify.authenticate] },
-    async (request, reply) => {
-      try {
-        return await achievementsService.setTitle(request.userId, request.body.title);
-      } catch (e) {
-        return reply.status(400).send({ error: (e as Error).message });
-      }
+    async (request) => {
+      return achievementsService.setTitle(request.userId, request.body.title);
     },
   );
 }

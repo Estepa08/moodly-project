@@ -166,7 +166,7 @@ function DyadChip({ dyad, discovered }: { dyad: DyadView; discovered: boolean })
   const metaA = emotionMeta(a);
   const metaB = emotionMeta(b);
 
-  const dyadNameKey = `emotionLab.dyads.${dyad.key}.name`;
+  const dyadNameKey = `emotionLab.dyads.${dyad.key}`;
 
   return (
     <div

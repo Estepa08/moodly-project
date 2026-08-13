@@ -10,6 +10,8 @@ const CATEGORY_KEYS: Record<string, string> = {
   journal: 'seoPages.blog.categories.journal',
   anxiety: 'seoPages.blog.categories.anxiety',
   sleep: 'seoPages.blog.categories.sleep',
+  thinking: 'seoPages.blog.categories.thinking',
+  motivation: 'seoPages.blog.categories.motivation',
 };
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
@@ -18,6 +20,10 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   anxiety:
     'Статьи о тревоге: техники заземления, работа с тревожными мыслями и практические упражнения для снижения тревожности.',
   sleep: 'Статьи о сне: гигиена сна, как наладить режим и улучшить качество отдыха.',
+  thinking:
+    'Статьи о привычках мышления: когнитивные искажения, анализ мыслей и понимание собственных паттернов.',
+  motivation:
+    'Статьи о мотивации и привычках: геймификация, серии и способы не бросать заботу о себе.',
 };
 
 export default function BlogCategoryPage() {

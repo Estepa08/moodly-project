@@ -10,6 +10,9 @@ import { setSessionUserId } from '../lib/crypto/session';
 
 export type RegisterStep = 'form' | 'recovery';
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MIN_PASSWORD_LENGTH = 8;
+
 export function useRegisterForm() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -31,6 +34,14 @@ export function useRegisterForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (!EMAIL_PATTERN.test(email)) {
+      setError(t('register.emailError'));
+      return;
+    }
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      setError(t('register.passwordError'));
+      return;
+    }
     if (!isAdult) {
       setError(t('register.ageError'));
       return;

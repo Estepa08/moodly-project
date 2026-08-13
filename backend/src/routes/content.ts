@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { contentService, type MessageInput } from '../services/content.js';
-import { AppError, NotFoundError } from '../lib/errors.js';
+import { AppError } from '../lib/errors.js';
 
 const MESSAGE_TYPES = ['morning', 'day', 'evening'];
 const LOCALES = ['ru', 'en'];
@@ -68,12 +68,7 @@ export default async function contentRoutes(fastify: FastifyInstance) {
     '/content/messages/:id',
     { preHandler: [fastify.requireContentManager] },
     async (request) => {
-      try {
-        return await contentService.update(request.params.id, request.body ?? {});
-      } catch (err) {
-        if (err instanceof NotFoundError) throw err;
-        throw err;
-      }
+      return contentService.update(request.params.id, request.body ?? {});
     },
   );
 

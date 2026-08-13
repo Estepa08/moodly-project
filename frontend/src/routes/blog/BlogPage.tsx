@@ -16,6 +16,8 @@ const CATEGORY_KEYS: Record<string, string> = {
   journal: 'seoPages.blog.categories.journal',
   anxiety: 'seoPages.blog.categories.anxiety',
   sleep: 'seoPages.blog.categories.sleep',
+  thinking: 'seoPages.blog.categories.thinking',
+  motivation: 'seoPages.blog.categories.motivation',
 };
 
 export default function BlogPage() {

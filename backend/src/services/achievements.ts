@@ -1,5 +1,6 @@
 import { prisma } from '../lib/prisma.js';
 import { lockUser } from '../lib/user-lock.js';
+import { AppError, NotFoundError } from '../lib/errors.js';
 
 export const achievementsService = {
   async getAll(userId: string) {
@@ -183,11 +184,11 @@ export const achievementsService = {
   async setSkin(userId: string, skin: string) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      throw new Error('Creature state not found');
+      throw new NotFoundError('CreatureState');
     }
     const unlocked = creature.unlockedSkins ?? ['default'];
     if (!unlocked.includes(skin)) {
-      throw new Error('Skin not unlocked');
+      throw new AppError('SKIN_LOCKED', 403, 'Skin not unlocked');
     }
     const updated = await prisma.creatureState.update({
       where: { userId },
@@ -199,12 +200,12 @@ export const achievementsService = {
   async setTitle(userId: string, title: string | null) {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
-      throw new Error('Creature state not found');
+      throw new NotFoundError('CreatureState');
     }
     if (title !== null) {
       const unlocked = creature.unlockedTitles ?? [];
       if (!unlocked.includes(title)) {
-        throw new Error('Title not unlocked');
+        throw new AppError('TITLE_LOCKED', 403, 'Title not unlocked');
       }
     }
     const updated = await prisma.creatureState.update({

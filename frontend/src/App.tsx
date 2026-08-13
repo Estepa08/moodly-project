@@ -98,11 +98,17 @@ function PublicRoute() {
   const { isAuthenticated, isBootstrapping } = useAuth();
   const location = useLocation();
   if (isBootstrapping) return <BootstrapSpinner />;
-  if (isAuthenticated && hasSessionKey()) return <Navigate to="/my-day" replace />;
+  // /register остаётся смонтированным даже после успешной регистрации (login() уже
+  // выставил isAuthenticated) — иначе экран с recovery-кодом мгновенно перекрывается
+  // этим редиректом, и пользователь не успевает его сохранить. RegisterPage сам уводит
+  // на /my-day через handleRecoveryConfirmed после явного подтверждения.
+  if (isAuthenticated && hasSessionKey() && location.pathname !== '/register') {
+    return <Navigate to="/my-day" replace />;
+  }
   // Авторизованный, но DEK потерян (новая вкладка/браузер): на защищённые
   // маршруты не ведём (ProtectedRoute и так уведёт на /login с разблокировкой),
   // но и лендинг не показываем — только сам /login, чтобы не было цикла.
-  if (isAuthenticated && location.pathname !== '/login') {
+  if (isAuthenticated && !hasSessionKey() && location.pathname !== '/login') {
     return <Navigate to="/login" replace state={{ reason: 'unlock-required' }} />;
   }
   return <Outlet />;
