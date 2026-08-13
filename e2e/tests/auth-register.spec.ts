@@ -14,6 +14,7 @@ test(
     await checkboxes.nth(0).check();
     await checkboxes.nth(1).check();
     await page.getByRole("button", { name: "Зарегистрироваться" }).click();
+    await page.getByRole("button", { name: "Я сохранил(а) код, продолжить" }).click();
 
     await expect(page).not.toHaveURL(/\/register/);
     await expect(page.locator("#main-content")).toBeVisible();
