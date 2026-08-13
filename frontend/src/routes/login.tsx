@@ -18,6 +18,7 @@ export default function LoginPage() {
     title: t('login.seo.title'),
     description: t('login.seo.description'),
     canonical: withCanonical('/login'),
+    noindex: true,
   });
 
   const {

@@ -51,12 +51,25 @@
             Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://mc.yandex.ru; connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://yandex.net wss://mc.yandex.ru; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
         }
         # Пытаемся найти файл. Сначала реальные файлы ({path}), затем
-        # пререндеренный HTML маршрута ({path}/index.html), и только потом
-        # SPA-fallback для несуществующих путей (React 404).
+        # пререндеренный HTML маршрута ({path}/index.html), и только потом —
+        # ошибка 404 (перехватывается handle_errors → пререндеренная /404).
         # Пререндер (frontend/scripts/prerender.mjs) кладёт статический HTML
         # в dist/<route>/index.html — его отдают роботам/браузерам сразу.
-        try_files {path} {path}/index.html /index.html
+        # Намеренно НЕ используем SPA-fallback на /index.html: иначе любой
+        # несуществующий путь отдавал бы главную с HTTP 200 и index,follow
+        # (soft-404), что тратит краулинговый бюджет Google впустую.
+        try_files {path} {path}/index.html 404
         # Раздаём файлы из корня /srv
+        file_server
+    }
+
+    # Кастомные страницы ошибок: для 404 отдаём пререндеренную страницу
+    # (dist/404/index.html, meta noindex), статус ответа остаётся 404.
+    handle_errors {
+        @notfound {
+            expression {http.error.status_code} == 404
+        }
+        rewrite @notfound /404/index.html
         file_server
     }
 }

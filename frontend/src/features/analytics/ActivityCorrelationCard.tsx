@@ -1,6 +1,16 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TrendingUp, TrendingDown, BarChart3, Moon, Sun, Zap, CloudLightning } from 'lucide-react';
+import {
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  Moon,
+  Sun,
+  Zap,
+  CloudLightning,
+  CheckCircle2,
+  Activity,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { useParameters } from '../../hooks/useParameters';
 import { useEntries } from '../../hooks/useEntries';
@@ -63,7 +73,7 @@ export default function ActivityCorrelationCard() {
 
   const formatValue = (v: number) => v.toFixed(1);
 
-  const scoreRows = (list: ActivityScore[], positive: boolean) => {
+  const scoreRows = (list: ActivityScore[], positive: boolean, colorClass?: string) => {
     if (list.length === 0) return <p className="text-xs text-muted-foreground">—</p>;
     return (
       <ul className="space-y-2">
@@ -71,7 +81,7 @@ export default function ActivityCorrelationCard() {
           <li key={s.key} className="text-sm">
             <span className="font-medium text-foreground">{s.label}</span>
             <div className="flex items-center gap-1 text-xs">
-              <span className={positive ? 'text-green-600' : 'text-red-500'}>
+              <span className={colorClass ?? (positive ? 'text-green-600' : 'text-red-500')}>
                 {positive ? '+' : ''}
                 {formatValue(s.lift)}
               </span>
@@ -125,6 +135,32 @@ export default function ActivityCorrelationCard() {
             );
           })}
         </div>
+
+        {correlations && (
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {(Object.keys(METRIC_META) as CorrelationMetric[]).map((m) => {
+              const c = correlations[m];
+              const ready = c.sufficient;
+              return (
+                <span
+                  key={m}
+                  className={cn(
+                    'inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium',
+                    ready ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground',
+                  )}
+                >
+                  {ready && <CheckCircle2 aria-hidden="true" className="w-3 h-3" />}
+                  {t(METRIC_META[m].labelKey)}
+                  {!ready && (
+                    <span className="tabular-nums">
+                      {c.daysTracked}/{MIN_ACTIVITY_DAYS}
+                    </span>
+                  )}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         <div className="mt-3">
           {isLoading ? (
@@ -183,6 +219,29 @@ export default function ActivityCorrelationCard() {
                   {scoreRows(current.down, false)}
                 </div>
               </div>
+
+              {current.volatility.sufficient && (
+                <div className="pt-1 border-t border-border">
+                  <h4 className="flex items-center gap-1 text-xs font-semibold text-foreground mt-3 mb-2">
+                    <Activity aria-hidden="true" className="w-3.5 h-3.5 text-accent" />
+                    {t('dayActivities.correlationVolatility')}
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="text-[11px] font-semibold text-amber-600 mb-2">
+                        {t('dayActivities.correlationVolatilityUp')}
+                      </h5>
+                      {scoreRows(current.volatility.up, true, 'text-amber-600')}
+                    </div>
+                    <div>
+                      <h5 className="text-[11px] font-semibold text-teal-600 mb-2">
+                        {t('dayActivities.correlationVolatilityDown')}
+                      </h5>
+                      {scoreRows(current.volatility.down, false, 'text-teal-600')}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

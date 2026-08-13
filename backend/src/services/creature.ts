@@ -269,6 +269,13 @@ export const creatureService = {
     const todayEntries = await prisma.entry.count({
       where: { userId, createdAt: { gte: today, lt: todayEnd } },
     });
+    const todayDayActivities = await prisma.entry.count({
+      where: {
+        userId,
+        createdAt: { gte: today, lt: todayEnd },
+        parameter: { name: 'Day Activities' },
+      },
+    });
     const todayTests = await prisma.testResult.count({
       where: { userId, completedAt: { gte: today, lt: todayEnd } },
     });
@@ -304,6 +311,8 @@ export const creatureService = {
         progress = Math.min(2, breathingCount) / 2;
       } else if (m.missionKey === 'streak_2') {
         progress = (creature?.streak ?? 0) >= 2 ? 1 : 0;
+      } else if (m.missionKey === 'log_day_activities') {
+        progress = todayDayActivities > 0 ? 1 : 0;
       } else {
         const source = MISSION_SOURCE[m.missionKey];
         progress = source && completedSources.has(source) ? 1 : 0;

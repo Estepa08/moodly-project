@@ -56,7 +56,7 @@ export default function FloatingCompanion() {
   return (
     <div
       className={cn(
-        'fixed right-4 bottom-[calc(5rem+var(--sab))] md:bottom-6 md:right-6 z-40',
+        'fixed right-[1cm] bottom-[calc(5rem+var(--sab))] md:bottom-6 md:right-[1cm] z-40',
         !isReducedMotion && !away && 'animate-pet-float',
       )}
       role="presentation"

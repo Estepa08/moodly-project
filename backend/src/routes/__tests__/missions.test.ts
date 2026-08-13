@@ -120,6 +120,43 @@ describe('Creature missions', () => {
     expect(missionState.progress).toBe(1);
   });
 
+  it('log_day_activities mission — progresses after a Day Activities entry is created', async () => {
+    const mission = await createMission(
+      'log_day_activities',
+      'missions.logDayActivities',
+      10,
+    );
+
+    const param = await prisma.parameter.create({ data: { name: 'Day Activities' } });
+
+    let res = await app.inject({
+      method: 'GET',
+      url: '/creature/missions',
+      headers: { authorization: `Bearer ${token}` },
+    });
+    const before = res.json().find((m: { id: string }) => m.id === mission.id);
+    expect(before.progress).toBe(0);
+
+    await app.inject({
+      method: 'POST',
+      url: '/entries',
+      headers: { authorization: `Bearer ${token}` },
+      payload: {
+        id: `mission-day-activities-${Date.now()}`,
+        parameterId: param.id,
+        encryptedData: 'ENC:1',
+      },
+    });
+
+    res = await app.inject({
+      method: 'GET',
+      url: '/creature/missions',
+      headers: { authorization: `Bearer ${token}` },
+    });
+    const after = res.json().find((m: { id: string }) => m.id === mission.id);
+    expect(after.progress).toBe(1);
+  });
+
   it('complete_test mission — progresses after a test result exists today', async () => {
     const mission = await createMission('complete_test', 'missions.completeTest', 15);
 

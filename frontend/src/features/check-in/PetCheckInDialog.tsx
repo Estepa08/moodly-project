@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Flame } from 'lucide-react';
+import { Flame, CalendarRange, Moon } from 'lucide-react';
 import { Dialog, DialogContent } from '../../components/ui/dialog';
 import PetAvatar from '../gamification/PetAvatar';
 import { usePets, useCreatureState, celebrate, emitSpeech } from '../gamification';
@@ -24,12 +24,20 @@ interface PetCheckInDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onMarkActivities?: () => void;
+  onOpenActivities?: () => void;
+  onOpenSleepHygiene?: () => void;
+  activitiesLoggedToday?: boolean;
+  sleepHygieneLoggedToday?: boolean;
 }
 
 export default function PetCheckInDialog({
   open,
   onOpenChange,
   onMarkActivities,
+  onOpenActivities,
+  onOpenSleepHygiene,
+  activitiesLoggedToday,
+  sleepHygieneLoggedToday,
 }: PetCheckInDialogProps) {
   const { t } = useTranslation();
   const phase = useDayPhase();
@@ -158,6 +166,37 @@ export default function PetCheckInDialog({
                       {t('petCheckIn.rewardStreak', { count: checkIn.streak })}
                     </span>
                   </div>
+                )}
+              </div>
+            )}
+
+            {phase === 'evening' && (!activitiesLoggedToday || !sleepHygieneLoggedToday) && (
+              <div className="space-y-2">
+                {!activitiesLoggedToday && onOpenActivities && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      close();
+                      onOpenActivities();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 rounded-2xl bg-card border border-border px-4 py-3 text-sm font-semibold text-foreground shadow-neumorphic-sm transition-[transform,filter] duration-150 hover:brightness-105 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <CalendarRange aria-hidden="true" className="w-4 h-4 text-primary" />
+                    {t('petCheckIn.openActivities')}
+                  </button>
+                )}
+                {!sleepHygieneLoggedToday && onOpenSleepHygiene && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      close();
+                      onOpenSleepHygiene();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 rounded-2xl bg-card border border-border px-4 py-3 text-sm font-semibold text-foreground shadow-neumorphic-sm transition-[transform,filter] duration-150 hover:brightness-105 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <Moon aria-hidden="true" className="w-4 h-4 text-primary" />
+                    {t('petCheckIn.openSleepHygiene')}
+                  </button>
                 )}
               </div>
             )}

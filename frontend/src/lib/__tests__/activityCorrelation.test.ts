@@ -307,3 +307,40 @@ describe('confidence and noise filtering', () => {
     expect(result.up[0].days).toBeGreaterThan(result.up[1].days);
   });
 });
+
+describe('volatility (внутридневной разброс метрики)', () => {
+  it('sufficient=false when every day has a single check-in (swing never defined)', () => {
+    const entries: DecryptedEntry[] = [];
+    for (let d = 1; d <= 10; d++) {
+      entries.push(makeEntry(d, mood, d % 2 === 0 ? 8 : 4));
+      entries.push(makeEntry(d, dayAct, 0, [{ key: 'walk' }]));
+    }
+    const result = computeActivityCorrelation(entries, paramNameById, labelFor);
+    expect(result.sufficient).toBe(true);
+    expect(result.volatility.sufficient).toBe(false);
+    expect(result.volatility.daysTracked).toBe(0);
+  });
+
+  it('flags activities on days with multiple check-ins that swing a lot vs stay stable', () => {
+    const entries: DecryptedEntry[] = [];
+    // chaos: два чек-ина в день с большим разбросом (9 и 2 -> swing=7)
+    for (let d = 1; d <= 5; d++) {
+      entries.push(makeEntry(d, mood, 9));
+      entries.push({ ...makeEntry(d, mood, 2), id: `id-${d}-mood-2b` });
+      entries.push(makeEntry(d, dayAct, 0, [{ key: 'chaos' }]));
+    }
+    // routine: два чек-ина в день с маленьким разбросом (6 и 5 -> swing=1)
+    for (let d = 6; d <= 10; d++) {
+      entries.push(makeEntry(d, mood, 6));
+      entries.push({ ...makeEntry(d, mood, 5), id: `id-${d}-mood-5b` });
+      entries.push(makeEntry(d, dayAct, 0, [{ key: 'routine' }]));
+    }
+    const result = computeActivityCorrelation(entries, paramNameById, labelFor);
+    expect(result.volatility.sufficient).toBe(true);
+    expect(result.volatility.daysTracked).toBe(10);
+    expect(result.volatility.up[0].key).toBe('chaos');
+    expect(result.volatility.up[0].lift).toBeGreaterThan(0);
+    expect(result.volatility.down[0].key).toBe('routine');
+    expect(result.volatility.down[0].lift).toBeLessThan(0);
+  });
+});
