@@ -153,6 +153,7 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             onTap={handleTap}
             ariaLabel={displayName}
             particleFallLimit={100}
+            bubbleClearance={32}
           />
         </div>
       </div>

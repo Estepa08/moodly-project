@@ -101,6 +101,26 @@ describe('buildRewardSignal', () => {
     expect(signal.xpText).toBeUndefined();
   });
 
+  it('лимит дня: morning-флаг есть, но XP/бонусы не начислены → none (без ложной анимации)', () => {
+    const signal = buildRewardSignal(
+      makeResponse({
+        xpAwarded: 0,
+        bonus: {
+          morning: true,
+          evening: false,
+          welcome: false,
+          empathy: false,
+          comboCount: 0,
+          comboBonusAwarded: false,
+          calmnessGain: 0,
+          comfortGain: 0,
+        },
+      }),
+    );
+    expect(signal.kind).toBe('none');
+    expect(signal.xpText).toBeUndefined();
+  });
+
   it('эмпатия ниже комбо, но выше стандартного', () => {
     const signal = buildRewardSignal(
       makeResponse({

@@ -420,6 +420,34 @@ describe('Creature pet bonuses (morning / evening / combo / welcome / empathy)',
     });
   });
 
+  it('combo: no XP at the daily limit (fast taps bypass the limit)', async () => {
+    vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
+    const user = await registerAndLogin(
+      app,
+      'creature-bonus-combo-limit@example.com',
+      'secret123',
+      'Limit',
+    );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    await prisma.creatureState.upsert({
+      where: { userId: user.userId },
+      update: { petCount: 300, lastPetAt: today },
+      create: { userId: user.userId, petCount: 300, lastPetAt: today },
+    });
+
+    let res!: Awaited<ReturnType<typeof tap>>;
+    for (let i = 1; i <= 5; i++) {
+      res = await tap(user);
+    }
+    expect(res.json()).toMatchObject({
+      comboCount: 0,
+      comboBonusAwarded: false,
+      xpAwarded: 0,
+      limitReached: true,
+    });
+  });
+
   it('empathy: 3rd tap with empathy flag awards +1 XP and +2 comfort', async () => {
     vi.setSystemTime(new Date(2026, 5, 15, 15, 0, 0));
     const user = await registerAndLogin(
