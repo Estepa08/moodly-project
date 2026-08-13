@@ -108,7 +108,9 @@ export default function BlogPostPage() {
               {post.updatedAt && post.updatedAt !== post.date && (
                 <>
                   <span>·</span>
-                  <span>{t('seoPages.blog.updated')}: {formatDate(post.updatedAt)}</span>
+                  <span>
+                    {t('seoPages.blog.updated')}: {formatDate(post.updatedAt)}
+                  </span>
                 </>
               )}
               <span>·</span>
