@@ -81,7 +81,7 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     await user.type(screen.getByLabelText('Email'), 'test@example.com');
-    await user.type(screen.getByLabelText('Password'), 'secret');
+    await user.type(screen.getByLabelText('Password'), 'secret123');
     await user.type(screen.getByLabelText('Birth year'), '1998');
     const checkboxes = screen.getAllByRole('checkbox');
     await user.click(checkboxes[0]);
@@ -91,7 +91,7 @@ describe('RegisterPage', () => {
     await waitFor(() => {
       expect(api.auth.register).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'secret',
+        password: 'secret123',
         ageConfirmed: true,
         pdpConsent: true,
         birthYear: 1998,
@@ -109,7 +109,7 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     await user.type(screen.getByLabelText('Email'), 'minor@example.com');
-    await user.type(screen.getByLabelText('Password'), 'secret');
+    await user.type(screen.getByLabelText('Password'), 'secret123');
     await user.type(screen.getByLabelText('Birth year'), '2010');
     const checkboxes = screen.getAllByRole('checkbox');
     await user.click(checkboxes[0]);
@@ -133,7 +133,7 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     await user.type(screen.getByLabelText('Email'), 'taken@example.com');
-    await user.type(screen.getByLabelText('Password'), 'secret');
+    await user.type(screen.getByLabelText('Password'), 'secret123');
     await user.type(screen.getByLabelText('Birth year'), '1998');
     const checkboxes = screen.getAllByRole('checkbox');
     await user.click(checkboxes[0]);
