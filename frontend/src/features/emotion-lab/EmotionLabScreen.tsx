@@ -119,47 +119,44 @@ export default function EmotionLabScreen() {
           onLearnMore={() => navigate('/settings')}
         />
       ) : (
-        <>
-          {/* Колесо эмоций */}
-          <Card className="shadow-elevation-2">
-            <CardContent className="p-5">
-              <EmotionWheel selected={selected} onSelect={toggleEmotion} />
-              <p className="text-center text-xs text-muted-foreground mt-4">
-                {t('emotionLab.pickHint')}
-              </p>
+        <Card className="shadow-elevation-2">
+          <CardContent className="p-5">
+            <EmotionWheel selected={selected} onSelect={toggleEmotion} />
+            <p className="text-center text-xs text-muted-foreground mt-4">
+              {t('emotionLab.pickHint')}
+            </p>
 
-              <div className="mt-4 flex items-center justify-center gap-3">
-                {selected.length === 0 ? (
-                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <FlaskConical aria-hidden="true" className="w-4 h-4" />
-                    {t('emotionLab.mixPlaceholder')}
-                  </div>
-                ) : (
-                  <>
-                    <span className="text-sm font-medium text-foreground">
-                      {t('emotionLab.mixReady')}
-                    </span>
-                    <Button
-                      onClick={handleMix}
-                      disabled={selected.length !== 2 || attempt.isPending}
-                      size="lg"
-                    >
-                      {attempt.isPending ? t('emotionLab.mixing') : t('emotionLab.mix')}
-                    </Button>
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Журнал открытий */}
-          <Card className="shadow-elevation-2">
-            <CardContent className={cn('p-5')}>
-              <EmotionJournal state={state} />
-            </CardContent>
-          </Card>
-        </>
+            <div className="mt-4 flex items-center justify-center gap-3">
+              {selected.length === 0 ? (
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <FlaskConical aria-hidden="true" className="w-4 h-4" />
+                  {t('emotionLab.mixPlaceholder')}
+                </div>
+              ) : (
+                <>
+                  <span className="text-sm font-medium text-foreground">
+                    {t('emotionLab.mixReady')}
+                  </span>
+                  <Button
+                    onClick={handleMix}
+                    disabled={selected.length !== 2 || attempt.isPending}
+                    size="lg"
+                  >
+                    {attempt.isPending ? t('emotionLab.mixing') : t('emotionLab.mix')}
+                  </Button>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       )}
+
+      {/* Журнал открытий */}
+      <Card className="shadow-elevation-2">
+        <CardContent className={cn('p-5')}>
+          <EmotionJournal state={state} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -90,17 +90,3 @@ export const DYAD_COUNT_BY_LEVEL_VIEW: Record<1 | 2 | 3 | 4, number> = {
   3: 8,
   4: 4,
 };
-
-// Вспомогательная функция для получения переведенного названия диады
-export function getDyadName(key: string, t: (key: string) => string): string {
-  const translationKey = `emotionLab.dyads.${key}.name`;
-  const translation = t(translationKey);
-  // Если перевод не найден, используем ключ
-  return translation === translationKey ? key : translation;
-}
-
-export function getDyadDescription(key: string, t: (key: string) => string): string {
-  const translationKey = `emotionLab.dyads.${key}.description`;
-  const translation = t(translationKey);
-  return translation === translationKey ? '' : translation;
-}

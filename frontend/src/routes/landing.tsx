@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -18,6 +18,7 @@ import {
   CalendarRange,
   Check,
   Plus,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
@@ -26,6 +27,8 @@ import { useLoginForm } from '../hooks/useLoginForm';
 import { useSeo, withCanonical } from '../lib/seo';
 import { cn } from '../lib/utils';
 import { ACTIVITY_CATALOG } from '../lib/dayActivities';
+import { PostCard } from './blog/PostCard';
+import { POSTS } from './blog/posts';
 
 const PetAvatar = lazy(() =>
   import('../features/gamification/PetAvatar').then((m) => ({ default: m.default })),
@@ -196,36 +199,36 @@ function LandingHero() {
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-14 grid gap-10 lg:grid-cols-2 lg:items-center">
-        <Reveal>
-          <div className="text-center lg:text-left">
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-xs font-semibold px-3.5 py-1.5 mb-5">
-              ⏱ {t('landing.badge')}
-            </span>
-            <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
-              {t('landing.hero.titlePrefix')}{' '}
-              <span className="text-primary">{t('landing.hero.accent')}</span>{' '}
-              {t('landing.hero.titleSuffix')}
-            </h1>
-            <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-              {t('landing.hero.text')}
-            </p>
+        {/* Заголовок/подзаголовок/CTA — первый экран, без scroll-reveal: должны быть
+            видны сразу на первой отрисовке, а не проявляться через IntersectionObserver. */}
+        <div className="text-center lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-xs font-semibold px-3.5 py-1.5 mb-5">
+            ⏱ {t('landing.badge')}
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
+            {t('landing.hero.titlePrefix')}{' '}
+            <span className="text-primary">{t('landing.hero.accent')}</span>{' '}
+            {t('landing.hero.titleSuffix')}
+          </h1>
+          <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+            {t('landing.hero.text')}
+          </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Button size="lg" asChild>
-                <Link to="/register">
-                  {t('landing.start')}
-                  <ArrowRight aria-hidden="true" className="w-5 h-5" />
-                </Link>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+            <Button size="lg" asChild>
+              <Link to="/register">
+                {t('landing.start')}
+                <ArrowRight aria-hidden="true" className="w-5 h-5" />
+              </Link>
+            </Button>
+            {demoMode && (
+              <Button size="lg" variant="secondary" onClick={handleDemo} disabled={demoLoading}>
+                <Play aria-hidden="true" className="w-4 h-4" />
+                {demoLoading ? '...' : t('landing.demo')}
               </Button>
-              {demoMode && (
-                <Button size="lg" variant="secondary" onClick={handleDemo} disabled={demoLoading}>
-                  <Play aria-hidden="true" className="w-4 h-4" />
-                  {demoLoading ? '...' : t('landing.demo')}
-                </Button>
-              )}
-            </div>
+            )}
           </div>
-        </Reveal>
+        </div>
 
         <Reveal direction="right" delay={120}>
           <HeroMock />
@@ -312,6 +315,209 @@ function LandingFeatures() {
             </Card>
           </Reveal>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function LandingSteps() {
+  const { t } = useTranslation();
+  const steps = [
+    { num: '1', title: t('landing.steps.s1.title'), text: t('landing.steps.s1.text') },
+    { num: '2', title: t('landing.steps.s2.title'), text: t('landing.steps.s2.text') },
+    { num: '3', title: t('landing.steps.s3.title'), text: t('landing.steps.s3.text') },
+  ];
+
+  return (
+    <section className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
+      <Reveal>
+        <div className="rounded-3xl bg-secondary/60 p-6 sm:p-12">
+          <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
+            {t('landing.steps.kicker')}
+          </p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
+            {t('landing.steps.title')}
+          </h2>
+          <p className="mt-3 text-center text-sm text-muted-foreground max-w-xl mx-auto">
+            {t('landing.steps.subtitle')}
+          </p>
+
+          <div className="mt-10 grid md:grid-cols-3 gap-8 items-start">
+            {steps.map((s, i) => (
+              <Reveal key={s.num} delay={i * 120}>
+                <div className="text-center">
+                  <span className="inline-flex w-16 h-16 rounded-full bg-primary/10 items-center justify-center text-2xl font-extrabold text-primary">
+                    {s.num}
+                  </span>
+                  {i < steps.length - 1 && (
+                    <span
+                      className="hidden md:block mx-auto w-16 border-t-2 border-dashed border-primary/30 -mt-8 mb-2"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <h3 className="mt-4 text-base font-bold text-foreground">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Button size="lg" asChild>
+              <Link to="/register">
+                {t('landing.steps.cta')}
+                <ArrowRight aria-hidden="true" className="w-5 h-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+function LandingCompare() {
+  const { t } = useTranslation();
+  const rows = [
+    t('landing.compare.rows.checkin'),
+    t('landing.compare.rows.tests'),
+    t('landing.compare.rows.companion'),
+    t('landing.compare.rows.storage'),
+    t('landing.compare.rows.offline'),
+  ];
+
+  return (
+    <section className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
+      <Reveal>
+        <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
+          {t('landing.compare.kicker')}
+        </p>
+        <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
+          {t('landing.compare.title')}
+        </h2>
+      </Reveal>
+
+      <Reveal delay={120}>
+        <Card className="mt-8 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left">
+                <th className="p-4 sm:p-5 font-medium text-muted-foreground w-1/2">
+                  {t('landing.compare.kicker')}
+                </th>
+                <th className="p-4 sm:p-5 text-center font-extrabold text-primary w-[15%]">
+                  {t('landing.compare.moodly')}
+                </th>
+                <th className="p-4 sm:p-5 text-center font-semibold text-foreground w-[17.5%]">
+                  {t('landing.compare.paper')}
+                </th>
+                <th className="p-4 sm:p-5 text-center font-semibold text-foreground w-[17.5%]">
+                  {t('landing.compare.nothing')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, i) => (
+                <tr key={i} className="border-b border-border/60 last:border-b-0">
+                  <td className="p-4 sm:p-5 text-foreground/90">{row}</td>
+                  <td className="p-4 sm:p-5 text-center text-success font-bold">
+                    {t('landing.compare.yes')}
+                  </td>
+                  <td className="p-4 sm:p-5 text-center text-muted-foreground">
+                    {t('landing.compare.no')}
+                  </td>
+                  <td className="p-4 sm:p-5 text-center text-muted-foreground">
+                    {t('landing.compare.no')}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </Reveal>
+    </section>
+  );
+}
+
+function LandingFaq() {
+  const { t } = useTranslation();
+  const items = t('landing.faq.items', { returnObjects: true }) as Array<{ q: string; a: string }>;
+  const [open, setOpen] = useState<number | null>(0);
+
+  return (
+    <section className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
+      <Reveal>
+        <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
+          {t('landing.faq.kicker')}
+        </p>
+        <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
+          {t('landing.faq.title')}
+        </h2>
+      </Reveal>
+
+      <div className="mt-8 space-y-3 max-w-3xl mx-auto">
+        {items.map((item, i) => {
+          const isOpen = open === i;
+          return (
+            <Reveal key={i} delay={i * 80}>
+              <div className="rounded-2xl border border-border bg-card shadow-neumorphic-sm overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
+                >
+                  <span className="font-semibold text-foreground text-sm">{item.q}</span>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn(
+                      'w-5 h-5 shrink-0 text-primary transition-transform',
+                      isOpen && 'rotate-180',
+                    )}
+                  />
+                </button>
+                {isOpen && (
+                  <p className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed">
+                    {item.a}
+                  </p>
+                )}
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function LandingBlogPreview() {
+  const { t } = useTranslation();
+  const preview = POSTS.slice(0, 3);
+
+  return (
+    <section className="scroll-mt-24 mx-auto max-w-6xl px-4 sm:px-6 py-16">
+      <Reveal>
+        <p className="text-xs font-bold text-primary uppercase tracking-wider text-center">
+          {t('landing.blogPreview.kicker')}
+        </p>
+        <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold text-foreground text-center text-balance">
+          {t('landing.blogPreview.title')}
+        </h2>
+      </Reveal>
+
+      <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {preview.map((post, i) => (
+          <PostCard key={post.slug} post={post} delay={i * 100} />
+        ))}
+      </div>
+
+      <div className="mt-8 text-center">
+        <Button size="lg" variant="secondary" asChild>
+          <Link to="/blog">
+            {t('landing.blogPreview.all')}
+            <ArrowRight aria-hidden="true" className="w-5 h-5" />
+          </Link>
+        </Button>
       </div>
     </section>
   );
@@ -668,10 +874,14 @@ export default function LandingPage() {
         <LandingHero />
         <LandingStats />
         <LandingFeatures />
+        <LandingSteps />
         <LandingDayActivities />
         <LandingCollection />
         <LandingTests />
         <LandingPrivacy />
+        <LandingCompare />
+        <LandingFaq />
+        <LandingBlogPreview />
         <LandingCta />
       </main>
       <LandingFooter />

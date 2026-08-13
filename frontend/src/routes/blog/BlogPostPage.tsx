@@ -16,6 +16,8 @@ const CATEGORY_KEYS: Record<string, string> = {
   journal: 'seoPages.blog.categories.journal',
   anxiety: 'seoPages.blog.categories.anxiety',
   sleep: 'seoPages.blog.categories.sleep',
+  thinking: 'seoPages.blog.categories.thinking',
+  motivation: 'seoPages.blog.categories.motivation',
 };
 
 export default function BlogPostPage() {
@@ -101,7 +103,14 @@ export default function BlogPostPage() {
             </h1>
 
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+              <span>{t('seoPages.blog.author')}</span>
               <time dateTime={post.date}>{formatDate(post.date)}</time>
+              {post.updatedAt && post.updatedAt !== post.date && (
+                <>
+                  <span>·</span>
+                  <span>{t('seoPages.blog.updated')}: {formatDate(post.updatedAt)}</span>
+                </>
+              )}
               <span>·</span>
               <span>{readingTime} мин чтения</span>
             </div>

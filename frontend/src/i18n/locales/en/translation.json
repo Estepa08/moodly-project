@@ -65,7 +65,8 @@
       "tests": "Tests",
       "settings": "Settings",
       "admin": "Admin",
-      "profile": "Profile"
+      "profile": "Profile",
+      "emotionLab": "Emotion Lab"
     },
     "emotionLab": "Emotion Lab"
   },
@@ -154,6 +155,9 @@
     "registrationFailed": "Registration failed",
     "consentRequired": "You must confirm your age and consent to continue",
     "ageError": "Registration is available to users 18 and older",
+    "emailError": "Enter a valid email address",
+    "passwordError": "Password must be at least 8 characters",
+    "passwordHint": "At least 8 characters",
     "ageConsentText": "I confirm that I am 18 years or older and agree to the",
     "birthYear": "Birth year",
     "birthYearPlaceholder": "e.g. 1998",
@@ -162,6 +166,13 @@
     "and": "and",
     "privacyLink": "Privacy Policy",
     "pdpConsentLink": "Privacy Policy",
+    "e2eNote": "Entries and tests are protected by end-to-end encryption — the key stays only on your device. After signing up, save your recovery code: without it, your data can't be recovered.",
+    "recoveryTitle": "Save your recovery code",
+    "recoveryIntro": "This is the only way to restore access to your encrypted data if you forget your password or lose your device. We don't store this code and can't recover a lost one.",
+    "recoveryLabel": "Recovery code",
+    "recoveryWarningTitle": "Without this code your data can't be recovered",
+    "recoveryWarning": "Save it somewhere secure (a password manager, a printout). If you lose both your password and the recovery code, access to your encrypted entries is lost permanently.",
+    "recoveryConfirmed": "I've saved the code, continue",
     "seo": {
       "title": "Sign up — Moodly",
       "description": "Create a Moodly account — a mood diary, self-assessment tests and mental-health practices. 30 seconds a day."
@@ -1255,7 +1266,7 @@
     "title": "Privacy Policy",
     "lastUpdated": "Last updated: August 2026",
     "operator": "Data Controller",
-    "operatorText": "Personal data is processed by the operator of Moodly: Individual Entrepreneur Stepanova K.S., address: [address], INN: [INN], OGRNIP: [OGRNIP]. Official contact email: privacy@moodly.app.",
+    "operatorText": "Personal data is processed by the operator of Moodly: Individual Entrepreneur Stepanova Kseniya Stepanovna, address: Moscow Region, Pushkino, Prosveshcheniya St., 13/1, Apt. 50, Russia, INN: 774313884599, OGRNIP: 324508100728577. Official contact email: privacy@moodly.app.",
     "legalBasis": "Legal Basis for Processing",
     "legalBasisText": "Processing is based on: (a) your consent given at registration, including consent to the processing of special category data concerning mental health (Article 9 GDPR / Article 10 of Russian Federal Law No. 152-FZ); (b) performance of the contract (terms of service) to which you are a party (Art. 6(1)(b) GDPR); (c) legal obligations.",
     "dataWeCollect": "Data We Collect",
@@ -1821,6 +1832,24 @@
         "text": "Mood, anxiety and thinking habits tests — understand your states and thoughts."
       }
     },
+    "steps": {
+      "kicker": "How it works",
+      "title": "Three steps to your first win",
+      "subtitle": "No card, no email confirmation — value from day one.",
+      "s1": {
+        "title": "Sign up",
+        "text": "Email, password and year of birth. Two clear consents."
+      },
+      "s2": {
+        "title": "Log your state",
+        "text": "A 30-second check-in. Take a self-discovery test."
+      },
+      "s3": {
+        "title": "Watch your trends",
+        "text": "Radar, trends and periods. Your companion grows with you."
+      },
+      "cta": "Start for free"
+    },
     "day": {
       "kicker": "My day",
       "title": "Describe your day without typing a word",
@@ -1888,6 +1917,49 @@
         "title": "Recovery code",
         "text": "save it at sign-up — without it your data cannot be restored"
       }
+    },
+    "compare": {
+      "kicker": "Why Moodly",
+      "title": "How Moodly differs from the alternatives",
+      "moodly": "Moodly",
+      "paper": "Paper diary",
+      "nothing": "Doing nothing",
+      "rows": {
+        "checkin": "30-second check-in",
+        "tests": "Self-discovery tests",
+        "companion": "Companion & gamification",
+        "storage": "Reliable storage",
+        "offline": "Works offline"
+      },
+      "yes": "✓",
+      "no": "—"
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Frequently asked questions",
+      "items": [
+        {
+          "q": "Free means unreliable — will my data leak?",
+          "a": "Your data is stored on servers in Russia per 152-FZ, and entries and tests are additionally encrypted on your device — the key stays with you. No ads, no selling or targeting of your data."
+        },
+        {
+          "q": "Another diary — I'll quit in a week?",
+          "a": "Motivation is built into the product: a companion that grows, streaks, XP and a collection of 27 pets. Plus reminders at a time that suits you. A check-in takes 30 seconds — the habit is easier to keep."
+        },
+        {
+          "q": "How much time does it take each day?",
+          "a": "Just 30 seconds a day: log your mood, energy, sleep and anxiety — done. The app shows analytics and patterns for you."
+        },
+        {
+          "q": "Is this a medical service?",
+          "a": "No. Moodly is a self-assessment and self-help tool, not a medical service. It doesn't diagnose or replace a professional. If you're not feeling well, please reach out to a specialist."
+        }
+      ]
+    },
+    "blogPreview": {
+      "kicker": "Blog",
+      "title": "Articles that help right now",
+      "all": "All articles on the blog"
     },
     "cta": {
       "title": "Start today — 30 seconds a day",
@@ -2499,9 +2571,13 @@
       "categories": {
         "journal": "Mood diary",
         "anxiety": "Anxiety",
-        "sleep": "Sleep"
+        "sleep": "Sleep",
+        "thinking": "Thinking",
+        "motivation": "Motivation"
       },
       "backToBlog": "Back to all posts",
+      "author": "Moodly Editorial",
+      "updated": "Updated",
       "related": "Read next",
       "notFound": "Post not found",
       "cta": {
@@ -2560,6 +2636,9 @@
     "learnMore": "Learn more",
     "loadError": "Couldn't load the lab. Please try again.",
     "attemptError": "Couldn't mix the emotions. Please try again.",
+    "hide": "Hide",
+    "show": "Show",
+    "complete": "Full collection!",
     "emotions": {
       "joy": "Joy",
       "trust": "Trust",

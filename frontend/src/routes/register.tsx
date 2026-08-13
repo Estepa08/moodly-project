@@ -104,6 +104,7 @@ export default function RegisterPage() {
             showLabel={t('common.showPassword')}
             hideLabel={t('common.hidePassword')}
           />
+          <p className="text-xs text-muted-foreground">{t('register.passwordHint')}</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="regBirthYear">{t('register.birthYear')}</Label>
@@ -121,13 +122,15 @@ export default function RegisterPage() {
         </div>
         <div className="space-y-2">
           <Label className="flex items-start gap-2 text-sm cursor-pointer">
-            <input
-              type="checkbox"
-              checked={ageConfirmed}
-              onChange={(e) => setAgeConfirmed(e.target.checked)}
-              className="mt-1"
-              required
-            />
+            <span className="relative -m-3.5 shrink-0 p-3.5">
+              <input
+                type="checkbox"
+                checked={ageConfirmed}
+                onChange={(e) => setAgeConfirmed(e.target.checked)}
+                className="block h-4 w-4"
+                required
+              />
+            </span>
             <span>
               {t('register.ageConsentText')}{' '}
               <Link to="/terms" className="text-primary hover:underline">
@@ -140,13 +143,15 @@ export default function RegisterPage() {
             </span>
           </Label>
           <Label className="flex items-start gap-2 text-sm cursor-pointer">
-            <input
-              type="checkbox"
-              checked={pdpConsent}
-              onChange={(e) => setPdpConsent(e.target.checked)}
-              className="mt-1"
-              required
-            />
+            <span className="relative -m-3.5 shrink-0 p-3.5">
+              <input
+                type="checkbox"
+                checked={pdpConsent}
+                onChange={(e) => setPdpConsent(e.target.checked)}
+                className="block h-4 w-4"
+                required
+              />
+            </span>
             <span>
               {t('register.pdpConsentText')}{' '}
               <Link to="/privacy" className="text-primary hover:underline">
