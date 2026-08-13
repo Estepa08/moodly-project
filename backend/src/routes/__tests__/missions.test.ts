@@ -121,11 +121,7 @@ describe('Creature missions', () => {
   });
 
   it('log_day_activities mission — progresses after a Day Activities entry is created', async () => {
-    const mission = await createMission(
-      'log_day_activities',
-      'missions.logDayActivities',
-      10,
-    );
+    const mission = await createMission('log_day_activities', 'missions.logDayActivities', 10);
 
     const param = await prisma.parameter.create({ data: { name: 'Day Activities' } });
 
