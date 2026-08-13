@@ -108,15 +108,8 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
   fastify.post<{ Params: ClaimMissionParams }>(
     '/creature/missions/:id/claim',
     { preHandler: [fastify.authenticate] },
-    async (request, reply) => {
-      try {
-        return await creatureService.claimMission(request.userId, request.params.id);
-      } catch (e) {
-        if (e instanceof Error) {
-          return reply.status(400).send({ error: e.message });
-        }
-        throw e;
-      }
+    async (request) => {
+      return creatureService.claimMission(request.userId, request.params.id);
     },
   );
 }

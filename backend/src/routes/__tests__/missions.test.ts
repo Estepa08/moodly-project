@@ -223,7 +223,7 @@ describe('Creature missions', () => {
       url: `/creature/missions/${mission.id}/claim`,
       headers: { authorization: `Bearer ${token}` },
     });
-    expect(second.statusCode).toBe(400);
+    expect(second.statusCode).toBe(409);
   });
 
   it('claiming a mission levels up the creature at the XP threshold', async () => {
