@@ -5,10 +5,7 @@ import { useRewardPractice, PracticeSource } from '../features/gamification';
 
 export function useSleepHygieneEntry() {
   const { data: params } = useParameters();
-  const hygieneParam = useMemo(
-    () => params?.find((p) => p.name === 'Sleep Hygiene'),
-    [params],
-  );
+  const hygieneParam = useMemo(() => params?.find((p) => p.name === 'Sleep Hygiene'), [params]);
 
   const { data: hygieneEntries } = useEntries(
     hygieneParam ? { parameterId: hygieneParam.id } : undefined,

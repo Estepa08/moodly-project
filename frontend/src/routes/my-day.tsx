@@ -119,7 +119,9 @@ export default function MyDay() {
   const showMorningStatus = phase === 'day';
 
   const activitiesParamId = paramIdByName.get(ParameterName.DayActivities);
-  const activitiesLoggedToday = activitiesParamId ? savedTodayParamIds.has(activitiesParamId) : false;
+  const activitiesLoggedToday = activitiesParamId
+    ? savedTodayParamIds.has(activitiesParamId)
+    : false;
   const sleepHygieneParamId = paramIdByName.get(ParameterName.SleepHygiene);
   const sleepHygieneLoggedToday = sleepHygieneParamId
     ? savedTodayParamIds.has(sleepHygieneParamId)
