@@ -56,7 +56,7 @@ export default function FloatingCompanion() {
   return (
     <div
       className={cn(
-        'fixed right-[1cm] bottom-[calc(5rem+var(--sab))] md:bottom-6 md:right-[1cm] z-40',
+        'fixed right-[1cm] bottom-[calc(5rem+var(--sab))] md:bottom-20 md:right-[1cm] z-40',
         !isReducedMotion && !away && 'animate-pet-float',
       )}
       role="presentation"
@@ -94,6 +94,7 @@ export default function FloatingCompanion() {
           glow={glow}
           greetSignal={greetSignal}
           reappear={justReturned}
+          particleFallLimit={80}
           onTap={() => handlePet()}
         />
       )}

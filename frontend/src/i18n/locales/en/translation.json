@@ -138,9 +138,9 @@
     "legacyAccount": "Legacy account detected. Please log in with your credentials.",
     "legacyIntro": "Your account has been upgraded: your data is now encrypted on your device. Please save your recovery code.",
     "legacyRecoveryNote": "This recovery code is used to regain access to your data if you forget your password. Keep it somewhere safe.",
-    "unlockReasonTitle": "Protecting your data",
-    "unlockReason": "We noticed a break in using the app. Your entries are encrypted on your device, so we need you to confirm your password again to read and save them — this keeps your data safe.",
-    "unlockReasonHint": "Your entries are safe and will be available after sign-in. We ask for your password again to protect your privacy.",
+    "unlockReasonTitle": "Enter your password to unlock your entries",
+    "unlockReasonToggle": "why?",
+    "unlockReason": "Your entries are encrypted on this device. After a break in using the app, you need to confirm your password again to read them — that's what keeps your data safe.",
     "seo": {
       "title": "Sign in — Moodly",
       "description": "Sign in to the Moodly mood diary and continue tracking how you feel."
@@ -1692,8 +1692,22 @@
         "Oops!",
         "Super!",
         "Hi!",
-        "Purr!",
-        "Fun!"
+        "Fun!",
+        "Fluffy!",
+        "Warm!",
+        "Gentle!",
+        "Cozy!",
+        "Joy!",
+        "Sparks!",
+        "Blub!",
+        "Smooch!",
+        "Sunshine!",
+        "Star!",
+        "Miracle!",
+        "Delight!",
+        "Spring!",
+        "Snug!",
+        "Beauty!"
       ]
     }
   },

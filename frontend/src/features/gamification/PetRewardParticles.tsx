@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkle, Star, Heart, Sun, Flower, CloudRain } from 'lucide-react';
+import { Sparkles, Star, Heart, Sun, Trophy, ThumbsUp, Sunrise, SunMedium, HeartHandshake, Gem, Droplets } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PetRewardSignal } from './petRewards';
 
@@ -15,29 +15,30 @@ const SUN = '#FF9F0A';
 const PINK = '#E0509C';
 const BLUE = '#5E8FD8';
 const PURPLE = '#8F5ED8';
+const XP_GREEN = '#22C55E';
 const COMBO_COLORS = ['#7B5BF2', '#D63A85', '#F5A623', '#4CC38A', '#5E8FD8', '#8F5ED8'];
-const COMBO_ICONS: Array<typeof Sparkle> = [Sparkle, Star, Heart, Flower, Sun];
+const COMBO_ICONS: Array<typeof Sparkles> = [Sparkles, Star, Heart, Trophy, Sun];
 
 // Микс-пулы «иконка + цвет»: внутри одного залпа частицы не повторяются,
 // чтобы не было 3-5 одинаковых иконок одновременно.
-const STANDARD_MIX: Array<{ icon: typeof Sparkle; color: string }> = [
-  { icon: Sparkle, color: GOLD },
-  { icon: Star, color: PINK },
-  { icon: Heart, color: PURPLE },
+const STANDARD_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
+  { icon: Sparkles, color: GOLD },
+  { icon: Trophy, color: PINK },
+  { icon: ThumbsUp, color: PURPLE },
 ];
-const MORNING_MIX: Array<{ icon: typeof Sparkle; color: string }> = [
-  { icon: Sun, color: SUN },
-  { icon: Sparkle, color: GOLD },
+const MORNING_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
+  { icon: Sunrise, color: SUN },
+  { icon: Sparkles, color: GOLD },
   { icon: Star, color: '#F2A71B' },
-  { icon: Sun, color: '#FFC53D' },
-  { icon: Sparkle, color: '#F0803C' },
+  { icon: SunMedium, color: '#FFC53D' },
+  { icon: Sparkles, color: '#F0803C' },
 ];
-const WELCOME_MIX: Array<{ icon: typeof Sparkle; color: string }> = [
-  { icon: Heart, color: PINK },
-  { icon: Sparkle, color: PURPLE },
+const WELCOME_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
+  { icon: HeartHandshake, color: PINK },
+  { icon: Sparkles, color: PURPLE },
   { icon: Star, color: GOLD },
   { icon: Heart, color: '#D63A85' },
-  { icon: Sparkle, color: '#B26AE8' },
+  { icon: Gem, color: '#B26AE8' },
 ];
 
 // Фиксированные количества частиц (ровно, без случайных диапазонов — без перебора).
@@ -61,19 +62,31 @@ interface Particle {
 
 // Равномерное распределение частиц по дуге/кругу с лёгким jitter (±8°):
 // углы не сбиваются в кучу, дальность растёт по спирали с небольшим шумом.
-function makeParticles(count: number, minDist: number, maxDist: number, arcUp = false): Particle[] {
+// `cap` (px) ограничивает максимальный разлёт — частицы останавливаются
+// на границе контейнера, а не улетают за него.
+function makeParticles(
+  count: number,
+  minDist: number,
+  maxDist: number,
+  arcUp = false,
+  cap?: number,
+): Particle[] {
+  const hi = cap === undefined ? maxDist : Math.min(maxDist, cap);
+  const lo = Math.min(minDist, hi);
   return Array.from({ length: count }, (_, i) => {
     const start = arcUp ? Math.PI * 0.12 : 0;
     const span = arcUp ? Math.PI * 0.76 : Math.PI * 2;
     const angle = start + (span * i) / count + rand(-0.14, 0.14);
     const dist =
-      minDist +
-      ((maxDist - minDist) * i) / Math.max(1, count - 1) +
-      rand(-Math.min(10, (maxDist - minDist) * 0.25), Math.min(10, (maxDist - minDist) * 0.25));
+      lo +
+      ((hi - lo) * i) / Math.max(1, count - 1) +
+      rand(-Math.min(10, (hi - lo) * 0.25), Math.min(10, (hi - lo) * 0.25));
+    // Жёсткий кламп: даже с jitter частица не уходит за границу контейнера.
+    const clamped = Math.max(lo, Math.min(hi, dist));
     return {
       id: i,
-      x: Math.cos(angle) * dist,
-      y: Math.sin(angle) * dist,
+      x: Math.cos(angle) * clamped,
+      y: Math.sin(angle) * clamped,
       scale: rand(0.6, 1.25),
       rotate: rand(-60, 60),
       delay: i * 0.03,
@@ -84,27 +97,35 @@ function makeParticles(count: number, minDist: number, maxDist: number, arcUp = 
 interface PetRewardParticlesProps {
   signal: PetRewardSignal;
   reducedMotion?: boolean;
+  /** Максимальная дистанция полёта частиц вниз (px). Нужен плавающему
+      компаньону у нижнего края экрана — чтобы иконки не улетали за экран */
+  fallLimit?: number;
+  /** Максимальный радиус разлёта частиц (px). Если задан — частицы
+      не улетают за границу контейнера */
+  boundaryRadius?: number;
 }
 
 export default function PetRewardParticles({
   signal,
   reducedMotion = false,
+  fallLimit,
+  boundaryRadius,
 }: PetRewardParticlesProps) {
   const { t } = useTranslation();
   const particles = useMemo(() => {
     switch (signal.kind) {
       case 'standard':
-        return makeParticles(PARTICLE_COUNTS.standard, 40, 150);
+        return makeParticles(PARTICLE_COUNTS.standard, 40, 150, false, boundaryRadius);
       case 'morning':
-        return makeParticles(PARTICLE_COUNTS.morning, 60, 150, true);
+        return makeParticles(PARTICLE_COUNTS.morning, 60, 150, true, boundaryRadius);
       case 'combo':
-        return makeParticles(PARTICLE_COUNTS.combo, 60, 180);
+        return makeParticles(PARTICLE_COUNTS.combo, 60, 180, false, boundaryRadius);
       case 'welcome':
-        return makeParticles(PARTICLE_COUNTS.welcome, 40, 110, true);
+        return makeParticles(PARTICLE_COUNTS.welcome, 40, 110, true, boundaryRadius);
       default:
         return [];
     }
-  }, [signal.kind]);
+  }, [signal.kind, boundaryRadius]);
 
   const comboCount = signal.comboCount ?? 0;
   const showComboBadge = comboCount >= 3;
@@ -115,7 +136,7 @@ export default function PetRewardParticles({
       {signal.xpText && !reducedMotion && (
         <motion.span
           className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
-          style={{ color: signal.kind === 'welcome' ? PINK : GOLD }}
+          style={{ color: signal.kind === 'welcome' ? PINK : XP_GREEN }}
           initial={{ y: 0, opacity: 0, scale: 0.7 }}
           animate={{ y: -64, opacity: [0, 1, 1, 0], scale: 1 }}
           transition={{ duration: 1.2, delay: 0.05, ease: 'easeOut' }}
@@ -160,36 +181,40 @@ export default function PetRewardParticles({
       {/* Волны вечера */}
       {signal.kind === 'evening' &&
         !reducedMotion &&
-        Array.from({ length: PARTICLE_COUNTS.eveningWaves }, (_, i) => (
-          <motion.span
-            key={`wave-${i}`}
-            className="absolute left-0 top-0 rounded-full border-2"
-            style={{
-              width: 34,
-              height: 34,
-              borderColor: i % 2 === 0 ? BLUE : PURPLE,
-            }}
-            initial={{ x: -17, y: -17, scale: 0.3, opacity: 0.7 }}
-            animate={{ x: -17, y: -17, scale: 3, opacity: 0 }}
-            transition={{ duration: 1, delay: i * 0.06, ease: 'easeOut' }}
-          />
-        ))}
+        Array.from({ length: PARTICLE_COUNTS.eveningWaves }, (_, i) => {
+          const waveScale = boundaryRadius ? Math.min(3, boundaryRadius / 17) : 3;
+          return (
+            <motion.span
+              key={`wave-${i}`}
+              className="absolute left-0 top-0 rounded-full border-2"
+              style={{
+                width: 34,
+                height: 34,
+                borderColor: i % 2 === 0 ? BLUE : PURPLE,
+              }}
+              initial={{ x: -17, y: -17, scale: 0.3, opacity: 0.7 }}
+              animate={{ x: -17, y: -17, scale: waveScale, opacity: 0 }}
+              transition={{ duration: 1, delay: i * 0.06, ease: 'easeOut' }}
+            />
+          );
+        })}
 
       {/* Капли → звёзды (эмпатия) */}
       {signal.kind === 'empathy' &&
         !reducedMotion &&
         Array.from({ length: PARTICLE_COUNTS.empathyDrops }, (_, i) => {
-          const x = rand(-90, 90);
+          const cap = boundaryRadius ? boundaryRadius - 12 : 90;
+          const x = rand(-cap, cap);
           return (
             <span key={`rain-${i}`} className="contents">
               <motion.span
                 className="absolute left-0 top-0"
                 style={{ color: BLUE }}
                 initial={{ x, y: -100, opacity: 0 }}
-                animate={{ y: 56, opacity: [0, 1, 1] }}
+                animate={{ y: cap, opacity: [0, 1, 1] }}
                 transition={{ duration: 0.65, delay: i * 0.05, ease: 'easeIn' }}
               >
-                <CloudRain className="w-4 h-4" />
+                <Droplets className="pet-particle-icon w-5 h-5" />
               </motion.span>
               <motion.span
                 className="absolute left-0 top-0"
@@ -198,7 +223,7 @@ export default function PetRewardParticles({
                 animate={{ opacity: [0, 1, 1, 0], scale: [0, 1.2, 0.8, 0] }}
                 transition={{ duration: 0.55, delay: 0.65 + i * 0.05, ease: 'easeOut' }}
               >
-                <Sparkle className="w-3 h-3" />
+                <Sparkles className="pet-particle-icon w-4 h-4" />
               </motion.span>
             </span>
           );
@@ -212,8 +237,8 @@ export default function PetRewardParticles({
           return (
             <motion.span
               key={`sun-${p.id}`}
-              className="absolute left-0 top-0"
-              style={{ color, filter: 'drop-shadow(0 0 6px rgba(255, 159, 10, 0.45))' }}
+              className="pet-particle-icon absolute left-0 top-0"
+              style={{ color }}
               initial={{ x: 0, y: 0, opacity: 0, scale: 0.4 }}
               animate={{
                 x: [0, p.x * 0.4, p.x],
@@ -237,8 +262,8 @@ export default function PetRewardParticles({
           return (
             <motion.span
               key={`heart-${p.id}`}
-              className="absolute left-0 top-0"
-              style={{ color, filter: 'drop-shadow(0 0 5px rgba(224, 80, 156, 0.45))' }}
+              className="pet-particle-icon absolute left-0 top-0"
+              style={{ color }}
               initial={{ x: 0, y: 0, opacity: 0, scale: 0.5 }}
               animate={{
                 x: p.x,
@@ -249,7 +274,7 @@ export default function PetRewardParticles({
               }}
               transition={{ duration: 1.6, delay: p.delay, ease: 'easeOut' }}
             >
-              <Icon className="w-4 h-4" fill="currentColor" />
+              <Icon className="w-5 h-5" fill="currentColor" />
             </motion.span>
           );
         })}
@@ -259,22 +284,23 @@ export default function PetRewardParticles({
         !reducedMotion &&
         particles.map((p, i) => {
           const { icon: Icon, color } = STANDARD_MIX[i % STANDARD_MIX.length];
+          const y = fallLimit === undefined ? p.y : Math.min(p.y, fallLimit);
           return (
             <motion.span
               key={`star-${p.id}`}
-              className="absolute left-0 top-0"
+              className="pet-particle-icon absolute left-0 top-0"
               style={{ color }}
               initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
               animate={{
                 x: p.x,
-                y: p.y,
+                y,
                 opacity: [0, 1, 1, 0],
                 scale: p.scale,
                 rotate: p.rotate,
               }}
               transition={{ duration: 0.8, delay: p.delay, ease: 'easeOut' }}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-5 h-5" />
             </motion.span>
           );
         })}
@@ -284,15 +310,16 @@ export default function PetRewardParticles({
         !reducedMotion &&
         particles.map((p, i) => {
           const Icon = COMBO_ICONS[i % COMBO_ICONS.length];
+          const y = fallLimit === undefined ? p.y : Math.min(p.y, fallLimit);
           return (
             <motion.span
               key={`combo-${p.id}`}
-              className="absolute left-0 top-0"
+              className="pet-particle-icon absolute left-0 top-0"
               style={{ color: COMBO_COLORS[i % COMBO_COLORS.length] }}
               initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
               animate={{
                 x: p.x,
-                y: p.y,
+                y,
                 opacity: [0, 1, 1, 0],
                 scale: p.scale,
                 rotate: rand(-360, 360),
