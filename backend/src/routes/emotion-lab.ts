@@ -124,11 +124,7 @@ export default async function emotionLabRoutes(fastify: FastifyInstance) {
       const availableLevel = getAvailableLevel(discovered);
 
       if (dyad.level > availableLevel) {
-        throw new AppError(
-          'LEVEL_LOCKED',
-          403,
-          `Unlock all ${dyad.level - 1} level dyads first`,
-        );
+        throw new AppError('LEVEL_LOCKED', 403, `Unlock all ${dyad.level - 1} level dyads first`);
       }
 
       const isNewDiscovery = !discovered.includes(dyad.key);
