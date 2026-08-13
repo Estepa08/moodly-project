@@ -1,7 +1,19 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import Lottie from 'lottie-react';
-import { HeartHandshake, Heart, HeartPulse, PartyPopper, Star, Sparkles, Sparkle, Flower, Smile, CircleDot, type LucideIcon } from 'lucide-react';
+import {
+  HeartHandshake,
+  Heart,
+  HeartPulse,
+  PartyPopper,
+  Star,
+  Sparkles,
+  Sparkle,
+  Flower,
+  Smile,
+  CircleDot,
+  type LucideIcon,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from './pets';

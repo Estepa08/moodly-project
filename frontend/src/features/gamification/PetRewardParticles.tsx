@@ -1,6 +1,18 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Star, Heart, Sun, Trophy, ThumbsUp, Sunrise, SunMedium, HeartHandshake, Gem, Droplets } from 'lucide-react';
+import {
+  Sparkles,
+  Star,
+  Heart,
+  Sun,
+  Trophy,
+  ThumbsUp,
+  Sunrise,
+  SunMedium,
+  HeartHandshake,
+  Gem,
+  Droplets,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PetRewardSignal } from './petRewards';
 
