@@ -51,23 +51,34 @@ export function buildRewardSignal(data: PetResponse): PetRewardSignal {
   const morning = b?.morning ?? false;
   const evening = b?.evening ?? false;
   const empathy = b?.empathy ?? false;
+  const xp = data.xpAwarded ?? 0;
+  const calmnessGain = b?.calmnessGain ?? 0;
+  const comfortGain = b?.comfortGain ?? 0;
+
+  // Анимация награды показывается только когда сервер реально что-то начислил
+  // (XP, calmness или comfort). Иначе — на лимите дня или при нулевой энергии —
+  // sparkles/волны/звёзды вылетали бы впустую, создавая ложную информацию
+  // о начислении XP.
+  const hasReward = xp > 0 || calmnessGain > 0 || comfortGain > 0;
 
   let kind: PetRewardKind = 'none';
-  if (welcome) kind = 'welcome';
-  else if (comboBonusAwarded) kind = 'combo';
-  else if (morning) kind = 'morning';
-  else if (evening) kind = 'evening';
-  else if (empathy) kind = 'empathy';
-  else if (data.xpAwarded > 0) kind = 'standard';
+  if (hasReward) {
+    if (welcome) kind = 'welcome';
+    else if (comboBonusAwarded) kind = 'combo';
+    else if (morning) kind = 'morning';
+    else if (evening) kind = 'evening';
+    else if (empathy) kind = 'empathy';
+    else kind = 'standard';
+  }
 
   return {
     id: Date.now() + Math.random(),
     kind,
-    xpText: data.xpAwarded > 0 ? `+${data.xpAwarded} XP` : undefined,
+    xpText: xp > 0 ? `+${xp} XP` : undefined,
     comboCount,
     comboBonusAwarded,
-    calmnessGain: b?.calmnessGain ?? 0,
-    comfortGain: b?.comfortGain ?? 0,
+    calmnessGain,
+    comfortGain,
   };
 }
 

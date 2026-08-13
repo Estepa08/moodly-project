@@ -159,6 +159,9 @@ interface PetAvatarProps {
   particleFallLimit?: number;
   /** Максимальный радиус разлёта частиц награды (px) — ограничивает границей контейнера */
   particleBoundary?: number;
+  /** Поднимает точку старта пузырей выше кнопки (px) — чтобы эмодзи не
+      показывались внутри круга контейнера с аватаром */
+  bubbleClearance?: number;
 }
 
 export default function PetAvatar({
@@ -180,6 +183,7 @@ export default function PetAvatar({
   hide = null,
   particleFallLimit,
   particleBoundary,
+  bubbleClearance = 0,
 }: PetAvatarProps) {
   const { t } = useTranslation();
   const isReducedMotion = useReducedMotion();
@@ -433,12 +437,13 @@ export default function PetAvatar({
           key={b.id}
           aria-hidden="true"
           className={cn(
-            'absolute left-1/2 top-0 flex items-center justify-center pointer-events-none',
+            'absolute left-1/2 flex items-center justify-center pointer-events-none',
             b.label ? 'min-w-[3rem] h-7 px-1 animate-word-up' : 'w-6 h-6 text-lg animate-bubble-up',
             b.depth === 'over' && 'z-20',
           )}
           style={
             {
+              top: bubbleClearance ? -bubbleClearance : 0,
               marginLeft: b.offset,
               '--by': `${b.trajectory.by}px`,
             } as CSSProperties

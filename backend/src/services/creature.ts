@@ -680,11 +680,13 @@ export const creatureService = {
       }
 
       // «Комбо»: храним последние метки кликов, считаем длину серии.
+      // Бонус начисляется только при активной игре: не на лимите дня и с
+      // энергией — иначе быстрые клики обходили дневной лимит XP.
       const prevTimes = Array.isArray(state.petTimes)
         ? (state.petTimes as number[]).map(Number)
         : [];
       const times = [...prevTimes.slice(-(PET_TIMES_BUFFER - 1)), now.getTime()];
-      const comboCount = computeComboCount(times);
+      const comboCount = !limitReached && hasEnergy ? computeComboCount(times) : 0;
       const comboBonusAwarded = comboCount >= COMBO_THRESHOLD && comboCount % COMBO_THRESHOLD === 0;
       if (comboBonusAwarded) xp += COMBO_XP;
 

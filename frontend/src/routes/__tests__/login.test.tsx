@@ -132,6 +132,6 @@ describe('LoginPage', () => {
     );
 
     render(<LoginPage />, { wrapper });
-    expect(screen.getByText('Protecting your data')).toBeInTheDocument();
+    expect(screen.getByText('Enter your password to unlock your entries')).toBeInTheDocument();
   });
 });
