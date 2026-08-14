@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { setToken, api } from '../lib/api';
-import { ONBOARDING_DONE_KEY } from '../lib/constants';
+import { ONBOARDING_DONE_KEY, HAS_ACCOUNT_KEY } from '../lib/constants';
 import { clearSessionKey } from '../lib/crypto/session';
 
 interface AuthContextValue {
@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.clear();
       setToken(token);
       setIsAuthenticated(true);
+      localStorage.setItem(HAS_ACCOUNT_KEY, '1');
     },
     [queryClient],
   );

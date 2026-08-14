@@ -90,6 +90,10 @@ export const LOCKOUT_DURATION_MS = 5000;
 export const CLICK_WINDOW_MS = 2000;
 
 export const ONBOARDING_DONE_KEY = 'moodly_onboarding_done';
+// Ставится один раз при первом успешном входе/регистрации и не снимается при
+// logout — так root route отличает «уже был зарегистрирован» от нового
+// посетителя, даже когда refresh-cookie истекла (PublicRoute в App.tsx).
+export const HAS_ACCOUNT_KEY = 'moodly_has_account';
 
 export enum Trend {
   Up = 'up',
