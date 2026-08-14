@@ -19,6 +19,10 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
   [PracticeSource.Cba]: { icon: Scale, labelKey: 'progress.activityCba' },
   [PracticeSource.ThoughtJournal]: { icon: BookOpen, labelKey: 'progress.activityThoughtJournal' },
   [PracticeSource.EmotionLab]: { icon: FlaskConical, labelKey: 'progress.activityEmotionLab' },
+  [PracticeSource.ThoughtJournalCycle]: {
+    icon: Sparkles,
+    labelKey: 'progress.activityThoughtJournalCycle',
+  },
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
@@ -29,6 +33,7 @@ const SOURCE_PATH: Record<PracticeSource, string> = {
   [PracticeSource.Cba]: '/practices/cost-benefit-analysis',
   [PracticeSource.ThoughtJournal]: '/practices/thought-journal',
   [PracticeSource.EmotionLab]: '/practices/emotion-lab',
+  [PracticeSource.ThoughtJournalCycle]: '/practices/thought-journal',
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);

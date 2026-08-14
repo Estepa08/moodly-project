@@ -887,6 +887,16 @@ const achievements = [
     sortOrder: 40,
   },
   {
+    key: 'first_reframe_cycle',
+    category: 'practices',
+    titleKey: 'achievements.firstReframeCycle',
+    descKey: 'achievements.firstReframeCycleDesc',
+    iconName: 'brain',
+    xpReward: 20,
+    criteria: { type: 'thought_journal_cycle_count', value: 1 },
+    sortOrder: 41,
+  },
+  {
     key: 'xp_500',
     category: 'general',
     titleKey: 'achievements.xp500',
