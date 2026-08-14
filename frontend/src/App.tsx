@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
 import { useCurrentUser } from './hooks/useCurrentUser';
 import { hasSessionKey } from './lib/crypto/session';
+import { HAS_ACCOUNT_KEY } from './lib/constants';
 import SyncCoordinator from './lib/offline/SyncCoordinator';
 import Layout from './components/Layout';
 import OnboardingGate from './components/OnboardingGate';
@@ -110,6 +111,12 @@ function PublicRoute() {
   // но и лендинг не показываем — только сам /login, чтобы не было цикла.
   if (isAuthenticated && !hasSessionKey() && location.pathname !== '/login') {
     return <Navigate to="/login" replace state={{ reason: 'unlock-required' }} />;
+  }
+  // На этом устройстве уже когда-то входили (флаг переживает logout и не зависит
+  // от refresh-cookie), но сейчас не авторизованы — значит cookie истекла/удалена.
+  // Не показываем маркетинговый лендинг повторно зарегистрированным, ведём на /login.
+  if (!isAuthenticated && location.pathname === '/' && localStorage.getItem(HAS_ACCOUNT_KEY)) {
+    return <Navigate to="/login" replace />;
   }
   return <Outlet />;
 }
