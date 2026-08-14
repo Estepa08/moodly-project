@@ -224,6 +224,7 @@ interface ExtraMetrics {
   moodEntryCount: number;
   gratitudeCount: number;
   thoughtJournalCount: number;
+  thoughtJournalCycleCount: number;
   testCount: number;
   nightCount: number;
 }
@@ -249,6 +250,7 @@ async function collectExtraMetrics(
     moodEntryCount: sourceCounts['moodEntry'] ?? 0,
     gratitudeCount: sourceCounts['gratitude'] ?? 0,
     thoughtJournalCount: sourceCounts['thoughtJournal'] ?? 0,
+    thoughtJournalCycleCount: sourceCounts['thoughtJournalCycle'] ?? 0,
     testCount,
     nightCount,
   };
@@ -290,6 +292,8 @@ function calculateProgress(
       return percentOf(extra?.gratitudeCount ?? 0, value);
     case 'thought_journal_count':
       return percentOf(extra?.thoughtJournalCount ?? 0, value);
+    case 'thought_journal_cycle_count':
+      return percentOf(extra?.thoughtJournalCycleCount ?? 0, value);
     case 'test_count':
       return percentOf(extra?.testCount ?? 0, value);
     case 'night_practices':

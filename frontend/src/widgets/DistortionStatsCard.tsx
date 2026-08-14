@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BrainCircuit } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BrainCircuit, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import PeriodSelect from '../components/ui/PeriodSelect';
 import Spinner from '../components/ui/spinner';
@@ -37,9 +38,11 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
   const renderRow = (s: DistortionStat) => {
     const positive = s.moodDelta !== null && s.moodDelta > 0;
     return (
-      <div
+      <Link
         key={s.key}
-        className="flex items-center justify-between gap-2 rounded-xl bg-muted/50 px-3 py-2.5"
+        to={`/practices/thought-journal?distortion=${s.key}`}
+        aria-label={t('distortionStats.workOnThis', { name: t(`cognitiveDistortions.${s.key}`) })}
+        className="flex items-center justify-between gap-2 rounded-xl bg-muted/50 px-3 py-2.5 transition-[opacity,transform] duration-150 hover:bg-muted active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-foreground">
@@ -54,13 +57,16 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
             </p>
           )}
         </div>
-        <span
-          className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold"
-          style={{ color: '#7B5BF2', backgroundColor: '#EDE7FC' }}
-        >
-          {s.count}
+        <span className="flex shrink-0 items-center gap-1.5">
+          <span
+            className="rounded-full px-2.5 py-0.5 text-xs font-bold"
+            style={{ color: '#7B5BF2', backgroundColor: '#EDE7FC' }}
+          >
+            {s.count}
+          </span>
+          <ChevronRight aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />
         </span>
-      </div>
+      </Link>
     );
   };
 

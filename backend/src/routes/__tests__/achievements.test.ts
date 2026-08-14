@@ -171,6 +171,19 @@ describe('Achievements new criteria', () => {
     await checkAndExpect('soul_scribe');
   });
 
+  it('unlocks via thought_journal_cycle_count criterion', async () => {
+    await seedCreature();
+    await createAch(
+      'journal_cycle_test',
+      { type: 'thought_journal_cycle_count', value: 1 },
+      'reframer',
+    );
+    await prisma.practiceCompletion.create({
+      data: { userId, source: 'thoughtJournalCycle', xpAwarded: 12 },
+    });
+    await checkAndExpect('reframer');
+  });
+
   it('unlocks via test_count criterion', async () => {
     await seedCreature();
     await createAch('tests_test', { type: 'test_count', value: 2 }, 'know_thyself');

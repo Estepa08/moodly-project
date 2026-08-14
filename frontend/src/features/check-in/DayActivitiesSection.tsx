@@ -182,11 +182,6 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
 
   return (
     <div className="space-y-4">
-      <div>
-        <h3 className="text-base font-bold text-foreground">{t('dayActivities.sectionHeading')}</h3>
-        <p className="text-xs text-muted-foreground">{t('dayActivities.subtitle')}</p>
-      </div>
-
       {view.step === 'home' && (
         <>
           {showYesterday && (
@@ -331,7 +326,7 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 max-h-[34vh] overflow-y-auto pr-0.5">
+          <div className="grid grid-cols-2 gap-2">
             {filteredByCategory.map((a) => {
               const active = selectedKeys.has(a.key);
               const Icon = ACTIVITY_ICONS[a.key] ?? CATEGORY_ICONS[a.category];

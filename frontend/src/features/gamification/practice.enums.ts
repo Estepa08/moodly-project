@@ -6,4 +6,6 @@ export enum PracticeSource {
   Breathing = 'breathing',
   ThoughtJournal = 'thoughtJournal',
   EmotionLab = 'emotionLab',
+  /** Полный цикл в дневнике мыслей: тег + вера-до + альтернатива + вера-после. */
+  ThoughtJournalCycle = 'thoughtJournalCycle',
 }

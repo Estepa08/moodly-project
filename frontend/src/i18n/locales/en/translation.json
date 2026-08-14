@@ -701,9 +701,9 @@
     "lblAlternative": "Alternative thought",
     "alternativeOptional": "optional",
     "alternativePlaceholder": "What could you think instead?…",
-    "save": "Save · +5 XP",
+    "save": "Save · +{{xp}} XP",
     "saveHint": "Reward for daily practice",
-    "saved": "Saved! +5 XP",
+    "saved": "Saved! +{{xp}} XP",
     "streak": "{{count}} day streak",
     "historyTitle": "History",
     "noEntries": "No entries yet. Your first entry will appear here.",
@@ -714,7 +714,15 @@
     "showAll": "Show all ({{count}})",
     "hideAll": "Hide",
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "lblBeliefBefore": "How strongly do you believe this thought right now?",
+    "lblBeliefAfter": "And now, after rewriting it?",
+    "resultTitle": "You've reconsidered the thought",
+    "resultDropBadge": "−{{delta}} belief in the thought",
+    "resultSameNote": "Belief didn't shift — that's useful to notice too.",
+    "resultUpNote": "Belief went up if anything — that happens, try again another time.",
+    "pastReframeLabel": "Last time this helped",
+    "usePastReframe": "Use as a starting point"
   },
   "rating": {
     "mood": {
@@ -1514,7 +1522,9 @@
     "meditation500": "Five Hundred Calms",
     "meditation500Desc": "Complete 500 breathing practices",
     "meditation1000": "Breathing Master",
-    "meditation1000Desc": "Complete 1000 breathing practices"
+    "meditation1000Desc": "Complete 1000 breathing practices",
+    "firstReframeCycle": "Thought reconsidered",
+    "firstReframeCycleDesc": "Complete your first full thought-reframe cycle (tag, belief before and after)"
   },
   "progress": {
     "xpToNext": "{{current}} / {{next}} XP",
@@ -1591,7 +1601,7 @@
     "showAllAchievements": "Show all achievements ({{count}})",
     "speech_one": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
     "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
-    "activityEmotionLab": "Emotions"
+    "activityThoughtJournalCycle": "Full reframe"
   },
   "missions": {
     "checkin": "Check in today",
@@ -2619,7 +2629,8 @@
     "moodVsBaseline": "On these days mood is {{value}} ({{delta}} vs baseline)",
     "statsHint": "Tags appear in notes — mark a trap whenever you write about your state.",
     "emptyTitle": "No trap tags yet",
-    "emptyDesc": "Mark thinking traps in your notes — in a month your pattern statistics will appear here."
+    "emptyDesc": "Mark thinking traps in your notes — in a month your pattern statistics will appear here.",
+    "workOnThis": "Work through \"{{name}}\" in the thought journal"
   },
   "emotionLab": {
     "title": "Emotion Lab",

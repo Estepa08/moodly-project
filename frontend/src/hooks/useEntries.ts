@@ -33,6 +33,9 @@ export interface DecryptedEntry extends Entry {
   note: string | null;
   activities?: ActivitySelection[];
   distortions?: DistortionKey[];
+  beliefBefore?: number;
+  beliefAfter?: number;
+  alternativeThought?: string;
 }
 
 async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
@@ -53,6 +56,9 @@ async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
     note: payload.note,
     activities: payload.activities,
     distortions: payload.distortions,
+    beliefBefore: payload.beliefBefore,
+    beliefAfter: payload.beliefAfter,
+    alternativeThought: payload.alternativeThought,
   };
 }
 
@@ -89,6 +95,9 @@ export function useCreateEntry(onSuccess?: () => void) {
       note?: string;
       activities?: ActivitySelection[];
       distortions?: DistortionKey[];
+      beliefBefore?: number;
+      beliefAfter?: number;
+      alternativeThought?: string;
     }) => {
       const id = uuidv7();
       const encryptedData = await encryptEntryPayload(
@@ -97,6 +106,9 @@ export function useCreateEntry(onSuccess?: () => void) {
           note: data.note ?? null,
           activities: data.activities,
           distortions: data.distortions,
+          beliefBefore: data.beliefBefore,
+          beliefAfter: data.beliefAfter,
+          alternativeThought: data.alternativeThought,
         },
         id,
       );
@@ -122,6 +134,9 @@ export function useCreateEntry(onSuccess?: () => void) {
           note: data.note ?? null,
           activities: data.activities ?? [],
           distortions: data.distortions ?? [],
+          beliefBefore: data.beliefBefore,
+          beliefAfter: data.beliefAfter,
+          alternativeThought: data.alternativeThought,
           createdAt: new Date().toISOString(),
         };
       }
@@ -153,6 +168,9 @@ export function useCreateEntry(onSuccess?: () => void) {
           note: data.note ?? null,
           activities: data.activities ?? [],
           distortions: data.distortions ?? [],
+          beliefBefore: data.beliefBefore,
+          beliefAfter: data.beliefAfter,
+          alternativeThought: data.alternativeThought,
           createdAt: new Date().toISOString(),
         };
       }
@@ -209,15 +227,29 @@ export function useUpdateEntry() {
       note,
       activities,
       distortions,
+      beliefBefore,
+      beliefAfter,
+      alternativeThought,
     }: {
       id: string;
       value: number;
       note?: string;
       activities?: ActivitySelection[];
       distortions?: DistortionKey[];
+      beliefBefore?: number;
+      beliefAfter?: number;
+      alternativeThought?: string;
     }) => {
       const encryptedData = await encryptEntryPayload(
-        { value, note: note ?? null, activities, distortions },
+        {
+          value,
+          note: note ?? null,
+          activities,
+          distortions,
+          beliefBefore,
+          beliefAfter,
+          alternativeThought,
+        },
         id,
       );
       if (!navigator.onLine) {
@@ -231,6 +263,9 @@ export function useUpdateEntry() {
           note: note ?? null,
           activities: activities ?? [],
           distortions: distortions ?? [],
+          beliefBefore,
+          beliefAfter,
+          alternativeThought,
           createdAt: new Date().toISOString(),
         };
       }
@@ -248,6 +283,9 @@ export function useUpdateEntry() {
           note: note ?? null,
           activities: activities ?? [],
           distortions: distortions ?? [],
+          beliefBefore,
+          beliefAfter,
+          alternativeThought,
           createdAt: new Date().toISOString(),
         };
       }

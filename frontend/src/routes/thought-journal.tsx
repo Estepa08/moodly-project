@@ -1,25 +1,71 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { PRACTICE_XP } from '@moodly/shared';
 import { useRewardPractice, PracticeSource, useCreatureState } from '../features/gamification';
 import { useParameters } from '../hooks/useParameters';
 import { useEntries, useCreateEntry, useDeleteEntry } from '../hooks/useEntries';
-import { RatingScaleSelector } from '../features/mood-entry';
+import { RatingScaleSelector, DistortionTagsSelector } from '../features/mood-entry';
 import { RATING_LEVELS, levelForValue } from '../lib/ratingLevels';
 import { ParameterName } from '../lib/constants';
+import { suggestDistortion } from '../lib/distortionKeywordHints';
+import { DISTORTION_KEYS, DistortionKey } from '../lib/distortionsQuiz';
+import { findLatestReframe } from '../lib/reframeLibrary';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
+import { Slider } from '../components/ui/slider';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { IconButton } from '../components/ui/icon-button';
-import { Flame, ClipboardList, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import {
+  Flame,
+  ClipboardList,
+  ChevronDown,
+  ChevronUp,
+  Trash2,
+  Sparkles,
+  Quote,
+} from 'lucide-react';
 import EmptyState from '../components/ui/empty-state';
 import { LoadingCard } from '../components/ui/loading-card';
 
 const PARAM_NAME = 'Mood';
 const MOOD_LEVELS = RATING_LEVELS[ParameterName.Mood]!;
 
+interface BeliefSliderProps {
+  label: string;
+  value: number;
+  onChange: (value: number) => void;
+  colorVar: '--accent' | '--primary';
+}
+
+function BeliefSlider({ label, value, onChange, colorVar }: BeliefSliderProps) {
+  const color = `hsl(var(${colorVar}))`;
+  return (
+    <div className="space-y-2">
+      <p className="text-sm font-medium text-foreground">{label}</p>
+      <div className="text-center">
+        <span className="text-3xl font-bold font-serif" style={{ color }}>
+          {value}
+        </span>
+        <span className="text-sm text-muted-foreground">/10</span>
+      </div>
+      <Slider
+        aria-label={label}
+        min={0}
+        max={10}
+        step={1}
+        value={[value]}
+        onValueChange={([v]) => onChange(v)}
+        style={{ '--slider-fill': color } as React.CSSProperties}
+      />
+    </div>
+  );
+}
+
 export default function ThoughtJournalPage() {
   const { t, i18n } = useTranslation();
+  const [searchParams] = useSearchParams();
   const { data: params } = useParameters();
   const rewardPractice = useRewardPractice();
   const { data: creature } = useCreatureState();
@@ -33,8 +79,28 @@ export default function ThoughtJournalPage() {
   const [thought, setThought] = useState('');
   const [value, setValue] = useState(5);
   const [alternative, setAlternative] = useState('');
+  const [distortions, setDistortions] = useState<DistortionKey[]>([]);
+  const [beliefBefore, setBeliefBefore] = useState(7);
+  const [beliefAfter, setBeliefAfter] = useState(4);
   const [streak, setStreak] = useState(0);
   const [showAllHistory, setShowAllHistory] = useState(false);
+  const [lastResult, setLastResult] = useState<{ before: number; after: number } | null>(null);
+
+  const activeDistortionKey = useMemo<DistortionKey | null>(
+    () => distortions[0] ?? suggestDistortion(thought),
+    [distortions, thought],
+  );
+
+  const pastReframe = useMemo(() => {
+    if (!activeDistortionKey || !entries) return null;
+    return findLatestReframe(entries, activeDistortionKey);
+  }, [activeDistortionKey, entries]);
+
+  // Реальная награда зависит от глубины цикла — кнопка и тост должны
+  // показывать точную сумму, а не всегда «базовые» +5 XP.
+  const willBeFullCycle =
+    thought.trim().length > 0 && alternative.trim().length > 0 && distortions.length > 0;
+  const nextXp = PRACTICE_XP[willBeFullCycle ? 'thoughtJournalCycle' : 'thoughtJournal'];
 
   useEffect(() => {
     if (creature) {
@@ -42,8 +108,26 @@ export default function ThoughtJournalPage() {
     }
   }, [creature]);
 
+  // Приход по CTA со статистики («вот твоя самая частая ловушка») —
+  // предзаполняем тег один раз при открытии страницы.
+  useEffect(() => {
+    const key = searchParams.get('distortion');
+    if (key && (DISTORTION_KEYS as string[]).includes(key)) {
+      setDistortions([key as DistortionKey]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Полный цикл (тег + вера-до + альтернатива + вера-после) награждается
+  // отдельным источником с большим XP — награда идёт за завершённую работу
+  // с мыслью, а не за факт записи в дневник.
+  const isFullCycleRef = useRef(false);
+
   const createEntry = useCreateEntry(() => {
-    rewardPractice.mutate(PracticeSource.ThoughtJournal, {
+    const source = isFullCycleRef.current
+      ? PracticeSource.ThoughtJournalCycle
+      : PracticeSource.ThoughtJournal;
+    rewardPractice.mutate(source, {
       onSuccess: (data) => {
         if (data?.state?.streak !== undefined) {
           setStreak(data.state.streak);
@@ -53,6 +137,12 @@ export default function ThoughtJournalPage() {
   });
 
   const deleteEntry = useDeleteEntry();
+
+  // Начало новой записи прячет карточку результата предыдущего цикла —
+  // иначе старая дельта веры остаётся на экране, пока пишется следующая мысль.
+  const clearStaleResult = () => {
+    if (lastResult) setLastResult(null);
+  };
 
   const buildNote = () => {
     const parts: string[] = [];
@@ -70,19 +160,31 @@ export default function ThoughtJournalPage() {
 
   const handleSave = () => {
     if (!moodParam) return;
+    const hasBeliefShift = thought.trim().length > 0 && alternative.trim().length > 0;
+    const isFullCycle = hasBeliefShift && distortions.length > 0;
+    isFullCycleRef.current = isFullCycle;
+    const awardedXp = PRACTICE_XP[isFullCycle ? 'thoughtJournalCycle' : 'thoughtJournal'];
     createEntry.mutate(
       {
         parameterId: moodParam.id,
         value,
         note: buildNote() || undefined,
+        distortions: distortions.length > 0 ? distortions : undefined,
+        beliefBefore: hasBeliefShift ? beliefBefore : undefined,
+        beliefAfter: hasBeliefShift ? beliefAfter : undefined,
+        alternativeThought: alternative.trim() || undefined,
       },
       {
         onSuccess: () => {
-          toast.success(t('thoughtJournal.saved'));
+          toast.success(t('thoughtJournal.saved', { xp: awardedXp }));
+          setLastResult(hasBeliefShift ? { before: beliefBefore, after: beliefAfter } : null);
           setSituation('');
           setThought('');
           setAlternative('');
           setValue(5);
+          setDistortions([]);
+          setBeliefBefore(7);
+          setBeliefAfter(4);
         },
       },
     );
@@ -141,7 +243,10 @@ export default function ThoughtJournalPage() {
             <Textarea
               id="tj-situation"
               value={situation}
-              onChange={(e) => setSituation(e.target.value)}
+              onChange={(e) => {
+                setSituation(e.target.value);
+                clearStaleResult();
+              }}
               placeholder={t('thoughtJournal.situationPlaceholder')}
               rows={3}
             />
@@ -154,11 +259,36 @@ export default function ThoughtJournalPage() {
             <Textarea
               id="tj-thought"
               value={thought}
-              onChange={(e) => setThought(e.target.value)}
+              onChange={(e) => {
+                setThought(e.target.value);
+                clearStaleResult();
+              }}
               placeholder={t('thoughtJournal.thoughtPlaceholder')}
               rows={3}
             />
           </div>
+
+          {(thought.trim().length > 0 || distortions.length > 0) && (
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold text-muted-foreground">
+                {t('cognitiveDistortions.tagsTitle')}
+              </p>
+              <DistortionTagsSelector
+                value={distortions}
+                onChange={setDistortions}
+                noteText={thought}
+              />
+            </div>
+          )}
+
+          {thought.trim().length > 0 && (
+            <BeliefSlider
+              label={t('thoughtJournal.lblBeliefBefore')}
+              value={beliefBefore}
+              onChange={setBeliefBefore}
+              colorVar="--accent"
+            />
+          )}
 
           <div className="space-y-2">
             <p className="text-sm font-medium text-foreground">{t('thoughtJournal.lblFeel')}</p>
@@ -181,18 +311,62 @@ export default function ThoughtJournalPage() {
                 {t('thoughtJournal.alternativeOptional')}
               </span>
             </div>
+            {pastReframe && alternative.trim().length === 0 ? (
+              <div className="space-y-2 rounded-lg border border-dashed border-border bg-muted/50 px-3 py-2.5">
+                <p className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                  <Quote aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+                  {t('thoughtJournal.pastReframeLabel')}
+                </p>
+                <p className="text-xs italic text-foreground">«{pastReframe.alternativeThought}»</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-auto py-1.5"
+                  onClick={() => setAlternative(pastReframe.alternativeThought)}
+                >
+                  {t('thoughtJournal.usePastReframe')}
+                </Button>
+              </div>
+            ) : (
+              activeDistortionKey && (
+                <p className="flex items-start gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-xs text-foreground">
+                  <Sparkles
+                    aria-hidden="true"
+                    className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary"
+                  />
+                  <span>
+                    {t('distortions.letGo.hintQuestion', {
+                      distortion: t(`cognitiveDistortions.${activeDistortionKey}`),
+                    })}
+                  </span>
+                </p>
+              )
+            )}
             <Textarea
               id="tj-alternative"
               value={alternative}
-              onChange={(e) => setAlternative(e.target.value)}
+              onChange={(e) => {
+                setAlternative(e.target.value);
+                clearStaleResult();
+              }}
               placeholder={t('thoughtJournal.alternativePlaceholder')}
               rows={3}
             />
           </div>
 
+          {alternative.trim().length > 0 && (
+            <BeliefSlider
+              label={t('thoughtJournal.lblBeliefAfter')}
+              value={beliefAfter}
+              onChange={setBeliefAfter}
+              colorVar="--primary"
+            />
+          )}
+
           <div className="space-y-1.5">
             <Button onClick={handleSave} disabled={createEntry.isPending} className="w-full">
-              {t('thoughtJournal.save')}
+              {t('thoughtJournal.save', { xp: nextXp })}
             </Button>
             <p className="text-center text-xs text-muted-foreground">
               {t('thoughtJournal.saveHint')}
@@ -200,6 +374,32 @@ export default function ThoughtJournalPage() {
           </div>
         </CardContent>
       </Card>
+
+      {lastResult && (
+        <Card className="shadow-neumorphic border-t-2 border-t-accent animate-in fade-in slide-in-from-top-2 duration-300">
+          <CardContent className="p-6 text-center space-y-2">
+            <p className="text-sm font-medium text-foreground">{t('thoughtJournal.resultTitle')}</p>
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-2xl text-muted-foreground line-through decoration-border">
+                {lastResult.before}
+              </span>
+              <span className="text-muted-foreground">→</span>
+              <span className="text-4xl font-bold font-serif text-primary">{lastResult.after}</span>
+            </div>
+            {lastResult.after < lastResult.before ? (
+              <span className="inline-flex rounded-full bg-success/15 px-3 py-1 text-xs font-bold text-success">
+                {t('thoughtJournal.resultDropBadge', {
+                  delta: lastResult.before - lastResult.after,
+                })}
+              </span>
+            ) : lastResult.after === lastResult.before ? (
+              <p className="text-xs text-muted-foreground">{t('thoughtJournal.resultSameNote')}</p>
+            ) : (
+              <p className="text-xs text-muted-foreground">{t('thoughtJournal.resultUpNote')}</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="shadow-neumorphic">
         <CardHeader>

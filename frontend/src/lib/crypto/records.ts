@@ -13,6 +13,16 @@ export interface EntryCipherPayload {
   note: string | null;
   activities?: ActivitySelection[];
   distortions?: DistortionKey[];
+  /** Насколько сильно пользователь верил в мысль до переформулировки, 0–10. */
+  beliefBefore?: number;
+  /** То же самое — после того, как написал(а) альтернативную мысль. */
+  beliefAfter?: number;
+  /**
+   * Текст альтернативной мысли отдельно от `note` (которая объединяет
+   * ситуацию/мысль/альтернативу для истории) — нужен для поиска прошлого
+   * переосмысления по тегу без парсинга локализованной разметки заметки.
+   */
+  alternativeThought?: string;
 }
 
 export interface TestResultCipherPayload {
@@ -63,12 +73,28 @@ export async function decryptEntryPayload(
         (d) => typeof d === 'string' && (DISTORTION_KEYS as string[]).includes(d),
       )
     : [];
+  const beliefBefore = parseBeliefValue((raw as { beliefBefore?: unknown }).beliefBefore);
+  const beliefAfter = parseBeliefValue((raw as { beliefAfter?: unknown }).beliefAfter);
+  const alternativeThoughtRaw = (raw as { alternativeThought?: unknown }).alternativeThought;
+  const alternativeThought =
+    typeof alternativeThoughtRaw === 'string' && alternativeThoughtRaw.trim().length > 0
+      ? alternativeThoughtRaw
+      : undefined;
   return {
     value,
     note: typeof note === 'string' ? note : null,
     activities: parsedActivities,
     distortions: parsedDistortions,
+    ...(beliefBefore !== undefined ? { beliefBefore } : {}),
+    ...(beliefAfter !== undefined ? { beliefAfter } : {}),
+    ...(alternativeThought !== undefined ? { alternativeThought } : {}),
   };
+}
+
+function parseBeliefValue(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 10
+    ? value
+    : undefined;
 }
 
 /**

@@ -79,6 +79,31 @@ describe('crypto/records encryption and decryption', () => {
     expect(decrypted.distortions).toEqual(['magnification']);
   });
 
+  it('should encrypt and decrypt belief-before/after in EntryCipherPayload', async () => {
+    const payload: EntryCipherPayload = {
+      value: 4,
+      note: 'Коллега не ответил',
+      beliefBefore: 8,
+      beliefAfter: 3,
+    };
+    const encrypted = await encryptEntryPayload(payload, dummyEntityId);
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.beliefBefore).toBe(8);
+    expect(decrypted.beliefAfter).toBe(3);
+  });
+
+  it('should ignore out-of-range or malformed belief values in EntryCipherPayload', async () => {
+    const key = await getSessionKey();
+    const encrypted = await encryptJson(
+      key,
+      { value: 4, note: null, beliefBefore: 11, beliefAfter: 'high' },
+      { userId: dummyUserId, entityId: dummyEntityId },
+    );
+    const decrypted = await decryptEntryPayload(encrypted, dummyEntityId);
+    expect(decrypted.beliefBefore).toBeUndefined();
+    expect(decrypted.beliefAfter).toBeUndefined();
+  });
+
   it('should ignore malformed activities list in EntryCipherPayload', async () => {
     const key = await getSessionKey();
     const encrypted = await encryptJson(

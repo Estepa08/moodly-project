@@ -91,6 +91,7 @@ export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
   distortions: 25,
   gratitude: 15,
   thoughtJournal: 15,
+  thoughtJournalCycle: 25,
   sleepHygiene: 15,
   emotionLab: 15,
 };
@@ -111,6 +112,7 @@ export const PRACTICE_XP: Record<string, number> = {
   distortions: 10,
   cba: 10,
   thoughtJournal: 5,
+  thoughtJournalCycle: 12,
   emotionLab: 5,
 };
 
