@@ -8,7 +8,23 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // SPA-navigation: любой переход (в т.ч. офлайн deep-link при чистом кэше)
 // отдаём из precache index.html, чтобы маршруты React открывались всегда.
-registerRoute(new NavigationRoute(createHandlerBoundToURL('/index.html')));
+// ВАЖНО: реальные статические файлы (robots.txt, sitemap.xml, манифест,
+// иконки и т.д.) должны исключаться через denylist — иначе браузер с уже
+// установленным SW получает вместо них index.html (в т.ч. поисковые боты,
+// если когда-либо у них будет активен SW/офлайн-кэш для этого origin, и
+// любой пользователь, открывающий эти ссылки напрямую после первого визита).
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL('/index.html'), {
+    denylist: [
+      /^\/robots\.txt$/,
+      /^\/sitemap\.xml$/,
+      /^\/manifest\.webmanifest$/,
+      /^\/icons\//,
+      /^\/assets\//,
+      /^\/api\//,
+    ],
+  }),
+);
 
 self.addEventListener('push', (event) => {
   let data: { title: string; body: string; url?: string } = { title: 'Moodly', body: '' };
