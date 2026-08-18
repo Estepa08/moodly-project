@@ -521,6 +521,20 @@ paths:
                 $ref: '#/components/schemas/PetCollection'
       tags:
         - Breathing
+  /creature/play:
+    post:
+      operationId: Creature_play
+      description: 'Играть с компаньоном: −10 энергии, +2 XP, лимит 5 игр в сутки'
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlayResponse'
+      tags:
+        - Breathing
   /creature/reward:
     post:
       operationId: Creature_reward
@@ -541,6 +555,34 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RewardRequest'
+  /creature/weekly:
+    get:
+      operationId: Creature_getWeekly
+      description: 'Недельный календарь практик (Пн–Вс): прогресс к цели, статус подарка +25 XP'
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyState'
+      tags:
+        - Breathing
+  /creature/weekly/claim:
+    post:
+      operationId: Creature_claimWeekly
+      description: Забрать недельный подарок +XP (одноразово на неделю, только при достигнутой цели)
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimWeeklyResponse'
+      tags:
+        - Breathing
   /emotion-lab/attempt:
     post:
       operationId: EmotionLab_attempt
@@ -1288,6 +1330,23 @@ components:
           type: boolean
           description: Был ли достигнут новый уровень
       description: Результат ежедневного чекина
+    ClaimWeeklyResponse:
+      type: object
+      required:
+        - claimed
+        - xpAwarded
+        - leveledUp
+      properties:
+        claimed:
+          type: boolean
+        xpAwarded:
+          type: integer
+          format: int32
+          description: Сколько XP начислено
+        leveledUp:
+          type: boolean
+          description: Был ли достигнут новый уровень
+      description: Результат получения недельного подарка
     CreatureState:
       type: object
       required:
@@ -1936,6 +1995,33 @@ components:
           type: string
           description: Новое имя питомца (пустая строка очищает)
       description: Тело обновления питомца
+    PlayResponse:
+      type: object
+      required:
+        - state
+        - leveledUp
+        - xpAwarded
+        - playCount
+        - playCountRemaining
+      properties:
+        state:
+          $ref: '#/components/schemas/CreatureState'
+        leveledUp:
+          type: boolean
+          description: Был ли достигнут новый уровень
+        xpAwarded:
+          type: integer
+          format: int32
+          description: Сколько XP начислено за эту игру
+        playCount:
+          type: integer
+          format: int32
+          description: Игр за текущий день
+        playCountRemaining:
+          type: integer
+          format: int32
+          description: Сколько игр осталось сегодня
+      description: Результат игры с компаньоном (тратит энергию, даёт немного XP)
     PracticeCompletion:
       type: object
       required:
@@ -2372,6 +2458,67 @@ components:
       properties:
         name:
           type: string
+    WeeklyDay:
+      type: object
+      required:
+        - date
+        - dayOfWeek
+        - completed
+        - isToday
+        - isFuture
+      properties:
+        date:
+          type: string
+          description: Дата дня (YYYY-MM-DD)
+        dayOfWeek:
+          type: integer
+          format: int32
+          description: 'Индекс дня недели: 0=Пн … 6=Вс'
+        completed:
+          type: boolean
+          description: Была ли в этот день засчитана практика/чек-ин
+        isToday:
+          type: boolean
+        isFuture:
+          type: boolean
+      description: Один день недельного календаря практик (Пн–Вс)
+    WeeklyState:
+      type: object
+      required:
+        - weekStart
+        - days
+        - completedCount
+        - goal
+        - goalReached
+        - claimed
+        - xpReward
+      properties:
+        weekStart:
+          type: string
+          description: Дата понедельника текущей недели (YYYY-MM-DD)
+        days:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeeklyDay'
+        completedCount:
+          type: integer
+          format: int32
+          description: Сколько уникальных дней недели засчитано
+        goal:
+          type: integer
+          format: int32
+          description: Цель в днях для получения подарка
+        goalReached:
+          type: boolean
+          description: Цель уже достигнута в этой неделе
+        claimed:
+          type: boolean
+          description: Подарок за эту неделю уже забран
+        xpReward:
+          type: integer
+          format: int32
+          description: Сколько XP даёт подарок
+      description: 'Недельный календарь практик: неделя Пн–Вс, цель — N дней, подарок +XP'
   securitySchemes:
     BearerAuth:
       type: http

@@ -1421,7 +1421,11 @@
     "invalidResetToken": "Ссылка для сброса устарела. Запросите новую.",
     "alreadyCheckedIn": "Вы уже сегодня отмечались. Возвращайтесь завтра!",
     "dailyLimit": "Достигнут дневной лимит записей",
-    "validationError": "Пожалуйста, проверьте введённые данные"
+    "validationError": "Пожалуйста, проверьте введённые данные",
+    "notEnoughEnergy": "Не хватает энергии для игры — восстанови практикой",
+    "playLimitReached": "Дневной лимит игр исчерпан — заходи завтра",
+    "weeklyGoalNotReached": "Цель недели пока не достигнута",
+    "alreadyClaimed": "Награда уже забрана"
   },
   "achievements": {
     "firstCheckin": "Первый шаг",
@@ -1610,7 +1614,9 @@
     "speech_many": "Серия уже {{count}} дней! Уровень {{level}} — продолжай в том же духе! 🚀",
     "speech_other": "Серия уже {{count}} дней! Уровень {{level}} — продолжай в том же духе! 🚀",
     "activityEmotionLab": "Эмоции",
-    "activityThoughtJournalCycle": "Разобранный цикл"
+    "activityThoughtJournalCycle": "Разобранный цикл",
+    "weeklyTitle": "Недельный календарь",
+    "weeklySubtitle": "Любые 5 дней из 7 — без штрафов за пропуск"
   },
   "missions": {
     "checkin": "Отметить самочувствие",
@@ -1671,7 +1677,10 @@
     "robot3": "Робот 3",
     "active": "Активен",
     "fedCount": "×{{count}}",
-    "showAll": "Посмотреть всех ({{count}})"
+    "showAll": "Посмотреть всех ({{count}})",
+    "collectionLabel": "Коллекция",
+    "collectionCount": "{{current}} из {{total}}",
+    "nextPetLabel": "Следующий питомец"
   },
   "companion": {
     "level": "Уровень {{level}}",
@@ -1728,7 +1737,11 @@
         "Тёпленько!",
         "Красота!"
       ]
-    }
+    },
+    "playCta": "Играть",
+    "playHint": "Осталось игр сегодня: {{remaining}}",
+    "playLimitHint": "На сегодня хватит игр — заходи завтра 🌙",
+    "playNoEnergyHint": "Слишком устал для игры — восстанови энергию практикой"
   },
   "petMood": {
     "happy": "В отличном настроении",
@@ -2723,5 +2736,28 @@
       "frozenness": "Оцепенение",
       "confusion": "Растерянность"
     }
+  },
+  "weekday": {
+    "mon": "Пн",
+    "tue": "Вт",
+    "wed": "Ср",
+    "thu": "Чт",
+    "fri": "Пт",
+    "sat": "Сб",
+    "sun": "Вс"
+  },
+  "weekly": {
+    "progressLabel": "Прогресс недели",
+    "progressValue": "{{current}} из {{goal}} дней",
+    "claimedHint": "Подарок этой недели уже у тебя (+{{xp}} XP)",
+    "claimCta": "Забрать +{{xp}} XP",
+    "goalHint": "Ещё {{remaining}} дн. практики — и получишь +{{xp}} XP"
+  },
+  "evolution": {
+    "title": "{{name}} вырос!",
+    "body": "Новая стадия: {{stage}}",
+    "was": "было:",
+    "became": "стало:",
+    "cta": "Здорово! ✨"
   }
 }

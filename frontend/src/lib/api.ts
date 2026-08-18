@@ -127,6 +127,8 @@ export interface CreatureState {
   petCountRemaining?: number;
   lastPetAt?: string | null;
   comfort?: number;
+  playCount?: number;
+  weeklyClaimWeek?: string | null;
 }
 
 export interface PetBonus {
@@ -226,6 +228,39 @@ export interface Mission {
 }
 
 export interface ClaimMissionResponse {
+  claimed: boolean;
+  xpAwarded: number;
+  leveledUp: boolean;
+}
+
+export interface PlayResponse {
+  state: CreatureState;
+  leveledUp: boolean;
+  xpAwarded: number;
+  playCount: number;
+  playCountRemaining: number;
+}
+
+export interface WeeklyDay {
+  date: string;
+  /** 0=Пн … 6=Вс */
+  dayOfWeek: number;
+  completed: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+}
+
+export interface WeeklyState {
+  weekStart: string;
+  days: WeeklyDay[];
+  completedCount: number;
+  goal: number;
+  goalReached: boolean;
+  claimed: boolean;
+  xpReward: number;
+}
+
+export interface ClaimWeeklyResponse {
   claimed: boolean;
   xpAwarded: number;
   leveledUp: boolean;
@@ -440,6 +475,9 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ title }),
       }),
+    play: () => request<PlayResponse>('/creature/play', { method: 'POST' }),
+    getWeekly: () => request<WeeklyState>('/creature/weekly'),
+    claimWeekly: () => request<ClaimWeeklyResponse>('/creature/weekly/claim', { method: 'POST' }),
   },
   achievements: {
     list: () => request<Achievement[]>('/achievements'),

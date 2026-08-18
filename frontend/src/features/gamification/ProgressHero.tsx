@@ -56,6 +56,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               cyclePosition={cyclePosition}
               reward={reward}
               glow={glow}
+              stage={creature.stage ?? 'baby'}
               className="animate-pet-float"
               particleBoundary={36}
               particleFallLimit={0}

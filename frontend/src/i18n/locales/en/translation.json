@@ -1414,7 +1414,11 @@
     "invalidResetToken": "This reset link has expired. Request a new one.",
     "alreadyCheckedIn": "You've already checked in today. Come back tomorrow!",
     "dailyLimit": "You've reached the daily entry limit",
-    "validationError": "Please check the data you entered"
+    "validationError": "Please check the data you entered",
+    "notEnoughEnergy": "Not enough energy to play — restore it with a practice",
+    "playLimitReached": "Daily play limit reached — come back tomorrow",
+    "weeklyGoalNotReached": "This week's goal isn't reached yet",
+    "alreadyClaimed": "Reward already claimed"
   },
   "achievements": {
     "firstCheckin": "First Step",
@@ -1601,7 +1605,9 @@
     "showAllAchievements": "Show all achievements ({{count}})",
     "speech_one": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
     "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
-    "activityThoughtJournalCycle": "Full reframe"
+    "activityThoughtJournalCycle": "Full reframe",
+    "weeklyTitle": "Weekly calendar",
+    "weeklySubtitle": "Any 5 days out of 7 — no penalty for missing one"
   },
   "missions": {
     "checkin": "Check in today",
@@ -1662,7 +1668,10 @@
     "robot3": "Robot 3",
     "active": "Active",
     "fedCount": "×{{count}}",
-    "showAll": "Show all ({{count}})"
+    "showAll": "Show all ({{count}})",
+    "collectionLabel": "Collection",
+    "collectionCount": "{{current}} of {{total}}",
+    "nextPetLabel": "Next pet"
   },
   "companion": {
     "level": "Level {{level}}",
@@ -1719,7 +1728,11 @@
         "Snug!",
         "Beauty!"
       ]
-    }
+    },
+    "playCta": "Play",
+    "playHint": "{{remaining}} plays left today",
+    "playLimitHint": "That's enough for today — come back tomorrow 🌙",
+    "playNoEnergyHint": "Too tired to play — restore energy with a practice"
   },
   "petMood": {
     "happy": "In a great mood",
@@ -2710,5 +2723,28 @@
       "frozenness": "Frozenness",
       "confusion": "Confusion"
     }
+  },
+  "weekday": {
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  },
+  "weekly": {
+    "progressLabel": "Weekly progress",
+    "progressValue": "{{current}} of {{goal}} days",
+    "claimedHint": "You already claimed this week's gift (+{{xp}} XP)",
+    "claimCta": "Claim +{{xp}} XP",
+    "goalHint": "{{remaining}} more days of practice to earn +{{xp}} XP"
+  },
+  "evolution": {
+    "title": "{{name}} grew up!",
+    "body": "New stage: {{stage}}",
+    "was": "was:",
+    "became": "now:",
+    "cta": "Awesome! ✨"
   }
 }

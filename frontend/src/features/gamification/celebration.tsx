@@ -39,6 +39,7 @@ const PRACTICE_REWARD_XP: Record<string, number> = {
   distortions: 10,
   cba: 10,
   thoughtJournal: 5,
+  weeklyGoal: 25,
 };
 
 const REWARD_COOLDOWN_MS = 4000;

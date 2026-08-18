@@ -34,6 +34,15 @@ import {
   isMorningWindow,
   isEveningWindow,
   computeComboCount,
+  PLAY_ENERGY_COST,
+  PLAY_XP,
+  PLAY_DAILY_LIMIT,
+  WEEKLY_GOAL_DAYS,
+  WEEKLY_XP_REWARD,
+  WEEKLY_EXCLUDED_SOURCES,
+  dateKey,
+  mondayOfWeek,
+  weekKey,
 } from '@moodly/shared';
 
 export const creatureService = {
@@ -97,7 +106,7 @@ export const creatureService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
-      (c) => c.source !== 'moodEntry' && c.source !== 'feed',
+      (c) => c.source !== 'moodEntry' && c.source !== 'feed' && c.source !== 'play',
     );
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
     const totalPractices = practiceCompletions.length;
@@ -265,7 +274,7 @@ export const creatureService = {
         where: { userId, createdAt: { gte: today, lt: todayEnd } },
         select: { source: true },
       })
-    ).filter((c) => c.source !== 'moodEntry' && c.source !== 'feed');
+    ).filter((c) => c.source !== 'moodEntry' && c.source !== 'feed' && c.source !== 'play');
     const todayEntries = await prisma.entry.count({
       where: { userId, createdAt: { gte: today, lt: todayEnd } },
     });
@@ -517,7 +526,7 @@ export const creatureService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
 
-    return completions.filter((c) => c.source !== 'feed');
+    return completions.filter((c) => c.source !== 'feed' && c.source !== 'play');
   },
 
   async rewardMoodEntry(userId: string) {
@@ -594,6 +603,175 @@ export const creatureService = {
       feedCount: updated.feedCount,
       feedCounts: (updated.feedCounts as Record<string, number>) ?? {},
     };
+  },
+
+  // «Играть»: быстрый источник XP, но тратит энергию (ресурс, который
+  // пополняют практики/чек-ин). Дневной лимит игр — PLAY_DAILY_LIMIT,
+  // независим от лимита поглаживаний (petCount). Транзакция + lockUser —
+  // как у pet()/checkIn(), т.к. лимит и энергия должны быть согласованы
+  // при параллельных запросах.
+  async play(userId: string) {
+    const result = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
+
+      let state = await tx.creatureState.findUnique({ where: { userId } });
+      if (!state) {
+        state = await tx.creatureState.create({
+          data: { userId, calmness: 50 },
+        });
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const lastPlay = state.lastPlayAt ? new Date(state.lastPlayAt) : null;
+      const playCount = (() => {
+        if (lastPlay) {
+          const lastPlayDate = new Date(lastPlay);
+          lastPlayDate.setHours(0, 0, 0, 0);
+          if (lastPlayDate.getTime() === today.getTime()) {
+            return state.playCount ?? 0;
+          }
+        }
+        return 0;
+      })();
+
+      if (playCount >= PLAY_DAILY_LIMIT) {
+        throw new AppError('PLAY_LIMIT_REACHED', 400, 'Daily play limit reached');
+      }
+      const energy = state.energy ?? MAX_ENERGY;
+      if (energy < PLAY_ENERGY_COST) {
+        throw new AppError('NOT_ENOUGH_ENERGY', 400, 'Not enough energy to play');
+      }
+
+      const nextEnergy = Math.max(0, energy - PLAY_ENERGY_COST);
+      const nextPlayCount = playCount + 1;
+      const { experience, level, leveledUp } = applyLevelUp(state, PLAY_XP);
+
+      const updated = await tx.creatureState.update({
+        where: { userId },
+        data: {
+          energy: nextEnergy,
+          playCount: nextPlayCount,
+          lastPlayAt: new Date(),
+          experience,
+          level,
+        },
+      });
+      await tx.practiceCompletion.create({
+        data: { userId, source: 'play', xpAwarded: PLAY_XP },
+      });
+
+      return { updated, leveledUp, playCount: nextPlayCount };
+    });
+
+    const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    return {
+      state: { ...result.updated, sessionCount },
+      leveledUp: result.leveledUp,
+      xpAwarded: PLAY_XP,
+      playCount: result.playCount,
+      playCountRemaining: Math.max(0, PLAY_DAILY_LIMIT - result.playCount),
+    };
+  },
+
+  // Недельный календарь: неделя Пн–Вс (см. mondayOfWeek/weekKey), считаем
+  // уникальные дни с «настоящей» практикой/чек-ином (без feed/moodEntry/
+  // play/weeklyGoal — те же исключения, что и в статистике практик).
+  async getWeekly(userId: string) {
+    const state = await prisma.creatureState.findUnique({ where: { userId } });
+    const now = new Date();
+    const monday = mondayOfWeek(now);
+    const weekEnd = new Date(monday);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    const completions = await prisma.practiceCompletion.findMany({
+      where: { userId, createdAt: { gte: monday, lt: weekEnd } },
+      select: { source: true, createdAt: true },
+    });
+    const countedDays = new Set(
+      completions
+        .filter((c) => !WEEKLY_EXCLUDED_SOURCES.includes(c.source))
+        .map((c) => dateKey(c.createdAt)),
+    );
+
+    const currentWeekKey = weekKey(now);
+    const claimed = state?.weeklyClaimWeek === currentWeekKey;
+    const completedCount = countedDays.size;
+    const goalReached = completedCount >= WEEKLY_GOAL_DAYS;
+    const todayKey = dateKey(now);
+
+    const days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(d.getDate() + i);
+      const key = dateKey(d);
+      return {
+        date: key,
+        dayOfWeek: i,
+        completed: countedDays.has(key),
+        isToday: key === todayKey,
+        isFuture: d.getTime() > now.getTime(),
+      };
+    });
+
+    return {
+      weekStart: dateKey(monday),
+      days,
+      completedCount,
+      goal: WEEKLY_GOAL_DAYS,
+      goalReached,
+      claimed,
+      xpReward: WEEKLY_XP_REWARD,
+    };
+  },
+
+  // Забрать недельный подарок: одноразово на неделю (weeklyClaimWeek), только
+  // если цель уже достигнута. Транзакция + lockUser — тот же паттерн, что у
+  // claimMission(), чтобы параллельный claim не начислил XP дважды.
+  async claimWeekly(userId: string) {
+    return prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
+
+      let state = await tx.creatureState.findUnique({ where: { userId } });
+      if (!state) {
+        state = await tx.creatureState.create({
+          data: { userId, calmness: 50 },
+        });
+      }
+
+      const now = new Date();
+      const currentWeekKey = weekKey(now);
+      if (state.weeklyClaimWeek === currentWeekKey) {
+        throw new AppError('ALREADY_CLAIMED', 409, 'Weekly reward already claimed');
+      }
+
+      const monday = mondayOfWeek(now);
+      const weekEnd = new Date(monday);
+      weekEnd.setDate(weekEnd.getDate() + 7);
+      const completions = await tx.practiceCompletion.findMany({
+        where: { userId, createdAt: { gte: monday, lt: weekEnd } },
+        select: { source: true, createdAt: true },
+      });
+      const countedDays = new Set(
+        completions
+          .filter((c) => !WEEKLY_EXCLUDED_SOURCES.includes(c.source))
+          .map((c) => dateKey(c.createdAt)),
+      );
+      if (countedDays.size < WEEKLY_GOAL_DAYS) {
+        throw new AppError('GOAL_NOT_REACHED', 400, 'Weekly goal not reached yet');
+      }
+
+      const { experience, level, leveledUp } = applyLevelUp(state, WEEKLY_XP_REWARD);
+      const updated = await tx.creatureState.update({
+        where: { userId },
+        data: { experience, level, weeklyClaimWeek: currentWeekKey },
+      });
+      await tx.practiceCompletion.create({
+        data: { userId, source: 'weeklyGoal', xpAwarded: WEEKLY_XP_REWARD },
+      });
+
+      return { claimed: true, xpAwarded: WEEKLY_XP_REWARD, leveledUp, state: updated };
+    });
   },
 
   // Поглаживание компаньона: детерминированный цикл 1-2-3. Каждый 3-й клик

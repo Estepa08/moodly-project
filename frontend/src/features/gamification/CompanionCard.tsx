@@ -21,6 +21,7 @@ import {
 } from '../../components/ui/dialog';
 import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
 import PetAvatar from './PetAvatar';
+import PlayButton from './PlayButton';
 
 export default function CompanionCard() {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ export default function CompanionCard() {
   const energy = creature.energy ?? 100;
   const energyPercent = Math.max(0, Math.min(100, Math.round((energy / 100) * 100)));
   const isLowEnergy = energy <= ENERGY_LOW_THRESHOLD;
+  const playCount = creature.playCount ?? 0;
 
   const nextLevelExp = creature.level * EXP_PER_LEVEL;
   const expPercent = Math.min(100, Math.round((creature.experience / nextLevelExp) * 100));
@@ -92,6 +94,7 @@ export default function CompanionCard() {
             cyclePosition={cyclePosition}
             reward={reward}
             glow={glow}
+            stage={stage}
             onTap={handleTap}
           />
           {/* NEW: бар энергии прямо под аватаром */}
@@ -149,6 +152,9 @@ export default function CompanionCard() {
           </div>
         </div>
       </div>
+
+      {/* NEW: кнопка «Играть» — тратит энергию, даёт XP (A1) */}
+      <PlayButton energy={energy} playCount={playCount} />
 
       <div>
         <div className="flex items-center justify-between">

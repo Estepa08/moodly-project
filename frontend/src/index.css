@@ -400,6 +400,24 @@
   }
 }
 
+@keyframes evolution-confetti {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(26px) rotate(50deg);
+  }
+}
+
+.animate-evolution-confetti {
+  animation: evolution-confetti 1.6s ease-out infinite;
+}
+
 .animate-glow-cool {
   animation: glow-cool 2.8s ease-in-out infinite;
 }

@@ -19,5 +19,8 @@ export {
   useMissions,
   useClaimMission,
   useAchievements,
+  usePlay,
+  useWeekly,
+  useClaimWeekly,
 } from './useCreature';
 export { PracticeSource } from './practice.enums';

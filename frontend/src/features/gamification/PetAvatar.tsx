@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { PET_DEFINITIONS, hasPetEmotion, type PetEmotion } from './pets';
+import { PET_DEFINITIONS, STAGE_SCALE, hasPetEmotion, type PetEmotion } from './pets';
 import { usePetAnimation } from './usePetAnimation';
 import PetRewardParticles from './PetRewardParticles';
 import { pickPetWordIndex, type PetRewardSignal } from './petRewards';
@@ -162,6 +162,9 @@ interface PetAvatarProps {
   /** Поднимает точку старта пузырей выше кнопки (px) — чтобы эмодзи не
       показывались внутри круга контейнера с аватаром */
   bubbleClearance?: number;
+  /** Стадия эволюции (baby/kid/adult/max) — визуально масштабирует аватар
+      и добавляет свечение на финальной стадии (см. STAGE_SCALE) */
+  stage?: string;
 }
 
 export default function PetAvatar({
@@ -184,6 +187,7 @@ export default function PetAvatar({
   particleFallLimit,
   particleBoundary,
   bubbleClearance = 0,
+  stage,
 }: PetAvatarProps) {
   const { t } = useTranslation();
   const isReducedMotion = useReducedMotion();
@@ -372,6 +376,8 @@ export default function PetAvatar({
 
   const fallback = PET_DEFINITIONS.find((p) => p.type === petType)?.emoji ?? '🫧';
   const { box, icon } = SIZE_CLASS[size];
+  const stageScale = stage ? (STAGE_SCALE[stage] ?? 1) : 1;
+  const isMaxStage = stage === 'max';
 
   const showPetBounce =
     emotion === 'happy' && !hasPetEmotion(petType, 'happy') && !isReducedMotion && !!animationData;
@@ -417,19 +423,36 @@ export default function PetAvatar({
         />
       )}
 
-      <span className={cn('block rounded-full', plain ? 'bg-transparent' : 'bg-secondary', box)} />
+      {/* F1: свечение финальной стадии эволюции (max) — не связано с glow (время суток) */}
+      {isMaxStage && !isReducedMotion && (
+        <span
+          aria-hidden="true"
+          className="absolute -inset-2 rounded-full blur-md pointer-events-none bg-warning/30 animate-glow-warm"
+        />
+      )}
+
+      {/* F1: масштаб визуального слоя по стадии эволюции — сам бокс (и хит-área
+          кнопки) размер не меняет, растёт/уменьшается только содержимое внутри */}
       <span
-        className={cn(
-          'absolute inset-0 flex items-center justify-center',
-          icon,
-          showPetBounce && 'animate-pet-happy',
-        )}
+        className={cn('relative block rounded-full transition-transform duration-500', box)}
+        style={stageScale !== 1 ? { transform: `scale(${stageScale})` } : undefined}
       >
-        {isReducedMotion || !animationData ? (
-          <span aria-hidden="true">{fallback}</span>
-        ) : (
-          <Lottie animationData={animationData} loop autoplay />
-        )}
+        <span
+          className={cn('absolute inset-0 rounded-full', plain ? 'bg-transparent' : 'bg-secondary')}
+        />
+        <span
+          className={cn(
+            'absolute inset-0 flex items-center justify-center',
+            icon,
+            showPetBounce && 'animate-pet-happy',
+          )}
+        >
+          {isReducedMotion || !animationData ? (
+            <span aria-hidden="true">{fallback}</span>
+          ) : (
+            <Lottie animationData={animationData} loop autoplay />
+          )}
+        </span>
       </span>
 
       {bubbles.map((b) => (

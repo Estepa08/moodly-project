@@ -455,6 +455,57 @@ model PetRequest {
   empathy?: boolean;
 }
 
+@doc("Результат игры с компаньоном (тратит энергию, даёт немного XP)")
+model PlayResponse {
+  state: CreatureState;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
+  @doc("Сколько XP начислено за эту игру")
+  xpAwarded: int32;
+  @doc("Игр за текущий день")
+  playCount: int32;
+  @doc("Сколько игр осталось сегодня")
+  playCountRemaining: int32;
+}
+
+@doc("Один день недельного календаря практик (Пн–Вс)")
+model WeeklyDay {
+  @doc("Дата дня (YYYY-MM-DD)")
+  date: string;
+  @doc("Индекс дня недели: 0=Пн … 6=Вс")
+  dayOfWeek: int32;
+  @doc("Была ли в этот день засчитана практика/чек-ин")
+  completed: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+}
+
+@doc("Недельный календарь практик: неделя Пн–Вс, цель — N дней, подарок +XP")
+model WeeklyState {
+  @doc("Дата понедельника текущей недели (YYYY-MM-DD)")
+  weekStart: string;
+  days: WeeklyDay[];
+  @doc("Сколько уникальных дней недели засчитано")
+  completedCount: int32;
+  @doc("Цель в днях для получения подарка")
+  goal: int32;
+  @doc("Цель уже достигнута в этой неделе")
+  goalReached: boolean;
+  @doc("Подарок за эту неделю уже забран")
+  claimed: boolean;
+  @doc("Сколько XP даёт подарок")
+  xpReward: int32;
+}
+
+@doc("Результат получения недельного подарка")
+model ClaimWeeklyResponse {
+  claimed: boolean;
+  @doc("Сколько XP начислено")
+  xpAwarded: int32;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
+}
+
 @doc("Тело обновления питомца")
 model PetUpdateRequest {
   @doc("Тип питомца для активации")

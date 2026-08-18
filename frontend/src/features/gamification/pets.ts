@@ -3,6 +3,16 @@ export const STARTER_PET_TYPES = ['puff', 'sloth', 'fox'] as const;
 export const PET_EMOTIONS = ['happy'] as const;
 export type PetEmotion = 'idle' | (typeof PET_EMOTIONS)[number];
 
+// F1: визуальный масштаб аватара по стадии эволюции (baby/kid/adult/max —
+// см. stageForLevel() в @moodly/shared). Только визуальный слой — сама
+// стадия приходит с сервера, здесь только CSS-представление.
+export const STAGE_SCALE: Record<string, number> = {
+  baby: 0.88,
+  kid: 1,
+  adult: 1.12,
+  max: 1.28,
+};
+
 export interface PetDefinition {
   type: string;
   labelKey: string;
