@@ -792,3 +792,181 @@ describe('Creature check-in — race safety', () => {
     expect(state?.streak).toBe(1);
   });
 });
+
+describe('Creature play (A1 — energy revival)', () => {
+  it('POST /creature/play — costs 10 energy, awards +2 XP, increments playCount', async () => {
+    const user = await registerAndLogin(app, 'creature-play@example.com', 'secret123', 'Player');
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/play',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      xpAwarded: 2,
+      playCount: 1,
+      playCountRemaining: 4,
+    });
+    expect(res.json().state.energy).toBe(90);
+  });
+
+  it('POST /creature/play — rejects once the daily play limit is reached', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-play-limit@example.com',
+      'secret123',
+      'PlayLimit',
+    );
+    for (let i = 0; i < 5; i++) {
+      const ok = await app.inject({
+        method: 'POST',
+        url: '/creature/play',
+        headers: { authorization: `Bearer ${user.token}` },
+      });
+      expect(ok.statusCode).toBe(200);
+    }
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/play',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('POST /creature/play — rejects when energy is below the play cost', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-play-noenergy@example.com',
+      'secret123',
+      'NoEnergy',
+    );
+    await app.inject({
+      method: 'GET',
+      url: '/creature',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: { energy: 5 },
+    });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/play',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('play completions are excluded from practice counters and weekly calendar', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-play-exclude@example.com',
+      'secret123',
+      'PlayExcl',
+    );
+    await app.inject({
+      method: 'POST',
+      url: '/creature/play',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    const stats = await app.inject({
+      method: 'GET',
+      url: '/creature/stats',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(stats.json().totalPractices).toBe(0);
+
+    const weekly = await app.inject({
+      method: 'GET',
+      url: '/creature/weekly',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(weekly.json().completedCount).toBe(0);
+  });
+});
+
+describe('Creature weekly calendar (C2)', () => {
+  it('GET /creature/weekly — 7 Mon..Sun days, goal reached after 5 distinct practice days', async () => {
+    const user = await registerAndLogin(app, 'creature-weekly@example.com', 'secret123', 'Weekly');
+    const monday = new Date();
+    const day = monday.getDay();
+    monday.setDate(monday.getDate() + (day === 0 ? -6 : 1 - day));
+    monday.setHours(10, 0, 0, 0);
+
+    await prisma.practiceCompletion.createMany({
+      data: Array.from({ length: 5 }, (_, i) => {
+        const d = new Date(monday);
+        d.setDate(d.getDate() + i);
+        return { userId: user.userId, source: 'gratitude', xpAwarded: 5, createdAt: d };
+      }),
+    });
+
+    const res = await app.inject({
+      method: 'GET',
+      url: '/creature/weekly',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.days).toHaveLength(7);
+    expect(body.completedCount).toBe(5);
+    expect(body.goal).toBe(5);
+    expect(body.goalReached).toBe(true);
+    expect(body.claimed).toBe(false);
+  });
+
+  it('POST /creature/weekly/claim — rejects when goal not reached', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-weekly-notyet@example.com',
+      'secret123',
+      'NotYet',
+    );
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/weekly/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('POST /creature/weekly/claim — awards +25 XP once, second claim in the same week is rejected', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-weekly-claim@example.com',
+      'secret123',
+      'Claimer',
+    );
+    const monday = new Date();
+    const day = monday.getDay();
+    monday.setDate(monday.getDate() + (day === 0 ? -6 : 1 - day));
+    monday.setHours(10, 0, 0, 0);
+
+    await prisma.practiceCompletion.createMany({
+      data: Array.from({ length: 5 }, (_, i) => {
+        const d = new Date(monday);
+        d.setDate(d.getDate() + i);
+        return { userId: user.userId, source: 'gratitude', xpAwarded: 5, createdAt: d };
+      }),
+    });
+
+    const first = await app.inject({
+      method: 'POST',
+      url: '/creature/weekly/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(first.statusCode).toBe(200);
+    expect(first.json()).toMatchObject({ claimed: true, xpAwarded: 25 });
+
+    const after = await prisma.creatureState.findUnique({ where: { userId: user.userId } });
+    expect(after?.weeklyClaimWeek).toBeTruthy();
+
+    const second = await app.inject({
+      method: 'POST',
+      url: '/creature/weekly/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(second.statusCode).toBe(409);
+  });
+});

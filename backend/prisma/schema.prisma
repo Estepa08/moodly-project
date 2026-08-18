@@ -239,6 +239,11 @@ model CreatureState {
   welcomeUsed      Int      @default(0)
   // Недавние времена поглаживаний (для подсчёта серии «Комбо»).
   petTimes         Json     @default("[]")
+  // «Играть»: дневной счётчик игр и дата последней игры (сброс по дню, как petCount/lastPetAt).
+  playCount        Int      @default(0)
+  lastPlayAt       DateTime?
+  // Неделя (ключ = дата понедельника), за которую уже забран недельный подарок +XP.
+  weeklyClaimWeek  String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

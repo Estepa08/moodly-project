@@ -199,6 +199,21 @@ interface Creature {
   @route("/pet")
   @doc("Активировать питомца и/или задать имя")
   setPet(@body body: PetUpdateRequest): PetCollection;
+
+  @post
+  @route("/play")
+  @doc("Играть с компаньоном: −10 энергии, +2 XP, лимит 5 игр в сутки")
+  play(): PlayResponse;
+
+  @get
+  @route("/weekly")
+  @doc("Недельный календарь практик (Пн–Вс): прогресс к цели, статус подарка +25 XP")
+  getWeekly(): WeeklyState;
+
+  @post
+  @route("/weekly/claim")
+  @doc("Забрать недельный подарок +XP (одноразово на неделю, только при достигнутой цели)")
+  claimWeekly(): ClaimWeeklyResponse;
 }
 
 @tag("Cba")

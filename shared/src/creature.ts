@@ -96,6 +96,20 @@ export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
   emotionLab: 15,
 };
 
+// «Играть»: тратит энергию, даёт немного XP, ограничено в сутки — источник
+// XP, за который нужно "платить" энергией, накопленной практиками/чек-ином.
+export const PLAY_ENERGY_COST = 10;
+export const PLAY_XP = 2;
+export const PLAY_DAILY_LIMIT = 5;
+
+// Недельный календарь практик: неделя Пн–Вс, цель — любые N дней с
+// практикой/чек-ином (без штрафа за пропуск, счётчик накопительный).
+export const WEEKLY_GOAL_DAYS = 5;
+export const WEEKLY_XP_REWARD = 25;
+// Источники, которые не считаются «днём практики» для недельного календаря —
+// те же вспомогательные механики, что исключены из статистики практик.
+export const WEEKLY_EXCLUDED_SOURCES = ["feed", "moodEntry", "play", "weeklyGoal"];
+
 export const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
 
 export const EVOLUTION_STAGES = [
@@ -193,6 +207,23 @@ function mulberry32(a: number): () => number {
 export function dateKey(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+// Понедельник (00:00, локальное серверное время) недели, содержащей date.
+export function mondayOfWeek(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay(); // 0=Вс, 1=Пн, ... 6=Сб
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+
+// Ключ недели (Пн–Вс) — дата понедельника в формате dateKey. Используется
+// как единица "claim once per week" (weeklyClaimWeek), без сложностей
+// стандартной ISO-нумерации недель.
+export function weekKey(date: Date): string {
+  return dateKey(mondayOfWeek(date));
 }
 
 export interface SelectedMission {

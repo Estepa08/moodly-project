@@ -1,17 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import PetCollection from '../PetCollection';
-import { usePets, useSetPet } from '../useCreature';
+import { usePets, useSetPet, useAchievements } from '../useCreature';
 import { PET_DEFINITIONS } from '../pets';
 
 vi.mock('../useCreature', () => ({
   usePets: vi.fn(),
   useSetPet: vi.fn(),
+  useAchievements: vi.fn(),
 }));
 
 describe('PetCollection', () => {
   beforeEach(() => {
     vi.mocked(useSetPet).mockReturnValue({ mutate: vi.fn() } as never);
+    vi.mocked(useAchievements).mockReturnValue({ data: [], isLoading: false } as never);
   });
 
   it("shows only the first 6 pets plus a 'Show all' button initially", () => {

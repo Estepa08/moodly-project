@@ -266,6 +266,64 @@ export function useEmpathyActive(): boolean {
   ]);
 }
 
+// ===== usePlay - "играть" с компаньоном: тратит энергию, даёт немного XP =====
+export function usePlay() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.creature.play(),
+    onSuccess: (data) => {
+      if (data?.state && 'level' in data.state && 'experience' in data.state) {
+        const { corrected, leveledUp } = correctLevelAndXP(data.state);
+
+        queryClient.setQueryData(['creature'], corrected);
+
+        if (leveledUp) {
+          celebrateReward('play', {
+            leveledUp: true,
+            state: { level: corrected.level },
+          });
+        }
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['creature'] });
+      queryClient.invalidateQueries({ queryKey: ['creature', 'weekly'] });
+    },
+  });
+}
+
+// ===== useWeekly - недельный календарь практик (Пн–Вс, цель N дней) =====
+export function useWeekly() {
+  return useQuery({
+    queryKey: ['creature', 'weekly'],
+    queryFn: () => api.creature.getWeekly(),
+    staleTime: 30_000,
+  });
+}
+
+// ===== useClaimWeekly - забрать недельный подарок +XP =====
+export function useClaimWeekly() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.creature.claimWeekly(),
+    onSuccess: (data) => {
+      if (data.leveledUp) {
+        const currentCreature = queryClient.getQueryData<{ level: number }>(['creature']);
+        celebrateReward('weeklyGoal', {
+          leveledUp: true,
+          state: { level: (currentCreature?.level ?? 0) + 1 },
+        });
+      } else {
+        celebrateReward('weeklyGoal', data);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['creature', 'weekly'] });
+      queryClient.invalidateQueries({ queryKey: ['creature'] });
+    },
+  });
+}
+
 // Остальные хуки остаются прежними
 export function useCompletions(days = 30) {
   return useQuery({

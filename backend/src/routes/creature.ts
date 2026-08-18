@@ -67,6 +67,22 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
+  fastify.post('/creature/play', { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.play(request.userId);
+  });
+
+  fastify.get('/creature/weekly', { preHandler: [fastify.authenticate] }, async (request) => {
+    return creatureService.getWeekly(request.userId);
+  });
+
+  fastify.post(
+    '/creature/weekly/claim',
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return creatureService.claimWeekly(request.userId);
+    },
+  );
+
   fastify.get<{ Querystring: CompletionsQuery }>(
     '/creature/completions',
     { preHandler: [fastify.authenticate] },

@@ -5,8 +5,9 @@ import CreatureStatsBlock from './CreatureStatsBlock';
 import PetCollection from './PetCollection';
 import AchievementGrid from './AchievementGrid';
 import DailyMissions from './DailyMissions';
+import WeeklyCalendar from './WeeklyCalendar';
 import ActivityHeatmap from './ActivityHeatmap';
-import { Trophy, Target, PawPrint, ListChecks, Activity, Medal } from 'lucide-react';
+import { Trophy, Target, PawPrint, ListChecks, Activity, Medal, CalendarDays } from 'lucide-react';
 import CollapsibleSection from '../../components/ui/collapsible-section';
 import TitleSelector from './TitleSelector';
 import { api } from '../../lib/api';
@@ -70,6 +71,18 @@ export default function ProgressPage() {
         storageKey="moodly_collapse_progress_missions"
       >
         <DailyMissions />
+      </CollapsibleSection>
+
+      <CollapsibleSection
+        title={t('progress.weeklyTitle')}
+        subtitle={t('progress.weeklySubtitle')}
+        icon={CalendarDays}
+        iconClassName="bg-success/10 text-success"
+        railClassName="bg-success/80"
+        defaultOpen={false}
+        storageKey="moodly_collapse_progress_weekly"
+      >
+        <WeeklyCalendar />
       </CollapsibleSection>
 
       <CollapsibleSection

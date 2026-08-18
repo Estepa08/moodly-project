@@ -21,7 +21,7 @@ export const achievementsService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
-      (c) => c.source !== 'moodEntry' && c.source !== 'feed',
+      (c) => c.source !== 'moodEntry' && c.source !== 'feed' && c.source !== 'play',
     );
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
@@ -74,7 +74,7 @@ export const achievementsService = {
       select: { source: true, xpAwarded: true, createdAt: true },
     });
     const practiceCompletions = completions.filter(
-      (c) => c.source !== 'moodEntry' && c.source !== 'feed',
+      (c) => c.source !== 'moodEntry' && c.source !== 'feed' && c.source !== 'play',
     );
     const breathingCount = await prisma.breathingSession.count({ where: { userId } });
     const totalXp = completions.reduce((sum, c) => sum + c.xpAwarded, 0);
@@ -238,7 +238,7 @@ async function collectExtraMetrics(
   let nightCount = 0;
   for (const c of completions) {
     sourceCounts[c.source] = (sourceCounts[c.source] ?? 0) + 1;
-    if (c.source !== 'feed' && c.source !== 'moodEntry') {
+    if (c.source !== 'feed' && c.source !== 'moodEntry' && c.source !== 'play') {
       const hour = c.createdAt.getHours();
       if (hour >= 22 || hour < 6) nightCount += 1;
     }

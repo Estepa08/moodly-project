@@ -17,6 +17,10 @@ const ERROR_CODE_MAP: Record<string, string> = {
   DAILY_LIMIT: 'errors.dailyLimit',
   VALIDATION_ERROR: 'errors.validationError',
   INTERNAL: 'common.somethingWentWrong',
+  NOT_ENOUGH_ENERGY: 'errors.notEnoughEnergy',
+  PLAY_LIMIT_REACHED: 'errors.playLimitReached',
+  GOAL_NOT_REACHED: 'errors.weeklyGoalNotReached',
+  ALREADY_CLAIMED: 'errors.alreadyClaimed',
 };
 
 export function getErrorMessage(error: unknown, t: TFunction): string {
