@@ -1794,7 +1794,11 @@
     "feedbackTab": "Отзывы",
     "contentTab": "Контент",
     "noFeedback": "Отзывов пока нет.",
-    "feedbackLoadFailed": "Не удалось загрузить отзывы"
+    "feedbackLoadFailed": "Не удалось загрузить отзывы",
+    "access": "Доступ",
+    "premium": "Premium",
+    "free": "Free",
+    "tierUpdateFailed": "Не удалось изменить тариф пользователя"
   },
   "content": {
     "title": "Управление контентом",

@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as Tabs from '@radix-ui/react-tabs';
+import { toast } from 'sonner';
 import { api, type AdminUser } from '../lib/api';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useAdminFeedbackList } from '../hooks/useAdminFeedback';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
+import { ToggleSwitch } from '../components/ui/toggle-switch';
 import Spinner from '../components/ui/spinner';
 import EmptyState from '../components/ui/empty-state';
 import {
@@ -49,6 +51,36 @@ function formatDate(iso: string, locale: string): string {
   });
 }
 
+interface PremiumToggleProps {
+  user: AdminUser;
+  onToggle: (user: AdminUser, next: boolean) => void;
+  pending: boolean;
+}
+
+function PremiumToggle({ user, onToggle, pending }: PremiumToggleProps) {
+  const { t } = useTranslation();
+  const isPremium = user.subscriptionTier === 'premium';
+  return (
+    <label className="inline-flex items-center gap-2 cursor-pointer">
+      <ToggleSwitch
+        size="sm"
+        checked={isPremium}
+        disabled={pending}
+        onCheckedChange={(next) => onToggle(user, next)}
+        aria-label={t('admin.premium')}
+      />
+      <span
+        className={cn(
+          'text-xs font-semibold',
+          isPremium ? 'text-primary' : 'text-muted-foreground',
+        )}
+      >
+        {isPremium ? t('admin.premium') : t('admin.free')}
+      </span>
+    </label>
+  );
+}
+
 function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5" aria-label={`${rating} / 5`}>
@@ -82,6 +114,20 @@ export default function AdminPanelPage() {
   const [confirmEmail, setConfirmEmail] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [pendingTierId, setPendingTierId] = useState<string | null>(null);
+
+  const updateTier = useMutation({
+    mutationFn: ({ id, tier }: { id: string; tier: 'free' | 'premium' }) =>
+      api.admin.updateTier(id, tier),
+    onMutate: ({ id }) => setPendingTierId(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['adminUsers'] }),
+    onError: () => toast.error(t('admin.tierUpdateFailed')),
+    onSettled: () => setPendingTierId(null),
+  });
+
+  const handleTierToggle = (user: AdminUser, next: boolean) => {
+    updateTier.mutate({ id: user.id, tier: next ? 'premium' : 'free' });
+  };
 
   if (currentUser && currentUser.role !== 'admin') {
     return <EmptyState icon={ShieldCheck} title={t('admin.forbidden')} className="min-h-[50vh]" />;
@@ -179,6 +225,7 @@ export default function AdminPanelPage() {
                       <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground border-b border-border">
                         <th className="px-4 py-3 font-medium">{t('admin.user')}</th>
                         <th className="px-4 py-3 font-medium">{t('admin.role')}</th>
+                        <th className="px-4 py-3 font-medium">{t('admin.access')}</th>
                         <th className="px-4 py-3 font-medium">{t('admin.registered')}</th>
                         <th className="px-4 py-3 font-medium">{t('admin.emailVerified')}</th>
                         <th className="px-4 py-3 font-medium">{t('admin.activity')}</th>
@@ -217,6 +264,13 @@ export default function AdminPanelPage() {
                             >
                               {u.role === 'admin' ? t('admin.roleAdmin') : t('admin.roleUser')}
                             </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <PremiumToggle
+                              user={u}
+                              onToggle={handleTierToggle}
+                              pending={pendingTierId === u.id}
+                            />
                           </td>
                           <td className="px-4 py-3 text-muted-foreground">
                             {formatDate(u.createdAt, i18n.language)}
@@ -262,6 +316,13 @@ export default function AdminPanelPage() {
                           {formatDate(u.createdAt, i18n.language)} · {u.entriesCount}{' '}
                           {t('admin.entriesCount')}
                         </p>
+                        <div className="mt-1.5">
+                          <PremiumToggle
+                            user={u}
+                            onToggle={handleTierToggle}
+                            pending={pendingTierId === u.id}
+                          />
+                        </div>
                       </div>
                       <Button
                         variant="outline"

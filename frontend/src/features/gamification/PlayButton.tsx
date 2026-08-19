@@ -1,25 +1,32 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Swords } from 'lucide-react';
-import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT } from '@moodly/shared';
+import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT_FREE } from '@moodly/shared';
 import { cn } from '../../lib/utils';
 
 interface PlayButtonProps {
   energy: number;
   playCount: number;
+  /** Дневной лимит игр по тарифу (3 free / 5 premium) — приходит с сервера */
+  playDailyLimit?: number;
 }
 
 // A1: «Играть» запускает игру «Битва с мыслями» (/practices/thought-battle).
-// Награда (−10 энергии, +2 XP, лимит 5/день) начисляется по завершении
-// раунда игры, а не по клику — сама кнопка только решает, доступен ли вход.
-export default function PlayButton({ energy, playCount }: PlayButtonProps) {
+// Награда (−10 энергии, +2 XP) начисляется по завершении раунда игры, а не
+// по клику — сама кнопка только решает, доступен ли вход. Лимит игр в день
+// зависит от тарифа (playDailyLimit с сервера), а не захардкожен на клиенте.
+export default function PlayButton({
+  energy,
+  playCount,
+  playDailyLimit = PLAY_DAILY_LIMIT_FREE,
+}: PlayButtonProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const limitReached = playCount >= PLAY_DAILY_LIMIT;
+  const limitReached = playCount >= playDailyLimit;
   const notEnoughEnergy = energy < PLAY_ENERGY_COST;
   const disabled = limitReached || notEnoughEnergy;
-  const remaining = Math.max(0, PLAY_DAILY_LIMIT - playCount);
+  const remaining = Math.max(0, playDailyLimit - playCount);
 
   const hint = limitReached
     ? t('companion.playLimitHint')

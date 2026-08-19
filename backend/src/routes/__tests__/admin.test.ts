@@ -51,6 +51,66 @@ describe('Admin', () => {
     expect(users[0]).not.toHaveProperty('password');
     expect(users[0]).not.toHaveProperty('_count');
     expect(users[0]).toHaveProperty('entriesCount');
+    expect(users[0]).toHaveProperty('subscriptionTier');
+    const target = users.find((u: { email: string }) => u.email === 'admin-target@example.com');
+    expect(target.subscriptionTier).toBe('free');
+  });
+
+  it('PATCH /admin/users/:id/tier — rejects non-admin user', async () => {
+    const { token } = await registerAndLogin(app, 'admin-tier-regular@example.com', 'secret123');
+    const res = await app.inject({
+      method: 'PATCH',
+      url: '/admin/users/whatever/tier',
+      headers: { authorization: `Bearer ${token}` },
+      payload: { tier: 'premium' },
+    });
+    expect(res.statusCode).toBe(403);
+  });
+
+  it('PATCH /admin/users/:id/tier — sets premium and it is reflected in GET /admin/users', async () => {
+    const { token, userId } = await registerAndLogin(app, 'admin-tier@example.com', 'secret123');
+    await makeAdmin(userId);
+    const { userId: targetId } = await registerAndLogin(
+      app,
+      'admin-tier-target@example.com',
+      'secret123',
+    );
+
+    const patch = await app.inject({
+      method: 'PATCH',
+      url: `/admin/users/${targetId}/tier`,
+      headers: { authorization: `Bearer ${token}` },
+      payload: { tier: 'premium' },
+    });
+    expect(patch.statusCode).toBe(200);
+    expect(patch.json()).toMatchObject({ subscriptionTier: 'premium' });
+
+    const list = await app.inject({
+      method: 'GET',
+      url: '/admin/users',
+      headers: { authorization: `Bearer ${token}` },
+    });
+    const target = list
+      .json()
+      .find((u: { email: string }) => u.email === 'admin-tier-target@example.com');
+    expect(target.subscriptionTier).toBe('premium');
+  });
+
+  it('PATCH /admin/users/:id/tier — rejects an invalid tier value', async () => {
+    const { token, userId } = await registerAndLogin(
+      app,
+      'admin-tier-invalid@example.com',
+      'secret123',
+    );
+    await makeAdmin(userId);
+
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/admin/users/${userId}/tier`,
+      headers: { authorization: `Bearer ${token}` },
+      payload: { tier: 'gold' },
+    });
+    expect(res.statusCode).toBe(400);
   });
 
   it('DELETE /admin/users/:id — deletes user', async () => {

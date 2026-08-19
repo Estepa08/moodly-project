@@ -1785,7 +1785,11 @@
     "feedbackTab": "Reviews",
     "contentTab": "Content",
     "noFeedback": "No reviews yet",
-    "feedbackLoadFailed": "Failed to load reviews"
+    "feedbackLoadFailed": "Failed to load reviews",
+    "access": "Access",
+    "premium": "Premium",
+    "free": "Free",
+    "tierUpdateFailed": "Couldn't update the user's tier"
   },
   "content": {
     "title": "Content management",

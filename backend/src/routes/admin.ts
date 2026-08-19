@@ -17,6 +17,8 @@ export default async function adminRoutes(fastify: FastifyInstance) {
         createdAt: true,
         emailVerified: true,
         ageConfirmed: true,
+        subscriptionTier: true,
+        subscriptionExpiresAt: true,
         _count: {
           select: {
             entries: true,
@@ -36,6 +38,8 @@ export default async function adminRoutes(fastify: FastifyInstance) {
       createdAt: u.createdAt,
       emailVerified: u.emailVerified,
       ageConfirmed: u.ageConfirmed,
+      subscriptionTier: u.subscriptionTier,
+      subscriptionExpiresAt: u.subscriptionExpiresAt,
       entriesCount: u._count.entries,
       testResultsCount: u._count.testResults,
       breathingSessionsCount: u._count.breathingSessions,
