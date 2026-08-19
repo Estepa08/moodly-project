@@ -179,14 +179,14 @@ export const creatureService = {
     const creature = await prisma.creatureState.findUnique({ where: { userId } });
     if (!creature) {
       return {
-        unlockedPetTypes: ['puff'],
+        unlockedPetTypes: ['puff', 'fox'],
         activePetType: 'puff',
         petName: null,
         feedCounts: {},
       };
     }
     return {
-      unlockedPetTypes: creature.unlockedPetTypes ?? ['puff'],
+      unlockedPetTypes: creature.unlockedPetTypes ?? ['puff', 'fox'],
       activePetType: creature.petType ?? 'puff',
       petName: creature.petName ?? null,
       feedCounts: (creature.feedCounts as Record<string, number>) ?? {},
@@ -202,7 +202,7 @@ export const creatureService = {
 
     const data: Record<string, unknown> = {};
     if (petType !== undefined) {
-      const unlocked = creature.unlockedPetTypes ?? ['puff'];
+      const unlocked = creature.unlockedPetTypes ?? ['puff', 'fox'];
       if (!unlocked.includes(petType)) {
         if (STARTER_PET_TYPES.includes(petType)) {
           data.unlockedPetTypes = [...unlocked, petType];
@@ -222,7 +222,7 @@ export const creatureService = {
       data,
     });
     return {
-      unlockedPetTypes: updated.unlockedPetTypes ?? ['puff'],
+      unlockedPetTypes: updated.unlockedPetTypes ?? ['puff', 'fox'],
       activePetType: updated.petType ?? 'puff',
       petName: updated.petName ?? null,
     };

@@ -32,7 +32,7 @@ export default function LowMoodAlert({ open, onDismiss }: LowMoodAlertProps) {
       description={t('lowMood.body', { name: petName })}
     >
       <div className="flex justify-center">
-        <PetAvatar petType={petType} size="lg" ariaLabel={petName} />
+        <PetAvatar petType={petType} size="lg" ariaLabel={petName} emotion="anxious" />
       </div>
 
       <div className="flex flex-col gap-2 mt-2">

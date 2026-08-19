@@ -1,7 +1,18 @@
 export const STARTER_PET_TYPES = ['puff', 'sloth', 'fox'] as const;
 
-export const PET_EMOTIONS = ['happy'] as const;
+export const PET_EMOTIONS = ['happy', 'calm', 'anxious'] as const;
 export type PetEmotion = 'idle' | (typeof PET_EMOTIONS)[number];
+
+// Настроение питомца (petMood с сервера/клиента, см. computePetMood в useCreature.ts)
+// → эмоция для подбора Lottie-анимации в usePetAnimation.
+export function petMoodToEmotion(
+  petMood: 'happy' | 'calm' | 'support' | null | undefined,
+): PetEmotion {
+  if (petMood === 'happy') return 'happy';
+  if (petMood === 'support') return 'anxious';
+  if (petMood === 'calm') return 'calm';
+  return 'idle';
+}
 
 // F1: визуальный масштаб аватара по стадии эволюции (baby/kid/adult/max —
 // см. stageForLevel() в @moodly/shared). Только визуальный слой — сама
@@ -167,8 +178,17 @@ const PET_FILE_MODULES = import.meta.glob<{ default: unknown }>(
   '../../assets/lottie/pets/*/*.json',
 );
 
+const ALL_EMOTIONS: PetEmotion[] = ['idle', ...PET_EMOTIONS];
+
+function emptyEmotionLists(): Record<PetEmotion, PetFileEntry[]> {
+  return Object.fromEntries(
+    ALL_EMOTIONS.map((e): [PetEmotion, PetFileEntry[]] => [e, []]),
+  ) as Record<PetEmotion, PetFileEntry[]>;
+}
+
 // Имя файла → эмоция. `pet-sloth.json` / `pet-sloth-1.json` → idle;
-// `pet-sloth-happy.json` → happy. Неизвестные суффиксы — idle.
+// `pet-sloth-happy.json` → happy, `pet-fox-calm.json` → calm и т.д.
+// Неизвестные суффиксы — idle.
 function emotionFromFile(fileName: string): PetEmotion {
   const base = fileName.replace(/\.json$/i, '');
   const last = base.split('-').pop() ?? '';
@@ -186,15 +206,26 @@ function collectPetFiles(): Map<string, Record<PetEmotion, PetFileEntry[]>> {
     if (!folder || !fileName) continue;
     const type = FOLDER_TO_TYPE[folder] ?? folder;
     const emotion = emotionFromFile(fileName);
-    const lists = byType.get(type) ?? { idle: [], happy: [] };
+    const lists = byType.get(type) ?? emptyEmotionLists();
     lists[emotion].push({ path, loader });
     byType.set(type, lists);
   }
   for (const lists of byType.values()) {
-    lists.idle.sort((a, b) => a.path.localeCompare(b.path));
-    lists.happy.sort((a, b) => a.path.localeCompare(b.path));
+    for (const emotion of ALL_EMOTIONS) {
+      lists[emotion].sort((a, b) => a.path.localeCompare(b.path));
+    }
   }
   return byType;
+}
+
+function animationsFor(
+  files: Map<string, Record<PetEmotion, PetFileEntry[]>>,
+  type: string,
+): Record<PetEmotion, PetLoader[]> {
+  const lists = files.get(type);
+  return Object.fromEntries(
+    ALL_EMOTIONS.map((e) => [e, lists?.[e].map((f) => f.loader) ?? []]),
+  ) as Record<PetEmotion, PetLoader[]>;
 }
 
 function buildPetDefinitions(): PetDefinition[] {
@@ -212,10 +243,7 @@ function buildPetDefinitions(): PetDefinition[] {
       color: meta.color,
       emoji: meta.emoji,
       feed: meta.feed,
-      animations: {
-        idle: files.get(type)?.idle.map((f) => f.loader) ?? [],
-        happy: files.get(type)?.happy.map((f) => f.loader) ?? [],
-      },
+      animations: animationsFor(files, type),
     });
   }
 
@@ -230,10 +258,7 @@ function buildPetDefinitions(): PetDefinition[] {
       color: AUTO_COLORS[index % AUTO_COLORS.length],
       emoji: '🐾',
       feed: ['🫧'],
-      animations: {
-        idle: files.get(type)?.idle.map((f) => f.loader) ?? [],
-        happy: files.get(type)?.happy.map((f) => f.loader) ?? [],
-      },
+      animations: animationsFor(files, type),
     });
   });
 

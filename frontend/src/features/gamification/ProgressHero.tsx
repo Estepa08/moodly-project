@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react';
 import PetAvatar from './PetAvatar';
-import { PET_DEFINITIONS } from './pets';
+import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { usePets } from './useCreature';
 import { usePetReward } from './usePetReward';
 import { StreakIndicator } from './index';
@@ -53,6 +53,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
               plain
               interactive
               ariaLabel={petName}
+              emotion={petMoodToEmotion(creature.petMood)}
               cyclePosition={cyclePosition}
               reward={reward}
               glow={glow}

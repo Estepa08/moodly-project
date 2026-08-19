@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import PetAvatar from './PetAvatar';
 import { usePets, useCreatureState } from './useCreature';
 import { usePetReward } from './usePetReward';
-import { PET_DEFINITIONS } from './pets';
+import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { PET_CYCLE } from '@moodly/shared';
 import { isCompanionHidden, subscribeCompanionVisibility } from './companionVisibility';
 import { PET_AWAY_KEY, shouldPetBeAway, todayKey } from './petAway';
@@ -89,6 +89,7 @@ export default function FloatingCompanion() {
           size="md"
           interactive
           ariaLabel={petName}
+          emotion={petMoodToEmotion(creature?.petMood)}
           cyclePosition={cyclePosition}
           reward={reward}
           glow={glow}

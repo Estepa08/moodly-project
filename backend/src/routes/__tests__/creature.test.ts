@@ -25,7 +25,7 @@ describe('Creature pets', () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
-      unlockedPetTypes: ['puff'],
+      unlockedPetTypes: ['puff', 'fox'],
       activePetType: 'puff',
       petName: null,
     });
@@ -40,7 +40,7 @@ describe('Creature pets', () => {
     });
     expect(res.statusCode).toBe(200);
     expect(res.json()).toMatchObject({
-      unlockedPetTypes: ['puff', 'sloth'],
+      unlockedPetTypes: ['puff', 'fox', 'sloth'],
       activePetType: 'sloth',
       petName: 'Ленивец',
     });
@@ -656,7 +656,7 @@ describe('Creature feed', () => {
       headers: { authorization: `Bearer ${user.token}` },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toMatchObject({ unlockedPetTypes: ['puff'], activePetType: 'puff' });
+    expect(res.json()).toMatchObject({ unlockedPetTypes: ['puff', 'fox'], activePetType: 'puff' });
     expect(res.json().feedCounts).toBeDefined();
   });
 

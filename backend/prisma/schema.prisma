@@ -223,7 +223,7 @@ model CreatureState {
   activeTitle      String?
   unlockedTitles   String[] @default([])
   petType          String   @default("puff")
-  unlockedPetTypes String[] @default(["puff"])
+  unlockedPetTypes String[] @default(["puff", "fox"])
   petName          String?
   // E2E: настроение питомца считает клиент (сервер больше не видит entry.value).
   petMood          String?

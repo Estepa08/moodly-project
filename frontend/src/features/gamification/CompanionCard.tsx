@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Zap, Waves, Flame, Sparkles, Activity, Heart, Pencil, ArrowRight } from 'lucide-react';
 import { useCreatureState, usePets, useSetPet } from './useCreature';
 import { usePetReward } from './usePetReward';
-import { PET_DEFINITIONS } from './pets';
+import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { EXP_PER_LEVEL, ENERGY_COLOR } from '../../lib/constants';
 import { PET_DAILY_CLICK_LIMIT, PET_CYCLE, ENERGY_LOW_THRESHOLD } from '@moodly/shared';
 import { ProgressBar } from '../../components/ui/progress-bar';
@@ -90,7 +90,7 @@ export default function CompanionCard() {
             petType={activePetType}
             interactive
             ariaLabel={displayName}
-            emotion={petMood === 'happy' ? 'happy' : 'idle'}
+            emotion={petMoodToEmotion(petMood)}
             cyclePosition={cyclePosition}
             reward={reward}
             glow={glow}
