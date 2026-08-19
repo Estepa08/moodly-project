@@ -163,7 +163,11 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
 
       {/* NEW: кнопка «Играть» — тратит энергию, даёт XP (A1) */}
       <div className="flex justify-center">
-        <PlayButton energy={energy} playCount={playCount} />
+        <PlayButton
+          energy={energy}
+          playCount={playCount}
+          playDailyLimit={creature.playDailyLimit}
+        />
       </div>
 
       <button

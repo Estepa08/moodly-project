@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT } from '@moodly/shared';
+import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT_FREE } from '@moodly/shared';
 import { useCreatureState, usePlay } from '../gamification';
 import { useEntries } from '../../hooks/useEntries';
 import { Button } from '../../components/ui/button';
@@ -59,13 +59,12 @@ export default function ThoughtBattleGame() {
 
   const energy = creature?.energy ?? 100;
   const playCount = creature?.playCount ?? 0;
-  const available = energy >= PLAY_ENERGY_COST && playCount < PLAY_DAILY_LIMIT;
+  const playDailyLimit = creature?.playDailyLimit ?? PLAY_DAILY_LIMIT_FREE;
+  const available = energy >= PLAY_ENERGY_COST && playCount < playDailyLimit;
 
   if (!available) {
     const reason =
-      playCount >= PLAY_DAILY_LIMIT
-        ? t('companion.playLimitHint')
-        : t('companion.playNoEnergyHint');
+      playCount >= playDailyLimit ? t('companion.playLimitHint') : t('companion.playNoEnergyHint');
     return (
       <div className="rounded-2xl bg-card shadow-neumorphic p-6 text-center space-y-3">
         <p className="text-sm font-bold text-foreground">{t('thoughtBattle.notAvailableTitle')}</p>
@@ -121,7 +120,7 @@ export default function ThoughtBattleGame() {
   };
 
   if (step === 'victory') {
-    const plansRemaining = PLAY_DAILY_LIMIT - (playCount + 1);
+    const plansRemaining = playDailyLimit - (playCount + 1);
     return (
       <div className="rounded-2xl bg-card shadow-neumorphic p-6 space-y-4 text-center relative overflow-hidden">
         <Sparkles

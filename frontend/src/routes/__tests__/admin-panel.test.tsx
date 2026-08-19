@@ -7,7 +7,12 @@ import { api } from '../../lib/api';
 vi.mock('../../lib/api', () => ({
   api: {
     users: { me: vi.fn() },
-    admin: { listUsers: vi.fn(), listFeedback: vi.fn(), deleteUser: vi.fn() },
+    admin: {
+      listUsers: vi.fn(),
+      listFeedback: vi.fn(),
+      deleteUser: vi.fn(),
+      updateTier: vi.fn(),
+    },
     auth: { refresh: vi.fn().mockRejectedValue(new Error('no session')) },
   },
   setToken: vi.fn(),
@@ -55,5 +60,37 @@ describe('AdminPanelPage', () => {
     renderWithProviders(<AdminPanelPage />);
     await userEvent.click(await screen.findByText('Reviews'));
     expect(await screen.findByText('No reviews yet')).toBeInTheDocument();
+  });
+
+  it('toggling the premium switch calls updateTier with the new tier', async () => {
+    mockAdminApi();
+    (api.admin.listUsers as Mock).mockResolvedValue([
+      {
+        id: 'u1',
+        email: 'plain@example.com',
+        name: 'Plain User',
+        role: 'user',
+        createdAt: '2026-07-31T10:00:00.000Z',
+        emailVerified: true,
+        ageConfirmed: true,
+        subscriptionTier: 'free',
+        subscriptionExpiresAt: null,
+        entriesCount: 0,
+        testResultsCount: 0,
+        breathingSessionsCount: 0,
+        cbaEntriesCount: 0,
+      },
+    ]);
+    (api.admin.updateTier as Mock).mockResolvedValue({
+      id: 'u1',
+      email: 'plain@example.com',
+      subscriptionTier: 'premium',
+    });
+
+    renderWithProviders(<AdminPanelPage />);
+    const toggles = await screen.findAllByRole('switch', { name: 'Premium' });
+    await userEvent.click(toggles[0]);
+
+    expect(api.admin.updateTier).toHaveBeenCalledWith('u1', 'premium');
   });
 });

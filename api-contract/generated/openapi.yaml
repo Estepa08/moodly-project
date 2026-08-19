@@ -65,6 +65,31 @@ paths:
           description: 'There is no content to send for this request, but the headers may be useful. '
       tags:
         - Admin
+  /admin/users/{id}/tier:
+    patch:
+      operationId: AdminUsers_updateUserTier
+      description: Вручную выставить тариф пользователя (биллинга нет, только для администратора)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserTierResult'
+      tags:
+        - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserTierUpdate'
   /auth/forgot-password:
     post:
       operationId: Auth_forgotPassword
@@ -1056,6 +1081,7 @@ components:
         - createdAt
         - emailVerified
         - ageConfirmed
+        - subscriptionTier
         - entriesCount
         - testResultsCount
         - breathingSessionsCount
@@ -1076,6 +1102,13 @@ components:
           type: boolean
         ageConfirmed:
           type: boolean
+        subscriptionTier:
+          type: string
+          description: 'Тариф: free | premium (выставляется вручную из админ-панели, биллинга нет)'
+        subscriptionExpiresAt:
+          type: string
+          format: date-time
+          description: Дата истечения premium-тарифа, если задана
         entriesCount:
           type: integer
           format: int32
@@ -1089,6 +1122,35 @@ components:
           type: integer
           format: int32
       description: Запись списка пользователей для админ-панели
+    AdminUserTierResult:
+      type: object
+      required:
+        - id
+        - email
+        - subscriptionTier
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        subscriptionTier:
+          type: string
+        subscriptionExpiresAt:
+          type: string
+          format: date-time
+      description: Результат изменения тарифа пользователя
+    AdminUserTierUpdate:
+      type: object
+      properties:
+        tier:
+          type: string
+          description: free | premium
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: ISO-дата истечения premium или null — снять ограничение по сроку
+      description: Тело запроса на изменение тарифа пользователя
     AuthResponse:
       type: object
       required:
@@ -1446,6 +1508,18 @@ components:
           type: integer
           format: int32
           description: «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
+        playCount:
+          type: integer
+          format: int32
+          description: Игр за текущий день (сбрасывается в полночь по серверному времени)
+        playDailyLimit:
+          type: integer
+          format: int32
+          description: Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
+        playCountRemaining:
+          type: integer
+          format: int32
+          description: Сколько игр осталось сегодня
       description: Текущее состояние существа пользователя
     DyadInfo:
       type: object
@@ -2002,6 +2076,7 @@ components:
         - leveledUp
         - xpAwarded
         - playCount
+        - playDailyLimit
         - playCountRemaining
       properties:
         state:
@@ -2017,6 +2092,10 @@ components:
           type: integer
           format: int32
           description: Игр за текущий день
+        playDailyLimit:
+          type: integer
+          format: int32
+          description: Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
         playCountRemaining:
           type: integer
           format: int32

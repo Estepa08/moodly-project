@@ -806,19 +806,20 @@ describe('Creature play (A1 — energy revival)', () => {
     expect(res.json()).toMatchObject({
       xpAwarded: 2,
       playCount: 1,
-      playCountRemaining: 4,
+      playDailyLimit: 3,
+      playCountRemaining: 2,
     });
     expect(res.json().state.energy).toBe(90);
   });
 
-  it('POST /creature/play — rejects once the daily play limit is reached', async () => {
+  it('POST /creature/play — free tier: rejects once the daily play limit (3) is reached', async () => {
     const user = await registerAndLogin(
       app,
       'creature-play-limit@example.com',
       'secret123',
       'PlayLimit',
     );
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       const ok = await app.inject({
         method: 'POST',
         url: '/creature/play',
@@ -832,6 +833,57 @@ describe('Creature play (A1 — energy revival)', () => {
       headers: { authorization: `Bearer ${user.token}` },
     });
     expect(res.statusCode).toBe(400);
+  });
+
+  it('POST /creature/play — active premium tier gets 5 plays/day instead of 3', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-play-premium@example.com',
+      'secret123',
+      'Premium',
+    );
+    await prisma.user.update({
+      where: { id: user.userId },
+      data: { subscriptionTier: 'premium', subscriptionExpiresAt: null },
+    });
+
+    for (let i = 0; i < 5; i++) {
+      const ok = await app.inject({
+        method: 'POST',
+        url: '/creature/play',
+        headers: { authorization: `Bearer ${user.token}` },
+      });
+      expect(ok.statusCode).toBe(200);
+      expect(ok.json().playDailyLimit).toBe(5);
+    }
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/play',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(400);
+  });
+
+  it('POST /creature/play — expired premium falls back to the free tier limit (3)', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-play-expired@example.com',
+      'secret123',
+      'Expired',
+    );
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    await prisma.user.update({
+      where: { id: user.userId },
+      data: { subscriptionTier: 'premium', subscriptionExpiresAt: yesterday },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/play',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.json().playDailyLimit).toBe(3);
   });
 
   it('POST /creature/play — rejects when energy is below the play cost', async () => {
@@ -856,6 +908,26 @@ describe('Creature play (A1 — energy revival)', () => {
       headers: { authorization: `Bearer ${user.token}` },
     });
     expect(res.statusCode).toBe(400);
+  });
+
+  it('GET /creature — reports playDailyLimit/playCountRemaining for the free tier', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-play-state@example.com',
+      'secret123',
+      'PlayState',
+    );
+    const res = await app.inject({
+      method: 'GET',
+      url: '/creature',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toMatchObject({
+      playCount: 0,
+      playDailyLimit: 3,
+      playCountRemaining: 3,
+    });
   });
 
   it('play completions are excluded from practice counters and weekly calendar', async () => {

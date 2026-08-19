@@ -274,6 +274,11 @@ interface AdminUsers {
   @route("/users/{id}")
   @doc("Удалить пользователя вместе со всеми данными (только для администратора)")
   deleteUser(@path id: string): void;
+
+  @patch
+  @route("/users/{id}/tier")
+  @doc("Вручную выставить тариф пользователя (биллинга нет, только для администратора)")
+  updateUserTier(@path id: string, @body body: AdminUserTierUpdate): AdminUserTierResult;
 }
 
 @tag("Content")

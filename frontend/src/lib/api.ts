@@ -44,7 +44,10 @@ export type FeedbackCreate = components['schemas']['FeedbackCreate'];
 type OnboardingStory = components['schemas']['OnboardingStory'];
 type User = components['schemas']['User'];
 type UserUpdate = components['schemas']['UserUpdate'];
-export type AdminUser = components['schemas']['AdminUser'];
+export type AdminUser = components['schemas']['AdminUser'] & {
+  subscriptionTier: string;
+  subscriptionExpiresAt?: string | null;
+};
 export type AdminFeedback = components['schemas']['AdminFeedback'];
 type CbaExample = components['schemas']['CbaExample'];
 type CbaCommonItem = components['schemas']['CbaCommonItem'];
@@ -128,6 +131,8 @@ export interface CreatureState {
   lastPetAt?: string | null;
   comfort?: number;
   playCount?: number;
+  playDailyLimit?: number;
+  playCountRemaining?: number;
   weeklyClaimWeek?: string | null;
 }
 
@@ -238,6 +243,7 @@ export interface PlayResponse {
   leveledUp: boolean;
   xpAwarded: number;
   playCount: number;
+  playDailyLimit: number;
   playCountRemaining: number;
 }
 
@@ -522,6 +528,11 @@ export const api = {
     listUsers: () => request<AdminUser[]>('/admin/users'),
     deleteUser: (id: string) => request<void>(`/admin/users/${id}`, { method: 'DELETE' }),
     listFeedback: () => request<AdminFeedback[]>('/admin/feedback'),
+    updateTier: (id: string, tier: 'free' | 'premium') =>
+      request<{ id: string; email: string; subscriptionTier: string }>(`/admin/users/${id}/tier`, {
+        method: 'PATCH',
+        body: JSON.stringify({ tier }),
+      }),
   },
   content: {
     messageOfDay: (type: string, locale: string) =>

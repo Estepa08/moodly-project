@@ -20,10 +20,30 @@ model AdminUser {
   createdAt: utcDateTime;
   emailVerified: boolean;
   ageConfirmed: boolean;
+  @doc("Тариф: free | premium (выставляется вручную из админ-панели, биллинга нет)")
+  subscriptionTier: string;
+  @doc("Дата истечения premium-тарифа, если задана")
+  subscriptionExpiresAt?: utcDateTime;
   entriesCount: int32;
   testResultsCount: int32;
   breathingSessionsCount: int32;
   cbaEntriesCount: int32;
+}
+
+@doc("Тело запроса на изменение тарифа пользователя")
+model AdminUserTierUpdate {
+  @doc("free | premium")
+  tier?: string;
+  @doc("ISO-дата истечения premium или null — снять ограничение по сроку")
+  expiresAt?: utcDateTime | null;
+}
+
+@doc("Результат изменения тарифа пользователя")
+model AdminUserTierResult {
+  id: string;
+  email: string;
+  subscriptionTier: string;
+  subscriptionExpiresAt?: utcDateTime;
 }
 
 model UserCreate {
@@ -378,6 +398,12 @@ model CreatureState {
   petCountRemaining: int32;
   @doc("«Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)")
   comfort: int32;
+  @doc("Игр за текущий день (сбрасывается в полночь по серверному времени)")
+  playCount?: int32;
+  @doc("Дневной лимит игр по тарифу пользователя (3 free / 5 premium)")
+  playDailyLimit?: int32;
+  @doc("Сколько игр осталось сегодня")
+  playCountRemaining?: int32;
 }
 
 @doc("Коллекция питомцев пользователя")
@@ -464,6 +490,8 @@ model PlayResponse {
   xpAwarded: int32;
   @doc("Игр за текущий день")
   playCount: int32;
+  @doc("Дневной лимит игр по тарифу пользователя (3 free / 5 premium)")
+  playDailyLimit: int32;
   @doc("Сколько игр осталось сегодня")
   playCountRemaining: int32;
 }
