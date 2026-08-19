@@ -8,7 +8,7 @@ import { EXP_PER_LEVEL, ParameterName } from '../../lib/constants';
 import { useParameters } from '../../hooks/useParameters';
 import { useEntries } from '../../hooks/useEntries';
 import { toast } from 'sonner';
-import { ENERGY_LOW_THRESHOLD } from '@moodly/shared';
+import { ENERGY_LOW_THRESHOLD, PLAY_ENERGY_COST } from '@moodly/shared';
 import { computeEmpathy } from './petRewards';
 import i18n from '../../i18n/i18n';
 
@@ -273,17 +273,28 @@ export function usePlay() {
   return useMutation({
     mutationFn: () => api.creature.play(),
     onSuccess: (data) => {
+      let leveledUp = false;
       if (data?.state && 'level' in data.state && 'experience' in data.state) {
-        const { corrected, leveledUp } = correctLevelAndXP(data.state);
+        const corrected = correctLevelAndXP(data.state);
+        leveledUp = corrected.leveledUp;
 
-        queryClient.setQueryData(['creature'], corrected);
+        queryClient.setQueryData(['creature'], corrected.corrected);
 
         if (leveledUp) {
           celebrateReward('play', {
             leveledUp: true,
-            state: { level: corrected.level },
+            state: { level: corrected.corrected.level },
           });
         }
+      }
+
+      // Каждый клик даёт мгновенную видимую реакцию (тост), не только при
+      // левел-апе — иначе клик по «Играть» выглядит так, будто «ничего не
+      // произошло» (в отличие от поглаживания/кормления с анимацией на аватаре).
+      if (!leveledUp) {
+        toast.success(
+          i18n.t('companion.playToast', { xp: data.xpAwarded, cost: PLAY_ENERGY_COST }),
+        );
       }
 
       queryClient.invalidateQueries({ queryKey: ['creature'] });

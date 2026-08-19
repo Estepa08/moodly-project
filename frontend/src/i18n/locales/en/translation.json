@@ -1732,7 +1732,8 @@
     "playCta": "Play",
     "playHint": "{{remaining}} plays left today",
     "playLimitHint": "That's enough for today — come back tomorrow 🌙",
-    "playNoEnergyHint": "Too tired to play — restore energy with a practice"
+    "playNoEnergyHint": "Too tired to play — restore energy with a practice",
+    "playToast": "🎾 +{{xp}} XP · −{{cost}} ⚡"
   },
   "petMood": {
     "happy": "In a great mood",
