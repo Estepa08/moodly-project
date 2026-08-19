@@ -1,8 +1,18 @@
 /// <reference lib="webworker" />
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
+import { clientsClaim } from 'workbox-core';
 
 declare const self: ServiceWorkerGlobalScope;
+
+// Без skipWaiting/clientsClaim новый SW зависает в состоянии "waiting" и не
+// начинает обслуживать уже открытые вкладки, пока пользователь полностью не
+// закроет приложение — из-за этого задеплоенные фиксы могли не доходить до
+// открытых вкладок вообще (нужен был холодный перезапуск браузера). Теперь
+// новый SW активируется сразу же и берёт под контроль текущие вкладки —
+// следующая перезагрузка страницы уже отдаёт свежий бандл.
+self.skipWaiting();
+clientsClaim();
 
 precacheAndRoute(self.__WB_MANIFEST);
 
