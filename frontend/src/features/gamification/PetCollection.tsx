@@ -89,7 +89,7 @@ export default function PetCollection() {
   const setPet = useSetPet();
   const [showAll, setShowAll] = useState(false);
 
-  const unlocked = pets?.unlockedPetTypes ?? ['puff'];
+  const unlocked = pets?.unlockedPetTypes ?? ['puff', 'fox'];
   const active = pets?.activePetType ?? 'puff';
 
   const visiblePets = showAll ? PET_DEFINITIONS : PET_DEFINITIONS.slice(0, PREVIEW_COUNT);

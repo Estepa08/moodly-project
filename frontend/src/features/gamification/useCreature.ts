@@ -376,14 +376,14 @@ export function useSetPet() {
         const next: Record<string, unknown> = { ...local };
         if (data.petType) {
           next.petType = data.petType;
-          const unlocked = local.unlockedPetTypes ?? ['puff'];
+          const unlocked = local.unlockedPetTypes ?? ['puff', 'fox'];
           if (!unlocked.includes(data.petType)) next.unlockedPetTypes = [...unlocked, data.petType];
         }
         if (data.petName !== undefined) next.petName = data.petName;
         await saveLocalCreature(next as never);
         await enqueue('creatureState', 'upsert', 'creature-profile', next);
         return {
-          unlockedPetTypes: (next.unlockedPetTypes as string[]) ?? ['puff'],
+          unlockedPetTypes: (next.unlockedPetTypes as string[]) ?? ['puff', 'fox'],
           activePetType: next.petType as string,
           petName: (next.petName as string) ?? null,
         };

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import { useCreatureState, usePets } from './useCreature';
 import { usePetReward } from './usePetReward';
-import { PET_DEFINITIONS } from './pets';
+import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { PET_CYCLE } from '@moodly/shared';
 import PetAvatar, { type PetHide, type PetHideVariant } from './PetAvatar';
 import PlayButton from './PlayButton';
@@ -147,6 +147,7 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             size="lg"
             plain
             interactive
+            emotion={petMoodToEmotion(creature.petMood)}
             cyclePosition={cyclePosition}
             reward={reward}
             glow={glow}
