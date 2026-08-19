@@ -29,6 +29,7 @@ const DistortionsPage = lazy(() => import('./routes/distortions'));
 const SleepHygienePage = lazy(() => import('./routes/sleep-hygiene'));
 const ThoughtJournalPage = lazy(() => import('./routes/thought-journal'));
 const CostBenefitAnalysisPage = lazy(() => import('./routes/cost-benefit-analysis'));
+const ThoughtBattlePage = lazy(() => import('./routes/thought-battle'));
 const EmotionLabPage = lazy(() => import('./routes/emotion-lab'));
 const SettingsPage = lazy(() => import('./routes/settings'));
 const ProgressPage = lazy(() => import('./routes/progress'));
@@ -171,6 +172,7 @@ export default function App() {
           <Route path="/practices/sleep-hygiene" element={<SleepHygienePage />} />
           <Route path="/practices/thought-journal" element={<ThoughtJournalPage />} />
           <Route path="/practices/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
+          <Route path="/practices/thought-battle" element={<ThoughtBattlePage />} />
           <Route path="/practices/emotion-lab" element={<EmotionLabPage />} />
 
           {/* Old practice route redirects */}
