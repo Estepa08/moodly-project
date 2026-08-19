@@ -2747,5 +2747,436 @@
     "was": "was:",
     "became": "now:",
     "cta": "Awesome! ✨"
+  },
+  "thoughtBattle": {
+    "pageTitle": "Thought Battle",
+    "intro": "Work through the thought step by step — from the thinking trap to a balanced view.",
+    "sourceJournal": "A thought from your journal",
+    "sourceLibrary": "Training thought",
+    "bossHpLabel": "Thought's grip",
+    "backCta": "Back",
+    "playAgainCta": "Play again",
+    "step1Title": "Spot the distortion",
+    "step1Hint": "Which thinking trap is hiding here?",
+    "step1Wrong": "Not this time — try again",
+    "step2Title": "Find the facts",
+    "step2Hint": "Is this a fact or an interpretation?",
+    "factLabel": "Fact",
+    "interpretationLabel": "Interpretation",
+    "comboLabel": "Streak: {{count}}",
+    "step3Title": "Weigh the cost of belief",
+    "step3Hint": "Drag the slider to where it feels heavier to you",
+    "step3Gives": "What it gives me",
+    "step3Costs": "What it costs me",
+    "step3GivesSide": "Gives more",
+    "step3CostsSide": "Costs more",
+    "step3Cta": "Next",
+    "step4Title": "Reframe it",
+    "step4Hint": "Pick a balanced thought or write your own",
+    "step4CustomOption": "Write my own thought",
+    "step4CustomPlaceholder": "How would you put this more evenly?",
+    "step4Cta": "Reframe",
+    "victoryTitle": "Thought reframed!",
+    "wasLabel": "Was",
+    "becameLabel": "Now",
+    "notAvailableTitle": "Not available right now",
+    "content": {
+      "allOrNothing": {
+        "evidence": [
+          {
+            "text": "I finished part of my to-do list.",
+            "isFact": true
+          },
+          {
+            "text": "So the whole day was wasted.",
+            "isFact": false
+          },
+          {
+            "text": "Unfinished items can move to tomorrow.",
+            "isFact": true
+          },
+          {
+            "text": "If it's not perfect, it's worthless.",
+            "isFact": false
+          },
+          {
+            "text": "I spent the time on real tasks.",
+            "isFact": true
+          }
+        ],
+        "gives": ["Clear rules feel simpler to decide by", "A high bar pushes me to try"],
+        "costs": [
+          "Any partial result feels like failure",
+          "Motivation drops if it's not perfect",
+          "I miss the real progress I made"
+        ],
+        "reframeOptions": [
+          "One part didn't go perfectly, but the rest was fine — that doesn't cancel everything else.",
+          "I got part of it done — that's still progress, not zero.",
+          "There's a lot of room between 'perfect' and 'failure', and mine landed somewhere in between."
+        ]
+      },
+      "overgeneralization": {
+        "evidence": [
+          {
+            "text": "A friend didn't reply within an hour.",
+            "isFact": true
+          },
+          {
+            "text": "So nobody wants to talk to me at all.",
+            "isFact": false
+          },
+          {
+            "text": "Other people replied to me this week.",
+            "isFact": true
+          },
+          {
+            "text": "One no means it'll always be this way.",
+            "isFact": false
+          },
+          {
+            "text": "My friend might have been busy.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Easier not to try again if it already feels hopeless",
+          "Generalizing protects against new disappointment"
+        ],
+        "costs": [
+          "I miss chances because I give up in advance",
+          "One event gets blown up into my whole life",
+          "I stop telling a one-off apart from a pattern"
+        ],
+        "reframeOptions": [
+          "They're busy right now — that doesn't mean it'll always be this way.",
+          "One no is just one no, not a verdict on the future.",
+          "I've had times it worked out — this one doesn't erase those."
+        ]
+      },
+      "mentalFilter": {
+        "evidence": [
+          {
+            "text": "The feedback had one critical note.",
+            "isFact": true
+          },
+          {
+            "text": "So the whole thing was worthless.",
+            "isFact": false
+          },
+          {
+            "text": "The feedback also had several positive comments.",
+            "isFact": true
+          },
+          {
+            "text": "One flaw cancels out the positives.",
+            "isFact": false
+          },
+          {
+            "text": "I focused on just that one moment.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Easier to spot what to improve",
+          "Feels like I'm in control if I notice the problem"
+        ],
+        "costs": [
+          "I miss the full picture",
+          "I discount the good things that actually happened",
+          "My mood tanks out of proportion to the issue"
+        ],
+        "reframeOptions": [
+          "The meeting actually went smoothly overall — I'm fixating on one awkward moment.",
+          "One downside is part of the picture, not the whole picture.",
+          "I can notice what went well right alongside what didn't."
+        ]
+      },
+      "discountingPositive": {
+        "evidence": [
+          {
+            "text": "I prepared for the test ahead of time.",
+            "isFact": true
+          },
+          {
+            "text": "So the success wasn't mine, just luck.",
+            "isFact": false
+          },
+          {
+            "text": "I know the material better than a month ago.",
+            "isFact": true
+          },
+          {
+            "text": "The praise can't have been sincere.",
+            "isFact": false
+          },
+          {
+            "text": "Not everyone who took the test passed.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Modesty feels safer than owning the win",
+          "Less risk of disappointment if I don't claim the success"
+        ],
+        "costs": [
+          "Real wins never build up my confidence",
+          "It discounts the effort I actually put in",
+          "Harder to believe in the next success"
+        ],
+        "reframeOptions": [
+          "I prepared, and it paid off — that's a real achievement.",
+          "Even if it was easy, I still did it — the credit is mine.",
+          "The praise could be sincere — I have no proof otherwise."
+        ]
+      },
+      "jumpingToConclusions": {
+        "evidence": [
+          {
+            "text": "My boss walked past without saying hi.",
+            "isFact": true
+          },
+          {
+            "text": "So I must have done something wrong.",
+            "isFact": false
+          },
+          {
+            "text": "My boss might have had something urgent that morning.",
+            "isFact": true
+          },
+          {
+            "text": "I know exactly what they think of me.",
+            "isFact": false
+          },
+          {
+            "text": "They've been distracted in the mornings before.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Feels like I'm braced for the worst in advance",
+          "A quick conclusion saves time thinking it through"
+        ],
+        "costs": [
+          "The conclusion is often wrong",
+          "I spend anxiety on something that may not be true",
+          "I act on a guess instead of checking facts"
+        ],
+        "reframeOptions": [
+          "I actually don't know what she was thinking — there could be many reasons.",
+          "I have no evidence, just a guess — I can ask if it matters.",
+          "The reason could be anything, not necessarily about me."
+        ]
+      },
+      "magnification": {
+        "evidence": [
+          {
+            "text": "I was 5 minutes late to the meeting.",
+            "isFact": true
+          },
+          {
+            "text": "So my whole reputation is ruined.",
+            "isFact": false
+          },
+          {
+            "text": "Coworkers are sometimes a few minutes late too.",
+            "isFact": true
+          },
+          {
+            "text": "One lateness cancels out my reliability.",
+            "isFact": false
+          },
+          {
+            "text": "The meeting still went as planned.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Bracing for the worst feels like it won't catch me off guard",
+          "High anxiety feels like responsibility"
+        ],
+        "costs": [
+          "The problem is much bigger in my head than in reality",
+          "Constant anxiety wears me down for no reason",
+          "I lose sight of the real scale of things"
+        ],
+        "reframeOptions": [
+          "It's a small mistake I can fix — it doesn't define my career.",
+          "Five minutes late is minor — it doesn't cancel out everything else.",
+          "I'm blowing up the consequences — they're actually much smaller."
+        ]
+      },
+      "emotionalReasoning": {
+        "evidence": [
+          {
+            "text": "I feel anxious before the conversation.",
+            "isFact": true
+          },
+          {
+            "text": "So it's guaranteed to go badly.",
+            "isFact": false
+          },
+          {
+            "text": "Past pre-conversation anxiety hasn't always come true.",
+            "isFact": true
+          },
+          {
+            "text": "If I feel it this way, that's how it'll be.",
+            "isFact": false
+          },
+          {
+            "text": "A feeling isn't proof of the outcome.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Feelings seem like the most reliable source of truth",
+          "No need to check facts if I trust the feeling"
+        ],
+        "costs": [
+          "Anxiety drives decisions instead of facts",
+          "Feelings and reality often don't match",
+          "I spend energy on outcomes that never happened"
+        ],
+        "reframeOptions": [
+          "Feeling like a failure right now doesn't make it true — feelings aren't proof.",
+          "Anxiety is a feeling, not a forecast.",
+          "I can notice the feeling and still check the facts separately."
+        ]
+      },
+      "shouldStatements": {
+        "evidence": [
+          {
+            "text": "I asked for help with part of the task.",
+            "isFact": true
+          },
+          {
+            "text": "So I'm weak and couldn't handle it myself.",
+            "isFact": false
+          },
+          {
+            "text": "Many successful projects are done as a team.",
+            "isFact": true
+          },
+          {
+            "text": "Asking for help is a failure.",
+            "isFact": false
+          },
+          {
+            "text": "The task was finished on time.",
+            "isFact": true
+          }
+        ],
+        "gives": ["Rigid 'should' rules feel motivating", "A high bar looks like a high standard"],
+        "costs": [
+          "Constant guilt for falling short of perfect",
+          "No room for being human and making mistakes",
+          "The standard is often unrealistic to begin with"
+        ],
+        "reframeOptions": [
+          "I'm allowed to make mistakes — that's how people learn and grow.",
+          "Asking for help isn't weakness, it's a sound decision.",
+          "'Should' can become 'I want to try' — that's more honest with myself."
+        ]
+      },
+      "labeling": {
+        "evidence": [
+          {
+            "text": "I forgot one important date.",
+            "isFact": true
+          },
+          {
+            "text": "So I'm an irresponsible person overall.",
+            "isFact": false
+          },
+          {
+            "text": "Otherwise I usually remember and plan well.",
+            "isFact": true
+          },
+          {
+            "text": "One incident defines my whole character.",
+            "isFact": false
+          },
+          {
+            "text": "I can set a reminder so it doesn't happen again.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "A label sounds like a simple, quick explanation",
+          "Easier to wrap it up in one conclusion than dig in"
+        ],
+        "costs": [
+          "The label sticks and affects self-esteem overall",
+          "It ignores context and the other cases",
+          "It hides that the behavior can change"
+        ],
+        "reframeOptions": [
+          "I missed one deadline — that's a single instance, not who I am.",
+          "One action doesn't equal my whole character.",
+          "I can name the behavior without labeling all of myself."
+        ]
+      },
+      "personalization": {
+        "evidence": [
+          {
+            "text": "My friend is in a bad mood today.",
+            "isFact": true
+          },
+          {
+            "text": "So the cause must be me.",
+            "isFact": false
+          },
+          {
+            "text": "My friend could have issues unrelated to me.",
+            "isFact": true
+          },
+          {
+            "text": "Any bad mood around me is my fault.",
+            "isFact": false
+          },
+          {
+            "text": "I'm not the only person in their life.",
+            "isFact": true
+          }
+        ],
+        "gives": [
+          "Taking all the blame feels like it makes the situation manageable",
+          "A sense of control, even if it's an illusion"
+        ],
+        "costs": [
+          "I take responsibility for things outside my control",
+          "Guilt with no real grounds",
+          "I miss the other factors that played a role"
+        ],
+        "reframeOptions": [
+          "Many factors played into this — I'm not the only cause.",
+          "Other people have their own lives and reasons for their mood, not just me.",
+          "I can ask instead of assuming I'm the one at fault."
+        ]
+      }
+    },
+    "bosses": {
+      "allOrNothing_1": "I made one mistake in the presentation, so the whole talk was a failure.",
+      "allOrNothing_2": "I didn't finish everything on my list today — the whole day was wasted.",
+      "overgeneralization_1": "A friend didn't reply to my message — nobody wants to talk to me at all.",
+      "overgeneralization_2": "I got rejected from one interview — I'll never find a job.",
+      "mentalFilter_1": "There was one awkward moment in the meeting, and it made the whole thing feel like a failure.",
+      "mentalFilter_2": "There was one critical note in the feedback on my work — it's all I can remember.",
+      "discountingPositive_1": "I only passed the test because it was easy, not because I'm capable.",
+      "discountingPositive_2": "I got praised for the project, but it was probably just politeness.",
+      "jumpingToConclusions_1": "She checked her phone while we were talking — she must be bored with me.",
+      "jumpingToConclusions_2": "My boss didn't say good morning — I must have done something wrong.",
+      "magnification_1": "I forgot one detail in the report — it could ruin my entire career.",
+      "magnification_2": "I was 5 minutes late to a meeting — now everyone will think the worst of me.",
+      "emotionalReasoning_1": "I feel like a failure, so I must be one.",
+      "emotionalReasoning_2": "I'm anxious before the conversation — something bad is bound to happen.",
+      "shouldStatements_1": "I should never make mistakes at work.",
+      "shouldStatements_2": "I should have handled everything myself, without anyone's help.",
+      "labeling_1": "I missed the deadline — what a failure I am.",
+      "labeling_2": "I forgot an important date — I'm an irresponsible person.",
+      "personalization_1": "My team didn't hit the goal — that's entirely my fault.",
+      "personalization_2": "My friend is in a bad mood — I must have done something wrong."
+    }
   }
 }
