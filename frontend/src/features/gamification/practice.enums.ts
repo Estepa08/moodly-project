@@ -8,4 +8,5 @@ export enum PracticeSource {
   EmotionLab = 'emotionLab',
   /** Полный цикл в дневнике мыслей: тег + вера-до + альтернатива + вера-после. */
   ThoughtJournalCycle = 'thoughtJournalCycle',
+  RelaxationWheel = 'relaxationWheel',
 }

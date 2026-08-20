@@ -66,9 +66,11 @@
       "settings": "Settings",
       "admin": "Admin",
       "profile": "Profile",
-      "emotionLab": "Emotion Lab"
+      "emotionLab": "Emotion Lab",
+      "relaxationWheel": "Wheel"
     },
-    "emotionLab": "Emotion Lab"
+    "emotionLab": "Emotion Lab",
+    "relaxationWheel": "Relaxation wheel"
   },
   "myDay": {
     "morningHint": "Good morning — how are you feeling today?",
@@ -93,6 +95,9 @@
   "petCheckIn": {
     "instantHint": "Tap — it saves instantly, no typing needed",
     "stepOf": "Step {{current}} of {{total}}",
+    "emotionPrompt": "Which emotion did you feel, exactly? (optional)",
+    "emotionContinue": "Continue",
+    "emotionSkip": "Skip this step",
     "thanksTitle": "Thank you!",
     "thanksText": "I saved it all and I'll be right here — come back later to wrap up your day.",
     "done": "Done",
@@ -688,7 +693,9 @@
     "testQuestions_one": "{{count}} question",
     "testQuestions_other": "{{count}} questions",
     "descEmotionLab": "Emotion alchemy on Plutchik's wheel — discover new feelings",
-    "timeEmotionLab": "2–5 min"
+    "timeEmotionLab": "2–5 min",
+    "descRelaxationWheel": "Spin the wheel — a random idea to take care of yourself",
+    "timeRelaxationWheel": "1–30 min"
   },
   "thoughtJournal": {
     "title": "Thought Journal",
@@ -1606,6 +1613,7 @@
     "speech_one": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
     "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
     "activityThoughtJournalCycle": "Full reframe",
+    "activityRelaxationWheel": "Relaxation wheel",
     "weeklyTitle": "Weekly calendar",
     "weeklySubtitle": "Any 5 days out of 7 — no penalty for missing one"
   },
@@ -3211,6 +3219,107 @@
       "personalization_3": "The project got delayed — it's probably because I wasn't working fast enough.",
       "personalization_4": "My kid is upset — I must be a bad parent.",
       "personalization_5": "There was tension at the meeting — I probably did something wrong."
+    }
+  },
+  "relaxationWheel": {
+    "title": "Relaxation wheel",
+    "subtitle": "Spin the wheel for a random idea to take care of yourself",
+    "defaultWheelName": "Relaxation wheel",
+    "backToList": "Back to wheels",
+    "itemsCount_one": "{{count}} item",
+    "itemsCount_other": "{{count}} items",
+    "createWheel": "Create a wheel",
+    "createWheelTitle": "New wheel",
+    "createWheelPlaceholder": "E.g. \"Boost my mood\"",
+    "createWheelSubmit": "Create",
+    "spin": "Spin",
+    "spinning": "Spinning…",
+    "spinAgain": "Spin again",
+    "done": "Done",
+    "resultAnnouncement": "Landed on: {{title}}",
+    "customize": "Customize wheel",
+    "customizeTitle": "Editing \"{{name}}\"",
+    "renameWheel": "Rename wheel",
+    "renameWheelPlaceholder": "Wheel name",
+    "deleteWheel": "Delete wheel",
+    "deleteWheelConfirm": "Delete \"{{name}}\"? Items stay in your library and remain available for other wheels.",
+    "itemsInWheel": "Items in this wheel",
+    "addItemPlaceholder": "Your own activity or practice",
+    "addItem": "Add",
+    "removeFromLibrary": "Remove from library",
+    "emptyWheel": "This wheel has no items yet",
+    "emptyWheelHint": "Add at least one item to start spinning",
+    "goToCustomize": "Customize",
+    "categories": {
+      "quickRegulation": { "title": "Calm down fast", "subtitle": "For acute stress, 1-3 minutes" },
+      "softReset": { "title": "Soft reset", "subtitle": "Tired, but not in crisis" },
+      "selfCare": { "title": "Treat yourself", "subtitle": "Mindful pleasure" }
+    },
+    "items": {
+      "breathing478": {
+        "title": "4-7-8 breathing",
+        "description": "Inhale for 4 counts, hold for 7, exhale for 8. Repeat 4 times."
+      },
+      "grounding54321": {
+        "title": "5-4-3-2-1 grounding",
+        "description": "Name 5 things you see, 4 you hear, 3 you can touch, 2 you can smell, 1 you can taste."
+      },
+      "stretch": {
+        "title": "Stretch",
+        "description": "Stand up and stretch your whole body in different directions — shoulders, neck, back."
+      },
+      "coldWater": {
+        "title": "Splash cold water",
+        "description": "Rinse your face or wrists with cold water — it resets your nervous system."
+      },
+      "boxBreathing": {
+        "title": "Box breathing",
+        "description": "Inhale for 4 counts, hold for 4, exhale for 4, hold for 4. Repeat a few times."
+      },
+      "readBook": {
+        "title": "Read an interesting book",
+        "description": "Set aside 15-20 minutes just to read, with no goal and no rush."
+      },
+      "listenMusic": {
+        "title": "Listen to music",
+        "description": "Put on something you truly enjoy — a favorite playlist or something new."
+      },
+      "walk": {
+        "title": "Take a walk",
+        "description": "Go out for 15-20 minutes, ideally without your phone in hand."
+      },
+      "drawDaydream": {
+        "title": "Draw or daydream",
+        "description": "Artistic talent isn't the point — just let yourself be in the process."
+      },
+      "warmShower": {
+        "title": "Warm shower or bath",
+        "description": "Don't rush — let yourself stay in the warmth a little longer than usual."
+      },
+      "slowTea": {
+        "title": "Make tea and take your time",
+        "description": "Pause, just sit with your cup, no phone, no tasks."
+      },
+      "freeJournal": {
+        "title": "Write down what's on your mind",
+        "description": "A free flow of thoughts, no structure or goal — just get it out."
+      },
+      "tastyFood": {
+        "title": "Eat something tasty",
+        "description": "Slowly, paying attention to the taste — not on the run and without guilt."
+      },
+      "favoriteMovie": {
+        "title": "Watch a favorite movie or show",
+        "description": "Pick something you genuinely enjoy, not something you \"should\" watch."
+      },
+      "callSomeone": {
+        "title": "Call someone close to you",
+        "description": "Just chat, no particular topic or purpose."
+      },
+      "cozyHome": {
+        "title": "Make your home cozier",
+        "description": "Light a candle, tidy up a little, turn on some warm light."
+      }
     }
   }
 }

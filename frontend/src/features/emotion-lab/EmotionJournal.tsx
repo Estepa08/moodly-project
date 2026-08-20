@@ -4,6 +4,7 @@ import { Lock, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Card, CardContent } from '../../components/ui/card';
 import { DYADS_BY_LEVEL, DYAD_COUNT_BY_LEVEL_VIEW, emotionMeta, type DyadView } from './emotionLab';
+import { emotionDefinition } from './emotionLibrary';
 import type { EmotionLabState } from './useEmotionLab';
 
 const LEVEL_LABEL_KEYS = {
@@ -162,42 +163,52 @@ export default function EmotionJournal({ state }: EmotionJournalProps) {
 
 function DyadChip({ dyad, discovered }: { dyad: DyadView; discovered: boolean }) {
   const { t } = useTranslation();
+  const [expanded, setExpanded] = useState(false);
   const [a, b] = dyad.emotions;
   const metaA = emotionMeta(a);
   const metaB = emotionMeta(b);
 
   const dyadNameKey = `emotionLab.dyads.${dyad.key}`;
+  const definition = emotionDefinition(dyad.key);
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 h-10 px-3 rounded-full border text-xs font-medium transition-all duration-200',
-        discovered
-          ? 'bg-primary/10 border-primary/40 text-primary hover:bg-primary/20'
-          : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted/80',
-      )}
-    >
-      <span className="flex items-center gap-1 shrink-0">
-        <metaA.icon
-          aria-hidden="true"
-          className="w-3.5 h-3.5"
-          style={{ color: metaA.color }}
-          strokeWidth={2.5}
-        />
-        <metaB.icon
-          aria-hidden="true"
-          className="w-3.5 h-3.5"
-          style={{ color: metaB.color }}
-          strokeWidth={2.5}
-        />
-      </span>
-      {discovered ? (
-        <span className="truncate font-medium">{t(dyadNameKey)}</span>
-      ) : (
-        <span className="flex items-center gap-1 truncate">
-          <Lock aria-hidden="true" className="w-3 h-3 shrink-0" />
-          <span className="truncate text-muted-foreground/60">???</span>
+    <div className="space-y-1">
+      <button
+        type="button"
+        onClick={() => discovered && setExpanded((v) => !v)}
+        aria-expanded={discovered ? expanded : undefined}
+        className={cn(
+          'w-full flex items-center gap-2 h-10 px-3 rounded-full border text-xs font-medium transition-all duration-200',
+          discovered
+            ? 'bg-primary/10 border-primary/40 text-primary hover:bg-primary/20 cursor-pointer'
+            : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted/80 cursor-default',
+        )}
+      >
+        <span className="flex items-center gap-1 shrink-0">
+          <metaA.icon
+            aria-hidden="true"
+            className="w-3.5 h-3.5"
+            style={{ color: metaA.color }}
+            strokeWidth={2.5}
+          />
+          <metaB.icon
+            aria-hidden="true"
+            className="w-3.5 h-3.5"
+            style={{ color: metaB.color }}
+            strokeWidth={2.5}
+          />
         </span>
+        {discovered ? (
+          <span className="truncate font-medium">{t(dyadNameKey)}</span>
+        ) : (
+          <span className="flex items-center gap-1 truncate">
+            <Lock aria-hidden="true" className="w-3 h-3 shrink-0" />
+            <span className="truncate text-muted-foreground/60">???</span>
+          </span>
+        )}
+      </button>
+      {expanded && discovered && definition && (
+        <p className="px-3 text-[11px] text-muted-foreground leading-snug">{definition}</p>
       )}
     </div>
   );

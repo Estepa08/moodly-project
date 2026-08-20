@@ -1,6 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Wind, Heart, Moon, Brain, Scale, BookOpen, Sparkles, FlaskConical } from 'lucide-react';
+import {
+  Wind,
+  Heart,
+  Moon,
+  Brain,
+  Scale,
+  BookOpen,
+  Sparkles,
+  FlaskConical,
+  Shuffle,
+} from 'lucide-react';
 import { useCompletions } from './useCreature';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { LoadingCard } from '../../components/ui/loading-card';
@@ -23,6 +33,7 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
     icon: Sparkles,
     labelKey: 'progress.activityThoughtJournalCycle',
   },
+  [PracticeSource.RelaxationWheel]: { icon: Shuffle, labelKey: 'progress.activityRelaxationWheel' },
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
@@ -34,6 +45,7 @@ const SOURCE_PATH: Record<PracticeSource, string> = {
   [PracticeSource.ThoughtJournal]: '/practices/thought-journal',
   [PracticeSource.EmotionLab]: '/practices/emotion-lab',
   [PracticeSource.ThoughtJournalCycle]: '/practices/thought-journal',
+  [PracticeSource.RelaxationWheel]: '/practices/relaxation-wheel',
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);

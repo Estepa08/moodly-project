@@ -12,6 +12,7 @@ import {
   ACTIVITY_CATEGORY_ORDER,
   ACTIVITY_ICONS,
   CATEGORY_ICONS,
+  isCoreActivity,
   type ActivityCategory,
 } from '../../lib/dayActivities';
 import {
@@ -163,7 +164,10 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
     const q = query.trim().toLowerCase();
     return ACTIVITY_CATALOG.filter((a) => {
       if (a.category !== view.category) return false;
-      if (!q) return true;
+      // Без поискового запроса показываем только куратированное «ядро»
+      // категории (~18-20 пунктов) — чтобы не перегружать выбор (см.
+      // isCoreActivity). Полный список остаётся доступен через поиск.
+      if (!q) return isCoreActivity(a.key);
       return t(a.labelKey).toLowerCase().includes(q);
     });
   }, [view, query, t]);

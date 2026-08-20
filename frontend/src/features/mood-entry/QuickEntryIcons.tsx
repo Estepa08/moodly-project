@@ -14,6 +14,7 @@ import { RatingScaleSelector } from './RatingScaleSelector';
 import DistortionTagsSelector from './DistortionTagsSelector';
 import { Button } from '../../components/ui/button';
 import type { DistortionKey } from '../../lib/distortionsQuiz';
+import EmotionTagPicker from '../emotion-lab/EmotionTagPicker';
 
 interface QuickEntryIconsProps {
   createEntry: CreateEntryMutation;
@@ -32,6 +33,7 @@ export default function QuickEntryIcons({
   const [showNote, setShowNote] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [distortions, setDistortions] = useState<DistortionKey[]>([]);
+  const [emotions, setEmotions] = useState<string[]>([]);
   const noteInputRef = useRef<HTMLInputElement>(null);
 
   const configs = PARAM_ICON_CONFIGS.filter((cfg) =>
@@ -50,6 +52,7 @@ export default function QuickEntryIcons({
     setShowNote(false);
     setNoteText('');
     setDistortions([]);
+    setEmotions([]);
   }, []);
 
   const handleSave = useCallback(
@@ -62,6 +65,7 @@ export default function QuickEntryIcons({
         value: number;
         note?: string;
         distortions?: DistortionKey[];
+        emotions?: string[];
       } = {
         parameterId: param.id,
         value,
@@ -75,6 +79,10 @@ export default function QuickEntryIcons({
         payload.distortions = distortions;
       }
 
+      if (parameterName === ParameterName.Mood && emotions.length > 0) {
+        payload.emotions = emotions;
+      }
+
       createEntry.mutate(payload, {
         onSuccess: () => {
           toast.success(t('dashboard.quickEntry.entrySaved'));
@@ -82,6 +90,7 @@ export default function QuickEntryIcons({
           setShowNote(false);
           setNoteText('');
           setDistortions([]);
+          setEmotions([]);
         },
         onError: (err) => {
           const message =
@@ -93,7 +102,7 @@ export default function QuickEntryIcons({
         },
       });
     },
-    [createEntry, numericParams, t, noteText, distortions],
+    [createEntry, numericParams, t, noteText, distortions, emotions],
   );
 
   return (
@@ -188,6 +197,10 @@ export default function QuickEntryIcons({
                       </>
                     );
                   })()}
+
+                  {cfg.parameterName === ParameterName.Mood && (
+                    <EmotionTagPicker value={emotions} onChange={setEmotions} />
+                  )}
 
                   <div className="flex items-center justify-center gap-2">
                     {!showNote ? (
