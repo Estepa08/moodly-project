@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { emotionMeta } from './emotionLab';
+import { emotionDefinition } from './emotionLibrary';
 import type { EmotionLabAttemptResponse } from './useEmotionLab';
 
 interface EmotionResultProps {
@@ -15,6 +16,7 @@ export default function EmotionResult({ result }: EmotionResultProps) {
   const metaB = emotionMeta(b);
   const IconA = metaA.icon;
   const IconB = metaB.icon;
+  const definition = emotionDefinition(result.dyad.key);
 
   return (
     <div className="rounded-xl bg-card-gradient text-card-foreground shadow-clay border border-border overflow-hidden">
@@ -62,6 +64,9 @@ export default function EmotionResult({ result }: EmotionResultProps) {
           <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-muted text-[11px] font-medium text-muted-foreground">
             {t(`emotionLab.levelLabel.${result.dyad.level}`)}
           </span>
+          {definition && (
+            <p className="mt-1.5 text-xs text-muted-foreground leading-snug">{definition}</p>
+          )}
         </div>
       </div>
 

@@ -1,17 +1,24 @@
-// Библиотека эмоций: краткие определения для 8 базовых эмоций и 28 диад
+// Библиотека эмоций: краткие определения для 8 базовых эмоций и 24 диад
 // колеса Плутчика (см. shared/src/emotion-alchemy-data.json — единый
 // источник ключей/пар). Тексты написаны своими словами по мотивам открытых
 // источников о модели Роберта Плутчика:
-// - Six Seconds, "Plutchik's Wheel of Emotions" — https://www.6seconds.org/2025/02/06/plutchik-wheel-emotions/
+// - Robert Plutchik, "The Nature of Emotions", American Scientist, 89 (2001), 344-350 —
+//   первоисточник самой модели: https://www.americanscientist.org/article/the-nature-of-emotions
+// - Wikipedia, "Robert Plutchik" — https://en.wikipedia.org/wiki/Robert_Plutchik
+//   (8 базовых эмоций + 4 пары противоположностей — проверено цитатой оттуда)
 // - Simon Whatley, "Plutchik's wheel of emotion" — https://www.simonwhatley.co.uk/writing/plutchik-wheel-of-emotion/
+//   (пары диад сверены построчно с этой диаграммой 2026-08-20; поймали и
+//   исправили расхождение: surprise+sadness — "disapproval"/«Неодобрение»,
+//   не "disappointment"/«Разочарование», как было раньше)
+// - Six Seconds, "Plutchik's Wheel of Emotions" — https://www.6seconds.org/2025/02/06/plutchik-wheel-emotions/
 // - Exploring Your Mind, "The 8 Basic Emotions According to Plutchik's Wheel" — https://exploringyourmind.com/the-basic-emotions-according-to-plutchiks-wheel/
 // - PositivePsychology.com, "The Emotion Wheel" — https://positivepsychology.com/emotion-wheel/
 //
 // Диады уровня 4 (bittersweetness/ambivalence/frozenness/confusion) — НЕ
-// часть классической модели Плутчика (у него полярные пары не смешиваются
-// в диады). Это авторский игровой концепт этого приложения — «соединить
-// противоположные чувства». Формулировки для них — наша трактовка, а не
-// цитата из источников выше.
+// часть классической модели Плутчика (проверено: ни Wikipedia, ни диаграмма
+// Simon Whatley не называют противоположные пары). Это авторский игровой
+// концепт этого приложения — «соединить противоположные чувства».
+// Формулировки для них — наша трактовка, а не цитата из источников выше.
 
 export const EMOTION_DEFINITIONS: Record<string, string> = {
   joy: 'Радость — приятное, вовлечённое переживание благополучия. Сигнализирует о безопасности и вознаграждении, побуждает сближаться с людьми и миром.',
@@ -34,7 +41,8 @@ export const EMOTION_DEFINITIONS: Record<string, string> = {
   submission:
     'Покорность — готовность уступить или подчиниться, смесь доверия и лёгкой опаски перед тем, кто воспринимается сильнее.',
   alarm: 'Настороженность — резкая собранность в ответ на неожиданное: страх пополам с удивлением.',
-  disappointment: 'Разочарование — грусть от того, что ожидания не оправдались.',
+  disapproval:
+    'Неодобрение — осуждающая реакция на то, что произошло неожиданно и расходится с тем, как должно было быть.',
   remorse:
     'Раскаяние — сожаление о своём поступке, в котором грусть смешана с неприятием того, что было сделано.',
   contempt: 'Презрение — чувство превосходства и неприязни по отношению к кому-то или чему-то.',

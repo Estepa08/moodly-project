@@ -13,7 +13,7 @@
     { "key": "love", "name": "Любовь", "level": 1, "emotions": ["joy", "trust"] },
     { "key": "submission", "name": "Покорность", "level": 1, "emotions": ["trust", "fear"] },
     { "key": "alarm", "name": "Настороженность", "level": 1, "emotions": ["fear", "surprise"] },
-    { "key": "disappointment", "name": "Разочарование", "level": 1, "emotions": ["surprise", "sadness"] },
+    { "key": "disapproval", "name": "Неодобрение", "level": 1, "emotions": ["surprise", "sadness"] },
     { "key": "remorse", "name": "Раскаяние", "level": 1, "emotions": ["sadness", "disgust"] },
     { "key": "contempt", "name": "Презрение", "level": 1, "emotions": ["disgust", "anger"] },
     { "key": "aggressiveness", "name": "Агрессивность", "level": 1, "emotions": ["anger", "anticipation"] },
@@ -55,7 +55,7 @@
     {
       "key": "confusion", "name": "Растерянность", "level": 4,
       "emotions": ["surprise", "anticipation"],
-      "requiresDyads": ["disappointment", "optimism"]
+      "requiresDyads": ["disapproval", "optimism"]
     }
   ]
 }

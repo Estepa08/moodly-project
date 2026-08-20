@@ -78,6 +78,14 @@ export default function EmotionLabScreen() {
           {t('emotionLab.title')}
         </h2>
         <p className="text-sm text-muted-foreground mt-1">{t('emotionLab.subtitle')}</p>
+        <a
+          href="https://www.americanscientist.org/article/the-nature-of-emotions"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block mt-1.5 text-[11px] text-muted-foreground underline decoration-dotted underline-offset-2 hover:text-primary"
+        >
+          {t('emotionLab.plutchikCredit')}
+        </a>
       </div>
 
       {/* Попытки на сегодня */}
