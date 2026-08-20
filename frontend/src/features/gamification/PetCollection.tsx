@@ -103,7 +103,8 @@ export default function PetCollection() {
   const unlocked = pets?.unlockedPetTypes ?? ['puff', 'fox'];
   const active = pets?.activePetType ?? 'puff';
   const activeDefinition = PET_DEFINITIONS.find((p) => p.type === active);
-  const activeName = pets?.petName?.trim() || (activeDefinition ? t(activeDefinition.labelKey) : '');
+  const activeName =
+    pets?.petName?.trim() || (activeDefinition ? t(activeDefinition.labelKey) : '');
 
   const openRename = () => {
     setDraftName(activeName);
