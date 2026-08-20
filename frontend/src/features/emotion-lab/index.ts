@@ -1,4 +1,5 @@
 export { default as EmotionLabScreen } from './EmotionLabScreen';
+export { default as EmotionTagPicker } from './EmotionTagPicker';
 export {
   useEmotionLabState,
   useEmotionLabAttempt,

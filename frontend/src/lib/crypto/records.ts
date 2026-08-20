@@ -1,6 +1,7 @@
 import { encryptJson, decryptJson } from './codec';
 import { getSessionKey, getSessionUserId } from './session';
 import { DISTORTION_KEYS, DistortionKey } from '../distortionsQuiz';
+import { isEmotionKey, getDyadByKey } from '@moodly/shared';
 
 export interface ActivitySelection {
   key: string;
@@ -23,6 +24,11 @@ export interface EntryCipherPayload {
    * переосмысления по тегу без парсинга локализованной разметки заметки.
    */
   alternativeThought?: string;
+  /**
+   * Эмоции из «Лаборатории эмоций» (см. @moodly/shared emotionAlchemy) —
+   * ключи базовых эмоций (joy…) и/или открытых диад (love, guilt…).
+   */
+  emotions?: string[];
 }
 
 export interface TestResultCipherPayload {
@@ -80,6 +86,12 @@ export async function decryptEntryPayload(
     typeof alternativeThoughtRaw === 'string' && alternativeThoughtRaw.trim().length > 0
       ? alternativeThoughtRaw
       : undefined;
+  const emotionsRaw = (raw as { emotions?: unknown }).emotions;
+  const parsedEmotions = Array.isArray(emotionsRaw)
+    ? (emotionsRaw as unknown[]).filter(
+        (e): e is string => typeof e === 'string' && (isEmotionKey(e) || !!getDyadByKey(e)),
+      )
+    : [];
   return {
     value,
     note: typeof note === 'string' ? note : null,
@@ -88,6 +100,7 @@ export async function decryptEntryPayload(
     ...(beliefBefore !== undefined ? { beliefBefore } : {}),
     ...(beliefAfter !== undefined ? { beliefAfter } : {}),
     ...(alternativeThought !== undefined ? { alternativeThought } : {}),
+    ...(parsedEmotions.length > 0 ? { emotions: parsedEmotions } : {}),
   };
 }
 

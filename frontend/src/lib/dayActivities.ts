@@ -159,6 +159,12 @@ export interface DayActivityDefinition {
   labelKey: string;
 }
 
+// Wellbeing («как ты себя чувствуешь») больше не предлагается при выборе —
+// это дублировало числовую шкалу Mood и теперь закрывается тегами эмоций
+// из Лаборатории эмоций (см. EmotionTagPicker). Сама категория и её записи
+// ниже НЕ удалены — так уже сохранённые исторические ActivitySelection с
+// ключами wellbeing.* продолжают корректно отображаться (иконка + перевод)
+// везде, где есть история активностей (ActivityCorrelationCard и т.п.).
 export const ACTIVITY_CATEGORY_ORDER: ActivityCategory[] = [
   ActivityCategory.Work,
   ActivityCategory.Study,
@@ -168,7 +174,6 @@ export const ACTIVITY_CATEGORY_ORDER: ActivityCategory[] = [
   ActivityCategory.Social,
   ActivityCategory.Hobby,
   ActivityCategory.Events,
-  ActivityCategory.Wellbeing,
 ];
 
 const CAT: Record<ActivityCategory, ActivityCategory> = {
@@ -568,7 +573,188 @@ export const ACTIVITY_CATALOG: DayActivityDefinition[] = [
   def(ActivityCategory.Wellbeing, 'smiled'),
 ];
 
-export const DEFAULT_ACTIVITY_CATEGORY = ActivityCategory.Wellbeing;
+// Куратированное подмножество каталога (~18-20 на категорию вместо ~40) —
+// показывается при обычном просмотре категории, чтобы не перегружать выбор
+// (см. Hick's law / chunking). Полный каталог по-прежнему доступен через
+// поиск внутри категории (см. filteredByCategory в DayActivitiesSection) —
+// ничего не удалено, просто не всё показывается сразу по умолчанию.
+// Также здесь устранены смысловые дубли между категориями (например,
+// «Растяжка» была одновременно в Health и Movement) — каждый пункт
+// оставлен в одной, наиболее уместной категории.
+const CORE_ACTIVITY_KEYS = new Set<string>([
+  // Work
+  'work.worked',
+  'work.meeting',
+  'work.deadline',
+  'work.presentation',
+  'work.overtime',
+  'work.day_off',
+  'work.remote',
+  'work.stressful_day',
+  'work.success',
+  'work.new_project',
+  'work.business_trip',
+  'work.promotion',
+  'work.bad_boss',
+  'work.fired',
+  'work.focus_day',
+  'work.praise',
+  'work.crunch',
+  'work.freelance',
+  'work.team_building',
+  // Study
+  'study.studied',
+  'study.exam',
+  'study.homework',
+  'study.course',
+  'study.failed_exam',
+  'study.passed_exam',
+  'study.learned_skill',
+  'study.workshop',
+  'study.language_lesson',
+  'study.online_lesson',
+  'study.self_education',
+  'study.notes',
+  'study.practice',
+  'study.revision',
+  'study.mistake',
+  'study.motivation',
+  'study.burnout',
+  'study.exam_prep',
+  // Health (stretching живёт в Movement, meditation оставлена здесь)
+  'health.doctor_visit',
+  'health.therapy_session',
+  'health.medication',
+  'health.sick',
+  'health.headache',
+  'health.good_health',
+  'health.bad_sleep',
+  'health.good_sleep',
+  'health.dental_visit',
+  'health.allergy',
+  'health.massage',
+  'health.energy_drop',
+  'health.vitamins',
+  'health.hydration',
+  'health.fresh_air',
+  'health.healthy_meal',
+  'health.junk_food',
+  'health.meditation',
+  'health.breathing',
+  'health.sunlight',
+  // Movement (stretching перенесена сюда из Health)
+  'movement.walk',
+  'movement.gym',
+  'movement.run',
+  'movement.yoga',
+  'movement.cycling',
+  'movement.home_workout',
+  'movement.stretching',
+  'movement.dance',
+  'movement.swimming',
+  'movement.hiking',
+  'movement.boxing',
+  'movement.sport_game',
+  'movement.morning_run',
+  'movement.stairs',
+  'movement.team_sport',
+  'movement.hiit',
+  'movement.tai_chi',
+  'movement.rowing',
+  'movement.strength',
+  'movement.climbing',
+  // Rest (meditation/fishing/birdwatching убраны — дублируют Health/Hobby)
+  'rest.read',
+  'rest.watched_movie',
+  'rest.watched_tv',
+  'rest.played_games',
+  'rest.listened_music',
+  'rest.nap',
+  'rest.relaxed',
+  'rest.mobile_scroll',
+  'rest.stay_in',
+  'rest.hot_bath',
+  'rest.quiet_morning',
+  'rest.sat_outdoors',
+  'rest.silence',
+  'rest.audiobook',
+  'rest.podcast',
+  'rest.sleep_long',
+  'rest.cozy',
+  'rest.picnic',
+  'rest.karaoke',
+  // Social
+  'social.friends',
+  'social.family',
+  'social.partner',
+  'social.helped_others',
+  'social.phone_call',
+  'social.conflict',
+  'social.date',
+  'social.kids',
+  'social.parents',
+  'social.colleagues',
+  'social.new_acquaintance',
+  'social.party',
+  'social.lonely',
+  'social.good_communication',
+  'social.volunteer',
+  'social.apology',
+  'social.congratulated',
+  'social.hug',
+  'social.heart_to_heart',
+  // Hobby (fishing/birdwatching перенесены сюда из Rest, fishing_hobby убран
+  // как внутрикатегорийный дубль слова «Рыбалка»)
+  'hobby.drawing',
+  'hobby.music_playing',
+  'hobby.cooking',
+  'hobby.gaming',
+  'hobby.photography',
+  'hobby.writing',
+  'hobby.gardening',
+  'hobby.puzzle',
+  'hobby.board_games',
+  'hobby.painting',
+  'hobby.singing',
+  'hobby.crafts',
+  'hobby.baking',
+  'hobby.fishing',
+  'hobby.birdwatching',
+  'hobby.knitting',
+  'hobby.diy',
+  'hobby.collecting',
+  'hobby.escape_room',
+  // Events
+  'events.celebration',
+  'events.holiday',
+  'events.travel',
+  'events.concert',
+  'events.wedding',
+  'events.shopping',
+  'events.birthday',
+  'events.anniversary',
+  'events.graduation',
+  'events.sport_event',
+  'events.theater',
+  'events.museum',
+  'events.city_trip',
+  'events.market',
+  'events.special_meal',
+  'events.fireworks',
+  'events.family_gathering',
+  'events.contest',
+  'events.festival',
+]);
+
+export function isCoreActivity(key: string): boolean {
+  return CORE_ACTIVITY_KEYS.has(key);
+}
+
+export const CORE_ACTIVITY_CATALOG: DayActivityDefinition[] = ACTIVITY_CATALOG.filter((a) =>
+  CORE_ACTIVITY_KEYS.has(a.key),
+);
+
+export const DEFAULT_ACTIVITY_CATEGORY = ActivityCategory.Work;
 
 export const ACTIVITY_ICONS: Record<string, LucideIcon> = {
   'work.worked': Briefcase,

@@ -94,6 +94,7 @@ export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
   thoughtJournalCycle: 25,
   sleepHygiene: 15,
   emotionLab: 15,
+  relaxationWheel: 15,
 };
 
 // «Играть»: тратит энергию, даёт немного XP, ограничено в сутки — источник
@@ -130,6 +131,7 @@ export const PRACTICE_XP: Record<string, number> = {
   thoughtJournal: 5,
   thoughtJournalCycle: 12,
   emotionLab: 5,
+  relaxationWheel: 5,
 };
 
 export interface MissionDefinition {

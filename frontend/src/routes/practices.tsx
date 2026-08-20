@@ -16,6 +16,7 @@ import {
   Clock,
   ClipboardList,
   FlaskConical,
+  Shuffle,
 } from 'lucide-react';
 
 const PATH_TO_SOURCE: Record<string, PracticeSource> = {
@@ -26,6 +27,7 @@ const PATH_TO_SOURCE: Record<string, PracticeSource> = {
   '/practices/cost-benefit-analysis': PracticeSource.Cba,
   '/practices/breathing': PracticeSource.Breathing,
   '/practices/emotion-lab': PracticeSource.EmotionLab,
+  '/practices/relaxation-wheel': PracticeSource.RelaxationWheel,
 };
 
 const PRACTICES = [
@@ -84,6 +86,14 @@ const PRACTICES = [
     descKey: 'practices.descEmotionLab',
     timeKey: 'practices.timeEmotionLab',
     categoryKey: 'practices.categoryMind',
+  },
+  {
+    path: '/practices/relaxation-wheel',
+    icon: Shuffle,
+    labelKey: 'nav.relaxationWheel',
+    descKey: 'practices.descRelaxationWheel',
+    timeKey: 'practices.timeRelaxationWheel',
+    categoryKey: 'practices.categoryBody',
   },
 ];
 

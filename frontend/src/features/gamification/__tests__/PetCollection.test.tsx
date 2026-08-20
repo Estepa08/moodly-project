@@ -26,8 +26,8 @@ describe('PetCollection', () => {
 
     const buttons = screen.getAllByRole('button');
     const hiddenCount = PET_DEFINITIONS.length - 6;
-    // 6 pet cards + 1 'Show all'
-    expect(buttons).toHaveLength(7);
+    // 1 rename button + 6 pet cards + 1 'Show all'
+    expect(buttons).toHaveLength(8);
     expect(screen.getByText(`Show all (${hiddenCount})`)).toBeInTheDocument();
   });
 
@@ -47,7 +47,8 @@ describe('PetCollection', () => {
     const showAll = screen.getByRole('button', { name: /Show all/ });
     fireEvent.click(showAll);
 
-    expect(screen.getAllByRole('button')).toHaveLength(PET_DEFINITIONS.length);
+    // +1 rename button, +1 'Show all' → +2 pet cards after expanding
+    expect(screen.getAllByRole('button')).toHaveLength(PET_DEFINITIONS.length + 1);
     expect(screen.queryByText(/Show all/)).not.toBeInTheDocument();
   });
 });

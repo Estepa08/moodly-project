@@ -13,6 +13,7 @@ import { useDayPhase, getDayPhase, type DayPhase } from '../../hooks/useDayPhase
 import { ParameterName, PARAM_NAME_KEYS } from '../../lib/constants';
 import { RATING_LEVELS, type RatingLevel } from '../../lib/ratingLevels';
 import { cn } from '../../lib/utils';
+import EmotionTagPicker from '../emotion-lab/EmotionTagPicker';
 
 const FLOWS: Record<DayPhase, ParameterName[]> = {
   morning: [ParameterName.Sleep, ParameterName.Mood, ParameterName.Anxiety, ParameterName.Energy],
@@ -52,6 +53,11 @@ export default function PetCheckInDialog({
   const [step, setStep] = useState(0);
   const [done, setDone] = useState(false);
   const [feedSignal, setFeedSignal] = useState(0);
+  // Значение Mood выбрано, но запись ещё не отправлена — ждём, отметит ли
+  // пользователь конкретную эмоцию (необязательный под-шаг), прежде чем
+  // сохранить и перейти дальше.
+  const [pendingMoodValue, setPendingMoodValue] = useState<number | null>(null);
+  const [moodEmotions, setMoodEmotions] = useState<string[]>([]);
   // Результат дневного чек-ина (награда XP/энергия/streak), показываем при завершении флоу.
   const [checkIn, setCheckIn] = useState<{ streak: number; leveledUp: boolean } | null>(null);
 
@@ -78,6 +84,8 @@ export default function PetCheckInDialog({
       setDone(false);
       setFeedSignal(0);
       setCheckIn(null);
+      setPendingMoodValue(null);
+      setMoodEmotions([]);
     }
   }, [open]);
 
@@ -96,13 +104,15 @@ export default function PetCheckInDialog({
     pets?.petName?.trim() ||
     t(PET_DEFINITIONS.find((p) => p.type === activePetType)?.labelKey ?? 'pets.puff');
 
-  const handleSelect = (value: number) => {
+  const submitEntry = (value: number, emotions?: string[]) => {
     if (!paramId || createEntry.isPending) return;
     createEntry.mutate(
-      { parameterId: paramId, value },
+      { parameterId: paramId, value, emotions },
       {
         onSuccess: () => {
           setFeedSignal((s) => s + 1);
+          setPendingMoodValue(null);
+          setMoodEmotions([]);
           if (step >= flow.length - 1) {
             setDone(true);
             emitSpeech(t('petSpeech.thanks'));
@@ -114,6 +124,16 @@ export default function PetCheckInDialog({
         },
       },
     );
+  };
+
+  const handleSelect = (value: number) => {
+    if (currentParam === ParameterName.Mood) {
+      // Значение выбрано — показываем необязательный шаг «какая именно
+      // эмоция» перед сохранением записи (см. EmotionTagPicker).
+      setPendingMoodValue(value);
+      return;
+    }
+    submitEntry(value);
   };
 
   const close = () => onOpenChange(false);
@@ -236,51 +256,72 @@ export default function PetCheckInDialog({
               {t(PARAM_NAME_KEYS[currentParam])}
             </p>
 
-            <div className="grid grid-cols-5 gap-1.5">
-              {levels.map((lv: RatingLevel) => {
-                const Icon = lv.Icon;
-                return (
-                  <button
-                    key={lv.value}
-                    type="button"
-                    onClick={() => handleSelect(lv.value)}
-                    disabled={createEntry.isPending}
-                    className={cn(
-                      'flex flex-col items-center justify-center gap-1 rounded-2xl bg-card shadow-neumorphic-sm h-16 px-1',
-                      'transition-[transform,box-shadow] duration-150 active:scale-95 hover:shadow-neumorphic',
-                      'cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                    )}
-                  >
-                    <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
-                    <span className="text-[10px] font-medium text-foreground leading-tight text-center">
-                      {t(lv.labelKey)}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-center gap-3 pt-1">
-              <button
-                type="button"
-                onClick={close}
-                className="text-xs font-semibold text-muted-foreground underline underline-offset-2 hover:text-foreground py-1 px-2 min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
-              >
-                {t('petCheckIn.skip')}
-              </button>
-              {phase !== 'morning' && onMarkActivities && (
+            {pendingMoodValue !== null ? (
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-foreground">
+                  {t('petCheckIn.emotionPrompt')}
+                </p>
+                <EmotionTagPicker value={moodEmotions} onChange={setMoodEmotions} />
                 <button
                   type="button"
-                  onClick={() => {
-                    close();
-                    onMarkActivities();
-                  }}
-                  className="text-xs font-semibold text-primary underline underline-offset-2 hover:text-primary/80 py-1 px-2 min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                  onClick={() => submitEntry(pendingMoodValue, moodEmotions)}
+                  disabled={createEntry.isPending}
+                  className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-neumorphic-sm transition-[transform,filter] duration-150 hover:brightness-105 active:scale-[0.98] cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  {t('petCheckIn.markActivities')}
+                  {moodEmotions.length > 0
+                    ? t('petCheckIn.emotionContinue')
+                    : t('petCheckIn.emotionSkip')}
                 </button>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-5 gap-1.5">
+                {levels.map((lv: RatingLevel) => {
+                  const Icon = lv.Icon;
+                  return (
+                    <button
+                      key={lv.value}
+                      type="button"
+                      onClick={() => handleSelect(lv.value)}
+                      disabled={createEntry.isPending}
+                      className={cn(
+                        'flex flex-col items-center justify-center gap-1 rounded-2xl bg-card shadow-neumorphic-sm h-16 px-1',
+                        'transition-[transform,box-shadow] duration-150 active:scale-95 hover:shadow-neumorphic',
+                        'cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      )}
+                    >
+                      <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
+                      <span className="text-[10px] font-medium text-foreground leading-tight text-center">
+                        {t(lv.labelKey)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {pendingMoodValue === null && (
+              <div className="flex items-center justify-center gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={close}
+                  className="text-xs font-semibold text-muted-foreground underline underline-offset-2 hover:text-foreground py-1 px-2 min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                >
+                  {t('petCheckIn.skip')}
+                </button>
+                {phase !== 'morning' && onMarkActivities && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      close();
+                      onMarkActivities();
+                    }}
+                    className="text-xs font-semibold text-primary underline underline-offset-2 hover:text-primary/80 py-1 px-2 min-h-[44px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                  >
+                    {t('petCheckIn.markActivities')}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
       </DialogContent>

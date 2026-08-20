@@ -1,12 +1,21 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import Lottie from 'lottie-react';
-import { Check, Gift } from 'lucide-react';
+import { Check, Gift, Pencil } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { usePets, useSetPet, useAchievements } from './useCreature';
 import { PET_DEFINITIONS, type PetDefinition } from './pets';
 import { usePetAnimation } from './usePetAnimation';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '../../components/ui/dialog';
 
 const PREVIEW_COUNT = 6;
 
@@ -88,9 +97,25 @@ export default function PetCollection() {
   const { data: achievements } = useAchievements();
   const setPet = useSetPet();
   const [showAll, setShowAll] = useState(false);
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [draftName, setDraftName] = useState('');
 
   const unlocked = pets?.unlockedPetTypes ?? ['puff', 'fox'];
   const active = pets?.activePetType ?? 'puff';
+  const activeDefinition = PET_DEFINITIONS.find((p) => p.type === active);
+  const activeName = pets?.petName?.trim() || (activeDefinition ? t(activeDefinition.labelKey) : '');
+
+  const openRename = () => {
+    setDraftName(activeName);
+    setRenameOpen(true);
+  };
+
+  const saveName = () => {
+    setPet.mutate(
+      { petType: undefined, petName: draftName.trim() || null },
+      { onSuccess: () => setRenameOpen(false) },
+    );
+  };
 
   const visiblePets = showAll ? PET_DEFINITIONS : PET_DEFINITIONS.slice(0, PREVIEW_COUNT);
   const hiddenCount = PET_DEFINITIONS.length - PREVIEW_COUNT;
@@ -119,6 +144,22 @@ export default function PetCollection() {
           {unlockedPercent}%
         </span>
       </div>
+
+      {activeName && (
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-semibold text-foreground truncate">{activeName}</span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            onClick={openRename}
+            aria-label={t('companion.renameTitle')}
+            className="shrink-0"
+          >
+            <Pencil aria-hidden="true" className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+      )}
       <div className="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
           className="h-full rounded-full bg-primary transition-[width] duration-300"
@@ -179,6 +220,43 @@ export default function PetCollection() {
           )}
         </div>
       )}
+
+      <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{t('companion.renameTitle')}</DialogTitle>
+            <DialogDescription>{t('companion.renameDescription')}</DialogDescription>
+          </DialogHeader>
+          <form
+            className="space-y-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              saveName();
+            }}
+          >
+            <Input
+              value={draftName}
+              onChange={(e) => setDraftName(e.target.value)}
+              maxLength={24}
+              aria-label={t('companion.renameTitle')}
+              autoFocus
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setRenameOpen(false)}
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button type="submit" size="sm" disabled={setPet.isPending}>
+                {t('companion.renameSave')}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -36,6 +36,7 @@ export interface DecryptedEntry extends Entry {
   beliefBefore?: number;
   beliefAfter?: number;
   alternativeThought?: string;
+  emotions?: string[];
 }
 
 async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
@@ -59,6 +60,7 @@ async function decryptEntry(e: Entry): Promise<DecryptedEntry> {
     beliefBefore: payload.beliefBefore,
     beliefAfter: payload.beliefAfter,
     alternativeThought: payload.alternativeThought,
+    emotions: payload.emotions,
   };
 }
 
@@ -98,6 +100,7 @@ export function useCreateEntry(onSuccess?: () => void) {
       beliefBefore?: number;
       beliefAfter?: number;
       alternativeThought?: string;
+      emotions?: string[];
     }) => {
       const id = uuidv7();
       const encryptedData = await encryptEntryPayload(
@@ -109,6 +112,7 @@ export function useCreateEntry(onSuccess?: () => void) {
           beliefBefore: data.beliefBefore,
           beliefAfter: data.beliefAfter,
           alternativeThought: data.alternativeThought,
+          emotions: data.emotions,
         },
         id,
       );
@@ -137,6 +141,7 @@ export function useCreateEntry(onSuccess?: () => void) {
           beliefBefore: data.beliefBefore,
           beliefAfter: data.beliefAfter,
           alternativeThought: data.alternativeThought,
+          emotions: data.emotions ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -171,6 +176,7 @@ export function useCreateEntry(onSuccess?: () => void) {
           beliefBefore: data.beliefBefore,
           beliefAfter: data.beliefAfter,
           alternativeThought: data.alternativeThought,
+          emotions: data.emotions ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -230,6 +236,7 @@ export function useUpdateEntry() {
       beliefBefore,
       beliefAfter,
       alternativeThought,
+      emotions,
     }: {
       id: string;
       value: number;
@@ -239,6 +246,7 @@ export function useUpdateEntry() {
       beliefBefore?: number;
       beliefAfter?: number;
       alternativeThought?: string;
+      emotions?: string[];
     }) => {
       const encryptedData = await encryptEntryPayload(
         {
@@ -249,6 +257,7 @@ export function useUpdateEntry() {
           beliefBefore,
           beliefAfter,
           alternativeThought,
+          emotions,
         },
         id,
       );
@@ -266,6 +275,7 @@ export function useUpdateEntry() {
           beliefBefore,
           beliefAfter,
           alternativeThought,
+          emotions: emotions ?? [],
           createdAt: new Date().toISOString(),
         };
       }
@@ -286,6 +296,7 @@ export function useUpdateEntry() {
           beliefBefore,
           beliefAfter,
           alternativeThought,
+          emotions: emotions ?? [],
           createdAt: new Date().toISOString(),
         };
       }

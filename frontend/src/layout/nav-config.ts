@@ -14,6 +14,7 @@ import {
   BarChart3,
   type LucideIcon,
   FlaskConical,
+  Shuffle,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -79,6 +80,12 @@ export const PRACTICE_ITEMS: NavItem[] = [
     shortLabelKey: 'nav.short.emotionLab',
     path: '/practices/emotion-lab',
     icon: FlaskConical,
+  },
+  {
+    labelKey: 'nav.relaxationWheel',
+    shortLabelKey: 'nav.short.relaxationWheel',
+    path: '/practices/relaxation-wheel',
+    icon: Shuffle,
   },
 ];
 
