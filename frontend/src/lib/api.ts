@@ -308,6 +308,7 @@ const BASE_URL = '/api';
 let accessToken: string | null = null;
 let refreshPromise: Promise<boolean> | null = null;
 let refreshSingleFlight: Promise<RefreshResponse> | null = null;
+let onSessionExpired: (() => void) | null = null;
 
 export function setToken(token: string | null) {
   accessToken = token;
@@ -315,6 +316,14 @@ export function setToken(token: string | null) {
 
 export function getToken(): string | null {
   return accessToken;
+}
+
+// AuthProvider registers a callback here so a refresh that fails mid-session
+// (e.g. the refresh cookie was revoked by a password reset elsewhere) can
+// flip isAuthenticated to false and send the user back to /login, instead of
+// leaving the app silently 401-ing on every request forever.
+export function setOnSessionExpired(cb: (() => void) | null) {
+  onSessionExpired = cb;
 }
 
 // The refresh token itself lives in an httpOnly cookie set by the API and is
@@ -329,6 +338,7 @@ async function attemptRefresh(): Promise<boolean> {
     return true;
   } catch {
     setToken(null);
+    onSessionExpired?.();
     return false;
   }
 }

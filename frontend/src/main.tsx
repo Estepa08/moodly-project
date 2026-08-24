@@ -10,6 +10,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import './index.css';
 import i18n from './i18n/i18n';
 import { getErrorMessage } from './lib/error-messages';
+import { ApiError } from './lib/api-error';
 import { initErrorReporting } from './lib/errorReporter';
 import { initMetrika } from './lib/metrika';
 
@@ -27,7 +28,12 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
-      retry: 1,
+      // Retrying a 429 just adds another request into the same rate-limit
+      // window that already rejected it — pointless, and it's what turned
+      // every throttled request into two in production. Everything else
+      // still gets one retry (transient network blips, cold-start 5xx).
+      retry: (failureCount, error) =>
+        !(error instanceof ApiError && error.statusCode === 429) && failureCount < 1,
       refetchOnWindowFocus: false,
     },
     mutations: {

@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useEntries } from './useEntries';
+import { roundDownToMinute } from '../lib/utils';
 
 const LOW_THRESHOLD = 3;
 const CONSECUTIVE_DAYS = 3;
@@ -29,7 +30,7 @@ export function useLowMoodDetection() {
   const [dismissed, setDismissed] = useState(false);
   const [ready, setReady] = useState(false);
 
-  const now = useMemo(() => new Date(), []);
+  const now = useMemo(() => roundDownToMinute(new Date()), []);
   const from = useMemo(() => {
     const d = new Date(now);
     d.setDate(d.getDate() - LOOKBACK_DAYS);

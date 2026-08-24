@@ -16,6 +16,7 @@ vi.mock('../../lib/api', () => ({
     auth: { refresh: vi.fn().mockRejectedValue(new Error('no session')) },
   },
   setToken: vi.fn(),
+  setOnSessionExpired: vi.fn(),
   getToken: vi.fn(() => null),
 }));
 

@@ -94,18 +94,32 @@ export default function CollapsibleSection({
           />
         </span>
       </button>
+      {/*
+        Collapse via an animated grid track (0fr <-> 1fr) rather than an
+        animated max-height. Animating max-height on an ancestor of the
+        overflow-y-auto list below is a known source of "list looks scrollable
+        but touch-scroll does nothing" bugs on mobile WebKit right after the
+        section opens — the grid-track approach doesn't force an explicit
+        height value on the way to/from 0, so the inner scroll box's layout
+        never gets caught mid-transition.
+      */}
       <div
         id={id}
         className={cn(
-          'transition-[max-height,opacity] duration-200 overflow-hidden',
-          open ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0',
+          'grid transition-[grid-template-rows,opacity] duration-200 ease-out',
+          open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
         )}
       >
-        <div className="px-0.5 pt-2">
-          <div className="relative rounded-xl bg-muted/70 shadow-neumorphic-inset pr-0.5 max-h-[56vh] overflow-y-auto">
-            <div className="flex gap-2.5 p-2 pl-2.5">
-              <span aria-hidden="true" className={cn('w-1 rounded-full shrink-0', railClassName)} />
-              <div className="flex-1 min-w-0">{children}</div>
+        <div className="min-h-0 overflow-hidden">
+          <div className="px-0.5 pt-2">
+            <div className="relative rounded-xl bg-muted/70 shadow-neumorphic-inset pr-0.5 max-h-[56vh] overflow-y-auto">
+              <div className="flex gap-2.5 p-2 pl-2.5">
+                <span
+                  aria-hidden="true"
+                  className={cn('w-1 rounded-full shrink-0', railClassName)}
+                />
+                <div className="flex-1 min-w-0">{children}</div>
+              </div>
             </div>
           </div>
         </div>

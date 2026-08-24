@@ -13,6 +13,7 @@ vi.mock('../../lib/api', () => ({
     },
   },
   setToken: vi.fn(),
+  setOnSessionExpired: vi.fn(),
   getToken: vi.fn(() => null),
 }));
 
