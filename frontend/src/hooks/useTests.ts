@@ -3,6 +3,7 @@ import { api } from '../lib/api';
 import { listLocalTestResults } from '../lib/offline/db';
 import type { components } from '../lib/api-types';
 import { decryptTestResultPayload } from '../lib/crypto/records';
+import { decryptSettled } from '../lib/decryptSettled';
 
 export function useTests() {
   return useQuery({
@@ -59,7 +60,7 @@ export function useTestResults(testId?: string) {
       const raw = navigator.onLine
         ? await api.testResults.list(testId)
         : await listLocalTestResults(testId);
-      return Promise.all((raw as TestResult[]).map(decryptResult));
+      return decryptSettled(raw as TestResult[], decryptResult, 'testResults');
     },
     staleTime: 30_000,
   });
