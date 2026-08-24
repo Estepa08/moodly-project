@@ -13,6 +13,8 @@ const envSchema = z.object({
   VAPID_PUBLIC_KEY: z.string().min(1).optional(),
   VAPID_PRIVATE_KEY: z.string().min(1).optional(),
   VAPID_SUBJECT: z.string().min(1).optional(),
+  RESEND_API_KEY: z.string().min(1).optional(),
+  EMAIL_FROM: z.string().min(1).optional(),
 });
 
 function parseEnv(raw: NodeJS.ProcessEnv): z.infer<typeof envSchema> {
@@ -25,6 +27,14 @@ function parseEnv(raw: NodeJS.ProcessEnv): z.infer<typeof envSchema> {
   }
   if (parsed.data.NODE_ENV === 'production' && !parsed.data.FRONTEND_URL) {
     throw new Error('FRONTEND_URL must be set in production to restrict CORS to known origins');
+  }
+  if (parsed.data.NODE_ENV === 'production' && !parsed.data.RESEND_API_KEY) {
+    throw new Error(
+      'RESEND_API_KEY must be set in production — password reset/welcome emails cannot send without it',
+    );
+  }
+  if (parsed.data.NODE_ENV === 'production' && !parsed.data.EMAIL_FROM) {
+    throw new Error('EMAIL_FROM must be set in production to a verified Resend sender domain');
   }
   return parsed.data;
 }
