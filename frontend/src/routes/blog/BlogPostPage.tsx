@@ -65,6 +65,7 @@ export default function BlogPostPage() {
             url: withCanonical(`/blog/${post.slug}`),
             description: seoDescription,
             date: post.date,
+            updatedAt: post.updatedAt,
             image: 'https://mymoodly.ru/og-blog.jpg',
           }),
         ]
