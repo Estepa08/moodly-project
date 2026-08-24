@@ -801,6 +801,16 @@
     "actionBreathingSub": "2 minutes · no setup",
     "actionRecord": "Check in with yourself"
   },
+  "pwaInstall": {
+    "title": "Install Moodly",
+    "androidDescription": "Add Moodly to your home screen for one-tap access, even offline.",
+    "iosDescription": "Add Moodly to your home screen for one-tap access, even offline.",
+    "iosStepShare": "Tap the Share button in Safari",
+    "iosStepAdd": "Choose \"Add to Home Screen\"",
+    "install": "Install",
+    "notNow": "Not now",
+    "gotIt": "Got it"
+  },
   "dayActivities": {
     "title": "My day",
     "sectionHeading": "What made today special?",
@@ -1234,7 +1244,11 @@
     "streak": "{{count}} day streak",
     "streak_plural": "{{count}} day streak",
     "levelUpTitle": "Level Up!",
-    "levelUpBody": "Your creature grew to level {{level}}!"
+    "levelUpBody": "Your creature grew to level {{level}}!",
+    "streakFreezeUsed": "❄️ A freeze saved your streak",
+    "streakFreezeCount": "Streak freeze tokens: {{count}}",
+    "comebackTitle": "Welcome back!",
+    "comebackBody": "We missed you — here's a little something for coming back."
   },
   "creature": {
     "level": "Lv. {{level}}"

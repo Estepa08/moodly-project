@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/users/{id}/tier": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** @description Вручную выставить тариф пользователя (биллинга нет, только для администратора) */
+        patch: operations["AdminUsers_updateUserTier"];
+        trace?: never;
+    };
     "/auth/forgot-password": {
         parameters: {
             query?: never;
@@ -408,6 +425,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/creature/play": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Играть с компаньоном: −10 энергии, +2 XP, лимит 5 игр в сутки */
+        post: operations["Creature_play"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/creature/reward": {
         parameters: {
             query?: never;
@@ -419,6 +453,40 @@ export interface paths {
         put?: never;
         /** @description Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba) */
         post: operations["Creature_reward"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creature/weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Недельный календарь практик (Пн–Вс): прогресс к цели, статус подарка +25 XP */
+        get: operations["Creature_getWeekly"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/creature/weekly/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Забрать недельный подарок +XP (одноразово на неделю, только при достигнутой цели) */
+        post: operations["Creature_claimWeekly"];
         delete?: never;
         options?: never;
         head?: never;
@@ -729,6 +797,13 @@ export interface components {
             createdAt: string;
             emailVerified: boolean;
             ageConfirmed: boolean;
+            /** @description Тариф: free | premium (выставляется вручную из админ-панели, биллинга нет) */
+            subscriptionTier: string;
+            /**
+             * Format: date-time
+             * @description Дата истечения premium-тарифа, если задана
+             */
+            subscriptionExpiresAt?: string;
             /** Format: int32 */
             entriesCount: number;
             /** Format: int32 */
@@ -737,6 +812,24 @@ export interface components {
             breathingSessionsCount: number;
             /** Format: int32 */
             cbaEntriesCount: number;
+        };
+        /** @description Результат изменения тарифа пользователя */
+        AdminUserTierResult: {
+            id: string;
+            email: string;
+            subscriptionTier: string;
+            /** Format: date-time */
+            subscriptionExpiresAt?: string;
+        };
+        /** @description Тело запроса на изменение тарифа пользователя */
+        AdminUserTierUpdate: {
+            /** @description free | premium */
+            tier?: string;
+            /**
+             * Format: date-time
+             * @description ISO-дата истечения premium или null — снять ограничение по сроку
+             */
+            expiresAt?: string | null;
         };
         AuthResponse: {
             accessToken: string;
@@ -854,6 +947,24 @@ export interface components {
             state: components["schemas"]["CreatureState"];
             /** @description Был ли достигнут новый уровень */
             leveledUp: boolean;
+            /** @description Пропуск дня был покрыт токеном заморозки стрика вместо сброса серии */
+            streakFreezeUsed: boolean;
+            /**
+             * Format: int32
+             * @description Сработавший comeback-тир в днях (7 / 14 / 30), если чек-ин пришёл после долгого перерыва
+             */
+            comebackDays?: number;
+        };
+        /** @description Результат получения недельного подарка */
+        ClaimWeeklyResponse: {
+            claimed: boolean;
+            /**
+             * Format: int32
+             * @description Сколько XP начислено
+             */
+            xpAwarded: number;
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
         };
         /** @description Текущее состояние существа пользователя */
         CreatureState: {
@@ -934,6 +1045,26 @@ export interface components {
              * @description «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
              */
             comfort: number;
+            /**
+             * Format: int32
+             * @description Токены заморозки стрика: пропуск одного дня при count > 0 не сбрасывает серию
+             */
+            streakFreezeCount: number;
+            /**
+             * Format: int32
+             * @description Игр за текущий день (сбрасывается в полночь по серверному времени)
+             */
+            playCount?: number;
+            /**
+             * Format: int32
+             * @description Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
+             */
+            playDailyLimit?: number;
+            /**
+             * Format: int32
+             * @description Сколько игр осталось сегодня
+             */
+            playCountRemaining?: number;
         };
         /** @description Диада — результат смешивания двух эмоций (алхимия Плутчика) */
         DyadInfo: {
@@ -1245,6 +1376,32 @@ export interface components {
             /** @description Новое имя питомца (пустая строка очищает) */
             petName?: string;
         };
+        /** @description Результат игры с компаньоном (тратит энергию, даёт немного XP) */
+        PlayResponse: {
+            state: components["schemas"]["CreatureState"];
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
+            /**
+             * Format: int32
+             * @description Сколько XP начислено за эту игру
+             */
+            xpAwarded: number;
+            /**
+             * Format: int32
+             * @description Игр за текущий день
+             */
+            playCount: number;
+            /**
+             * Format: int32
+             * @description Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
+             */
+            playDailyLimit: number;
+            /**
+             * Format: int32
+             * @description Сколько игр осталось сегодня
+             */
+            playCountRemaining: number;
+        };
         /** @description Запись о выполненной практике и полученном опыте */
         PracticeCompletion: {
             source: string;
@@ -1443,6 +1600,45 @@ export interface components {
         UserUpdate: {
             name?: string;
         };
+        /** @description Один день недельного календаря практик (Пн–Вс) */
+        WeeklyDay: {
+            /** @description Дата дня (YYYY-MM-DD) */
+            date: string;
+            /**
+             * Format: int32
+             * @description Индекс дня недели: 0=Пн … 6=Вс
+             */
+            dayOfWeek: number;
+            /** @description Была ли в этот день засчитана практика/чек-ин */
+            completed: boolean;
+            isToday: boolean;
+            isFuture: boolean;
+        };
+        /** @description Недельный календарь практик: неделя Пн–Вс, цель — N дней, подарок +XP */
+        WeeklyState: {
+            /** @description Дата понедельника текущей недели (YYYY-MM-DD) */
+            weekStart: string;
+            days: components["schemas"]["WeeklyDay"][];
+            /**
+             * Format: int32
+             * @description Сколько уникальных дней недели засчитано
+             */
+            completedCount: number;
+            /**
+             * Format: int32
+             * @description Цель в днях для получения подарка
+             */
+            goal: number;
+            /** @description Цель уже достигнута в этой неделе */
+            goalReached: boolean;
+            /** @description Подарок за эту неделю уже забран */
+            claimed: boolean;
+            /**
+             * Format: int32
+             * @description Сколько XP даёт подарок
+             */
+            xpReward: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -1509,6 +1705,32 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AdminUsers_updateUserTier: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminUserTierUpdate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUserTierResult"];
+                };
             };
         };
     };
@@ -2067,6 +2289,26 @@ export interface operations {
             };
         };
     };
+    Creature_play: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayResponse"];
+                };
+            };
+        };
+    };
     Creature_reward: {
         parameters: {
             query?: never;
@@ -2087,6 +2329,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RewardResponse"];
+                };
+            };
+        };
+    };
+    Creature_getWeekly: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyState"];
+                };
+            };
+        };
+    };
+    Creature_claimWeekly: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimWeeklyResponse"];
                 };
             };
         };

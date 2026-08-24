@@ -87,7 +87,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
                 <span className="hidden sm:inline">{titleLabel}</span>
               </span>
             )}
-            <StreakIndicator streak={creature.streak} />
+            <StreakIndicator streak={creature.streak} freezeCount={creature.streakFreezeCount} />
             <span
               className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm"
               title={t('companion.energy', { value: energy })}

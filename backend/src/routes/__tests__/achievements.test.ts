@@ -98,6 +98,48 @@ describe('Achievements hidden flow', () => {
   });
 });
 
+describe('Achievements streak freeze reward', () => {
+  it('unlocking an achievement with streakFreezeReward grants freeze tokens', async () => {
+    await prisma.achievement.create({
+      data: {
+        key: 'streak_freeze_test',
+        category: 'streak',
+        titleKey: 'achievements.streak7',
+        descKey: 'achievements.streak7Desc',
+        iconName: 'flame',
+        xpReward: 0,
+        streakFreezeReward: 2,
+        criteria: { type: 'streak', value: 3 },
+        sortOrder: 82,
+      },
+    });
+
+    await prisma.creatureState.upsert({
+      where: { userId },
+      create: { userId, level: 1, experience: 0, streak: 3 },
+      update: { streak: 3 },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/achievements/check',
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(
+      res
+        .json()
+        .some(
+          (a: { key: string; streakFreezeReward: number | null }) =>
+            a.key === 'streak_freeze_test' && a.streakFreezeReward === 2,
+        ),
+    ).toBe(true);
+
+    const state = await prisma.creatureState.findUnique({ where: { userId } });
+    expect(state?.streakFreezeCount).toBe(2);
+  });
+});
+
 describe('Achievements new criteria', () => {
   async function seedCreature() {
     await prisma.creatureState.upsert({

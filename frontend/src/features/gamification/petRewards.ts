@@ -1,4 +1,4 @@
-import { isEmpathyMood } from '@moodly/shared';
+import { isEmpathyMood, COMEBACK_TIERS } from '@moodly/shared';
 import type { PetResponse } from '../../lib/api';
 
 // Типы наград-анимаций: каждая механика клика по компаньону имеет уникальную
@@ -26,6 +26,25 @@ export interface PetRewardSignal {
   calmnessGain?: number;
   /** Рост comfort этим кликом (эмпатия) */
   comfortGain?: number;
+  /** Tier 2 (см. docs/gamification-phase1-visuals.svg, ряд 4): при чек-ине
+      после лапса в 7/14/30 дней масштабирует 'welcome' — больше сердечек и
+      тёплое кольцо на 30 дней (glow="warm" передаётся отдельно в PetAvatar). */
+  comebackDays?: 7 | 14 | 30;
+}
+
+// Chek-in после долгого лапса (см. checkIn() → CheckInResponse.comebackDays,
+// COMEBACK_TIERS в @moodly/shared) — переиспользует 'welcome', но с
+// растущей интенсивностью по тиру вместо копии одной и той же анимации.
+export function buildComebackSignal(comebackDays: 7 | 14 | 30): PetRewardSignal {
+  const tier = COMEBACK_TIERS.find((t) => t.days === comebackDays);
+  const xp = tier?.xp ?? 0;
+  return {
+    id: Date.now() + Math.random(),
+    kind: 'welcome',
+    xpText: xp > 0 ? `+${xp} XP` : undefined,
+    comfortGain: tier?.comfortGain,
+    comebackDays,
+  };
 }
 
 // Выбор индекса слова-эмоции без повтора дважды подряд.

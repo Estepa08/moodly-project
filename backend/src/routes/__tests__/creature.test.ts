@@ -793,6 +793,167 @@ describe('Creature check-in — race safety', () => {
   });
 });
 
+describe('Creature check-in — streak freeze', () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  it('POST /creature/check-in — one missed day is covered by a freeze token', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-freeze@example.com',
+      'secret123',
+      'Freeze',
+    );
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: {
+        streak: 5,
+        streakFreezeCount: 1,
+        lastCheckInAt: new Date(Date.now() - 2 * DAY_MS),
+      },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().streakFreezeUsed).toBe(true);
+    expect(res.json().state.streak).toBe(6);
+    expect(res.json().state.streakFreezeCount).toBe(0);
+  });
+
+  it('POST /creature/check-in — one missed day without a token resets the streak', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-nofreeze@example.com',
+      'secret123',
+      'NoFreeze',
+    );
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: {
+        streak: 5,
+        streakFreezeCount: 0,
+        lastCheckInAt: new Date(Date.now() - 2 * DAY_MS),
+      },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().streakFreezeUsed).toBe(false);
+    expect(res.json().state.streak).toBe(1);
+  });
+});
+
+describe('Creature check-in — comeback tiers', () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  it('POST /creature/check-in — a 7-day lapse fires the 7-day comeback tier', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-comeback7@example.com',
+      'secret123',
+      'Comeback7',
+    );
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: { lastCheckInAt: new Date(Date.now() - 8 * DAY_MS) },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().comebackDays).toBe(7);
+    expect(res.json().state.streak).toBe(1);
+  });
+
+  it('POST /creature/check-in — a 30+ day lapse fires the 30-day comeback tier, not 7', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-comeback30@example.com',
+      'secret123',
+      'Comeback30',
+    );
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: { lastCheckInAt: new Date(Date.now() - 31 * DAY_MS) },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().comebackDays).toBe(30);
+  });
+
+  it('POST /creature/check-in — a normal next-day check-in fires no comeback tier', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-nocomeback@example.com',
+      'secret123',
+      'NoComeback',
+    );
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: { lastCheckInAt: new Date(Date.now() - 1 * DAY_MS) },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().comebackDays).toBeUndefined();
+    expect(res.json().state.streak).toBe(2);
+  });
+});
+
 describe('Creature play (A1 — energy revival)', () => {
   it('POST /creature/play — costs 10 energy, awards +2 XP, increments playCount', async () => {
     const user = await registerAndLogin(app, 'creature-play@example.com', 'secret123', 'Player');

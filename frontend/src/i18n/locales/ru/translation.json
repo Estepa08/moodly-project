@@ -808,6 +808,16 @@
     "actionBreathingSub": "2 минуты · без регистрации",
     "actionRecord": "Записать, как сейчас"
   },
+  "pwaInstall": {
+    "title": "Установите Moodly",
+    "androidDescription": "Добавьте Moodly на домашний экран — доступ в один тап, даже офлайн.",
+    "iosDescription": "Добавьте Moodly на домашний экран — доступ в один тап, даже офлайн.",
+    "iosStepShare": "Нажмите кнопку «Поделиться» в Safari",
+    "iosStepAdd": "Выберите «На экран «Домой»»",
+    "install": "Установить",
+    "notNow": "Не сейчас",
+    "gotIt": "Понятно"
+  },
   "dayActivities": {
     "title": "Мой день",
     "sectionHeading": "Чем запомнился день?",
@@ -1241,7 +1251,11 @@
     "streak": "{{count}} день подряд",
     "streak_plural": "{{count}} дней подряд",
     "levelUpTitle": "Новый уровень!",
-    "levelUpBody": "Существо выросло до {{level}} уровня!"
+    "levelUpBody": "Существо выросло до {{level}} уровня!",
+    "streakFreezeUsed": "❄️ Заморозка спасла серию",
+    "streakFreezeCount": "Токенов заморозки стрика: {{count}}",
+    "comebackTitle": "С возвращением!",
+    "comebackBody": "Мы скучали — держи бонус за то, что вернулся(-ась)."
   },
   "creature": {
     "level": "Ур. {{level}}"

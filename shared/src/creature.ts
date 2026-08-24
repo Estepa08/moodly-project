@@ -59,6 +59,29 @@ export const EMPATHY_COMFORT_GAIN = 2;
 // Граница «грустного» настроения: значение записи Mood ≤ порога считается грустью/тревогой.
 export const EMPATHY_MOOD_THRESHOLD = 3;
 
+// ===== Comeback-тиры чек-ина (лапс ≥ N дней с последнего чек-ина) =====
+// Отдельно от «Возвращения» в pet() (WELCOME_PAUSE_HOURS) — тот привязан к
+// паузе в поглаживаниях, этот — к разрыву в ежедневных чек-инах. Тон
+// сообщения — «мы скучали», без счётчика пропущенных дней.
+export interface ComebackTier {
+  days: number;
+  xp: number;
+  comfortGain: number;
+}
+
+export const COMEBACK_TIERS: ComebackTier[] = [
+  { days: 30, xp: 15, comfortGain: 6 },
+  { days: 14, xp: 10, comfortGain: 4 },
+  { days: 7, xp: 5, comfortGain: 2 },
+];
+
+// Ближайший подходящий тир для лапса длиной `gapDays` (или null, если лапс
+// короче самого маленького порога). Тиры отсортированы по убыванию days,
+// поэтому берём первый, для которого лапс достаточно большой.
+export function comebackTierForGap(gapDays: number): ComebackTier | null {
+  return COMEBACK_TIERS.find((tier) => gapDays >= tier.days) ?? null;
+}
+
 export function isMorningWindow(hour: number): boolean {
   return hour >= MORNING_BONUS_START_HOUR && hour < MORNING_BONUS_END_HOUR;
 }

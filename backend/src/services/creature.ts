@@ -35,6 +35,7 @@ import {
   isMorningWindow,
   isEveningWindow,
   computeComboCount,
+  comebackTierForGap,
   PLAY_ENERGY_COST,
   PLAY_XP,
   WEEKLY_GOAL_DAYS,
@@ -468,24 +469,42 @@ export const creatureService = {
 
       const lastCheckIn = state.lastCheckInAt ? new Date(state.lastCheckInAt) : null;
 
+      // Разрыв в днях между прошлым и сегодняшним чек-ином (0, если чек-ина
+      // ещё не было). gapDays=1 — обычное продолжение серии (вчера→сегодня).
+      let gapDays = 0;
       if (lastCheckIn) {
         const lastDate = new Date(lastCheckIn);
         lastDate.setHours(0, 0, 0, 0);
         if (lastDate.getTime() === today.getTime()) {
           throw new AppError('ALREADY_CHECKED_IN', 409, 'Already checked in today');
         }
+        gapDays = Math.round((today.getTime() - lastDate.getTime()) / MS_PER_DAY);
       }
 
       let newStreak = 1;
+      let streakFreezeUsed = false;
+      let nextStreakFreezeCount = state.streakFreezeCount ?? 0;
       if (lastCheckIn) {
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const lastDate = new Date(lastCheckIn);
-        lastDate.setHours(0, 0, 0, 0);
-        newStreak = lastDate.getTime() === yesterday.getTime() ? (state.streak ?? 0) + 1 : 1;
+        if (gapDays === 1) {
+          newStreak = (state.streak ?? 0) + 1;
+        } else if (gapDays === 2 && nextStreakFreezeCount > 0) {
+          // Пропущен ровно один день — токен заморозки сохраняет серию вместо сброса.
+          newStreak = (state.streak ?? 0) + 1;
+          streakFreezeUsed = true;
+          nextStreakFreezeCount -= 1;
+        }
       }
 
-      const { experience, level, leveledUp } = applyLevelUp(state, CHECKIN_EXP);
+      // Comeback-тир — независимо от судьбы streak, по фактическому разрыву
+      // в чек-инах (заморозка выше покрывает только 1 пропущенный день,
+      // поэтому пересечения с 7+ дневными тирами не бывает).
+      const comebackTier = lastCheckIn ? comebackTierForGap(gapDays) : null;
+      const bonusXp = comebackTier?.xp ?? 0;
+      const checkInXp = CHECKIN_EXP + bonusXp;
+      const { experience, level, leveledUp } = applyLevelUp(state, checkInXp);
+      const nextComfort = comebackTier
+        ? Math.min(100, (state.comfort ?? 0) + comebackTier.comfortGain)
+        : state.comfort;
 
       const updated = await tx.creatureState.update({
         where: { userId },
@@ -495,13 +514,20 @@ export const creatureService = {
           level,
           streak: newStreak,
           lastCheckInAt: new Date(),
+          streakFreezeCount: nextStreakFreezeCount,
+          comfort: nextComfort,
         },
       });
       await tx.practiceCompletion.create({
-        data: { userId, source: 'checkin', xpAwarded: CHECKIN_EXP },
+        data: { userId, source: 'checkin', xpAwarded: checkInXp },
       });
 
-      return { updated, leveledUp };
+      return {
+        updated,
+        leveledUp,
+        streakFreezeUsed,
+        comebackDays: comebackTier?.days,
+      };
     });
 
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
@@ -511,6 +537,8 @@ export const creatureService = {
     return {
       state: { ...result.updated, sessionCount },
       leveledUp: result.leveledUp,
+      streakFreezeUsed: result.streakFreezeUsed,
+      comebackDays: result.comebackDays,
     };
   },
 
