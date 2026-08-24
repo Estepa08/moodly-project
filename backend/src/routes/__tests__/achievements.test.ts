@@ -258,4 +258,57 @@ describe('Achievements new criteria', () => {
     });
     await checkAndExpect('stargazer');
   });
+
+  it('unlocks via mood_entries_full_day when one day has morning+day+evening entries', async () => {
+    await seedCreature();
+    await createAch(
+      'mood_full_day_test',
+      { type: 'mood_entries_full_day', value: 1 },
+      'know_thyself',
+    );
+    const base = new Date();
+    base.setHours(0, 0, 0, 0);
+    const morning = new Date(base);
+    morning.setHours(8, 0, 0, 0);
+    const midday = new Date(base);
+    midday.setHours(14, 0, 0, 0);
+    const evening = new Date(base);
+    evening.setHours(20, 0, 0, 0);
+    await prisma.practiceCompletion.createMany({
+      data: [
+        { userId, source: 'moodEntry', xpAwarded: 5, createdAt: morning },
+        { userId, source: 'moodEntry', xpAwarded: 5, createdAt: midday },
+        { userId, source: 'moodEntry', xpAwarded: 5, createdAt: evening },
+      ],
+    });
+    await checkAndExpect('know_thyself');
+  });
+
+  it('does not unlock mood_entries_full_day when entries fall in only two windows', async () => {
+    await seedCreature();
+    await createAch(
+      'mood_full_day_partial_test',
+      { type: 'mood_entries_full_day', value: 1 },
+      'know_thyself',
+    );
+    const base = new Date();
+    base.setHours(0, 0, 0, 0);
+    const morning = new Date(base);
+    morning.setHours(8, 0, 0, 0);
+    const midday = new Date(base);
+    midday.setHours(14, 0, 0, 0);
+    await prisma.practiceCompletion.createMany({
+      data: [
+        { userId, source: 'moodEntry', xpAwarded: 5, createdAt: morning },
+        { userId, source: 'moodEntry', xpAwarded: 5, createdAt: midday },
+      ],
+    });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/achievements/check',
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual([]);
+  });
 });
