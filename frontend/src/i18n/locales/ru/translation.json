@@ -435,6 +435,12 @@
     "mismatch": "Пароли не совпадают",
     "tooShort": "Пароль должен содержать минимум 6 символов",
     "invalidLink": "Недействительная или истёкшая ссылка",
+    "recoveryCode": "Recovery-код (необязательно)",
+    "recoveryPlaceholder": "XXXX-XXX-XXX-XXX-XXXXXXX",
+    "recoveryHint": "Введите recovery-код, чтобы восстановить доступ к прежним записям.",
+    "recoveryRequired": "Введите recovery-код или подтвердите, что согласны на потерю старых данных",
+    "noRecoveryStored": "Для этого аккаунта recovery-код не сохранён",
+    "dataLossWarning": "Я понимаю, что без recovery-кода мои прежние записи не будут расшифрованы",
     "seo": {
       "title": "Новый пароль — Moodly",
       "description": "Задайте новый пароль для входа в дневник настроения Moodly."

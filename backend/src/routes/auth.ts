@@ -172,6 +172,6 @@ export default async function authRoutes(fastify: FastifyInstance) {
     );
     const refreshToken = await authService.createRefreshToken(userId);
     setRefreshCookie(reply, refreshToken);
-    return { accessToken, message: 'Password reset successfully' };
+    return { accessToken, userId, message: 'Password reset successfully' };
   });
 }

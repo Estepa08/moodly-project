@@ -2278,9 +2278,12 @@ components:
       type: object
       required:
         - accessToken
+        - userId
         - message
       properties:
         accessToken:
+          type: string
+        userId:
           type: string
         message:
           type: string

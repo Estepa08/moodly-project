@@ -1498,6 +1498,7 @@ export interface components {
         };
         ResetPasswordResponse: {
             accessToken: string;
+            userId: string;
             message: string;
         };
         /** @description Запрос на награду за практику */

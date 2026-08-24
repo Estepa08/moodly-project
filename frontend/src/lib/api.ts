@@ -35,6 +35,7 @@ export interface AuthResponse {
   keySalt?: string | null;
 }
 type RefreshResponse = components['schemas']['RefreshResponse'];
+type ResetPasswordResponse = components['schemas']['ResetPasswordResponse'];
 type Entry = components['schemas']['Entry'];
 type Parameter = components['schemas']['Parameter'];
 type Test = components['schemas']['Test'];
@@ -403,7 +404,7 @@ export const api = {
         body: JSON.stringify(body),
       }),
     resetPassword: (body: ResetPasswordBody) =>
-      request<AuthResponse>('/auth/reset-password', {
+      request<ResetPasswordResponse>('/auth/reset-password', {
         method: 'POST',
         body: JSON.stringify(body),
       }),
