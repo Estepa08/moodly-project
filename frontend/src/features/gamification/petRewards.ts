@@ -1,4 +1,9 @@
-import { isEmpathyMood, COMEBACK_TIERS } from '@moodly/shared';
+import {
+  isEmpathyMood,
+  COMEBACK_TIERS,
+  ADVENTURE_XP,
+  ADVENTURE_COMFORT_GAIN,
+} from '@moodly/shared';
 import type { PetResponse } from '../../lib/api';
 
 // Типы наград-анимаций: каждая механика клика по компаньону имеет уникальную
@@ -10,7 +15,8 @@ export type PetRewardKind =
   | 'evening' // «Спокойный вечер» (20–23): +1 XP +1 calmness, волны
   | 'combo' // «Комбо» x5: +3 XP, взрыв искр
   | 'welcome' // «Возвращение» (пауза > 4 ч): +2 XP, сердечки
-  | 'empathy'; // «Эмпатия» (грусть/тревога): +1 XP +2 comfort, капли → звёзды
+  | 'empathy' // «Эмпатия» (грусть/тревога): +1 XP +2 comfort, капли → звёзды
+  | 'adventure'; // «Прогулка» — компаньон вернулся с подарком: +8 XP, подарок/компас
 
 export interface PetRewardSignal {
   /** Уникальный id события — по нему рестартует анимация частиц */
@@ -44,6 +50,19 @@ export function buildComebackSignal(comebackDays: 7 | 14 | 30): PetRewardSignal 
     xpText: xp > 0 ? `+${xp} XP` : undefined,
     comfortGain: tier?.comfortGain,
     comebackDays,
+  };
+}
+
+// Возврат с «прогулки» (см. creature.ts claimAdventureReturn →
+// ClaimAdventureResponse) — намеренно НЕ переиспользует 'welcome': другой
+// повод (компаньон гулял и принёс подарок), другой кадр (docs/gamification-
+// phase2-visuals.svg, ряд 1.3).
+export function buildAdventureSignal(): PetRewardSignal {
+  return {
+    id: Date.now() + Math.random(),
+    kind: 'adventure',
+    xpText: `+${ADVENTURE_XP} XP`,
+    comfortGain: ADVENTURE_COMFORT_GAIN,
   };
 }
 

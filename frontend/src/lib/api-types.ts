@@ -339,6 +339,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/creature/adventure/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Забрать награду за «прогулку» компаньона (доступно после adventureReturnAt) */
+        post: operations["Creature_claimAdventure"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/creature/check-in": {
         parameters: {
             query?: never;
@@ -955,6 +972,22 @@ export interface components {
              */
             comebackDays?: number;
         };
+        /** @description Результат получения награды за «прогулку» компаньона */
+        ClaimAdventureResponse: {
+            state: components["schemas"]["CreatureState"];
+            /** @description Был ли достигнут новый уровень */
+            leveledUp: boolean;
+            /**
+             * Format: int32
+             * @description Сколько XP начислено
+             */
+            xpAwarded: number;
+            /**
+             * Format: int32
+             * @description На сколько вырос comfort
+             */
+            comfortGain: number;
+        };
         /** @description Результат получения недельного подарка */
         ClaimWeeklyResponse: {
             claimed: boolean;
@@ -1050,6 +1083,11 @@ export interface components {
              * @description Токены заморозки стрика: пропуск одного дня при count > 0 не сбрасывает серию
              */
             streakFreezeCount: number;
+            /**
+             * Format: date-time
+             * @description Момент, когда компаньон вернётся с «прогулки» (null — прогулки нет)
+             */
+            adventureReturnAt?: string;
             /**
              * Format: int32
              * @description Игр за текущий день (сбрасывается в полночь по серверному времени)
@@ -2151,6 +2189,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CreatureState"];
+                };
+            };
+        };
+    };
+    Creature_claimAdventure: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClaimAdventureResponse"];
                 };
             };
         };

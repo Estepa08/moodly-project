@@ -44,6 +44,9 @@ import {
   dateKey,
   mondayOfWeek,
   weekKey,
+  ADVENTURE_DURATION_HOURS,
+  ADVENTURE_XP,
+  ADVENTURE_COMFORT_GAIN,
 } from '@moodly/shared';
 
 export const creatureService = {
@@ -506,6 +509,15 @@ export const creatureService = {
         ? Math.min(100, (state.comfort ?? 0) + comebackTier.comfortGain)
         : state.comfort;
 
+      // Компаньон уходит «гулять» после чек-ина, если не гуляет уже —
+      // возврат оформляется отдельно через claimAdventureReturn().
+      const adventureData = state.adventureReturnAt
+        ? {}
+        : {
+            adventureReturnAt: new Date(Date.now() + ADVENTURE_DURATION_HOURS * 60 * 60 * 1000),
+            adventureNotified: false,
+          };
+
       const updated = await tx.creatureState.update({
         where: { userId },
         data: {
@@ -516,6 +528,7 @@ export const creatureService = {
           lastCheckInAt: new Date(),
           streakFreezeCount: nextStreakFreezeCount,
           comfort: nextComfort,
+          ...adventureData,
         },
       });
       await tx.practiceCompletion.create({
@@ -539,6 +552,56 @@ export const creatureService = {
       leveledUp: result.leveledUp,
       streakFreezeUsed: result.streakFreezeUsed,
       comebackDays: result.comebackDays,
+    };
+  },
+
+  // Забрать награду за «прогулку» — доступно, когда adventureReturnAt в
+  // прошлом. Награда — отдельный повод от welcome/comeback (см.
+  // PetRewardKind: 'adventure' на фронтенде), не «Возвращение».
+  async claimAdventureReturn(userId: string) {
+    const result = await prisma.$transaction(async (tx) => {
+      await lockUser(tx, userId);
+
+      let state = await tx.creatureState.findUnique({ where: { userId } });
+      if (!state) {
+        state = await tx.creatureState.create({
+          data: { userId, calmness: 50 },
+        });
+      }
+
+      if (!state.adventureReturnAt) {
+        throw new AppError('NO_ACTIVE_ADVENTURE', 409, 'No active adventure');
+      }
+      if (state.adventureReturnAt.getTime() > Date.now()) {
+        throw new AppError('ADVENTURE_NOT_READY', 409, 'Adventure not finished yet');
+      }
+
+      const { experience, level, leveledUp } = applyLevelUp(state, ADVENTURE_XP);
+      const nextComfort = Math.min(100, (state.comfort ?? 0) + ADVENTURE_COMFORT_GAIN);
+
+      const updated = await tx.creatureState.update({
+        where: { userId },
+        data: {
+          experience,
+          level,
+          comfort: nextComfort,
+          adventureReturnAt: null,
+          adventureNotified: false,
+        },
+      });
+
+      return { updated, leveledUp };
+    });
+
+    const sessionCount = await prisma.breathingSession.count({ where: { userId } });
+
+    achievementsService.check(userId).catch(() => {});
+
+    return {
+      state: { ...result.updated, sessionCount },
+      leveledUp: result.leveledUp,
+      xpAwarded: ADVENTURE_XP,
+      comfortGain: ADVENTURE_COMFORT_GAIN,
     };
   },
 

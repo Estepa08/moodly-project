@@ -954,6 +954,136 @@ describe('Creature check-in — comeback tiers', () => {
   });
 });
 
+describe('Creature check-in — companion adventure', () => {
+  it('POST /creature/check-in — starts an adventure when none is active', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-adventure-start@example.com',
+      'secret123',
+      'AdventureStart',
+    );
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().state.adventureReturnAt).toBeTruthy();
+    const returnAt = new Date(res.json().state.adventureReturnAt).getTime();
+    expect(returnAt).toBeGreaterThan(Date.now());
+  });
+
+  it('POST /creature/check-in — does not restart an already-active adventure', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-checkin-adventure-keep@example.com',
+      'secret123',
+      'AdventureKeep',
+    );
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    const firstState = await prisma.creatureState.findUnique({ where: { userId: user.userId } });
+    const firstReturnAt = firstState?.adventureReturnAt?.getTime();
+
+    // Второй чек-ин через сутки не должен пересоздавать adventureReturnAt,
+    // пока прогулка ещё активна.
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: { lastCheckInAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(new Date(res.json().state.adventureReturnAt).getTime()).toBe(firstReturnAt);
+  });
+});
+
+describe('Creature adventure claim', () => {
+  it('POST /creature/adventure/claim — 409 when the adventure has not finished yet', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-adventure-not-ready@example.com',
+      'secret123',
+      'NotReady',
+    );
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/adventure/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(409);
+  });
+
+  it('POST /creature/adventure/claim — 409 when there is no active adventure', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-adventure-none@example.com',
+      'secret123',
+      'NoAdventure',
+    );
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/adventure/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(res.statusCode).toBe(409);
+  });
+
+  it('POST /creature/adventure/claim — awards XP/comfort and clears adventureReturnAt once ready', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-adventure-ready@example.com',
+      'secret123',
+      'Ready',
+    );
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: { adventureReturnAt: new Date(Date.now() - 60 * 1000) },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/adventure/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json().xpAwarded).toBe(8);
+    expect(res.json().comfortGain).toBe(3);
+    expect(res.json().state.adventureReturnAt).toBeFalsy();
+
+    // Повторный клейм без новой прогулки — снова 409.
+    const second = await app.inject({
+      method: 'POST',
+      url: '/creature/adventure/claim',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    expect(second.statusCode).toBe(409);
+  });
+});
+
 describe('Creature play (A1 — energy revival)', () => {
   it('POST /creature/play — costs 10 energy, awards +2 XP, increments playCount', async () => {
     const user = await registerAndLogin(app, 'creature-play@example.com', 'secret123', 'Player');

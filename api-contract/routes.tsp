@@ -214,6 +214,11 @@ interface Creature {
   @route("/weekly/claim")
   @doc("Забрать недельный подарок +XP (одноразово на неделю, только при достигнутой цели)")
   claimWeekly(): ClaimWeeklyResponse;
+
+  @post
+  @route("/adventure/claim")
+  @doc("Забрать награду за «прогулку» компаньона (доступно после adventureReturnAt)")
+  claimAdventure(): ClaimAdventureResponse;
 }
 
 @tag("Cba")

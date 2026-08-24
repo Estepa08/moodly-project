@@ -400,6 +400,8 @@ model CreatureState {
   comfort: int32;
   @doc("Токены заморозки стрика: пропуск одного дня при count > 0 не сбрасывает серию")
   streakFreezeCount: int32;
+  @doc("Момент, когда компаньон вернётся с «прогулки» (null — прогулки нет)")
+  adventureReturnAt?: utcDateTime;
   @doc("Игр за текущий день (сбрасывается в полночь по серверному времени)")
   playCount?: int32;
   @doc("Дневной лимит игр по тарифу пользователя (3 free / 5 premium)")
@@ -534,6 +536,17 @@ model ClaimWeeklyResponse {
   xpAwarded: int32;
   @doc("Был ли достигнут новый уровень")
   leveledUp: boolean;
+}
+
+@doc("Результат получения награды за «прогулку» компаньона")
+model ClaimAdventureResponse {
+  state: CreatureState;
+  @doc("Был ли достигнут новый уровень")
+  leveledUp: boolean;
+  @doc("Сколько XP начислено")
+  xpAwarded: int32;
+  @doc("На сколько вырос comfort")
+  comfortGain: int32;
 }
 
 @doc("Тело обновления питомца")
