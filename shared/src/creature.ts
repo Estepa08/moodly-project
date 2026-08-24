@@ -82,6 +82,14 @@ export function comebackTierForGap(gapDays: number): ComebackTier | null {
   return COMEBACK_TIERS.find((tier) => gapDays >= tier.days) ?? null;
 }
 
+// ===== «Прогулка» компаньона (adventure) =====
+// Стартует автоматически после checkIn(), если нет активной. Награда за
+// возврат — отдельный повод от «Возвращения» (welcome/comeback), поэтому
+// использует свой собственный PetRewardKind на фронтенде.
+export const ADVENTURE_DURATION_HOURS = 5;
+export const ADVENTURE_XP = 8;
+export const ADVENTURE_COMFORT_GAIN = 3;
+
 export function isMorningWindow(hour: number): boolean {
   return hour >= MORNING_BONUS_START_HOUR && hour < MORNING_BONUS_END_HOUR;
 }

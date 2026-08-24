@@ -12,6 +12,8 @@ import {
   HeartHandshake,
   Gem,
   Droplets,
+  Gift,
+  Compass,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PetRewardSignal } from './petRewards';
@@ -28,6 +30,7 @@ const PINK = '#E0509C';
 const BLUE = '#5E8FD8';
 const PURPLE = '#8F5ED8';
 const XP_GREEN = '#22C55E';
+const TEAL = '#0EA5A5';
 const COMBO_COLORS = ['#7B5BF2', '#D63A85', '#F5A623', '#4CC38A', '#5E8FD8', '#8F5ED8'];
 const COMBO_ICONS: Array<typeof Sparkles> = [Sparkles, Star, Heart, Trophy, Sun];
 
@@ -52,6 +55,14 @@ const WELCOME_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
   { icon: Heart, color: '#D63A85' },
   { icon: Gem, color: '#B26AE8' },
 ];
+// «Прогулка»: подарок/компас — тема «принёс находку», не сердечки welcome.
+const ADVENTURE_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
+  { icon: Gift, color: TEAL },
+  { icon: Compass, color: GOLD },
+  { icon: Sparkles, color: PURPLE },
+  { icon: Gift, color: '#0C8A8A' },
+  { icon: Compass, color: '#D98A1A' },
+];
 
 // Фиксированные количества частиц (ровно, без случайных диапазонов — без перебора).
 const PARTICLE_COUNTS = {
@@ -61,6 +72,7 @@ const PARTICLE_COUNTS = {
   welcome: 5, // «Возвращение», сердечки
   eveningWaves: 5, // волны вечера
   empathyDrops: 4, // капли → звёзды
+  adventure: 5, // «Прогулка», подарок/компас
 } as const;
 
 // Tier 2 (docs/gamification-phase1-visuals.svg, ряд 4): интенсивность
@@ -149,6 +161,8 @@ export default function PetRewardParticles({
           true,
           boundaryRadius,
         );
+      case 'adventure':
+        return makeParticles(PARTICLE_COUNTS.adventure, 45, 120, false, boundaryRadius);
       default:
         return [];
     }
@@ -163,13 +177,16 @@ export default function PetRewardParticles({
       {signal.xpText && !reducedMotion && (
         <motion.span
           className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
-          style={{ color: signal.kind === 'welcome' ? PINK : XP_GREEN }}
+          style={{
+            color: signal.kind === 'welcome' ? PINK : signal.kind === 'adventure' ? TEAL : XP_GREEN,
+          }}
           initial={{ y: 0, opacity: 0, scale: 0.7 }}
           animate={{ y: -64, opacity: [0, 1, 1, 0], scale: 1 }}
           transition={{ duration: 1.2, delay: 0.05, ease: 'easeOut' }}
         >
           {signal.xpText}
           {signal.kind === 'welcome' && ' 💖'}
+          {signal.kind === 'adventure' && ' 🎁'}
         </motion.span>
       )}
 
@@ -182,6 +199,19 @@ export default function PetRewardParticles({
           transition={{ duration: 1.4, delay: 0.25, ease: 'easeOut' }}
         >
           {t('companion.petReward.welcome')}
+        </motion.span>
+      )}
+
+      {/* Подзаголовок «Принёс подарок!» */}
+      {signal.kind === 'adventure' && !reducedMotion && (
+        <motion.span
+          className="absolute -translate-x-1/2 -translate-y-1/2 text-xs font-bold whitespace-nowrap"
+          style={{ color: TEAL }}
+          initial={{ y: 8, opacity: 0 }}
+          animate={{ y: -30, opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 1.4, delay: 0.25, ease: 'easeOut' }}
+        >
+          {t('companion.petReward.adventure')}
         </motion.span>
       )}
 
@@ -302,6 +332,32 @@ export default function PetRewardParticles({
               transition={{ duration: 1.6, delay: p.delay, ease: 'easeOut' }}
             >
               <Icon className="w-5 h-5" fill="currentColor" />
+            </motion.span>
+          );
+        })}
+
+      {/* Возврат с прогулки: подарок/компас, радиальный залп — не арка welcome */}
+      {signal.kind === 'adventure' &&
+        !reducedMotion &&
+        particles.map((p, i) => {
+          const { icon: Icon, color } = ADVENTURE_MIX[i % ADVENTURE_MIX.length];
+          const y = fallLimit === undefined ? p.y : Math.min(p.y, fallLimit);
+          return (
+            <motion.span
+              key={`adventure-${p.id}`}
+              className="pet-particle-icon absolute left-0 top-0"
+              style={{ color }}
+              initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+              animate={{
+                x: p.x,
+                y,
+                opacity: [0, 1, 1, 0],
+                scale: [0, 1.15, 0.9, 1, 0],
+                rotate: p.rotate,
+              }}
+              transition={{ duration: 1, delay: p.delay, ease: 'easeOut' }}
+            >
+              <Icon className="w-5 h-5" />
             </motion.span>
           );
         })}

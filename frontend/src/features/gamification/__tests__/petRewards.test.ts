@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   buildRewardSignal,
   buildComebackSignal,
+  buildAdventureSignal,
   computeEmpathy,
   pickPetWordIndex,
   EMPATHY_WINDOW_MS,
@@ -188,6 +189,21 @@ describe('buildComebackSignal', () => {
   it('генерирует уникальный id на каждый вызов', () => {
     const a = buildComebackSignal(14);
     const b = buildComebackSignal(14);
+    expect(a.id).not.toBe(b.id);
+  });
+});
+
+describe('buildAdventureSignal', () => {
+  it('kind adventure, +8 XP, +3 comfort', () => {
+    const signal = buildAdventureSignal();
+    expect(signal.kind).toBe('adventure');
+    expect(signal.xpText).toBe('+8 XP');
+    expect(signal.comfortGain).toBe(3);
+  });
+
+  it('генерирует уникальный id на каждый вызов', () => {
+    const a = buildAdventureSignal();
+    const b = buildAdventureSignal();
     expect(a.id).not.toBe(b.id);
   });
 });

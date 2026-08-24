@@ -1,27 +1,26 @@
-// Логика «отлучки» компаньона на заходе в приложение.
-// Компонент FloatingCompanion показывает placeholder «Отлучился перекусить 🍙»,
-// по тапу питомец возвращается (pop-in + слово) и даёт обычную награду.
+// Логика «прогулки» компаньона (см. docs/gamification-phase2-visuals.svg,
+// ряд 1). Стартует автоматически на бэкенде после check-in
+// (CreatureState.adventureReturnAt) — здесь только чтение серверного
+// состояния и форматирование, без своего рандома/таймера на клиенте.
 
-export const PET_AWAY_KEY = 'moodly.petAwayDate';
+export type AdventurePhase = 'active' | 'ready' | null;
 
-// Шанс отлучки при заходе (не чаще раза в день).
-export const PET_AWAY_CHANCE = 0.25;
-
-export function todayKey(date = new Date()): string {
-  return date.toDateString();
+// 'active' — гуляет, вернётся позже; 'ready' — время пришло, можно забрать
+// награду; null — прогулки нет вовсе (adventureReturnAt пуст).
+export function adventurePhase(
+  adventureReturnAt: string | null | undefined,
+  now = new Date(),
+): AdventurePhase {
+  if (!adventureReturnAt) return null;
+  const returnAt = new Date(adventureReturnAt).getTime();
+  if (Number.isNaN(returnAt)) return null;
+  return returnAt > now.getTime() ? 'active' : 'ready';
 }
 
-// Итоговое решение, показывать ли «отлучку»:
-// - reduced-motion → питомец всегда на месте;
-// - отлучка была сегодня (по localStorage) → вторая за день не показывается;
-// - иначе шанс `chance`.
-export function shouldPetBeAway(
-  lastDate: string | null,
-  reducedMotion: boolean,
-  chance = PET_AWAY_CHANCE,
-  date = new Date(),
-): boolean {
-  if (reducedMotion) return false;
-  if (lastDate === todayKey(date)) return false;
-  return Math.random() < chance;
+// Локальное время возврата в формате «18:40» — для подсказки «вернётся ~HH:MM».
+export function formatReturnTime(adventureReturnAt: string): string {
+  return new Date(adventureReturnAt).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }

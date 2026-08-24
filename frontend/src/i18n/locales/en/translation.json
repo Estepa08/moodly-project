@@ -1712,11 +1712,14 @@
     "energyLowTitle": "Energy is almost out",
     "energyLowHint": "Your companion is tired — petting no longer gives +XP. Restore energy with a practice.",
     "energyRestoreCta": "Restore energy with a practice",
-    "petAwayHint": "Gone for a snack 🍙",
-    "petAwaySub": "Tap to call back",
-    "petAwayAria": "Your companion is away. Tap to call them back",
+    "adventureActiveHint": "Out and about",
+    "adventureActiveSub": "back ~{{time}}",
+    "adventureReadyHint": "Already back!",
+    "adventureReadySub": "Tap to greet them",
+    "adventureReadyAria": "Your companion is back from their walk. Tap to claim the gift",
     "petReward": {
       "welcome": "Welcome back!",
+      "adventure": "Brought you a gift!",
       "combo": "Combo x{{count}}",
       "comboBig": "Combo x{{count}}! 🔥",
       "returnWord": "I'm back!",
@@ -2775,6 +2778,22 @@
     "was": "was:",
     "became": "now:",
     "cta": "Awesome! ✨"
+  },
+  "streakMilestone": {
+    "title_one": "{{count}} day streak",
+    "title_other": "{{count}} day streak",
+    "streakCount_one": "{{count}} day",
+    "streakCount_other": "{{count}} days",
+    "body": {
+      "7": "Your first week — a great start",
+      "30": "30 days — that's a habit now",
+      "100": "The «Calm Keeper» title is yours"
+    },
+    "cta": {
+      "7": "Awesome! ✨",
+      "30": "Incredible! 🎉",
+      "100": "Legend! 🏆"
+    }
   },
   "thoughtBattle": {
     "pageTitle": "Thought Battle",

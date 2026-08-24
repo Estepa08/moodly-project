@@ -68,6 +68,7 @@ const SIGNAL_LIFETIME_MS: Record<PetRewardSignal['kind'], number> = {
   combo: 1600,
   welcome: 1900,
   empathy: 1500,
+  adventure: 1600,
 };
 
 // CSS-классы медленного скрытия внутри контейнера (idle-цикл PetGreeterCard).

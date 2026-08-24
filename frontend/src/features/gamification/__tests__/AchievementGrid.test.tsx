@@ -19,6 +19,7 @@ const base: Achievement = {
   titleReward: null,
   petTypeReward: null,
   xpReward: 10,
+  streakFreezeReward: null,
   sortOrder: 1,
   unlocked: false,
   unlockedAt: null,

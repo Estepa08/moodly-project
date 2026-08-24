@@ -7,6 +7,7 @@ frontend/dev-dist/
 .env.*.local
 .env.test
 .env.test.*
+!.env.test.example
 .env.prod
 .env.prod.ru
 .env.e2e

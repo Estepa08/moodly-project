@@ -135,6 +135,7 @@ export interface CreatureState {
   playCountRemaining?: number;
   weeklyClaimWeek?: string | null;
   streakFreezeCount: number;
+  adventureReturnAt?: string | null;
 }
 
 export interface PetBonus {
@@ -275,6 +276,13 @@ export interface ClaimWeeklyResponse {
   claimed: boolean;
   xpAwarded: number;
   leveledUp: boolean;
+}
+
+export interface ClaimAdventureResponse {
+  state: CreatureState;
+  leveledUp: boolean;
+  xpAwarded: number;
+  comfortGain: number;
 }
 
 export interface Achievement {
@@ -490,6 +498,8 @@ export const api = {
     play: () => request<PlayResponse>('/creature/play', { method: 'POST' }),
     getWeekly: () => request<WeeklyState>('/creature/weekly'),
     claimWeekly: () => request<ClaimWeeklyResponse>('/creature/weekly/claim', { method: 'POST' }),
+    claimAdventure: () =>
+      request<ClaimAdventureResponse>('/creature/adventure/claim', { method: 'POST' }),
   },
   achievements: {
     list: () => request<Achievement[]>('/achievements'),

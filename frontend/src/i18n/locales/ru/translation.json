@@ -1721,11 +1721,14 @@
     "energyLowTitle": "Энергия почти на нуле",
     "energyLowHint": "Компаньон устал — поглаживания больше не дают +XP. Восстанови энергию практикой.",
     "energyRestoreCta": "Восстановить энергию практикой",
-    "petAwayHint": "Отлучился перекусить 🍙",
-    "petAwaySub": "Тапни, чтобы позвать назад",
-    "petAwayAria": "Компаньон отлучился. Тапни, чтобы позвать его назад",
+    "adventureActiveHint": "Гуляет",
+    "adventureActiveSub": "вернётся ~{{time}}",
+    "adventureReadyHint": "Уже здесь!",
+    "adventureReadySub": "Тапни, чтобы позвать",
+    "adventureReadyAria": "Компаньон вернулся с прогулки. Тапни, чтобы забрать подарок",
     "petReward": {
       "welcome": "С возвращением!",
+      "adventure": "Принёс подарок!",
       "combo": "Комбо x{{count}}",
       "comboBig": "Комбо x{{count}}! 🔥",
       "returnWord": "Тут я!",
@@ -2788,6 +2791,26 @@
     "was": "было:",
     "became": "стало:",
     "cta": "Здорово! ✨"
+  },
+  "streakMilestone": {
+    "title_one": "{{count}} день подряд",
+    "title_few": "{{count}} дня подряд",
+    "title_many": "{{count}} дней подряд",
+    "title_other": "{{count}} дней подряд",
+    "streakCount_one": "{{count}} день",
+    "streakCount_few": "{{count}} дня",
+    "streakCount_many": "{{count}} дней",
+    "streakCount_other": "{{count}} дней",
+    "body": {
+      "7": "Первая неделя — отличное начало",
+      "30": "30 дней — это уже привычка",
+      "100": "Титул «Хранитель покоя» уже твой"
+    },
+    "cta": {
+      "7": "Здорово! ✨",
+      "30": "Невероятно! 🎉",
+      "100": "Легенда! 🏆"
+    }
   },
   "thoughtBattle": {
     "pageTitle": "Битва с мыслями",

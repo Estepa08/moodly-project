@@ -335,6 +335,24 @@ export function useClaimWeekly() {
   });
 }
 
+// ===== useClaimAdventure - забрать награду за «прогулку» компаньона =====
+// Частицы/glow на успешный клейм показывает вызывающий компонент
+// (FloatingCompanion) через свой onSuccess — здесь только level-up toast
+// (no-op, если leveledUp=false) и инвалидация запроса.
+export function useClaimAdventure() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => api.creature.claimAdventure(),
+    onSuccess: (data) => {
+      if (data.leveledUp) {
+        celebrateReward('adventure', data);
+      }
+      queryClient.invalidateQueries({ queryKey: ['creature'] });
+    },
+  });
+}
+
 // Остальные хуки остаются прежними
 export function useCompletions(days = 30) {
   return useQuery({

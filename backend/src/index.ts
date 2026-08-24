@@ -26,6 +26,7 @@ import { ensureDefaultParameters } from './services/parameter.js';
 import { setErrorHandler } from './lib/handle-error.js';
 import { env } from './lib/env.js';
 import { reminderScheduler } from './jobs/reminder-scheduler.js';
+import { adventureScheduler } from './jobs/adventure-scheduler.js';
 
 // Fail-fast валидация окружения (NODE_ENV, DATABASE_URL, JWT_SECRET,
 // в проде FRONTEND_URL) до старта HTTP-сервера.
@@ -114,4 +115,5 @@ await fastify.listen({ port, host: '0.0.0.0' });
 // вызывают reminderScheduler.runOnce() напрямую.
 if (env.NODE_ENV === 'production') {
   reminderScheduler.start();
+  adventureScheduler.start();
 }

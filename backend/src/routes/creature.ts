@@ -83,6 +83,14 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
     },
   );
 
+  fastify.post(
+    '/creature/adventure/claim',
+    { preHandler: [fastify.authenticate] },
+    async (request) => {
+      return creatureService.claimAdventureReturn(request.userId);
+    },
+  );
+
   fastify.get<{ Querystring: CompletionsQuery }>(
     '/creature/completions',
     { preHandler: [fastify.authenticate] },
