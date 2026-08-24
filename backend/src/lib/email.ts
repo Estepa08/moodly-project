@@ -1,18 +1,18 @@
 import { Resend } from 'resend';
+import { env } from './env.js';
 
-const resendApiKey = process.env.RESEND_API_KEY;
 let resend: Resend | null = null;
 
-if (resendApiKey) {
-  resend = new Resend(resendApiKey);
+if (env.RESEND_API_KEY) {
+  resend = new Resend(env.RESEND_API_KEY);
 }
 
 function isDev(): boolean {
-  return process.env.NODE_ENV !== 'production';
+  return env.NODE_ENV !== 'production';
 }
 
 function getFromAddress(): string {
-  return process.env.EMAIL_FROM || 'noreply@moodly.app';
+  return env.EMAIL_FROM || 'noreply@moodly.app';
 }
 
 export async function sendEmail({
