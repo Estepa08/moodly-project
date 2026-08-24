@@ -7,6 +7,7 @@ import { enqueue } from '../lib/offline/sync';
 import { deleteLocalEntry, listLocalEntries, saveLocalEntry } from '../lib/offline/db';
 import { uuidv7 } from '@moodly/shared';
 import { reportError } from '../lib/errorReporter';
+import { decryptSettled } from '../lib/decryptSettled';
 import type { components } from '../lib/api-types';
 import {
   decryptEntryPayload,
@@ -73,14 +74,14 @@ export function useEntries(params?: { parameterId?: string; from?: string; to?: 
       if (navigator.onLine) {
         try {
           const raw = await api.entries.list(params);
-          return Promise.all((raw as Entry[]).map(decryptEntry));
+          return decryptSettled(raw as Entry[], decryptEntry, 'entries');
         } catch (err) {
           if (!isNetworkError(err)) throw err;
           // ERR_CONNECTION_REFUSED и т.п. — сервер недоступен, читаем локально.
         }
       }
       const raw = await listLocalEntries(params);
-      return Promise.all((raw as Entry[]).map(decryptEntry));
+      return decryptSettled(raw as Entry[], decryptEntry, 'entries');
     },
     staleTime: 30_000,
   });
