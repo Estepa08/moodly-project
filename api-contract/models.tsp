@@ -124,6 +124,7 @@ model ResetPasswordRequest {
 
 model ResetPasswordResponse {
   accessToken: string;
+  userId: string;
   message: string;
 }
 

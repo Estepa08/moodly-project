@@ -430,6 +430,12 @@
     "mismatch": "Passwords do not match",
     "tooShort": "Password must be at least 6 characters",
     "invalidLink": "Invalid or expired reset link",
+    "recoveryCode": "Recovery code (optional)",
+    "recoveryPlaceholder": "XXXX-XXX-XXX-XXX-XXXXXXX",
+    "recoveryHint": "Enter your recovery code to restore access to your existing entries.",
+    "recoveryRequired": "Enter your recovery code, or confirm you accept losing your old data",
+    "noRecoveryStored": "No recovery code is stored for this account",
+    "dataLossWarning": "I understand that without a recovery code, my existing entries will not be decrypted",
     "seo": {
       "title": "Set a new password — Moodly",
       "description": "Choose a new password for your Moodly mood diary."

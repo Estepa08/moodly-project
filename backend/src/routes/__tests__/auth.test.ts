@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import bcrypt from 'bcryptjs';
 import { buildApp, registerAndLogin } from '../../test/helpers.js';
 import { prisma } from '../../lib/prisma.js';
+import { authService } from '../../services/auth.js';
 import type { FastifyInstance } from 'fastify';
 
 let app: FastifyInstance;
@@ -146,6 +147,34 @@ describe('Auth', () => {
     expect(codes[0]).toBe(200);
     expect(codes[1]).toBe(401);
     expect(codes).not.toContain(500);
+  });
+});
+
+describe('Auth /auth/reset-password', () => {
+  it('returns userId alongside accessToken — the frontend needs it to re-arm the E2E decryption context', async () => {
+    // Regression test: the response used to omit userId, so
+    // setSessionUserId() never got called after a reset and every entry
+    // decrypt failed with "Data key context is not initialized" — the
+    // user's whole history appeared to vanish even with the right password.
+    const email = `reset-userid-${Date.now()}@example.com`;
+    const { userId } = await registerAndLogin(app, email);
+
+    const rawToken = await authService.createResetToken(userId);
+    const res = await app.inject({
+      method: 'POST',
+      url: '/auth/reset-password',
+      payload: {
+        token: rawToken,
+        password: 'newSecret123',
+        wrappedKey: 'bmV3LXdyYXBwZWQta2V5',
+        keySalt: 'bmV3LXNhbHQ=',
+      },
+    });
+
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toHaveProperty('accessToken');
+    expect(body.userId).toBe(userId);
   });
 });
 

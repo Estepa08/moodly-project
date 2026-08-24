@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { api } from '../lib/api';
 import { getErrorMessage } from '../lib/error-messages';
 import { rewrapDataKeyWithRecovery, createFreshDataKey } from '../lib/crypto/auth-keys';
+import { setSessionUserId } from '../lib/crypto/session';
 import { Button } from '../components/ui/button';
 import { PasswordInput } from '../components/ui/password-input';
 import { Input } from '../components/ui/input';
@@ -74,6 +75,11 @@ export default function ResetPasswordPage() {
       }
       const res = await api.auth.resetPassword({ token, password, wrappedKey, keySalt });
       login(res.accessToken);
+      // Without this, every decrypt throws "Data key context is not
+      // initialized" (ctxFor() needs it for the AES-GCM AAD) — the data key
+      // itself gets restored above, but entries/test results silently fail
+      // to decrypt and the app looks like history vanished.
+      setSessionUserId(res.userId);
       navigate('/my-day');
     } catch (err) {
       setError(getErrorMessage(err, t));
