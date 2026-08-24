@@ -22,7 +22,7 @@ import {
   type CorrelationMetric,
 } from '../../lib/activityCorrelation';
 import type { ActivityScore } from '../../lib/activityCorrelation';
-import { cn } from '../../lib/utils';
+import { cn, roundDownToMinute } from '../../lib/utils';
 import type { LucideIcon } from 'lucide-react';
 
 const METRIC_META: Record<CorrelationMetric, { labelKey: string; Icon: LucideIcon }> = {
@@ -38,7 +38,7 @@ export default function ActivityCorrelationCard() {
   const [active, setActive] = useState<CorrelationMetric>('mood');
 
   const dateRange = useMemo(() => {
-    const end = new Date();
+    const end = roundDownToMinute(new Date());
     const start = new Date(end);
     start.setDate(start.getDate() - CORRELATION_WINDOW_DAYS);
     return { from: start.toISOString(), to: end.toISOString() };

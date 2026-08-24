@@ -5,6 +5,7 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT_FREE } from '@moodly/shared';
 import { useCreatureState, usePlay } from '../gamification';
 import { useEntries } from '../../hooks/useEntries';
+import { roundDownToMinute } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { LoadingCard } from '../../components/ui/loading-card';
 import BossHealthBar from './BossHealthBar';
@@ -31,7 +32,7 @@ export default function ThoughtBattleGame() {
   const { data: creature, isLoading: creatureLoading } = useCreatureState();
 
   const since = useMemo(() => {
-    const d = new Date();
+    const d = roundDownToMinute(new Date());
     d.setDate(d.getDate() - JOURNAL_LOOKBACK_DAYS);
     return d.toISOString();
   }, []);

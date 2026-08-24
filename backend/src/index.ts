@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { type FastifyRequest } from 'fastify';
 import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import helmet from '@fastify/helmet';
@@ -52,7 +52,29 @@ await fastify.register(cookie);
 const isProduction = env.NODE_ENV === 'production';
 const readRateLimit = env.RATE_LIMIT_MAX ?? (isProduction ? 100 : 1000);
 const writeRateLimit = env.RATE_LIMIT_WRITE_MAX ?? (isProduction ? 10 : 1000);
-await fastify.register(rateLimit, { max: readRateLimit, timeWindow: '1 minute' });
+
+// Mobile carriers commonly put many unrelated users behind one IP (CGNAT), so
+// a plain per-IP bucket makes them share a single rate-limit budget. Bucket
+// authenticated requests by userId instead — falls back to IP only for
+// anonymous requests (login/register/etc), where there's no token yet.
+function rateLimitKey(request: FastifyRequest): string {
+  const auth = request.headers.authorization;
+  if (auth?.startsWith('Bearer ')) {
+    try {
+      const decoded = fastify.jwt.verify<{ userId: string }>(auth.slice(7));
+      return `user:${decoded.userId}`;
+    } catch {
+      // Expired/invalid token — fall through to IP bucketing below.
+    }
+  }
+  return request.ip;
+}
+
+await fastify.register(rateLimit, {
+  max: readRateLimit,
+  timeWindow: '1 minute',
+  keyGenerator: rateLimitKey,
+});
 
 fastify.addHook('onRoute', (routeOptions) => {
   const method = routeOptions.method;

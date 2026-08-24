@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { setToken, api } from '../lib/api';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
+import { setToken, setOnSessionExpired, api } from '../lib/api';
 import { ONBOARDING_DONE_KEY, HAS_ACCOUNT_KEY } from '../lib/constants';
 import { clearSessionKey } from '../lib/crypto/session';
 
@@ -17,6 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // The access token now lives only in memory (not localStorage), so on a
   // fresh page load we have to re-derive auth state from the httpOnly
@@ -34,6 +37,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       .finally(() => setIsBootstrapping(false));
   }, []);
+
+  // A refresh can also fail mid-session — not just at bootstrap — when the
+  // refresh cookie was revoked elsewhere (e.g. a password reset from another
+  // tab/device). Without this, isAuthenticated stayed stuck at true and every
+  // request kept 401-ing forever with no way back to the login screen.
+  useEffect(() => {
+    setOnSessionExpired(() => {
+      queryClient.clear();
+      setToken(null);
+      setIsAuthenticated(false);
+      clearSessionKey();
+      toast.error(t('errors.sessionExpired'));
+    });
+    return () => setOnSessionExpired(null);
+  }, [queryClient, t]);
 
   const login = useCallback(
     (token: string) => {

@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '../useAuth';
+import { setOnSessionExpired } from '../../lib/api';
 
 vi.mock('../../lib/api', () => ({
   api: {
@@ -12,6 +13,11 @@ vi.mock('../../lib/api', () => ({
     },
   },
   setToken: vi.fn(),
+  setOnSessionExpired: vi.fn(),
+}));
+
+vi.mock('sonner', () => ({
+  toast: { error: vi.fn() },
 }));
 
 function AuthProbe() {
@@ -71,6 +77,36 @@ describe('useAuth', () => {
     await user.click(screen.getByRole('button', { name: 'logout' }));
 
     await waitFor(() => {
+      expect(queryClient.getQueryData(['userMe'])).toBeUndefined();
+    });
+  });
+
+  it('logs the user out when a mid-session refresh fails (e.g. a password reset revoked the cookie elsewhere)', async () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    queryClient.setQueryData(['userMe'], { id: 'demo', role: 'user' });
+
+    function AuthStateProbe() {
+      const { isAuthenticated } = useAuth();
+      return <div data-testid="auth-state">{String(isAuthenticated)}</div>;
+    }
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AuthStateProbe />
+        </AuthProvider>
+      </QueryClientProvider>,
+    );
+
+    // AuthProvider registers the app-wide session-expired handler on mount.
+    const calls = vi.mocked(setOnSessionExpired).mock.calls;
+    const handler = calls[calls.length - 1]?.[0];
+    expect(handler).toBeInstanceOf(Function);
+
+    handler!();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('auth-state').textContent).toBe('false');
       expect(queryClient.getQueryData(['userMe'])).toBeUndefined();
     });
   });

@@ -10,6 +10,16 @@ export const PERIODS = [
   { key: Period.All, labelKey: 'dashboard.allTime', days: Infinity },
 ] as const;
 
+// Rolling-window queries (e.g. "last 30 days") anchor `to` to `new Date()` at
+// render time, so two components mounted a few seconds apart compute
+// millisecond-different timestamps for what's really the same window —
+// react-query hashes params into the cache key, so those never share a cache
+// entry or an in-flight request. Rounding down to the minute makes
+// same-window requests within that minute collapse onto one query key.
+export function roundDownToMinute(date: Date): Date {
+  return new Date(Math.floor(date.getTime() / 60_000) * 60_000);
+}
+
 export function getDateRange(period: Period): { from?: string; to?: string } {
   const p = PERIODS.find((x) => x.key === period);
   if (!p || p.days === Infinity) return {};

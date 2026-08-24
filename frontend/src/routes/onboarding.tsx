@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
@@ -95,17 +95,22 @@ export default function OnboardingPage() {
   const [petName, setPetName] = useState('');
   const [saving, setSaving] = useState(false);
 
-  if (isLoading) {
+  // navigate() during render updates the router while OnboardingPage is
+  // still rendering, which React warns about ("Cannot update a component
+  // while rendering a different component") and can race with concurrent
+  // rendering — do the redirect as an effect instead.
+  useEffect(() => {
+    if (!isLoading && !needsOnboarding) {
+      navigate('/my-day', { replace: true });
+    }
+  }, [isLoading, needsOnboarding, navigate]);
+
+  if (isLoading || !needsOnboarding) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner size={32} />
       </div>
     );
-  }
-
-  if (!needsOnboarding) {
-    navigate('/my-day', { replace: true });
-    return null;
   }
 
   const toggleGoal = (key: string) => {
