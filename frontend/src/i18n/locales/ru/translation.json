@@ -2794,6 +2794,10 @@
     "became": "стало:",
     "cta": "Здорово! ✨"
   },
+  "hiddenAchievement": {
+    "title": "Секретная ачивка открыта!",
+    "cta": "Ух ты! ✨"
+  },
   "streakMilestone": {
     "title_one": "{{count}} день подряд",
     "title_few": "{{count}} дня подряд",
