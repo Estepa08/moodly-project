@@ -1,0 +1,190 @@
+{
+  "../../shared/dist/creature.d.ts": [],
+  "../../shared/dist/emotionAlchemy.d.ts": [],
+  "../../shared/dist/index.d.ts": [
+    "../../shared/dist/creature.d.ts",
+    "../../shared/dist/emotionAlchemy.d.ts",
+    "../../shared/dist/test.d.ts",
+    "../../shared/dist/uuid.d.ts"
+  ],
+  "../../shared/dist/test.d.ts": [],
+  "../../shared/dist/uuid.d.ts": [],
+  "emails/reset-password-email.ts": [],
+  "emails/welcome-email.ts": [],
+  "entitlements.ts": [
+    "../../shared/dist/index.d.ts"
+  ],
+  "index.ts": [
+    "jobs/reminder-scheduler.ts",
+    "lib/cors-origins.ts",
+    "lib/env.ts",
+    "lib/handle-error.ts",
+    "plugins/auth.ts",
+    "routes/achievements.ts",
+    "routes/admin.ts",
+    "routes/auth.ts",
+    "routes/cba.ts",
+    "routes/client-errors.ts",
+    "routes/content.ts",
+    "routes/creature.ts",
+    "routes/emotion-lab.ts",
+    "routes/entries.ts",
+    "routes/feedback.ts",
+    "routes/notifications.ts",
+    "routes/onboarding-stories.ts",
+    "routes/parameters.ts",
+    "routes/sync.ts",
+    "routes/test-results.ts",
+    "routes/tests.ts",
+    "routes/users.ts",
+    "services/parameter.ts"
+  ],
+  "jobs/reminder-scheduler.ts": [
+    "lib/prisma.ts",
+    "services/content.ts",
+    "services/notification.ts"
+  ],
+  "lib/cors-origins.ts": [],
+  "lib/email.ts": [],
+  "lib/env.ts": [],
+  "lib/errors.ts": [],
+  "lib/handle-error.ts": [
+    "lib/errors.ts"
+  ],
+  "lib/prisma.ts": [],
+  "lib/refresh-cookie.ts": [],
+  "lib/user-lock.ts": [],
+  "lib/validation.ts": [],
+  "plugins/auth.ts": [
+    "lib/prisma.ts"
+  ],
+  "routes/achievements.ts": [
+    "services/achievements.ts"
+  ],
+  "routes/admin.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts",
+    "services/feedback.ts"
+  ],
+  "routes/auth.ts": [
+    "emails/reset-password-email.ts",
+    "emails/welcome-email.ts",
+    "lib/email.ts",
+    "lib/errors.ts",
+    "lib/prisma.ts",
+    "lib/refresh-cookie.ts",
+    "lib/validation.ts",
+    "services/auth.ts",
+    "services/user.ts"
+  ],
+  "routes/cba.ts": [
+    "services/cba.ts"
+  ],
+  "routes/client-errors.ts": [],
+  "routes/content.ts": [
+    "lib/errors.ts",
+    "services/content.ts"
+  ],
+  "routes/creature.ts": [
+    "services/creature.ts"
+  ],
+  "routes/emotion-lab.ts": [
+    "../../shared/dist/index.d.ts",
+    "entitlements.ts",
+    "lib/errors.ts",
+    "lib/prisma.ts",
+    "services/emotion-lab.ts"
+  ],
+  "routes/entries.ts": [
+    "lib/errors.ts",
+    "lib/validation.ts",
+    "services/entry.ts"
+  ],
+  "routes/feedback.ts": [
+    "lib/errors.ts",
+    "services/feedback.ts"
+  ],
+  "routes/notifications.ts": [
+    "lib/errors.ts",
+    "services/notification.ts"
+  ],
+  "routes/onboarding-stories.ts": [
+    "services/onboarding.ts"
+  ],
+  "routes/parameters.ts": [
+    "services/parameter.ts"
+  ],
+  "routes/sync.ts": [
+    "services/sync.ts"
+  ],
+  "routes/test-results.ts": [
+    "services/test.ts"
+  ],
+  "routes/tests.ts": [
+    "services/test.ts"
+  ],
+  "routes/users.ts": [
+    "lib/errors.ts",
+    "lib/validation.ts",
+    "services/user.ts"
+  ],
+  "services/achievements.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts",
+    "lib/user-lock.ts"
+  ],
+  "services/auth.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts"
+  ],
+  "services/cba.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts"
+  ],
+  "services/content.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts"
+  ],
+  "services/creature.ts": [
+    "../../shared/dist/index.d.ts",
+    "entitlements.ts",
+    "lib/errors.ts",
+    "lib/prisma.ts",
+    "lib/user-lock.ts",
+    "services/achievements.ts"
+  ],
+  "services/emotion-lab.ts": [
+    "../../shared/dist/index.d.ts"
+  ],
+  "services/entry.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts",
+    "lib/user-lock.ts",
+    "services/creature.ts"
+  ],
+  "services/feedback.ts": [
+    "lib/prisma.ts"
+  ],
+  "services/notification.ts": [
+    "lib/prisma.ts"
+  ],
+  "services/onboarding.ts": [
+    "lib/prisma.ts"
+  ],
+  "services/parameter.ts": [
+    "lib/prisma.ts"
+  ],
+  "services/sync.ts": [
+    "../../shared/dist/index.d.ts",
+    "lib/errors.ts",
+    "lib/prisma.ts"
+  ],
+  "services/test.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts"
+  ],
+  "services/user.ts": [
+    "lib/errors.ts",
+    "lib/prisma.ts"
+  ]
+}

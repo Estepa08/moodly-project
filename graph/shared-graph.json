@@ -1,0 +1,15 @@
+{
+  "creature.ts": [],
+  "emotion-alchemy-data.json": [],
+  "emotionAlchemy.ts": [
+    "emotion-alchemy-data.json"
+  ],
+  "index.ts": [
+    "creature.ts",
+    "emotionAlchemy.ts",
+    "test.ts",
+    "uuid.ts"
+  ],
+  "test.ts": [],
+  "uuid.ts": []
+}

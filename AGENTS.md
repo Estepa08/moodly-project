@@ -23,6 +23,27 @@
 - Не создавать новых постоянных веток. Временные фиче-ветки удалять после мержа в `main`.
 - Не форсить-пушить в защищённые ветки; при расхождении контента выравнивать через PR.
 
+## Навигация по коду через графы
+
+Чтобы не читать/грепать `backend/src` и `frontend/src` целиком на каждый запрос, в репозитории есть лёгкий слой навигации:
+
+- `graph/backend-graph.json`, `graph/frontend-graph.json`, `graph/shared-graph.json` — графы зависимостей (кто что импортирует), генерируются через `make graph` (использует `madge`). Коммитятся в репозиторий.
+- `scripts/graph-query.mjs` — CLI без зависимостей для запросов по графу: `dependents` (кто импортирует файл) и `imports` (что импортирует файл сам).
+- `api-contract/*.tsp` — источник истины по API-контракту (TypeSpec).
+- `backend/prisma/schema.prisma` — источник истины по схеме БД.
+
+Правила для агента:
+
+1. **Вопрос «что зависит от X» / «что импортирует X»** → сначала вызвать `graph-query.mjs` (напрямую или через `make graph-query Q=<имя> MODE=<dependents|imports> PKG=<backend|frontend|shared>`), а не grep/glob по всему дереву.
+   ```
+   node scripts/graph-query.mjs graph/backend-graph.json creature dependents
+   node scripts/graph-query.mjs graph/backend-graph.json creature imports
+   ```
+2. **Вопрос по API** (эндпоинты, схемы запросов/ответов) → читать `api-contract/*.tsp`, не перебирать файлы в `backend/src/routes`.
+3. **Вопрос по схеме БД** (модели, связи, поля) → читать `backend/prisma/schema.prisma` целиком, не искать по коду.
+4. **Полное сканирование `src` через поиск по всему дереву запрещено как первый шаг.** Допустимо только если граф и точечный запрос через `graph-query.mjs` не дали ответа (например, файл ещё не закоммичен или граф устарел) — и в этом случае агент обязан явно обосновать в ответе, почему потребовалось полное сканирование.
+5. Если менялись файлы в `backend/src` или `frontend/src`, а `graph/*.json` не пересоздавались — перед завершением задачи выполнить `make graph`, чтобы граф не устаревал (это также проверяется предупреждением в `.husky/pre-push`).
+
 ## Стек
 
 - Backend: Fastify + TypeScript (Node 22), Prisma ORM

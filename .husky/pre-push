@@ -10,3 +10,12 @@ echo "pre-push: проверка форматирования backend (prettier 
 
 echo "pre-push: проверка форматирования frontend (prettier --check)..."
 (cd "$root/frontend" && npx prettier --check .) || exit 1
+
+echo "pre-push: проверка актуальности graph/*.json..."
+if git rev-parse HEAD~1 >/dev/null 2>&1; then
+  changed_src=$(git diff --name-only HEAD~1 HEAD -- 'backend/src' 'frontend/src')
+  changed_graph=$(git diff --name-only HEAD~1 HEAD -- 'graph/*-graph.json')
+  if [ -n "$changed_src" ] && [ -z "$changed_graph" ]; then
+    echo "⚠️ graph/*.json может быть устаревшим, запусти make graph"
+  fi
+fi

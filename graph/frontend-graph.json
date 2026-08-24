@@ -1,0 +1,1331 @@
+{
+  "../../shared/dist/creature.d.ts": [],
+  "../../shared/dist/emotionAlchemy.d.ts": [],
+  "../../shared/dist/index.d.ts": [
+    "../../shared/dist/creature.d.ts",
+    "../../shared/dist/emotionAlchemy.d.ts",
+    "../../shared/dist/test.d.ts",
+    "../../shared/dist/uuid.d.ts"
+  ],
+  "../../shared/dist/test.d.ts": [],
+  "../../shared/dist/uuid.d.ts": [],
+  "App.tsx": [
+    "components/Layout.tsx",
+    "components/OnboardingGate.tsx",
+    "components/ui/spinner.tsx",
+    "hooks/useAuth.tsx",
+    "hooks/useCurrentUser.ts",
+    "lib/constants.ts",
+    "lib/crypto/session.ts",
+    "lib/metrika.ts",
+    "lib/offline/SyncCoordinator.tsx",
+    "routes/admin-panel.tsx",
+    "routes/blog/BlogCategoryPage.tsx",
+    "routes/blog/BlogPage.tsx",
+    "routes/blog/BlogPostPage.tsx",
+    "routes/breathing.tsx",
+    "routes/content.tsx",
+    "routes/cost-benefit-analysis.tsx",
+    "routes/distortions.tsx",
+    "routes/emotion-lab.tsx",
+    "routes/forgot-password.tsx",
+    "routes/gratitude-journal.tsx",
+    "routes/landing.tsx",
+    "routes/login.tsx",
+    "routes/my-day.tsx",
+    "routes/not-found.tsx",
+    "routes/onboarding.tsx",
+    "routes/practices.tsx",
+    "routes/privacy.tsx",
+    "routes/progress.tsx",
+    "routes/register.tsx",
+    "routes/relaxation-wheel.tsx",
+    "routes/reset-password.tsx",
+    "routes/seo/anxiety-self-help.tsx",
+    "routes/seo/anxiety-test.tsx",
+    "routes/seo/mood-diary.tsx",
+    "routes/seo/sleep-hygiene-guide.tsx",
+    "routes/seo/thinking-habits-test.tsx",
+    "routes/settings.tsx",
+    "routes/sleep-hygiene.tsx",
+    "routes/statistics.tsx",
+    "routes/terms.tsx",
+    "routes/test-detail.tsx",
+    "routes/tests.tsx",
+    "routes/thought-battle.tsx",
+    "routes/thought-journal.tsx"
+  ],
+  "assets/lottie/breathing-creature.json": [],
+  "components/ErrorBoundary.tsx": [
+    "components/ErrorBoundaryFallback.tsx",
+    "lib/errorReporter.ts"
+  ],
+  "components/ErrorBoundaryFallback.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "components/Layout.tsx": [
+    "components/SyncStatusIndicator.tsx",
+    "components/ui/breadcrumbs.tsx",
+    "components/ui/button.tsx",
+    "features/gamification/FloatingCompanion.tsx",
+    "hooks/useAuth.tsx",
+    "hooks/useIdleLogout.ts",
+    "hooks/usePushNotifications.ts",
+    "hooks/useReducedMotion.ts",
+    "layout/BottomNav.tsx",
+    "layout/LayoutModals.tsx",
+    "layout/Sidebar.tsx",
+    "lib/seo.ts",
+    "widgets/SkipLink.tsx"
+  ],
+  "components/OnboardingGate.tsx": [
+    "components/ui/spinner.tsx",
+    "hooks/useOnboarding.ts"
+  ],
+  "components/Reveal.tsx": [
+    "hooks/useReveal.ts",
+    "lib/utils.ts"
+  ],
+  "components/SyncStatusIndicator.tsx": [
+    "hooks/useReducedMotion.ts",
+    "lib/offline/useSync.ts",
+    "lib/utils.ts"
+  ],
+  "components/ui/PeriodSelect.tsx": [
+    "components/ui/select.tsx",
+    "lib/constants.ts",
+    "lib/utils.ts"
+  ],
+  "components/ui/PeriodSelector.tsx": [
+    "components/ui/segment-control.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/breadcrumbs.tsx": [
+    "layout/nav-config.ts"
+  ],
+  "components/ui/bullet-stat.tsx": [],
+  "components/ui/button.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/card.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/checklist-item.tsx": [
+    "lib/constants.ts",
+    "lib/utils.ts"
+  ],
+  "components/ui/chip.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/collapsible-section.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/dialog.tsx": [
+    "components/ui/icon-button.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/empty-state.tsx": [
+    "components/ui/button.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/icon-button.tsx": [
+    "components/ui/button.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/input.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/label.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/loading-card.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/spinner.tsx",
+    "lib/utils.ts"
+  ],
+  "components/ui/modal-shell.tsx": [
+    "components/ui/dialog.tsx",
+    "lib/constants.ts",
+    "lib/utils.ts"
+  ],
+  "components/ui/password-input.tsx": [
+    "components/ui/icon-button.tsx",
+    "components/ui/input.tsx"
+  ],
+  "components/ui/progress-bar.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/segment-button.tsx": [
+    "components/ui/segment-control.tsx"
+  ],
+  "components/ui/segment-control.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/select.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/slider.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/spinner.tsx": [],
+  "components/ui/sticky-bottom-bar.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/textarea.tsx": [
+    "lib/utils.ts"
+  ],
+  "components/ui/toggle-switch.tsx": [
+    "lib/utils.ts"
+  ],
+  "features/analytics/ActivityCorrelationCard.tsx": [
+    "components/ui/card.tsx",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/activityCorrelation.ts",
+    "lib/dayActivities.ts",
+    "lib/utils.ts"
+  ],
+  "features/analytics/ParameterTrendsChart.tsx": [
+    "components/ui/PeriodSelect.tsx",
+    "components/ui/card.tsx",
+    "components/ui/chip.tsx",
+    "components/ui/loading-card.tsx",
+    "lib/chart.tsx",
+    "lib/constants.ts"
+  ],
+  "features/analytics/RadarChart.tsx": [
+    "lib/distortionsQuiz.ts",
+    "lib/utils.ts"
+  ],
+  "features/analytics/WeeklyAveragesGrid.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/loading-card.tsx",
+    "lib/constants.ts"
+  ],
+  "features/analytics/index.ts": [
+    "features/analytics/ParameterTrendsChart.tsx",
+    "features/analytics/RadarChart.tsx",
+    "features/analytics/WeeklyAveragesGrid.tsx",
+    "lib/chart.tsx"
+  ],
+  "features/auth/AuthDisclaimer.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "features/auth/AuthHeader.tsx": [],
+  "features/auth/AuthPage.tsx": [
+    "components/ui/card.tsx",
+    "lib/utils.ts"
+  ],
+  "features/auth/index.ts": [
+    "features/auth/AuthDisclaimer.tsx",
+    "features/auth/AuthHeader.tsx",
+    "features/auth/AuthPage.tsx"
+  ],
+  "features/breathing/BreathingCreature.tsx": [
+    "assets/lottie/breathing-creature.json",
+    "features/breathing/breathing.enums.ts",
+    "features/gamification/index.ts",
+    "features/gamification/pets.ts",
+    "features/gamification/usePetAnimation.ts",
+    "hooks/useReducedMotion.ts"
+  ],
+  "features/breathing/BreathingGuide.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/segment-button.tsx",
+    "features/breathing/breathing.enums.ts",
+    "hooks/useReducedMotion.ts"
+  ],
+  "features/breathing/breathing.enums.ts": [],
+  "features/breathing/index.ts": [
+    "features/breathing/BreathingCreature.tsx",
+    "features/breathing/BreathingGuide.tsx",
+    "features/breathing/breathing.enums.ts"
+  ],
+  "features/check-in/DayActivitiesCard.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/modal-shell.tsx",
+    "features/check-in/DayActivitiesSection.tsx",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/constants.ts",
+    "lib/dayActivities.ts"
+  ],
+  "features/check-in/DayActivitiesSection.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/input.tsx",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/activityHistory.ts",
+    "lib/constants.ts",
+    "lib/crypto/records.ts",
+    "lib/dayActivities.ts",
+    "lib/myActivities.ts"
+  ],
+  "features/check-in/PetCheckInDialog.tsx": [
+    "components/ui/dialog.tsx",
+    "features/emotion-lab/EmotionTagPicker.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/index.ts",
+    "features/gamification/petRewards.ts",
+    "features/gamification/pets.ts",
+    "hooks/useDayPhase.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/api.ts",
+    "lib/constants.ts",
+    "lib/ratingLevels.ts",
+    "lib/utils.ts"
+  ],
+  "features/check-in/SleepHygieneChecklist.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/checklist-item.tsx",
+    "components/ui/empty-state.tsx",
+    "lib/api-types.ts",
+    "lib/app-types.ts",
+    "lib/constants.ts",
+    "lib/sleepHygiene.ts",
+    "lib/utils.ts"
+  ],
+  "features/check-in/index.ts": [
+    "features/check-in/SleepHygieneChecklist.tsx"
+  ],
+  "features/content/ContentMessagesManager.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/input.tsx",
+    "lib/api.ts",
+    "lib/utils.ts"
+  ],
+  "features/cost-benefit-analysis/CbaEntryForm.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/icon-button.tsx",
+    "components/ui/input.tsx",
+    "components/ui/select.tsx",
+    "components/ui/textarea.tsx",
+    "features/cost-benefit-analysis/CbaWeightSlider.tsx",
+    "features/cost-benefit-analysis/SuggestCombobox.tsx",
+    "features/cost-benefit-analysis/cba.types.ts",
+    "features/cost-benefit-analysis/useCba.ts"
+  ],
+  "features/cost-benefit-analysis/CbaHistory.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/icon-button.tsx",
+    "components/ui/progress-bar.tsx",
+    "features/cost-benefit-analysis/cba.types.ts",
+    "features/cost-benefit-analysis/useCba.ts"
+  ],
+  "features/cost-benefit-analysis/CbaLibrary.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/chip.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/icon-button.tsx",
+    "components/ui/progress-bar.tsx",
+    "features/cost-benefit-analysis/cba.types.ts",
+    "lib/utils.ts"
+  ],
+  "features/cost-benefit-analysis/CbaWeightSlider.tsx": [
+    "components/ui/progress-bar.tsx",
+    "components/ui/slider.tsx"
+  ],
+  "features/cost-benefit-analysis/SuggestCombobox.tsx": [
+    "lib/utils.ts"
+  ],
+  "features/cost-benefit-analysis/cba.types.ts": [
+    "lib/api-types.ts"
+  ],
+  "features/cost-benefit-analysis/index.ts": [
+    "features/cost-benefit-analysis/CbaEntryForm.tsx",
+    "features/cost-benefit-analysis/CbaHistory.tsx",
+    "features/cost-benefit-analysis/CbaLibrary.tsx",
+    "features/cost-benefit-analysis/CbaWeightSlider.tsx",
+    "features/cost-benefit-analysis/cba.types.ts",
+    "features/cost-benefit-analysis/useCba.ts"
+  ],
+  "features/cost-benefit-analysis/useCba.ts": [
+    "lib/api-types.ts",
+    "lib/api.ts",
+    "lib/errorReporter.ts"
+  ],
+  "features/dialogs/LowMoodAlert.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/modal-shell.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/index.ts",
+    "features/gamification/pets.ts"
+  ],
+  "features/dialogs/index.ts": [
+    "features/dialogs/LowMoodAlert.tsx"
+  ],
+  "features/emotion-lab/EmotionJournal.tsx": [
+    "components/ui/card.tsx",
+    "features/emotion-lab/emotionLab.ts",
+    "features/emotion-lab/emotionLibrary.ts",
+    "features/emotion-lab/useEmotionLab.ts",
+    "lib/utils.ts"
+  ],
+  "features/emotion-lab/EmotionLabScreen.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/progress-bar.tsx",
+    "components/ui/spinner.tsx",
+    "features/emotion-lab/EmotionJournal.tsx",
+    "features/emotion-lab/EmotionLimit.tsx",
+    "features/emotion-lab/EmotionResult.tsx",
+    "features/emotion-lab/EmotionWheel.tsx",
+    "features/emotion-lab/useEmotionLab.ts",
+    "features/gamification/index.ts",
+    "lib/utils.ts"
+  ],
+  "features/emotion-lab/EmotionLimit.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx"
+  ],
+  "features/emotion-lab/EmotionResult.tsx": [
+    "features/emotion-lab/emotionLab.ts",
+    "features/emotion-lab/emotionLibrary.ts",
+    "features/emotion-lab/useEmotionLab.ts",
+    "lib/utils.ts"
+  ],
+  "features/emotion-lab/EmotionTagPicker.tsx": [
+    "../../shared/dist/index.d.ts",
+    "features/emotion-lab/emotionLab.ts",
+    "features/emotion-lab/emotionLibrary.ts",
+    "features/emotion-lab/useEmotionLab.ts",
+    "lib/utils.ts"
+  ],
+  "features/emotion-lab/EmotionWheel.tsx": [
+    "features/emotion-lab/emotionLibrary.ts",
+    "lib/emotion-meta.ts",
+    "lib/utils.ts"
+  ],
+  "features/emotion-lab/emotionLab.ts": [
+    "../../shared/dist/index.d.ts"
+  ],
+  "features/emotion-lab/emotionLibrary.ts": [],
+  "features/emotion-lab/index.ts": [
+    "features/emotion-lab/EmotionLabScreen.tsx",
+    "features/emotion-lab/EmotionTagPicker.tsx",
+    "features/emotion-lab/emotionLab.ts",
+    "features/emotion-lab/useEmotionLab.ts"
+  ],
+  "features/emotion-lab/useEmotionLab.ts": [
+    "lib/api-types.ts",
+    "lib/api.ts",
+    "lib/errorReporter.ts"
+  ],
+  "features/gamification/AchievementGrid.tsx": [
+    "features/gamification/ClaimBurst.tsx",
+    "features/gamification/TitleSelector.tsx",
+    "features/gamification/useCreature.ts",
+    "lib/api.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/ActivityHeatmap.tsx": [
+    "features/gamification/useCreature.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/ClaimBurst.tsx": [],
+  "features/gamification/CreatureStatsBlock.tsx": [
+    "components/ui/bullet-stat.tsx",
+    "lib/api.ts",
+    "lib/constants.ts"
+  ],
+  "features/gamification/CreatureStatus.tsx": [
+    "components/ui/progress-bar.tsx",
+    "lib/utils.ts"
+  ],
+  "features/gamification/DailyMissions.tsx": [
+    "components/ui/loading-card.tsx",
+    "features/gamification/ClaimBurst.tsx",
+    "features/gamification/useCreature.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/EvolutionMoment.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/modal-shell.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/pets.ts",
+    "features/gamification/useCreature.ts",
+    "hooks/useReducedMotion.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/FloatingCompanion.tsx": [
+    "../../shared/dist/index.d.ts",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/companionVisibility.ts",
+    "features/gamification/petAway.ts",
+    "features/gamification/pets.ts",
+    "features/gamification/useCreature.ts",
+    "features/gamification/usePetReward.ts",
+    "hooks/useReducedMotion.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/PetAvatar.tsx": [
+    "features/gamification/PetRewardParticles.tsx",
+    "features/gamification/petRewards.ts",
+    "features/gamification/pets.ts",
+    "features/gamification/usePetAnimation.ts",
+    "hooks/useReducedMotion.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/PetCollection.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/input.tsx",
+    "features/gamification/pets.ts",
+    "features/gamification/useCreature.ts",
+    "features/gamification/usePetAnimation.ts",
+    "hooks/useReducedMotion.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/PetGreeterCard.tsx": [
+    "../../shared/dist/index.d.ts",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/PlayButton.tsx",
+    "features/gamification/TitleSelector.tsx",
+    "features/gamification/pets.ts",
+    "features/gamification/useCreature.ts",
+    "features/gamification/usePetReward.ts",
+    "hooks/useDayPhase.ts",
+    "hooks/useMediaQuery.ts",
+    "hooks/useMessageOfDay.ts",
+    "hooks/useReducedMotion.ts",
+    "lib/constants.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/PetRewardParticles.tsx": [
+    "features/gamification/petRewards.ts"
+  ],
+  "features/gamification/PetSpeechBubble.tsx": [
+    "features/gamification/celebration.tsx",
+    "hooks/useReducedMotion.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/PlayButton.tsx": [
+    "../../shared/dist/index.d.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/PracticeProgress.tsx": [
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/loading-card.tsx",
+    "features/gamification/practice.enums.ts",
+    "features/gamification/useCreature.ts"
+  ],
+  "features/gamification/ProgressHero.tsx": [
+    "../../shared/dist/index.d.ts",
+    "components/ui/progress-bar.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/TitleSelector.tsx",
+    "features/gamification/index.ts",
+    "features/gamification/pets.ts",
+    "features/gamification/useCreature.ts",
+    "features/gamification/usePetReward.ts",
+    "lib/api.ts",
+    "lib/constants.ts"
+  ],
+  "features/gamification/ProgressPage.tsx": [
+    "components/ui/collapsible-section.tsx",
+    "features/gamification/AchievementGrid.tsx",
+    "features/gamification/ActivityHeatmap.tsx",
+    "features/gamification/CreatureStatsBlock.tsx",
+    "features/gamification/DailyMissions.tsx",
+    "features/gamification/PetCollection.tsx",
+    "features/gamification/ProgressHero.tsx",
+    "features/gamification/TitleSelector.tsx",
+    "features/gamification/WeeklyCalendar.tsx",
+    "features/gamification/index.ts",
+    "lib/api.ts"
+  ],
+  "features/gamification/RewardMoment.tsx": [
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/pets.ts",
+    "features/gamification/useCreature.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/StreakIndicator.tsx": [
+    "lib/utils.ts"
+  ],
+  "features/gamification/TitleSelector.tsx": [
+    "lib/utils.ts"
+  ],
+  "features/gamification/WeeklyCalendar.tsx": [
+    "components/ui/loading-card.tsx",
+    "features/gamification/useCreature.ts",
+    "lib/utils.ts"
+  ],
+  "features/gamification/celebration.tsx": [
+    "features/gamification/RewardMoment.tsx",
+    "i18n/i18n.ts"
+  ],
+  "features/gamification/companionVisibility.ts": [],
+  "features/gamification/index.ts": [
+    "features/gamification/CreatureStatus.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/PetSpeechBubble.tsx",
+    "features/gamification/PracticeProgress.tsx",
+    "features/gamification/RewardMoment.tsx",
+    "features/gamification/StreakIndicator.tsx",
+    "features/gamification/celebration.tsx",
+    "features/gamification/practice.enums.ts",
+    "features/gamification/useCreature.ts"
+  ],
+  "features/gamification/petAway.ts": [],
+  "features/gamification/petRewards.ts": [
+    "../../shared/dist/index.d.ts",
+    "lib/api.ts"
+  ],
+  "features/gamification/pets.ts": [],
+  "features/gamification/practice.enums.ts": [],
+  "features/gamification/speechBubbleVisibility.ts": [],
+  "features/gamification/useCreature.ts": [
+    "../../shared/dist/index.d.ts",
+    "features/gamification/celebration.tsx",
+    "features/gamification/petRewards.ts",
+    "features/gamification/practice.enums.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "i18n/i18n.ts",
+    "lib/api.ts",
+    "lib/constants.ts",
+    "lib/offline/db.ts",
+    "lib/offline/sync.ts"
+  ],
+  "features/gamification/usePetAnimation.ts": [
+    "features/gamification/pets.ts"
+  ],
+  "features/gamification/usePetReward.ts": [
+    "../../shared/dist/index.d.ts",
+    "features/gamification/PetAvatar.tsx",
+    "features/gamification/petRewards.ts",
+    "features/gamification/useCreature.ts",
+    "lib/api.ts"
+  ],
+  "features/journal/GratitudeJournal.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/chip.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/textarea.tsx",
+    "features/gamification/index.ts",
+    "features/gamification/pets.ts",
+    "lib/api-types.ts",
+    "lib/app-types.ts",
+    "lib/gratitudePrompts.ts",
+    "lib/utils.ts"
+  ],
+  "features/journal/ThoughtRelease.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/textarea.tsx",
+    "hooks/useReducedMotion.ts",
+    "lib/app-types.ts",
+    "lib/distortionKeywordHints.ts",
+    "lib/utils.ts"
+  ],
+  "features/journal/index.ts": [
+    "features/journal/GratitudeJournal.tsx",
+    "features/journal/ThoughtRelease.tsx"
+  ],
+  "features/mood-entry/DistortionQuiz.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/app-types.ts",
+    "lib/distortionsQuiz.ts",
+    "lib/utils.ts"
+  ],
+  "features/mood-entry/DistortionTagsSelector.tsx": [
+    "lib/distortionKeywordHints.ts",
+    "lib/distortionsQuiz.ts",
+    "lib/utils.ts"
+  ],
+  "features/mood-entry/QuickEntryIcons.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "features/emotion-lab/EmotionTagPicker.tsx",
+    "features/mood-entry/DistortionTagsSelector.tsx",
+    "features/mood-entry/RatingScaleSelector.tsx",
+    "lib/api-types.ts",
+    "lib/app-types.ts",
+    "lib/constants.ts",
+    "lib/distortionsQuiz.ts",
+    "lib/errorReporter.ts",
+    "lib/quickEntryIcons.tsx",
+    "lib/ratingLevels.ts"
+  ],
+  "features/mood-entry/RatingScaleSelector.tsx": [
+    "lib/ratingLevels.ts",
+    "lib/utils.ts"
+  ],
+  "features/mood-entry/index.ts": [
+    "features/mood-entry/DistortionQuiz.tsx",
+    "features/mood-entry/DistortionTagsSelector.tsx",
+    "features/mood-entry/QuickEntryIcons.tsx",
+    "features/mood-entry/RatingScaleSelector.tsx"
+  ],
+  "features/relaxation-wheel/RelaxationWheelSvg.tsx": [
+    "features/relaxation-wheel/wheelMath.ts"
+  ],
+  "features/relaxation-wheel/wheelMath.ts": [],
+  "features/reminders/RemindersCard.tsx": [
+    "components/ui/toggle-switch.tsx",
+    "hooks/useOnboarding.ts",
+    "hooks/usePushNotifications.ts",
+    "lib/api.ts",
+    "lib/utils.ts"
+  ],
+  "features/review/ReviewForm.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/spinner.tsx",
+    "components/ui/textarea.tsx",
+    "lib/api.ts",
+    "lib/utils.ts"
+  ],
+  "features/thought-battle/BossHealthBar.tsx": [],
+  "features/thought-battle/StepDistortion.tsx": [
+    "lib/distortionsQuiz.ts",
+    "lib/utils.ts"
+  ],
+  "features/thought-battle/StepEvidence.tsx": [
+    "lib/utils.ts"
+  ],
+  "features/thought-battle/StepReframe.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/textarea.tsx",
+    "lib/utils.ts"
+  ],
+  "features/thought-battle/StepWeigh.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/slider.tsx",
+    "lib/utils.ts"
+  ],
+  "features/thought-battle/ThoughtBattleGame.tsx": [
+    "../../shared/dist/index.d.ts",
+    "components/ui/button.tsx",
+    "components/ui/loading-card.tsx",
+    "features/gamification/index.ts",
+    "features/thought-battle/BossHealthBar.tsx",
+    "features/thought-battle/StepDistortion.tsx",
+    "features/thought-battle/StepEvidence.tsx",
+    "features/thought-battle/StepReframe.tsx",
+    "features/thought-battle/StepWeigh.tsx",
+    "features/thought-battle/thoughtBattleContent.ts",
+    "hooks/useEntries.ts",
+    "lib/distortionsQuiz.ts"
+  ],
+  "features/thought-battle/thoughtBattleContent.ts": [
+    "hooks/useEntries.ts",
+    "lib/distortionsQuiz.ts"
+  ],
+  "hooks/useAdminFeedback.ts": [
+    "lib/api.ts"
+  ],
+  "hooks/useAuth.tsx": [
+    "lib/api.ts",
+    "lib/constants.ts",
+    "lib/crypto/session.ts"
+  ],
+  "hooks/useCurrentUser.ts": [
+    "lib/api.ts"
+  ],
+  "hooks/useDashboardData.ts": [
+    "features/gamification/index.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/constants.ts",
+    "lib/utils.ts"
+  ],
+  "hooks/useDayPhase.ts": [],
+  "hooks/useEntries.ts": [
+    "../../shared/dist/index.d.ts",
+    "lib/api-error.ts",
+    "lib/api-types.ts",
+    "lib/api.ts",
+    "lib/crypto/records.ts",
+    "lib/distortionsQuiz.ts",
+    "lib/errorReporter.ts",
+    "lib/offline/db.ts",
+    "lib/offline/sync.ts"
+  ],
+  "hooks/useEvolutionMoment.ts": [
+    "../../shared/dist/index.d.ts",
+    "features/gamification/useCreature.ts"
+  ],
+  "hooks/useIdleLogout.ts": [],
+  "hooks/useIsMobile.ts": [],
+  "hooks/useLoginForm.ts": [
+    "hooks/useAuth.tsx",
+    "lib/api.ts",
+    "lib/crypto/auth-keys.ts",
+    "lib/crypto/keys.ts",
+    "lib/crypto/session.ts",
+    "lib/error-messages.ts"
+  ],
+  "hooks/useLowMoodDetection.ts": [
+    "hooks/useEntries.ts"
+  ],
+  "hooks/useMediaQuery.ts": [],
+  "hooks/useMessageOfDay.ts": [
+    "hooks/useDayPhase.ts",
+    "lib/api.ts"
+  ],
+  "hooks/useNavHighlights.ts": [
+    "features/gamification/useCreature.ts",
+    "hooks/useStalePractices.ts",
+    "hooks/useTests.ts",
+    "lib/constants.ts"
+  ],
+  "hooks/useOnboarding.ts": [
+    "hooks/usePushNotifications.ts",
+    "lib/api.ts",
+    "lib/constants.ts"
+  ],
+  "hooks/useParameters.ts": [
+    "lib/api.ts"
+  ],
+  "hooks/usePushNotifications.ts": [
+    "lib/api.ts",
+    "lib/vapid.ts"
+  ],
+  "hooks/useReducedMotion.ts": [],
+  "hooks/useRegisterForm.ts": [
+    "hooks/useAuth.tsx",
+    "lib/api.ts",
+    "lib/crypto/auth-keys.ts",
+    "lib/crypto/keys.ts",
+    "lib/crypto/session.ts",
+    "lib/error-messages.ts"
+  ],
+  "hooks/useReveal.ts": [],
+  "hooks/useSleepHygieneEntry.ts": [
+    "features/gamification/index.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts"
+  ],
+  "hooks/useStalePractices.ts": [
+    "features/gamification/practice.enums.ts",
+    "features/gamification/useCreature.ts"
+  ],
+  "hooks/useTestFlow.ts": [
+    "../../shared/dist/index.d.ts",
+    "hooks/useTests.ts",
+    "lib/api-types.ts",
+    "lib/crypto/records.ts",
+    "lib/offline/sync.ts"
+  ],
+  "hooks/useTestResultText.ts": [],
+  "hooks/useTests.ts": [
+    "lib/api-types.ts",
+    "lib/api.ts",
+    "lib/crypto/records.ts",
+    "lib/offline/db.ts"
+  ],
+  "i18n/i18n.ts": [
+    "i18n/locales/en/translation.json",
+    "i18n/locales/ru/translation.json"
+  ],
+  "i18n/locales/en/translation.json": [],
+  "i18n/locales/ru/translation.json": [],
+  "index.css": [],
+  "layout/BottomNav.tsx": [
+    "hooks/useNavHighlights.ts",
+    "layout/nav-config.ts",
+    "lib/utils.ts"
+  ],
+  "layout/LayoutModals.tsx": [
+    "features/dialogs/index.ts",
+    "features/gamification/EvolutionMoment.tsx",
+    "hooks/useEvolutionMoment.ts",
+    "hooks/useLowMoodDetection.ts"
+  ],
+  "layout/Sidebar.tsx": [
+    "features/gamification/practice.enums.ts",
+    "hooks/useCurrentUser.ts",
+    "hooks/useNavHighlights.ts",
+    "hooks/useStalePractices.ts",
+    "layout/nav-config.ts"
+  ],
+  "layout/nav-config.ts": [],
+  "lib/activityCorrelation.ts": [
+    "hooks/useEntries.ts",
+    "lib/crypto/records.ts"
+  ],
+  "lib/activityHistory.ts": [
+    "lib/crypto/records.ts"
+  ],
+  "lib/api-error.ts": [],
+  "lib/api-types.ts": [],
+  "lib/api.ts": [
+    "lib/api-error.ts",
+    "lib/api-types.ts"
+  ],
+  "lib/app-types.ts": [
+    "lib/api-types.ts"
+  ],
+  "lib/chart-tooltip.tsx": [
+    "lib/utils.ts"
+  ],
+  "lib/chart.tsx": [
+    "components/ui/PeriodSelector.tsx",
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "lib/chart-tooltip.tsx",
+    "lib/utils.ts"
+  ],
+  "lib/constants.ts": [],
+  "lib/crypto/auth-keys.ts": [
+    "lib/crypto/kdf.ts",
+    "lib/crypto/keys.ts",
+    "lib/crypto/session.ts"
+  ],
+  "lib/crypto/codec.ts": [
+    "lib/crypto/kdf.ts"
+  ],
+  "lib/crypto/kdf.ts": [],
+  "lib/crypto/keys.ts": [
+    "lib/crypto/kdf.ts"
+  ],
+  "lib/crypto/records.ts": [
+    "../../shared/dist/index.d.ts",
+    "lib/crypto/codec.ts",
+    "lib/crypto/session.ts",
+    "lib/distortionsQuiz.ts"
+  ],
+  "lib/crypto/session.ts": [
+    "lib/crypto/keys.ts"
+  ],
+  "lib/dayActivities.ts": [],
+  "lib/distortionKeywordHints.ts": [
+    "lib/distortionsQuiz.ts"
+  ],
+  "lib/distortionStats.ts": [
+    "hooks/useEntries.ts",
+    "lib/distortionsQuiz.ts"
+  ],
+  "lib/distortionsQuiz.ts": [],
+  "lib/emotion-meta.ts": [],
+  "lib/error-messages.ts": [
+    "lib/api-error.ts"
+  ],
+  "lib/errorReporter.ts": [],
+  "lib/gratitudePrompts.ts": [],
+  "lib/metrika.ts": [],
+  "lib/myActivities.ts": [],
+  "lib/offline/SyncCoordinator.tsx": [
+    "lib/offline/useSync.ts"
+  ],
+  "lib/offline/db.ts": [
+    "lib/api-types.ts"
+  ],
+  "lib/offline/sync.ts": [
+    "../../shared/dist/index.d.ts",
+    "lib/api.ts",
+    "lib/offline/db.ts",
+    "lib/offline/syncStatus.ts"
+  ],
+  "lib/offline/syncStatus.ts": [],
+  "lib/offline/useSync.ts": [
+    "lib/offline/db.ts",
+    "lib/offline/sync.ts",
+    "lib/offline/syncStatus.ts"
+  ],
+  "lib/quickEntryIcons.tsx": [],
+  "lib/radarDelta.ts": [
+    "lib/distortionsQuiz.ts"
+  ],
+  "lib/ratingLevels.ts": [
+    "lib/constants.ts"
+  ],
+  "lib/reframeLibrary.ts": [
+    "hooks/useEntries.ts",
+    "lib/distortionsQuiz.ts"
+  ],
+  "lib/relaxationWheel.ts": [],
+  "lib/relaxationWheelItems.ts": [],
+  "lib/relaxationWheels.ts": [
+    "lib/relaxationWheel.ts"
+  ],
+  "lib/seo.ts": [],
+  "lib/sleepHygiene.ts": [],
+  "lib/utils.ts": [
+    "lib/constants.ts"
+  ],
+  "lib/vapid.ts": [],
+  "main.tsx": [
+    "App.tsx",
+    "components/ErrorBoundary.tsx",
+    "hooks/useAuth.tsx",
+    "i18n/i18n.ts",
+    "index.css",
+    "lib/error-messages.ts",
+    "lib/errorReporter.ts",
+    "lib/metrika.ts"
+  ],
+  "routes/admin-panel.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/input.tsx",
+    "components/ui/spinner.tsx",
+    "components/ui/toggle-switch.tsx",
+    "features/content/ContentMessagesManager.tsx",
+    "hooks/useAdminFeedback.ts",
+    "hooks/useCurrentUser.ts",
+    "lib/api.ts",
+    "lib/utils.ts"
+  ],
+  "routes/blog/BlogCategoryPage.tsx": [
+    "components/Reveal.tsx",
+    "lib/seo.ts",
+    "routes/blog/PostCard.tsx",
+    "routes/blog/posts.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/blog/BlogPage.tsx": [
+    "components/Reveal.tsx",
+    "lib/seo.ts",
+    "routes/blog/PostCard.tsx",
+    "routes/blog/posts.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/blog/BlogPostPage.tsx": [
+    "components/Reveal.tsx",
+    "lib/seo.ts",
+    "routes/blog/PostCard.tsx",
+    "routes/blog/posts.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/blog/PostCard.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/card.tsx",
+    "routes/blog/posts.ts"
+  ],
+  "routes/blog/posts.ts": [],
+  "routes/breathing.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/segment-button.tsx",
+    "components/ui/spinner.tsx",
+    "features/breathing/BreathingCreature.tsx",
+    "features/breathing/index.ts",
+    "features/gamification/index.ts"
+  ],
+  "routes/content.tsx": [
+    "components/ui/empty-state.tsx",
+    "features/content/ContentMessagesManager.tsx",
+    "hooks/useCurrentUser.ts"
+  ],
+  "routes/cost-benefit-analysis.tsx": [
+    "components/ui/segment-control.tsx",
+    "components/ui/spinner.tsx",
+    "features/cost-benefit-analysis/index.ts",
+    "features/gamification/index.ts"
+  ],
+  "routes/distortions.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/segment-control.tsx",
+    "features/gamification/index.ts",
+    "features/journal/index.ts",
+    "features/mood-entry/index.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/distortionsQuiz.ts"
+  ],
+  "routes/emotion-lab.tsx": [
+    "features/emotion-lab/index.ts"
+  ],
+  "routes/forgot-password.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "hooks/useIsMobile.ts",
+    "lib/api.ts",
+    "lib/error-messages.ts",
+    "lib/seo.ts"
+  ],
+  "routes/gratitude-journal.tsx": [
+    "features/gamification/index.ts",
+    "features/journal/index.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/utils.ts"
+  ],
+  "routes/landing.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "features/gamification/PetAvatar.tsx",
+    "hooks/useLoginForm.ts",
+    "lib/dayActivities.ts",
+    "lib/seo.ts",
+    "lib/utils.ts",
+    "routes/blog/PostCard.tsx",
+    "routes/blog/posts.ts"
+  ],
+  "routes/login.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/password-input.tsx",
+    "features/auth/index.ts",
+    "hooks/useIsMobile.ts",
+    "hooks/useLoginForm.ts",
+    "lib/seo.ts"
+  ],
+  "routes/my-day.tsx": [
+    "components/ui/modal-shell.tsx",
+    "features/analytics/ActivityCorrelationCard.tsx",
+    "features/check-in/DayActivitiesCard.tsx",
+    "features/check-in/DayActivitiesSection.tsx",
+    "features/check-in/PetCheckInDialog.tsx",
+    "features/check-in/SleepHygieneChecklist.tsx",
+    "features/gamification/PetGreeterCard.tsx",
+    "hooks/useDayPhase.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "hooks/useSleepHygieneEntry.ts",
+    "lib/constants.ts"
+  ],
+  "routes/not-found.tsx": [
+    "components/ui/button.tsx",
+    "lib/seo.ts"
+  ],
+  "routes/onboarding.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/spinner.tsx",
+    "components/ui/toggle-switch.tsx",
+    "features/gamification/index.ts",
+    "features/gamification/pets.ts",
+    "hooks/useOnboarding.ts",
+    "lib/constants.ts",
+    "lib/utils.ts",
+    "widgets/index.ts"
+  ],
+  "routes/practices.tsx": [
+    "components/ui/card.tsx",
+    "features/gamification/practice.enums.ts",
+    "hooks/useStalePractices.ts",
+    "hooks/useTests.ts",
+    "lib/api.ts"
+  ],
+  "routes/privacy.tsx": [
+    "components/ui/button.tsx",
+    "lib/seo.ts"
+  ],
+  "routes/progress.tsx": [
+    "features/gamification/ProgressPage.tsx"
+  ],
+  "routes/register.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/password-input.tsx",
+    "features/auth/index.ts",
+    "hooks/useIsMobile.ts",
+    "hooks/useRegisterForm.ts",
+    "lib/seo.ts"
+  ],
+  "routes/relaxation-wheel.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "features/gamification/index.ts",
+    "features/gamification/practice.enums.ts",
+    "features/relaxation-wheel/RelaxationWheelSvg.tsx",
+    "features/relaxation-wheel/wheelMath.ts",
+    "hooks/useReducedMotion.ts",
+    "lib/relaxationWheel.ts",
+    "lib/relaxationWheelItems.ts",
+    "lib/relaxationWheels.ts"
+  ],
+  "routes/reset-password.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/input.tsx",
+    "components/ui/label.tsx",
+    "components/ui/password-input.tsx",
+    "hooks/useAuth.tsx",
+    "lib/api.ts",
+    "lib/crypto/auth-keys.ts",
+    "lib/error-messages.ts",
+    "lib/seo.ts"
+  ],
+  "routes/seo/anxiety-self-help.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/seo.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/seo/anxiety-test.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/seo.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/seo/mood-diary.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/seo.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/seo/seo-components.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/seo.ts",
+    "lib/utils.ts"
+  ],
+  "routes/seo/sleep-hygiene-guide.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/seo.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/seo/thinking-habits-test.tsx": [
+    "components/Reveal.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "lib/seo.ts",
+    "routes/seo/seo-components.tsx"
+  ],
+  "routes/settings.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/toggle-switch.tsx",
+    "features/gamification/companionVisibility.ts",
+    "features/gamification/speechBubbleVisibility.ts",
+    "features/reminders/RemindersCard.tsx",
+    "features/review/ReviewForm.tsx",
+    "hooks/useAuth.tsx",
+    "lib/api.ts",
+    "lib/utils.ts"
+  ],
+  "routes/sleep-hygiene.tsx": [
+    "features/check-in/index.ts",
+    "hooks/useSleepHygieneEntry.ts"
+  ],
+  "routes/statistics.tsx": [
+    "features/analytics/index.ts",
+    "features/mood-entry/index.ts",
+    "hooks/useDashboardData.ts",
+    "hooks/useEntries.ts",
+    "hooks/useTests.ts",
+    "lib/constants.ts",
+    "lib/utils.ts",
+    "widgets/TestsResultsSection.tsx",
+    "widgets/ThinkingPatternsCard.tsx",
+    "widgets/index.ts"
+  ],
+  "routes/terms.tsx": [
+    "components/ui/button.tsx",
+    "lib/seo.ts"
+  ],
+  "routes/test-detail.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/chip.tsx",
+    "components/ui/dialog.tsx",
+    "components/ui/spinner.tsx",
+    "components/ui/sticky-bottom-bar.tsx",
+    "features/analytics/index.ts",
+    "features/gamification/index.ts",
+    "features/gamification/pets.ts",
+    "hooks/useTestFlow.ts",
+    "hooks/useTestResultText.ts",
+    "lib/utils.ts"
+  ],
+  "routes/tests.tsx": [
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/spinner.tsx",
+    "hooks/useTests.ts"
+  ],
+  "routes/thought-battle.tsx": [
+    "features/thought-battle/ThoughtBattleGame.tsx"
+  ],
+  "routes/thought-journal.tsx": [
+    "../../shared/dist/index.d.ts",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/icon-button.tsx",
+    "components/ui/loading-card.tsx",
+    "components/ui/slider.tsx",
+    "components/ui/textarea.tsx",
+    "features/gamification/index.ts",
+    "features/mood-entry/index.ts",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/constants.ts",
+    "lib/distortionKeywordHints.ts",
+    "lib/distortionsQuiz.ts",
+    "lib/ratingLevels.ts",
+    "lib/reframeLibrary.ts"
+  ],
+  "widgets/DistortionStatsCard.tsx": [
+    "components/ui/PeriodSelect.tsx",
+    "components/ui/card.tsx",
+    "components/ui/spinner.tsx",
+    "hooks/useEntries.ts",
+    "hooks/useParameters.ts",
+    "lib/constants.ts",
+    "lib/distortionStats.ts",
+    "lib/utils.ts"
+  ],
+  "widgets/FirstTimeHint.tsx": [
+    "components/ui/button.tsx"
+  ],
+  "widgets/MedicalDisclaimer.tsx": [
+    "lib/utils.ts"
+  ],
+  "widgets/SkipLink.tsx": [],
+  "widgets/TestsResultsSection.tsx": [
+    "components/ui/PeriodSelect.tsx",
+    "components/ui/button.tsx",
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/loading-card.tsx",
+    "hooks/useTestResultText.ts",
+    "hooks/useTests.ts",
+    "lib/constants.ts",
+    "lib/utils.ts"
+  ],
+  "widgets/ThinkingPatternsCard.tsx": [
+    "components/ui/PeriodSelect.tsx",
+    "components/ui/card.tsx",
+    "components/ui/empty-state.tsx",
+    "components/ui/spinner.tsx",
+    "features/analytics/index.ts",
+    "lib/api-types.ts",
+    "lib/constants.ts",
+    "lib/radarDelta.ts"
+  ],
+  "widgets/WellbeingCard.tsx": [
+    "components/ui/card.tsx"
+  ],
+  "widgets/index.ts": [
+    "widgets/DistortionStatsCard.tsx",
+    "widgets/FirstTimeHint.tsx",
+    "widgets/MedicalDisclaimer.tsx",
+    "widgets/SkipLink.tsx",
+    "widgets/TestsResultsSection.tsx",
+    "widgets/WellbeingCard.tsx"
+  ]
+}

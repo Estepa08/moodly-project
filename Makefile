@@ -6,6 +6,7 @@
 .PHONY: db-create-user db-prod-create-user
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
 .PHONY: start-feature
+.PHONY: graph graph-query
 
 # ─── Install ────────────────────────────────────────────
 
@@ -193,6 +194,23 @@ db-restore:
 
 start-feature:
 	bash .opencode/scripts/start-feature.sh $(filter-out $@,$(MAKECMDGOALS))
+
+# ─── Граф зависимостей кода ────────────────────────────
+# Генерирует graph/*.json (кто что импортирует внутри backend/src,
+# frontend/src, shared/src) — используется агентами вместо grep/glob
+# по всему дереву. См. AGENTS.md, раздел «Навигация по коду через графы».
+
+graph:
+	@mkdir -p graph
+	npx madge --json backend/src/index.ts --ts-config backend/tsconfig.json > graph/backend-graph.json
+	npx madge --json frontend/src/main.tsx --ts-config frontend/tsconfig.json > graph/frontend-graph.json
+	npx madge --json shared/src/index.ts --ts-config shared/tsconfig.json > graph/shared-graph.json
+	@echo "✅ graph/backend-graph.json, graph/frontend-graph.json, graph/shared-graph.json обновлены"
+
+# Пример: make graph-query Q=creatureService MODE=dependents PKG=backend
+graph-query:
+	@test -n "$(Q)" || (echo "Usage: make graph-query Q=<имя> MODE=<dependents|imports> PKG=<backend|frontend|shared>"; exit 1)
+	@node scripts/graph-query.mjs graph/$(or $(PKG),backend)-graph.json "$(Q)" $(or $(MODE),dependents)
 
 # ─── Utils ──────────────────────────────────────────────
 
