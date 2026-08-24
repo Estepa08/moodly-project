@@ -126,10 +126,12 @@ export default async function authRoutes(fastify: FastifyInstance) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (user) {
       const token = await authService.createResetToken(user.id);
-      await sendEmail({
+      void sendEmail({
         to: user.email,
         subject: 'Password Reset',
         html: resetPasswordEmailHtml({ token }),
+      }).catch((err: unknown) => {
+        request.log.error({ err }, 'password reset email failed');
       });
     }
     return { message: 'If this email is registered, a reset link has been sent.' };
