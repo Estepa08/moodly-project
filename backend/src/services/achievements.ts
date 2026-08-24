@@ -240,6 +240,36 @@ interface ExtraMetrics {
   thoughtJournalCycleCount: number;
   testCount: number;
   nightCount: number;
+  fullDayMoodEntries: boolean;
+}
+
+// Daylio-style «паттерн, не только постоянство»: был ли хоть один день, где
+// настроение отмечено во всех трёх окнах суток. Только по createdAt —
+// значение записи (value) на сервере недоступно (E2E-шифрование, см.
+// CreatureState.petMood в schema.prisma), поэтому критерий не может
+// опираться на разнообразие самих значений настроения, только на паттерн
+// времени отметок.
+type DayWindow = 'morning' | 'day' | 'evening';
+
+function dayWindow(hour: number): DayWindow {
+  if (hour < 12) return 'morning';
+  if (hour < 18) return 'day';
+  return 'evening';
+}
+
+function hasFullDayMoodEntries(completions: { source: string; createdAt: Date }[]): boolean {
+  const windowsByDay = new Map<string, Set<DayWindow>>();
+  for (const c of completions) {
+    if (c.source !== 'moodEntry') continue;
+    const dayKey = c.createdAt.toISOString().slice(0, 10);
+    const windows = windowsByDay.get(dayKey) ?? new Set<DayWindow>();
+    windows.add(dayWindow(c.createdAt.getHours()));
+    windowsByDay.set(dayKey, windows);
+  }
+  for (const windows of windowsByDay.values()) {
+    if (windows.size === 3) return true;
+  }
+  return false;
 }
 
 async function collectExtraMetrics(
@@ -266,6 +296,7 @@ async function collectExtraMetrics(
     thoughtJournalCycleCount: sourceCounts['thoughtJournalCycle'] ?? 0,
     testCount,
     nightCount,
+    fullDayMoodEntries: hasFullDayMoodEntries(completions),
   };
 }
 
@@ -301,6 +332,8 @@ function calculateProgress(
       return (uniquePractices?.size ?? 0) >= 6 ? 100 : 0;
     case 'mood_entries':
       return percentOf(extra?.moodEntryCount ?? 0, value);
+    case 'mood_entries_full_day':
+      return extra?.fullDayMoodEntries ? 100 : 0;
     case 'gratitude_count':
       return percentOf(extra?.gratitudeCount ?? 0, value);
     case 'thought_journal_count':

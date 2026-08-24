@@ -1516,6 +1516,8 @@
     "completions1000Desc": "Complete 1000 practices",
     "moodKeeper": "Mirror of the Soul",
     "moodKeeperDesc": "Log your mood 365 times",
+    "moodFullDay": "Checked in all day",
+    "moodFullDayDesc": "Log your mood in the morning, afternoon, and evening on the same day",
     "sunbeam": "Ray of Light",
     "sunbeamDesc": "Complete 30 gratitude practices",
     "soulScribe": "Quill of Fate",
@@ -2793,7 +2795,11 @@
       "7": "Awesome! ✨",
       "30": "Incredible! 🎉",
       "100": "Legend! 🏆"
-    }
+    },
+    "share": "Share",
+    "shareCopied": "Text copied ✓",
+    "shareText_one": "{{count}} day streak of taking care of myself with Moodly 🔥 mymoodly.ru",
+    "shareText_other": "{{count}} day streak of taking care of myself with Moodly 🔥 mymoodly.ru"
   },
   "thoughtBattle": {
     "pageTitle": "Thought Battle",
