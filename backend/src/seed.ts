@@ -1183,6 +1183,16 @@ const achievements = [
     sortOrder: 95,
   },
   {
+    key: 'mood_full_day',
+    category: 'mindfulness',
+    titleKey: 'achievements.moodFullDay',
+    descKey: 'achievements.moodFullDayDesc',
+    iconName: 'clock',
+    xpReward: 25,
+    criteria: { type: 'mood_entries_full_day', value: 1 },
+    sortOrder: 112,
+  },
+  {
     key: 'sunbeam',
     category: 'general',
     titleKey: 'achievements.sunbeam',

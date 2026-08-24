@@ -1523,6 +1523,8 @@
     "completions1000Desc": "Выполнить 1000 практик",
     "moodKeeper": "Зеркало души",
     "moodKeeperDesc": "Записать настроение 365 раз",
+    "moodFullDay": "На связи весь день",
+    "moodFullDayDesc": "Отметь настроение утром, днём и вечером в один день",
     "sunbeam": "Луч света",
     "sunbeamDesc": "Выполнить 30 практик благодарности",
     "soulScribe": "Перо судьбы",
@@ -2814,7 +2816,13 @@
       "7": "Здорово! ✨",
       "30": "Невероятно! 🎉",
       "100": "Легенда! 🏆"
-    }
+    },
+    "share": "Поделиться",
+    "shareCopied": "Текст скопирован ✓",
+    "shareText_one": "Уже {{count}} день подряд забочусь о себе с Moodly 🔥 mymoodly.ru",
+    "shareText_few": "Уже {{count}} дня подряд забочусь о себе с Moodly 🔥 mymoodly.ru",
+    "shareText_many": "Уже {{count}} дней подряд забочусь о себе с Moodly 🔥 mymoodly.ru",
+    "shareText_other": "Уже {{count}} дней подряд забочусь о себе с Moodly 🔥 mymoodly.ru"
   },
   "thoughtBattle": {
     "pageTitle": "Битва с мыслями",

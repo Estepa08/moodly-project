@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Flame } from 'lucide-react';
+import { toast } from 'sonner';
+import { Sparkles, Flame, Share2 } from 'lucide-react';
 import { ModalShell } from '../../components/ui/modal-shell';
 import { Button } from '../../components/ui/button';
 import PetAvatar from './PetAvatar';
@@ -83,6 +84,30 @@ export default function StreakMilestoneMoment({
     t(PET_DEFINITIONS.find((p) => p.type === petType)?.labelKey ?? 'pets.puff');
 
   const config = days ? TIER_CONFIG[days] : null;
+  // Phase 3, п.6 (см. docs/gamification-phase3-visuals.svg): шеринг только на
+  // «весомых» вехах (30/100), не на 7 — не каждая веха достойна поделиться.
+  // Только текст (Web Share API), без картинки — динамическая OG-генерация
+  // отложена в Phase 4 (нет SSR/рендера изображений в бэкенде).
+  const canShare = days === 30 || days === 100;
+
+  const handleShare = async () => {
+    if (!days) return;
+    const shareText = t('streakMilestone.shareText', { count: days });
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ text: shareText });
+      } catch {
+        // Пользователь отменил шеринг или платформа отказала — не критично.
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(shareText);
+      toast.success(t('streakMilestone.shareCopied'));
+    } catch {
+      // Буфер обмена недоступен — кнопка не критична для основного флоу.
+    }
+  };
 
   useEffect(() => {
     if (!open || !config?.confetti || isReducedMotion) return;
@@ -163,6 +188,12 @@ export default function StreakMilestoneMoment({
       <Button variant="default" className="w-full mt-2" onClick={onDismiss}>
         {t(`streakMilestone.cta.${days}`)}
       </Button>
+      {canShare && (
+        <Button variant="outline" className="w-full mt-2" onClick={handleShare}>
+          <Share2 aria-hidden="true" className="w-4 h-4" />
+          {t('streakMilestone.share')}
+        </Button>
+      )}
     </ModalShell>
   );
 }
