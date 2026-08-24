@@ -231,6 +231,7 @@ export function blogPostingLd(post: {
   url: string;
   description: string;
   date: string;
+  updatedAt?: string;
   image?: string;
 }): object {
   return {
@@ -241,7 +242,13 @@ export function blogPostingLd(post: {
     mainEntityOfPage: post.url,
     url: post.url,
     datePublished: post.date,
+    dateModified: post.updatedAt ?? post.date,
     image: post.image ?? OG_IMAGE,
+    author: {
+      '@type': 'Organization',
+      name: `${SITE_NAME} Team`,
+      url: BASE_URL,
+    },
     publisher: {
       '@type': 'Organization',
       name: SITE_NAME,
