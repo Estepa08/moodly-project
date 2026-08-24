@@ -2802,8 +2802,8 @@
     },
     "share": "Share",
     "shareCopied": "Text copied ✓",
-    "shareText_one": "{{count}} day streak of taking care of myself with Moodly 🔥 mymoodly.ru",
-    "shareText_other": "{{count}} day streak of taking care of myself with Moodly 🔥 mymoodly.ru"
+    "shareText_one": "{{count}} day streak of taking care of myself with Moodly 🔥",
+    "shareText_other": "{{count}} day streak of taking care of myself with Moodly 🔥"
   },
   "thoughtBattle": {
     "pageTitle": "Thought Battle",

@@ -2819,10 +2819,10 @@
     },
     "share": "Поделиться",
     "shareCopied": "Текст скопирован ✓",
-    "shareText_one": "Уже {{count}} день подряд забочусь о себе с Moodly 🔥 mymoodly.ru",
-    "shareText_few": "Уже {{count}} дня подряд забочусь о себе с Moodly 🔥 mymoodly.ru",
-    "shareText_many": "Уже {{count}} дней подряд забочусь о себе с Moodly 🔥 mymoodly.ru",
-    "shareText_other": "Уже {{count}} дней подряд забочусь о себе с Moodly 🔥 mymoodly.ru"
+    "shareText_one": "Уже {{count}} день подряд забочусь о себе с Moodly 🔥",
+    "shareText_few": "Уже {{count}} дня подряд забочусь о себе с Moodly 🔥",
+    "shareText_many": "Уже {{count}} дней подряд забочусь о себе с Moodly 🔥",
+    "shareText_other": "Уже {{count}} дней подряд забочусь о себе с Moodly 🔥"
   },
   "thoughtBattle": {
     "pageTitle": "Битва с мыслями",
