@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
 import {
   Trophy,
   Lock,
@@ -17,6 +18,7 @@ import { cn } from '../../lib/utils';
 import { useAchievements } from './useCreature';
 import type { Achievement } from '../../lib/api';
 import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
+import ClaimBurst from './ClaimBurst';
 
 const CATEGORY_ICONS: Record<string, typeof Trophy> = {
   general: Star,
@@ -44,6 +46,29 @@ export default function AchievementGrid() {
   const { t } = useTranslation();
   const { data: achievements, isLoading } = useAchievements();
   const [showAll, setShowAll] = useState(false);
+  const reducedMotion = useReducedMotion();
+
+  // Tier 1 (см. docs/gamification-phase1-visuals.svg, ряд 3): всплеск частиц
+  // при переходе id из unlocked=false в true в рамках текущей сессии —
+  // не при первой загрузке (previousUnlockedRef.current === null).
+  const previousUnlockedRef = useRef<Set<string> | null>(null);
+  const [justUnlocked, setJustUnlocked] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!achievements) return;
+    const current = new Set(achievements.filter((a) => a.unlocked).map((a) => a.id));
+    const prev = previousUnlockedRef.current;
+    if (prev) {
+      const newlyUnlocked = [...current].filter((id) => !prev.has(id));
+      if (newlyUnlocked.length > 0) {
+        setJustUnlocked(new Set(newlyUnlocked));
+        const timer = setTimeout(() => setJustUnlocked(new Set()), 900);
+        previousUnlockedRef.current = current;
+        return () => clearTimeout(timer);
+      }
+    }
+    previousUnlockedRef.current = current;
+  }, [achievements]);
 
   if (isLoading) {
     return (
@@ -73,7 +98,12 @@ export default function AchievementGrid() {
     <div className="space-y-2">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {rendered.map((a) => (
-          <AchievementCard key={a.id} achievement={a} />
+          <AchievementCard
+            key={a.id}
+            achievement={a}
+            justUnlocked={justUnlocked.has(a.id)}
+            reducedMotion={!!reducedMotion}
+          />
         ))}
       </div>
       {!showAll && rest.length > 0 && (
@@ -89,7 +119,15 @@ export default function AchievementGrid() {
   );
 }
 
-function AchievementCard({ achievement: a }: { achievement: Achievement }) {
+function AchievementCard({
+  achievement: a,
+  justUnlocked = false,
+  reducedMotion = false,
+}: {
+  achievement: Achievement;
+  justUnlocked?: boolean;
+  reducedMotion?: boolean;
+}) {
   const { t } = useTranslation();
   const Icon = CATEGORY_ICONS[a.category] ?? Trophy;
   const colorClass = CATEGORY_COLORS[a.category] ?? 'text-muted-foreground';
@@ -106,7 +144,7 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
       <div className="flex items-start justify-between">
         <div
           className={cn(
-            'w-7 h-7 rounded-full flex items-center justify-center',
+            'w-7 h-7 rounded-full flex items-center justify-center relative',
             a.unlocked
               ? `${CATEGORY_COLORS[a.category] ?? 'text-primary'}/10`
               : hidden
@@ -119,6 +157,13 @@ function AchievementCard({ achievement: a }: { achievement: Achievement }) {
           ) : (
             <Lock aria-hidden="true" className="w-3 h-3 text-muted-foreground" />
           )}
+          {/* Tier 1: burst чуть крупнее клейма миссии — разблокировка ачивки реже и «весомее». */}
+          <ClaimBurst
+            triggerKey={justUnlocked ? 1 : 0}
+            radius={34}
+            count={6}
+            reducedMotion={reducedMotion}
+          />
         </div>
         {a.unlocked && <Check aria-hidden="true" className="w-3.5 h-3.5 text-success shrink-0" />}
       </div>

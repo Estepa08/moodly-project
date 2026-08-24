@@ -63,6 +63,15 @@ const PARTICLE_COUNTS = {
   empathyDrops: 4, // капли → звёзды
 } as const;
 
+// Tier 2 (docs/gamification-phase1-visuals.svg, ряд 4): интенсивность
+// 'welcome' растёт по comeback-тиру. Без comebackDays (обычное «Возвращение»
+// после паузы в поглаживаниях) — прежнее фиксированное количество.
+function welcomeParticleCount(comebackDays?: 7 | 14 | 30): number {
+  if (comebackDays === 7) return 3;
+  if (comebackDays === 30) return 6;
+  return PARTICLE_COUNTS.welcome;
+}
+
 interface Particle {
   id: number;
   x: number;
@@ -133,11 +142,17 @@ export default function PetRewardParticles({
       case 'combo':
         return makeParticles(PARTICLE_COUNTS.combo, 60, 180, false, boundaryRadius);
       case 'welcome':
-        return makeParticles(PARTICLE_COUNTS.welcome, 40, 110, true, boundaryRadius);
+        return makeParticles(
+          welcomeParticleCount(signal.comebackDays),
+          40,
+          110,
+          true,
+          boundaryRadius,
+        );
       default:
         return [];
     }
-  }, [signal.kind, boundaryRadius]);
+  }, [signal.kind, signal.comebackDays, boundaryRadius]);
 
   const comboCount = signal.comboCount ?? 0;
   const showComboBadge = comboCount >= 3;

@@ -52,6 +52,7 @@ export const achievementsService = {
         titleReward: a.titleReward,
         petTypeReward: a.petTypeReward,
         xpReward: a.xpReward,
+        streakFreezeReward: a.streakFreezeReward,
         sortOrder: a.sortOrder,
         unlocked: isUnlocked,
         unlockedAt: unlockedMap.get(a.id) ?? null,
@@ -121,21 +122,32 @@ export const achievementsService = {
       if (actuallyUnlocked.length === 0) return null;
 
       let xpBonus = 0;
+      let streakFreezeBonus = 0;
       const skins: string[] = [];
       const titles: string[] = [];
       const petTypes: string[] = [];
 
       for (const a of actuallyUnlocked) {
         xpBonus += a.xpReward;
+        streakFreezeBonus += a.streakFreezeReward ?? 0;
         if (a.skinReward) skins.push(a.skinReward);
         if (a.titleReward) titles.push(a.titleReward);
         if (a.petTypeReward) petTypes.push(a.petTypeReward);
       }
 
-      if (xpBonus > 0 || skins.length > 0 || titles.length > 0 || petTypes.length > 0) {
+      if (
+        xpBonus > 0 ||
+        streakFreezeBonus > 0 ||
+        skins.length > 0 ||
+        titles.length > 0 ||
+        petTypes.length > 0
+      ) {
         const updateData: Record<string, unknown> = {};
         if (xpBonus > 0) {
           updateData.experience = { increment: xpBonus };
+        }
+        if (streakFreezeBonus > 0) {
+          updateData.streakFreezeCount = { increment: streakFreezeBonus };
         }
         if (skins.length > 0) {
           updateData.unlockedSkins = { push: skins };
@@ -163,6 +175,7 @@ export const achievementsService = {
         titleReward: a.titleReward,
         petTypeReward: a.petTypeReward,
         xpReward: a.xpReward,
+        streakFreezeReward: a.streakFreezeReward,
         sortOrder: a.sortOrder,
       }));
     });

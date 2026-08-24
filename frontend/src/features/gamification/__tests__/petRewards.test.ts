@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   buildRewardSignal,
+  buildComebackSignal,
   computeEmpathy,
   pickPetWordIndex,
   EMPATHY_WINDOW_MS,
@@ -164,6 +165,29 @@ describe('buildRewardSignal', () => {
   it('генерирует уникальный id для каждого сигнала', () => {
     const a = buildRewardSignal(makeResponse());
     const b = buildRewardSignal(makeResponse());
+    expect(a.id).not.toBe(b.id);
+  });
+});
+
+describe('buildComebackSignal', () => {
+  it('7-дневный тир: kind welcome, +5 XP, comebackDays=7', () => {
+    const signal = buildComebackSignal(7);
+    expect(signal.kind).toBe('welcome');
+    expect(signal.xpText).toBe('+5 XP');
+    expect(signal.comebackDays).toBe(7);
+    expect(signal.comfortGain).toBe(2);
+  });
+
+  it('30-дневный тир даёт больше XP и comfort, чем 7-дневный', () => {
+    const tier7 = buildComebackSignal(7);
+    const tier30 = buildComebackSignal(30);
+    expect(tier30.xpText).toBe('+15 XP');
+    expect(tier30.comfortGain).toBeGreaterThan(tier7.comfortGain ?? 0);
+  });
+
+  it('генерирует уникальный id на каждый вызов', () => {
+    const a = buildComebackSignal(14);
+    const b = buildComebackSignal(14);
     expect(a.id).not.toBe(b.id);
   });
 });

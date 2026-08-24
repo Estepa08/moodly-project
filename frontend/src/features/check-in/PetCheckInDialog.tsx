@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Flame, CalendarRange, Moon } from 'lucide-react';
 import { Dialog, DialogContent } from '../../components/ui/dialog';
-import PetAvatar from '../gamification/PetAvatar';
+import PetAvatar, { type PetGlow } from '../gamification/PetAvatar';
 import { usePets, useCreatureState, celebrate, emitSpeech } from '../gamification';
 import { PET_DEFINITIONS } from '../gamification/pets';
+import { buildComebackSignal, type PetRewardSignal } from '../gamification/petRewards';
 import { api } from '../../lib/api';
 import { useParameters } from '../../hooks/useParameters';
 import { useCreateEntry } from '../../hooks/useEntries';
@@ -60,6 +61,11 @@ export default function PetCheckInDialog({
   const [moodEmotions, setMoodEmotions] = useState<string[]>([]);
   // Результат дневного чек-ина (награда XP/энергия/streak), показываем при завершении флоу.
   const [checkIn, setCheckIn] = useState<{ streak: number; leveledUp: boolean } | null>(null);
+  // Phase 1, п.2 (см. docs/gamification-phase1-visuals.svg, ряд 4): эскалация
+  // 'welcome' по comeback-тиру 7/14/30 дней — переиспользует PetRewardParticles,
+  // тёплое кольцо (glow='warm') только на самом крупном, 30-дневном тире.
+  const [reward, setReward] = useState<PetRewardSignal | null>(null);
+  const [glow, setGlow] = useState<PetGlow>(null);
 
   const checkInMutation = useMutation({
     mutationFn: () => api.creature.checkIn(),
@@ -70,6 +76,14 @@ export default function PetCheckInDialog({
         celebrate(t('dailyCheckIn.levelUpBody', { level: data.state.level }), {
           title: t('dailyCheckIn.levelUpTitle'),
         });
+      }
+      if (data.streakFreezeUsed) {
+        celebrate(t('dailyCheckIn.streakFreezeUsed'));
+      }
+      if (data.comebackDays) {
+        setReward(buildComebackSignal(data.comebackDays));
+        setGlow(data.comebackDays === 30 ? 'warm' : null);
+        celebrate(t('dailyCheckIn.comebackBody'), { title: t('dailyCheckIn.comebackTitle') });
       }
     },
     onError: () => {
@@ -86,6 +100,8 @@ export default function PetCheckInDialog({
       setCheckIn(null);
       setPendingMoodValue(null);
       setMoodEmotions([]);
+      setReward(null);
+      setGlow(null);
     }
   }, [open]);
 
@@ -153,6 +169,10 @@ export default function PetCheckInDialog({
             feedSignal={feedSignal}
             emotion="happy"
             ariaLabel={petName}
+            reward={reward}
+            glow={glow}
+            particleBoundary={64}
+            particleFallLimit={0}
           />
         </div>
 

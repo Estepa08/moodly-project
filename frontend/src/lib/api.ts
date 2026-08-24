@@ -134,6 +134,7 @@ export interface CreatureState {
   playDailyLimit?: number;
   playCountRemaining?: number;
   weeklyClaimWeek?: string | null;
+  streakFreezeCount: number;
 }
 
 export interface PetBonus {
@@ -158,6 +159,10 @@ export interface PetBonus {
 interface CheckInResponse {
   state: CreatureState;
   leveledUp: boolean;
+  /** Пропуск дня был покрыт токеном заморозки стрика вместо сброса серии */
+  streakFreezeUsed: boolean;
+  /** Сработавший comeback-тир в днях (7 / 14 / 30), если чек-ин пришёл после долгого перерыва */
+  comebackDays?: 7 | 14 | 30;
 }
 
 export interface FeedResponse {
@@ -283,6 +288,7 @@ export interface Achievement {
   titleReward: string | null;
   petTypeReward: string | null;
   xpReward: number;
+  streakFreezeReward: number | null;
   sortOrder: number;
   unlocked: boolean;
   unlockedAt: string | null;

@@ -1385,12 +1385,20 @@ components:
       required:
         - state
         - leveledUp
+        - streakFreezeUsed
       properties:
         state:
           $ref: '#/components/schemas/CreatureState'
         leveledUp:
           type: boolean
           description: Был ли достигнут новый уровень
+        streakFreezeUsed:
+          type: boolean
+          description: Пропуск дня был покрыт токеном заморозки стрика вместо сброса серии
+        comebackDays:
+          type: integer
+          format: int32
+          description: Сработавший comeback-тир в днях (7 / 14 / 30), если чек-ин пришёл после долгого перерыва
       description: Результат ежедневного чекина
     ClaimWeeklyResponse:
       type: object
@@ -1424,6 +1432,7 @@ components:
         - petCount
         - petCountRemaining
         - comfort
+        - streakFreezeCount
       properties:
         id:
           type: string
@@ -1508,6 +1517,10 @@ components:
           type: integer
           format: int32
           description: «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение)
+        streakFreezeCount:
+          type: integer
+          format: int32
+          description: 'Токены заморозки стрика: пропуск одного дня при count > 0 не сбрасывает серию'
         playCount:
           type: integer
           format: int32

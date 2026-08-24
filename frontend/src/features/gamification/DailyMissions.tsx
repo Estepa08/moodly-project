@@ -1,13 +1,20 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useReducedMotion } from 'framer-motion';
 import { Circle, CheckCircle2, Gift, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useMissions, useClaimMission } from './useCreature';
 import { LoadingCard } from '../../components/ui/loading-card';
+import ClaimBurst from './ClaimBurst';
 
 export default function DailyMissions() {
   const { t } = useTranslation();
   const { data: missions, isLoading } = useMissions();
   const claimMission = useClaimMission();
+  const reducedMotion = useReducedMotion();
+  // Tier 1 (см. docs/gamification-phase1-visuals.svg, ряд 2): триггер-ключ
+  // всплеска частиц на клейме миссии, по одному счётчику на миссию.
+  const [burstKeys, setBurstKeys] = useState<Record<string, number>>({});
 
   if (isLoading) return <LoadingCard />;
 
@@ -26,12 +33,20 @@ export default function DailyMissions() {
               mission.claimed ? 'bg-muted/30 opacity-60' : 'bg-card shadow-neumorphic-sm',
             )}
           >
-            <div className="shrink-0">
+            <div className="shrink-0 relative">
               {mission.claimed ? (
                 <CheckCircle2 aria-hidden="true" className="w-6 h-6 text-success" />
               ) : isComplete ? (
                 <button
-                  onClick={() => claimMission.mutate(mission.id)}
+                  onClick={() =>
+                    claimMission.mutate(mission.id, {
+                      onSuccess: () =>
+                        setBurstKeys((prev) => ({
+                          ...prev,
+                          [mission.id]: (prev[mission.id] ?? 0) + 1,
+                        })),
+                    })
+                  }
                   disabled={claimMission.isPending}
                   className="w-6 h-6 rounded-full bg-primary-strong flex items-center justify-center cursor-pointer hover:bg-primary-strong/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.97]"
                   aria-label={t('missions.claim')}
@@ -41,6 +56,12 @@ export default function DailyMissions() {
               ) : (
                 <Circle aria-hidden="true" className="w-6 h-6 text-muted-foreground/40" />
               )}
+              <ClaimBurst
+                triggerKey={burstKeys[mission.id] ?? 0}
+                radius={28}
+                count={4}
+                reducedMotion={!!reducedMotion}
+              />
             </div>
             <div className="flex-1 min-w-0">
               <p
