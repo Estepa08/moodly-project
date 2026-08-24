@@ -49,6 +49,9 @@ COPY backend/prisma ./prisma
 RUN npx prisma generate
 COPY backend/tsconfig.json backend/tsconfig.build.json ./
 COPY backend/src ./src
+# Шрифт + emoji-PNG для OG-карточек шеринга (services/og-card.ts) — статические
+# ассеты, не проходят через tsc, читаются в рантайме по относительному пути.
+COPY backend/assets ./assets
 COPY backend/docker-entrypoint.sh ./
 RUN npm run build
 
@@ -62,6 +65,7 @@ COPY --from=frontend-build /workspace/frontend/dist /srv
 COPY --from=backend-build /workspace/backend/dist /app/dist
 COPY --from=backend-build /workspace/backend/node_modules /app/node_modules
 COPY --from=backend-build /workspace/backend/prisma /app/prisma
+COPY --from=backend-build /workspace/backend/assets /app/assets
 COPY --from=backend-build /workspace/backend/docker-entrypoint.sh /app/entrypoint.sh
 COPY --from=backend-build /workspace/backend/package.json /workspace/backend/package-lock.json /app/
 COPY --from=shared-build /workspace/shared /app/shared

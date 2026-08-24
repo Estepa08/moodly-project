@@ -18,6 +18,7 @@ import notificationRoutes from '../routes/notifications.js';
 import adminRoutes from '../routes/admin.js';
 import emotionLabRoutes from '../routes/emotion-lab.js';
 import contentRoutes from '../routes/content.js';
+import shareRoutes from '../routes/share.js';
 import { setErrorHandler } from '../lib/handle-error.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
@@ -42,6 +43,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await fastify.register(adminRoutes);
   await fastify.register(emotionLabRoutes);
   await fastify.register(contentRoutes);
+  await fastify.register(shareRoutes);
 
   setErrorHandler(fastify);
 

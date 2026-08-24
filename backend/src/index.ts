@@ -22,6 +22,7 @@ import adminRoutes from './routes/admin.js';
 import emotionLabRoutes from './routes/emotion-lab.js';
 import clientErrorRoutes from './routes/client-errors.js';
 import contentRoutes from './routes/content.js';
+import shareRoutes from './routes/share.js';
 import { ensureDefaultParameters } from './services/parameter.js';
 import { setErrorHandler } from './lib/handle-error.js';
 import { env } from './lib/env.js';
@@ -32,9 +33,11 @@ import { adventureScheduler } from './jobs/adventure-scheduler.js';
 // в проде FRONTEND_URL) до старта HTTP-сервера.
 const fastify = Fastify({ logger: true, trustProxy: true });
 
-// This backend only ever serves JSON — it never renders scripts, styles, or
-// frames — so the policy can be maximally strict rather than the
-// browser-app-oriented defaults helmet ships with.
+// This backend serves JSON almost everywhere — it never renders scripts,
+// styles, or frames — so the policy can be maximally strict rather than the
+// browser-app-oriented defaults helmet ships with. The one exception is
+// routes/share.ts (public OG-preview HTML + PNG for social unfurling, no
+// auth), which opts out per-route via `{ helmet: false }`.
 await fastify.register(helmet, {
   contentSecurityPolicy: {
     directives: {
@@ -85,6 +88,7 @@ await fastify.register(adminRoutes);
 await fastify.register(emotionLabRoutes);
 await fastify.register(clientErrorRoutes);
 await fastify.register(contentRoutes);
+await fastify.register(shareRoutes);
 
 setErrorHandler(fastify);
 

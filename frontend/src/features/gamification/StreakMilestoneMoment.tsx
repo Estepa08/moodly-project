@@ -86,23 +86,26 @@ export default function StreakMilestoneMoment({
   const config = days ? TIER_CONFIG[days] : null;
   // Phase 3, п.6 (см. docs/gamification-phase3-visuals.svg): шеринг только на
   // «весомых» вехах (30/100), не на 7 — не каждая веха достойна поделиться.
-  // Только текст (Web Share API), без картинки — динамическая OG-генерация
-  // отложена в Phase 4 (нет SSR/рендера изображений в бэкенде).
   const canShare = days === 30 || days === 100;
 
   const handleShare = async () => {
     if (!days) return;
     const shareText = t('streakMilestone.shareText', { count: days });
+    // Phase 4: ссылка на бэкендовую страницу с OG-тегами (services/og-card.ts) —
+    // мессенджеры разворачивают её в rich-preview с картинкой вехи, не просто
+    // голой ссылкой. Собирается из window.location.origin, а не хардкодится —
+    // корректно работает и на mymoodly.ru, и при локальной разработке.
+    const shareUrl = `${window.location.origin}/api/share/streak?days=${days}&pet=${encodeURIComponent(petType)}`;
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
-        await navigator.share({ text: shareText });
+        await navigator.share({ text: shareText, url: shareUrl });
       } catch {
         // Пользователь отменил шеринг или платформа отказала — не критично.
       }
       return;
     }
     try {
-      await navigator.clipboard.writeText(shareText);
+      await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
       toast.success(t('streakMilestone.shareCopied'));
     } catch {
       // Буфер обмена недоступен — кнопка не критична для основного флоу.
