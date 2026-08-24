@@ -13,6 +13,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx src/seed.ts",
     "db:studio": "prisma studio",
+    "db:test:reset": "DATABASE_URL=\"${TEST_DATABASE_URL:-postgresql://evgeniystepanov@localhost:5432/moodly_test?schema=public}\" DIRECT_URL=\"${TEST_DATABASE_URL:-postgresql://evgeniystepanov@localhost:5432/moodly_test?schema=public}\" prisma db push --force-reset --accept-data-loss --skip-generate",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
