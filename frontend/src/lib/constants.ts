@@ -65,10 +65,6 @@ export const SEVERITY_COLORS: Record<SeverityLevel, string> = {
   [SeverityLevel.Severe]: 'hsl(var(--destructive))',
 };
 
-export const SLIDER_MIN = 0;
-export const SLIDER_MAX = 10;
-export const SLIDER_STEP = 0.2;
-
 export enum SleepHygieneListState {
   Checklist = 'checklist',
   Completed = 'completed',

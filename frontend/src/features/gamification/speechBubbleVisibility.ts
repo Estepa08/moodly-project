@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 const STORAGE_KEY = 'moodly_hide_speech_bubble';
 
 type Listener = () => void;
@@ -26,13 +24,4 @@ export function subscribeSpeechBubbleVisibility(listener: Listener): () => void 
   return () => {
     listeners.delete(listener);
   };
-}
-
-export function useSpeechBubbleHidden(): boolean {
-  const [hiddenState, setHiddenState] = useState(isSpeechBubbleHidden);
-  useEffect(
-    () => subscribeSpeechBubbleVisibility(() => setHiddenState(isSpeechBubbleHidden())),
-    [],
-  );
-  return hiddenState;
 }

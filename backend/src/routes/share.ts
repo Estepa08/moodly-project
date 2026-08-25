@@ -24,30 +24,44 @@ function parsePetType(raw: unknown): string {
   return typeof raw === 'string' && raw.length > 0 && raw.length <= 40 ? raw : 'fox';
 }
 
+// Экранируем всё, что попадает в разметку, даже уже провалидированные поля —
+// вторым рубежом на случай, если валидация выше когда-нибудь ослабнет.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function renderSharePage(params: { title: string; imageUrl: string; pageUrl: string }): string {
   const description =
     'Дневник настроения, который заботится о вас: отмечайте состояние, практикуйте техники, растите компаньона.';
+  const title = escapeHtml(params.title);
+  const imageUrl = escapeHtml(params.imageUrl);
+  const pageUrl = escapeHtml(params.pageUrl);
   return `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${params.title} — Moodly</title>
+<title>${title} — Moodly</title>
 <meta name="description" content="${description}">
 <meta name="robots" content="noindex, follow">
-<link rel="canonical" href="${params.pageUrl}">
+<link rel="canonical" href="${pageUrl}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Moodly">
-<meta property="og:title" content="${params.title} — Moodly">
+<meta property="og:title" content="${title} — Moodly">
 <meta property="og:description" content="${description}">
-<meta property="og:image" content="${params.imageUrl}">
+<meta property="og:image" content="${imageUrl}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:url" content="${params.pageUrl}">
+<meta property="og:url" content="${pageUrl}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${params.title} — Moodly">
+<meta name="twitter:title" content="${title} — Moodly">
 <meta name="twitter:description" content="${description}">
-<meta name="twitter:image" content="${params.imageUrl}">
+<meta name="twitter:image" content="${imageUrl}">
 <style>
   body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#5C6E4E; color:#fff; text-align:center; padding:24px; box-sizing:border-box; }
   img { max-width:min(560px,90vw); border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.25); }
@@ -55,7 +69,7 @@ function renderSharePage(params: { title: string; imageUrl: string; pageUrl: str
 </style>
 </head>
 <body>
-  <img src="${params.imageUrl}" alt="${params.title}">
+  <img src="${imageUrl}" alt="${title}">
   <a href="${FRONTEND_URL}/">Открыть Moodly →</a>
 </body>
 </html>`;
@@ -71,9 +85,12 @@ export default async function shareRoutes(fastify: FastifyInstance) {
         throw new AppError('VALIDATION_ERROR', 400, 'days must be a positive integer');
       }
       const petType = parsePetType(request.query.pet);
-      const base = `${request.protocol}://${request.headers.host}`;
-      const imageUrl = `${base}/api/share/streak/card.png?days=${days}&pet=${encodeURIComponent(petType)}`;
-      const pageUrl = `${base}/api/share/streak?days=${days}&pet=${encodeURIComponent(petType)}`;
+      // Не берём base из request.protocol/headers.host — Host управляется
+      // клиентом и раньше подставлялся в HTML, который кэшируется на час
+      // (см. аудит). /api/* всегда проксируется на бэкенд с того же
+      // публичного домена, что и FRONTEND_URL (см. infra/Caddyfile).
+      const imageUrl = `${FRONTEND_URL}/api/share/streak/card.png?days=${days}&pet=${encodeURIComponent(petType)}`;
+      const pageUrl = `${FRONTEND_URL}/api/share/streak?days=${days}&pet=${encodeURIComponent(petType)}`;
 
       reply.type('text/html; charset=utf-8');
       reply.header('Cache-Control', 'public, max-age=3600');

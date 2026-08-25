@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/ca
 import { LoadingCard } from '../../components/ui/loading-card';
 import EmptyState from '../../components/ui/empty-state';
 import type { ParameterName } from '../../lib/constants';
+import { isImprovement } from './analytics.utils';
 
 interface WeeklyAverage {
   name: string;
@@ -51,12 +52,9 @@ export default function WeeklyAveragesGrid({ weeklyAverages, isLoading }: Weekly
                   : avg.trend === Trend.Down
                     ? TrendingDown
                     : Minus;
+              const trendSign = avg.trend === Trend.Up ? 1 : avg.trend === Trend.Down ? -1 : 0;
               const trendIsGood =
-                avg.trend === Trend.Flat
-                  ? null
-                  : isNegative
-                    ? avg.trend === Trend.Down
-                    : avg.trend === Trend.Up;
+                avg.trend === Trend.Flat ? null : isImprovement(trendSign, isNegative);
               const trendColor =
                 trendIsGood === null
                   ? 'text-muted-foreground'

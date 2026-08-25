@@ -49,8 +49,19 @@ describe('GET /share/streak (публичный, без авторизации)'
     expect(res.statusCode).toBe(200);
     expect(res.headers['content-type']).toContain('text/html');
     expect(res.body).toContain('og:image');
-    expect(res.body).toContain('days=30&pet=fox');
+    // '&' в URL-параметрах внутри HTML-атрибутов корректно экранируется в '&amp;'
+    expect(res.body).toContain('days=30&amp;pet=fox');
     expect(res.body).toContain('30 дней подряд');
+  });
+
+  it('не зависит от заголовка Host — ссылки строятся из FRONTEND_URL', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/share/streak?days=30&pet=fox',
+      headers: { host: 'evil.example.com' },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).not.toContain('evil.example.com');
   });
 
   it('неизвестный pet не падает — использует дефолтный тип в ссылке на картинку', async () => {

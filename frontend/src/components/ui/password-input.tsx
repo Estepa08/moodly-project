@@ -2,6 +2,7 @@ import { forwardRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Input } from './input';
 import { IconButton } from './icon-button';
+import { cn } from '../../lib/utils';
 
 interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   showLabel?: string;
@@ -9,14 +10,11 @@ interface PasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement>
 }
 
 const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  (
-    { showLabel = 'Show password', hideLabel = 'Hide password', className: _className, ...props },
-    ref,
-  ) => {
+  ({ showLabel = 'Show password', hideLabel = 'Hide password', className, ...props }, ref) => {
     const [visible, setVisible] = useState(false);
 
     return (
-      <div className="relative">
+      <div className={cn('relative', className)}>
         <Input ref={ref} type={visible ? 'text' : 'password'} className="pr-12" {...props} />
         <IconButton
           size="icon-sm"

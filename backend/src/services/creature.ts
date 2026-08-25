@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma.js';
 import { AppError } from '../lib/errors.js';
 import { lockUser } from '../lib/user-lock.js';
@@ -49,14 +50,21 @@ import {
   ADVENTURE_COMFORT_GAIN,
 } from '@moodly/shared';
 
+type CreatureClient = typeof prisma | Prisma.TransactionClient;
+
+// Повторено 7 раз по всему сервису (getState/claimMission/checkIn/
+// claimAdventureReturn/play/pet/claimWeekly): CreatureState создаётся
+// лениво при первом обращении, а не при регистрации, поэтому каждая
+// мутация начинает с "найти-или-создать" с одним и тем же дефолтом.
+async function getOrCreateCreatureState(client: CreatureClient, userId: string) {
+  const state = await client.creatureState.findUnique({ where: { userId } });
+  if (state) return state;
+  return client.creatureState.create({ data: { userId, calmness: 50 } });
+}
+
 export const creatureService = {
   async getState(userId: string) {
-    let state = await prisma.creatureState.findUnique({ where: { userId } });
-    if (!state) {
-      state = await prisma.creatureState.create({
-        data: { userId, calmness: 50 },
-      });
-    }
+    const state = await getOrCreateCreatureState(prisma, userId);
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
     const energy = state.energy ?? 100;
     const level = state.level ?? 1;
@@ -395,12 +403,7 @@ export const creatureService = {
         throw new AppError('NOT_COMPLETED', 400, 'Mission not yet completed');
       }
 
-      let state = await tx.creatureState.findUnique({ where: { userId } });
-      if (!state) {
-        state = await tx.creatureState.create({
-          data: { userId, calmness: 50 },
-        });
-      }
+      const state = await getOrCreateCreatureState(tx, userId);
       const { experience, level, leveledUp } = applyLevelUp(state, mission.xpReward);
 
       await Promise.all([
@@ -463,12 +466,7 @@ export const creatureService = {
     const result = await prisma.$transaction(async (tx) => {
       await lockUser(tx, userId);
 
-      let state = await tx.creatureState.findUnique({ where: { userId } });
-      if (!state) {
-        state = await tx.creatureState.create({
-          data: { userId, calmness: 50 },
-        });
-      }
+      const state = await getOrCreateCreatureState(tx, userId);
 
       const lastCheckIn = state.lastCheckInAt ? new Date(state.lastCheckInAt) : null;
 
@@ -562,12 +560,7 @@ export const creatureService = {
     const result = await prisma.$transaction(async (tx) => {
       await lockUser(tx, userId);
 
-      let state = await tx.creatureState.findUnique({ where: { userId } });
-      if (!state) {
-        state = await tx.creatureState.create({
-          data: { userId, calmness: 50 },
-        });
-      }
+      const state = await getOrCreateCreatureState(tx, userId);
 
       if (!state.adventureReturnAt) {
         throw new AppError('NO_ACTIVE_ADVENTURE', 409, 'No active adventure');
@@ -738,12 +731,7 @@ export const creatureService = {
     const result = await prisma.$transaction(async (tx) => {
       await lockUser(tx, userId);
 
-      let state = await tx.creatureState.findUnique({ where: { userId } });
-      if (!state) {
-        state = await tx.creatureState.create({
-          data: { userId, calmness: 50 },
-        });
-      }
+      const state = await getOrCreateCreatureState(tx, userId);
 
       const playCount = this._playCountToday(state);
 
@@ -853,12 +841,7 @@ export const creatureService = {
     return prisma.$transaction(async (tx) => {
       await lockUser(tx, userId);
 
-      let state = await tx.creatureState.findUnique({ where: { userId } });
-      if (!state) {
-        state = await tx.creatureState.create({
-          data: { userId, calmness: 50 },
-        });
-      }
+      const state = await getOrCreateCreatureState(tx, userId);
 
       const now = new Date();
       const currentWeekKey = weekKey(now);
@@ -917,12 +900,7 @@ export const creatureService = {
     const result = await prisma.$transaction(async (tx) => {
       await lockUser(tx, userId);
 
-      let state = await tx.creatureState.findUnique({ where: { userId } });
-      if (!state) {
-        state = await tx.creatureState.create({
-          data: { userId, calmness: 50 },
-        });
-      }
+      const state = await getOrCreateCreatureState(tx, userId);
 
       const now = new Date();
       const today = new Date();

@@ -4,20 +4,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useNavHighlights } from '../hooks/useNavHighlights';
 import { useStalePractices } from '../hooks/useStalePractices';
-import { PracticeSource } from '../features/gamification/practice.enums';
 import { User, Sparkles, ChevronDown, ClipboardList } from 'lucide-react';
 import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS, ADMIN_ITEM } from './nav-config';
-
-const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  '/practices/thought-journal': PracticeSource.ThoughtJournal,
-  '/practices/gratitude': PracticeSource.Gratitude,
-  '/practices/distortions': PracticeSource.Distortions,
-  '/practices/sleep-hygiene': PracticeSource.SleepHygiene,
-  '/practices/cost-benefit-analysis': PracticeSource.Cba,
-  '/practices/breathing': PracticeSource.Breathing,
-  '/practices/emotion-lab': PracticeSource.EmotionLab,
-  '/practices/relaxation-wheel': PracticeSource.RelaxationWheel,
-};
+import { PATH_TO_SOURCE } from '../lib/practicePaths';
 
 export default function Sidebar() {
   const { t } = useTranslation();

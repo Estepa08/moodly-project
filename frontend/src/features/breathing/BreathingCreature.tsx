@@ -3,9 +3,7 @@ import Lottie, { type LottieRefCurrentProps } from 'lottie-react';
 import type { AnimationItem } from 'lottie-web';
 import animationData from '../../assets/lottie/breathing-creature.json';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { usePets } from '../gamification';
-import { usePetAnimation } from '../gamification/usePetAnimation';
-import { PET_DEFINITIONS } from '../gamification/pets';
+import { usePets, usePetAnimation, PET_DEFINITIONS } from '../gamification';
 import { BreathPhase, ReactionType } from './breathing.enums';
 
 interface Reaction {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { DistortionKey } from '../../lib/distortionsQuiz';
 import { cn } from '../../lib/utils';
+import { isImprovement, isRegression } from './analytics.utils';
 
 export interface DistortionEntry {
   key: DistortionKey;
@@ -71,8 +72,9 @@ export default function RadarChart({ data, previousData, maxValue, className }: 
     <div className={cn('flex flex-col', className)}>
       {rows.map((row, index) => {
         const hasDelta = row.delta !== null;
-        const isGood = hasDelta && row.delta! < 0;
-        const isBad = hasDelta && row.delta! > 0;
+        // Искажения мышления — negative-valence метрика: рост score всегда хуже.
+        const isGood = hasDelta && isImprovement(row.delta!, true);
+        const isBad = hasDelta && isRegression(row.delta!, true);
 
         let deltaLabel = `${row.score}/${max}`;
         let deltaClass = 'text-muted-foreground';

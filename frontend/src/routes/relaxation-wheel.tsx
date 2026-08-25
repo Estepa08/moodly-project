@@ -1,9 +1,26 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Settings, Plus, X, Check, Pencil, Trash2, Shuffle } from 'lucide-react';
+import {
+  ChevronLeft,
+  Settings,
+  Plus,
+  X,
+  Check,
+  Pencil,
+  Trash2,
+  Shuffle,
+  AlertTriangle,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '../components/ui/dialog';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useRewardPractice } from '../features/gamification';
 import { PracticeSource } from '../features/gamification/practice.enums';
@@ -68,6 +85,7 @@ export default function RelaxationWheelPage() {
   const [itemDraft, setItemDraft] = useState('');
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const refreshWheels = useCallback(() => {
     setWheels(loadWheels(defaultWheelName));
@@ -142,10 +160,14 @@ export default function RelaxationWheelPage() {
 
   const handleDeleteWheel = () => {
     if (!currentWheel || currentWheel.id === DEFAULT_WHEEL_ID) return;
-    if (!window.confirm(t('relaxationWheel.deleteWheelConfirm', { name: currentWheel.name })))
-      return;
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteWheel = () => {
+    if (!currentWheel) return;
     deleteWheel(currentWheel.id);
     refreshWheels();
+    setShowDeleteConfirm(false);
     setView({ step: 'list' });
   };
 
@@ -491,6 +513,37 @@ export default function RelaxationWheelPage() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog
+        open={showDeleteConfirm}
+        onOpenChange={(v) => {
+          if (!v) setShowDeleteConfirm(false);
+        }}
+      >
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <AlertTriangle aria-hidden="true" className="w-5 h-5 text-destructive" />
+              <DialogTitle className="text-lg">{t('relaxationWheel.deleteWheel')}</DialogTitle>
+            </div>
+            <DialogDescription className="text-sm">
+              {t('relaxationWheel.deleteWheelConfirm', { name: currentWheel.name })}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2 pt-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setShowDeleteConfirm(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button variant="destructive" className="flex-1" onClick={confirmDeleteWheel}>
+              {t('relaxationWheel.deleteWheel')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

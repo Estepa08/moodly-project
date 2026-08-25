@@ -1,3 +1,5 @@
+import { readStorageArray, writeStorageArray } from './localStorageArray';
+
 export interface MyActivity {
   key: string;
   label: string;
@@ -6,27 +8,21 @@ export interface MyActivity {
 
 const STORAGE_KEY = 'moodly_my_activities';
 
+function isMyActivity(a: unknown): a is MyActivity {
+  return (
+    !!a &&
+    typeof a === 'object' &&
+    typeof (a as MyActivity).key === 'string' &&
+    typeof (a as MyActivity).label === 'string'
+  );
+}
+
 function readStorage(): MyActivity[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (a): a is MyActivity =>
-        !!a && typeof a === 'object' && typeof a.key === 'string' && typeof a.label === 'string',
-    );
-  } catch {
-    return [];
-  }
+  return readStorageArray(STORAGE_KEY, isMyActivity);
 }
 
 function writeStorage(list: MyActivity[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch {
-    /* localStorage may be unavailable */
-  }
+  writeStorageArray(STORAGE_KEY, list);
 }
 
 export function loadMyActivities(): MyActivity[] {
@@ -43,8 +39,4 @@ export function createMyActivity(label: string): MyActivity {
 
 export function removeMyActivity(key: string) {
   writeStorage(readStorage().filter((a) => a.key !== key));
-}
-
-export function isKnownMyActivity(key: string): boolean {
-  return readStorage().some((a) => a.key === key);
 }

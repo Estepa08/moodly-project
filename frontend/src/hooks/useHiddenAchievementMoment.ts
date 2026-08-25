@@ -1,25 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useAchievements } from '../features/gamification/useCreature';
 import type { Achievement } from '../lib/api';
+import { safeLocalStorage } from '../lib/safeStorage';
 
 const STORAGE_KEY = 'moodly_hidden_achievements_seen';
 
 function readStoredSeen(): Set<string> | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === null) return null;
-    return new Set(JSON.parse(raw) as string[]);
-  } catch {
-    return null;
-  }
+  const raw = safeLocalStorage.getJSON<string[]>(STORAGE_KEY);
+  if (raw === null) return null;
+  return new Set(raw);
 }
 
 function writeSeen(ids: Set<string>) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...ids]));
-  } catch {
-    /* localStorage may throw in private browsing */
-  }
+  safeLocalStorage.setJSON(STORAGE_KEY, [...ids]);
 }
 
 // Phase 2, п.7 (см. docs/gamification-hidden-achievement-visuals.svg): Tier 3

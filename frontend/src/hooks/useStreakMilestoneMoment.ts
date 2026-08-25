@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useCreatureState } from '../features/gamification/useCreature';
+import { safeLocalStorage } from '../lib/safeStorage';
 
 const STORAGE_KEY = 'moodly_streak_milestone_seen';
 
@@ -10,20 +11,12 @@ export const STREAK_MILESTONE_TIERS = [7, 30, 100] as const;
 export type StreakMilestoneDays = (typeof STREAK_MILESTONE_TIERS)[number];
 
 function readStoredSeen(): number | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw === null ? null : Number(raw);
-  } catch {
-    return null;
-  }
+  const raw = safeLocalStorage.getItem(STORAGE_KEY);
+  return raw === null ? null : Number(raw);
 }
 
 function writeSeen(days: number) {
-  try {
-    localStorage.setItem(STORAGE_KEY, String(days));
-  } catch {
-    /* localStorage may throw in private browsing */
-  }
+  safeLocalStorage.setItem(STORAGE_KEY, String(days));
 }
 
 function highestTierAtOrBelow(streak: number): number {

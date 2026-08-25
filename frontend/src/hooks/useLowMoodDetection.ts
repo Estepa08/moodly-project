@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useEntries } from './useEntries';
 import { roundDownToMinute } from '../lib/utils';
+import { safeSessionStorage } from '../lib/safeStorage';
 
 const LOW_THRESHOLD = 3;
 const CONSECUTIVE_DAYS = 3;
@@ -10,20 +11,11 @@ const DEBOUNCE_MS = 3000;
 const SESSION_KEY = 'moodly_low_mood_shown';
 
 function isSessionShown(): boolean {
-  try {
-    return sessionStorage.getItem(SESSION_KEY) === '1';
-  } catch {
-    /* sessionStorage may throw in private browsing */
-    return false;
-  }
+  return safeSessionStorage.getItem(SESSION_KEY) === '1';
 }
 
 function markSessionShown() {
-  try {
-    sessionStorage.setItem(SESSION_KEY, '1');
-  } catch {
-    /* sessionStorage may throw in private browsing */
-  }
+  safeSessionStorage.setItem(SESSION_KEY, '1');
 }
 
 export function useLowMoodDetection() {

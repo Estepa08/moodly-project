@@ -1,5 +1,6 @@
 import { prisma } from '../lib/prisma.js';
-import { NotFoundError, AppError } from '../lib/errors.js';
+import { AppError } from '../lib/errors.js';
+import { deleteOwned } from '../lib/ownership.js';
 
 export interface CbaEntryItemInput {
   itemType: 'advantage' | 'disadvantage';
@@ -14,6 +15,10 @@ export interface CbaEntryCreateInput {
   items: CbaEntryItemInput[];
 }
 
+const MAX_THOUGHT_TEXT_LENGTH = 2000;
+const MAX_ITEM_TEXT_LENGTH = 500;
+const MAX_ITEMS = 100;
+
 function validateEntryInput(input: CbaEntryCreateInput) {
   if (
     input.prosWeight < 0 ||
@@ -25,6 +30,25 @@ function validateEntryInput(input: CbaEntryCreateInput) {
   }
   if (input.prosWeight + input.consWeight !== 100) {
     throw new AppError('VALIDATION_ERROR', 400, 'Weights must sum to 100');
+  }
+  if (input.thoughtText.length === 0 || input.thoughtText.length > MAX_THOUGHT_TEXT_LENGTH) {
+    throw new AppError(
+      'VALIDATION_ERROR',
+      400,
+      `thoughtText must be 1-${MAX_THOUGHT_TEXT_LENGTH} characters`,
+    );
+  }
+  if (input.items.length > MAX_ITEMS) {
+    throw new AppError('VALIDATION_ERROR', 400, `At most ${MAX_ITEMS} items are allowed`);
+  }
+  if (
+    input.items.some((i) => i.itemText.length === 0 || i.itemText.length > MAX_ITEM_TEXT_LENGTH)
+  ) {
+    throw new AppError(
+      'VALIDATION_ERROR',
+      400,
+      `itemText must be 1-${MAX_ITEM_TEXT_LENGTH} characters`,
+    );
   }
   const hasAdvantage = input.items.some((i) => i.itemType === 'advantage');
   const hasDisadvantage = input.items.some((i) => i.itemType === 'disadvantage');
@@ -72,7 +96,6 @@ export const cbaService = {
   },
 
   async deleteEntry(id: string, userId: string) {
-    const deleted = await prisma.cbaEntry.deleteMany({ where: { id, userId } });
-    if (deleted.count === 0) throw new NotFoundError('CbaEntry');
+    await deleteOwned(prisma.cbaEntry, id, userId, 'CbaEntry');
   },
 };

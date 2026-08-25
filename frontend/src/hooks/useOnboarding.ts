@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api, type UserPreference } from '../lib/api';
 import { ONBOARDING_DONE_KEY } from '../lib/constants';
+import { safeLocalStorage } from '../lib/safeStorage';
 import { usePushNotifications } from './usePushNotifications';
 
 export function usePreferences() {
@@ -24,7 +25,7 @@ export function useOnboarding() {
   const push = usePushNotifications();
   const [saving, setSaving] = useState(false);
 
-  const localDone = localStorage.getItem(ONBOARDING_DONE_KEY) === 'true';
+  const localDone = safeLocalStorage.getItem(ONBOARDING_DONE_KEY) === 'true';
 
   const needsOnboarding = !isLoading && !localDone && !prefs?.onboardingDone;
 
@@ -33,7 +34,7 @@ export function useOnboarding() {
       setSaving(true);
       try {
         await savePrefs.mutateAsync({ ...data, onboardingDone: true });
-        localStorage.setItem(ONBOARDING_DONE_KEY, 'true');
+        safeLocalStorage.setItem(ONBOARDING_DONE_KEY, 'true');
         if (data.dailyReminder || data.afternoonReminder || data.eveningReminder) {
           void push.subscribe();
         }

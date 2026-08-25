@@ -54,7 +54,7 @@ async function sendToSubscriptions(
 export const notificationService = {
   async subscribe(
     userId: string,
-    subscription: { endpoint: string; keys: Record<string, string> },
+    subscription: { endpoint: string; keys: { p256dh: string; auth: string } },
   ) {
     const existing = await prisma.pushSubscription.findUnique({
       where: { endpoint: subscription.endpoint },

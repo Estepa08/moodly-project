@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { Plus, Sparkles, Check } from 'lucide-react';
 import type { CreateEntryMutation } from '../../lib/app-types';
 import type { components } from '../../lib/api-types';
-import { reportError } from '../../lib/errorReporter';
+import { reportMutationError } from '../shared/reportMutationError';
 import { PARAM_ICON_CONFIGS } from '../../lib/quickEntryIcons';
 import { PARAM_ICONS } from '../../lib/constants';
 import { ParameterName } from '../../lib/constants';
@@ -93,11 +93,7 @@ export default function QuickEntryIcons({
           setEmotions([]);
         },
         onError: (err) => {
-          const message =
-            err instanceof Error
-              ? `saveError [quick-entry] ${err.name}: ${err.message}`
-              : `saveError [quick-entry] Unexpected error: ${String(err)}`;
-          reportError({ message, stack: err instanceof Error ? err.stack : undefined });
+          reportMutationError('quick-entry', err);
           toast.error(t('dashboard.quickEntry.saveError'));
         },
       });

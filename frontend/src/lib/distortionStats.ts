@@ -1,7 +1,6 @@
 import { DISTORTION_KEYS, DistortionKey } from './distortionsQuiz';
 import type { DecryptedEntry } from '../hooks/useEntries';
-
-export const MOOD_PARAM = 'Mood';
+import { MOOD_PARAM } from './activityCorrelation';
 
 export interface DistortionStat {
   key: DistortionKey;

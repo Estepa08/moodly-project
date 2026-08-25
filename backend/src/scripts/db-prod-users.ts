@@ -1,14 +1,5 @@
 import { prisma } from '../lib/prisma.js';
-
-function dbHost(): string {
-  const url = process.env.DATABASE_URL;
-  if (!url) return 'не задан (нужен DATABASE_URL)';
-  try {
-    return new URL(url).host;
-  } catch {
-    return url.split('@').pop() ?? url;
-  }
-}
+import { dbHost } from './cli-helpers.js';
 
 async function main() {
   const users = await prisma.user.findMany({

@@ -6,18 +6,7 @@ if (process.env.NODE_ENV === 'production' && process.env.PROD_SEED !== '1') {
 import bcrypt from 'bcryptjs';
 import { prisma } from './lib/prisma.js';
 import { MS_PER_DAY } from './lib/constants.js';
-
-const parameters = [
-  { name: 'Anxiety', description: 'Общий уровень тревоги', unit: '/10' },
-  { name: 'Sleep', description: 'Качество сна', unit: '/10' },
-  { name: 'Mood', description: 'Общее настроение', unit: '/10' },
-  { name: 'Energy', description: 'Уровень энергии', unit: '/10' },
-  { name: 'Gratitude', description: 'Ежедневная заметка благодарности', unit: null },
-  { name: 'Sleep Hygiene', description: 'Ночной чек-лист гигиены сна', unit: null },
-  { name: 'Distortion Quiz', description: 'Баллы теста когнитивных искажений', unit: null },
-  { name: 'Thought Release', description: 'Журнал ритуала отпускания мыслей', unit: null },
-  { name: 'Day Activities', description: 'Занятия и события дня', unit: null },
-];
+import { DEFAULT_PARAMETERS as parameters } from './services/parameter.js';
 
 const baiOptions = [
   { id: 'bai-o-0', text: 'Нет', score: 0 },

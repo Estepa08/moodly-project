@@ -33,6 +33,11 @@ model User {
   // Email verification
   emailVerified Boolean @default(false)
 
+  // Брутфорс-защита логина: счётчик неудачных попыток и временная блокировка
+  // аккаунта после превышения порога (см. userService.login).
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
   // E2E-шифрование: DEK, зашифрованный KEK (из пароля) и KEK_recovery (из recovery-кода).
   // Ключи генерируются на клиенте; сервер хранит только wrappedKey и соли и не может
   // расшифровать данные пользователя.
@@ -332,11 +337,20 @@ model RefreshToken {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
+  // Refresh-token rotation: familyId связывает все токены, выданные при
+  // одной цепочке /auth/refresh; revokedAt ставится сразу при обмене
+  // токена. Повторное предъявление уже отозванного токена — признак кражи
+  // (реплей украденного refresh-токена), и отзывает всю семью целиком
+  // (см. authService.consumeRefreshToken).
+  familyId  String    @default(cuid())
+  revokedAt DateTime?
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   device Device? @relation(fields: [deviceId], references: [id])
 
   @@index([userId])
   @@index([deviceId])
+  @@index([familyId])
 }
 
 model Device {

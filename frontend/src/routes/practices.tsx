@@ -5,7 +5,6 @@ import { api } from '../lib/api';
 import { Card, CardContent } from '../components/ui/card';
 import { useStalePractices } from '../hooks/useStalePractices';
 import { useTests } from '../hooks/useTests';
-import { PracticeSource } from '../features/gamification/practice.enums';
 import {
   Wind,
   Heart,
@@ -18,17 +17,7 @@ import {
   FlaskConical,
   Shuffle,
 } from 'lucide-react';
-
-const PATH_TO_SOURCE: Record<string, PracticeSource> = {
-  '/practices/thought-journal': PracticeSource.ThoughtJournal,
-  '/practices/gratitude': PracticeSource.Gratitude,
-  '/practices/distortions': PracticeSource.Distortions,
-  '/practices/sleep-hygiene': PracticeSource.SleepHygiene,
-  '/practices/cost-benefit-analysis': PracticeSource.Cba,
-  '/practices/breathing': PracticeSource.Breathing,
-  '/practices/emotion-lab': PracticeSource.EmotionLab,
-  '/practices/relaxation-wheel': PracticeSource.RelaxationWheel,
-};
+import { PATH_TO_SOURCE } from '../lib/practicePaths';
 
 const PRACTICES = [
   {

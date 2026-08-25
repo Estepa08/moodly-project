@@ -5,11 +5,10 @@ import { ClipboardList, ChevronDown } from 'lucide-react';
 import { useTests } from '../hooks/useTests';
 import { useTestResultText } from '../hooks/useTestResultText';
 import type { DecryptedTestResult } from '../hooks/useTests';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { LoadingCard } from '../components/ui/loading-card';
 import EmptyState from '../components/ui/empty-state';
 import { Button } from '../components/ui/button';
-import PeriodSelect from '../components/ui/PeriodSelect';
+import PeriodCardShell from '../components/ui/PeriodCardShell';
 import { Period } from '../lib/constants';
 import { cn } from '../lib/utils';
 
@@ -77,146 +76,136 @@ export default function TestsResultsSection({
 
   if (!results || results.length === 0) {
     return (
-      <Card className="shadow-neumorphic">
-        <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0">
-          <CardTitle className="text-base flex items-center gap-2">
-            <ClipboardList aria-hidden="true" className="w-4 h-4 text-primary" />
-            {t('dashboard.testsTaken')}
-          </CardTitle>
-          <PeriodSelect value={period} onChange={onPeriodChange} className="w-full sm:w-44" />
-        </CardHeader>
-        <CardContent>
-          <EmptyState
-            icon={ClipboardList}
-            title={t('dashboard.noTestData')}
-            action={{
-              label: t('testResults.takeTest'),
-              onClick: () => navigate('/tests'),
-            }}
-          />
-        </CardContent>
-      </Card>
+      <PeriodCardShell
+        icon={ClipboardList}
+        title={t('dashboard.testsTaken')}
+        period={period}
+        onPeriodChange={onPeriodChange}
+      >
+        <EmptyState
+          icon={ClipboardList}
+          title={t('dashboard.noTestData')}
+          action={{
+            label: t('testResults.takeTest'),
+            onClick: () => navigate('/tests'),
+          }}
+        />
+      </PeriodCardShell>
     );
   }
 
   return (
-    <Card className="shadow-neumorphic">
-      <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0 pb-3">
-        <div className="space-y-1">
-          <CardTitle className="text-base flex items-center gap-2">
-            <ClipboardList aria-hidden="true" className="w-4 h-4 text-primary" />
-            {t('dashboard.testsTaken')}
-          </CardTitle>
-          <p className="text-xs text-muted-foreground">
-            {t('testResults.summaryCount', { count: results.length })}
-          </p>
-        </div>
-        <PeriodSelect value={period} onChange={onPeriodChange} className="w-full sm:w-44" />
-      </CardHeader>
-      <CardContent className="space-y-2 pt-0">
-        {groups.map((group) => {
-          const latest = group.results[0];
-          const open = !!openTests[group.testId];
+    <PeriodCardShell
+      icon={ClipboardList}
+      title={t('dashboard.testsTaken')}
+      subtitle={
+        <p className="text-xs text-muted-foreground">
+          {t('testResults.summaryCount', { count: results.length })}
+        </p>
+      }
+      period={period}
+      onPeriodChange={onPeriodChange}
+      headerClassName="pb-3"
+      contentClassName="space-y-2 pt-0"
+    >
+      {groups.map((group) => {
+        const latest = group.results[0];
+        const open = !!openTests[group.testId];
 
-          return (
-            <div key={group.testId} className="rounded-xl border border-border overflow-hidden">
-              <button
-                type="button"
-                onClick={() =>
-                  setOpenTests((prev) => ({ ...prev, [group.testId]: !prev[group.testId] }))
-                }
-                aria-expanded={open}
-                className="flex items-center gap-3 w-full px-3 py-2.5 min-h-[44px] text-left cursor-pointer rounded-xl transition-[background-color] duration-150 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium text-foreground truncate">{testName(latest)}</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {latest.interpretation} ·{' '}
-                    {t('testResults.summaryCount', { count: group.results.length })}
-                  </p>
-                </div>
-                <span className="text-sm font-semibold tabular-nums ml-2">{latest.score}</span>
-                <ChevronDown
-                  aria-hidden="true"
-                  className={cn(
-                    'w-5 h-5 text-muted-foreground transition-transform duration-200 shrink-0',
-                    open && 'rotate-180',
-                  )}
-                />
-              </button>
+        return (
+          <div key={group.testId} className="rounded-xl border border-border overflow-hidden">
+            <button
+              type="button"
+              onClick={() =>
+                setOpenTests((prev) => ({ ...prev, [group.testId]: !prev[group.testId] }))
+              }
+              aria-expanded={open}
+              className="flex items-center gap-3 w-full px-3 py-2.5 min-h-[44px] text-left cursor-pointer rounded-xl transition-[background-color] duration-150 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-foreground truncate">{testName(latest)}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {latest.interpretation} ·{' '}
+                  {t('testResults.summaryCount', { count: group.results.length })}
+                </p>
+              </div>
+              <span className="text-sm font-semibold tabular-nums ml-2">{latest.score}</span>
+              <ChevronDown
+                aria-hidden="true"
+                className={cn(
+                  'w-5 h-5 text-muted-foreground transition-transform duration-200 shrink-0',
+                  open && 'rotate-180',
+                )}
+              />
+            </button>
 
-              {open && (
-                <div className="border-t border-border bg-muted/20 px-2 py-2 space-y-1.5">
-                  {group.results.map((r) => {
-                    const attemptOpen = !!openAttempt[r.id];
-                    const { interpretationText, recommendationText } = resolve(r);
-                    const isLongText = interpretationText.length > 100;
+            {open && (
+              <div className="border-t border-border bg-muted/20 px-2 py-2 space-y-1.5">
+                {group.results.map((r) => {
+                  const attemptOpen = !!openAttempt[r.id];
+                  const { interpretationText, recommendationText } = resolve(r);
+                  const isLongText = interpretationText.length > 100;
 
-                    return (
-                      <div
-                        key={r.id}
-                        className="rounded-xl bg-card border border-border overflow-hidden"
+                  return (
+                    <div
+                      key={r.id}
+                      className="rounded-xl bg-card border border-border overflow-hidden"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setOpenAttempt((prev) => ({ ...prev, [r.id]: !prev[r.id] }))}
+                        aria-expanded={attemptOpen}
+                        className="flex items-center gap-3 w-full px-3 py-2 min-h-[44px] text-left cursor-pointer rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setOpenAttempt((prev) => ({ ...prev, [r.id]: !prev[r.id] }))
-                          }
-                          aria-expanded={attemptOpen}
-                          className="flex items-center gap-3 w-full px-3 py-2 min-h-[44px] text-left cursor-pointer rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          <div className="min-w-0 flex-1">
-                            <p className="text-xs font-medium text-foreground">
-                              {formatDate(r.completedAt)}
-                            </p>
-                            <p className="text-xs text-muted-foreground truncate">
-                              {r.interpretation}
-                            </p>
-                          </div>
-                          <span className="text-sm font-semibold tabular-nums ml-2">{r.score}</span>
-                          <ChevronDown
-                            aria-hidden="true"
-                            className={cn(
-                              'w-4 h-4 text-muted-foreground transition-transform duration-150 shrink-0',
-                              attemptOpen && 'rotate-180',
-                            )}
-                          />
-                        </button>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-medium text-foreground">
+                            {formatDate(r.completedAt)}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {r.interpretation}
+                          </p>
+                        </div>
+                        <span className="text-sm font-semibold tabular-nums ml-2">{r.score}</span>
+                        <ChevronDown
+                          aria-hidden="true"
+                          className={cn(
+                            'w-4 h-4 text-muted-foreground transition-transform duration-150 shrink-0',
+                            attemptOpen && 'rotate-180',
+                          )}
+                        />
+                      </button>
 
-                        {attemptOpen && (
-                          <div className="px-3 pb-3">
-                            <div className={showFull[r.id] ? '' : 'line-clamp-2'}>
-                              <p className="text-sm">{interpretationText}</p>
-                            </div>
-                            {isLongText && (
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="h-auto px-0 text-xs"
-                                aria-expanded={!!showFull[r.id]}
-                                onClick={() =>
-                                  setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))
-                                }
-                              >
-                                {showFull[r.id]
-                                  ? t('testResults.showLess')
-                                  : t('testResults.showFull')}
-                              </Button>
-                            )}
-                            <p className="text-sm mt-2 text-muted-foreground">
-                              {recommendationText}
-                            </p>
+                      {attemptOpen && (
+                        <div className="px-3 pb-3">
+                          <div className={showFull[r.id] ? '' : 'line-clamp-2'}>
+                            <p className="text-sm">{interpretationText}</p>
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </CardContent>
-    </Card>
+                          {isLongText && (
+                            <Button
+                              variant="link"
+                              size="sm"
+                              className="h-auto px-0 text-xs"
+                              aria-expanded={!!showFull[r.id]}
+                              onClick={() =>
+                                setShowFull((prev) => ({ ...prev, [r.id]: !prev[r.id] }))
+                              }
+                            >
+                              {showFull[r.id]
+                                ? t('testResults.showLess')
+                                : t('testResults.showFull')}
+                            </Button>
+                          )}
+                          <p className="text-sm mt-2 text-muted-foreground">{recommendationText}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </PeriodCardShell>
   );
 }

@@ -2,23 +2,16 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BarChart3, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { safeLocalStorage } from '../lib/safeStorage';
 
 const HINT_DISMISSED_KEY = 'moodly_dashboard_hint_dismissed';
 
 function readDismissed(): boolean {
-  try {
-    return localStorage.getItem(HINT_DISMISSED_KEY) === '1';
-  } catch {
-    return false;
-  }
+  return safeLocalStorage.getItem(HINT_DISMISSED_KEY) === '1';
 }
 
 function persistDismissed() {
-  try {
-    localStorage.setItem(HINT_DISMISSED_KEY, '1');
-  } catch {
-    /* localStorage may be unavailable */
-  }
+  safeLocalStorage.setItem(HINT_DISMISSED_KEY, '1');
 }
 
 interface FirstTimeHintProps {

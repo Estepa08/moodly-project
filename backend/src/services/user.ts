@@ -48,6 +48,12 @@ function stripUser(user: {
   };
 }
 
+// Брутфорс-защита на уровне аккаунта: общий write-rate-limit (index.ts)
+// бьёт по IP и не спасает от credential stuffing, распределённого по
+// множеству IP — поэтому считаем неудачные попытки на самом аккаунте.
+const MAX_FAILED_LOGIN_ATTEMPTS = 10;
+const LOCKOUT_MINUTES = 15;
+
 export const userService = {
   async register(input: RegisterInput) {
     if (!input.ageConfirmed) {
@@ -92,8 +98,30 @@ export const userService = {
     const user = await prisma.user.findUnique({ where: { email: input.email } });
     if (!user) throw new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password');
 
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      throw new AppError('ACCOUNT_LOCKED', 429, 'Too many failed login attempts. Try again later.');
+    }
+
     const valid = await bcrypt.compare(input.password, user.password);
-    if (!valid) throw new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password');
+    if (!valid) {
+      const attempts = user.failedLoginAttempts + 1;
+      const lockingOut = attempts >= MAX_FAILED_LOGIN_ATTEMPTS;
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          failedLoginAttempts: lockingOut ? 0 : attempts,
+          lockedUntil: lockingOut ? new Date(Date.now() + LOCKOUT_MINUTES * 60_000) : null,
+        },
+      });
+      throw new AppError('INVALID_CREDENTIALS', 401, 'Invalid email or password');
+    }
+
+    if (user.failedLoginAttempts > 0 || user.lockedUntil) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginAttempts: 0, lockedUntil: null },
+      });
+    }
 
     return {
       user: stripUser(user),
@@ -126,6 +154,42 @@ export const userService = {
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) throw new NotFoundError('User');
     return stripUser(user);
+  },
+
+  async findByEmail(email: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    return user ? stripUser(user) : null;
+  },
+
+  async getRecoveryInfo(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { recoveryWrappedKey: true, recoverySalt: true },
+    });
+    return {
+      recoveryWrappedKey: user?.recoveryWrappedKey ?? null,
+      recoverySalt: user?.recoverySalt ?? null,
+    };
+  },
+
+  // Сбрасывает пароль и E2E-ключи по валидному reset-токену; заодно снимает
+  // брутфорс-блокировку логина (см. login) — новый пароль не должен
+  // оставаться заблокированным по счётчику от старого.
+  async resetPassword(
+    userId: string,
+    input: { password: string; wrappedKey: string; keySalt: string },
+  ) {
+    const hashed = await bcrypt.hash(input.password, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashed,
+        wrappedKey: input.wrappedKey,
+        keySalt: input.keySalt,
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      },
+    });
   },
 
   async update(id: string, data: { name?: string }) {
