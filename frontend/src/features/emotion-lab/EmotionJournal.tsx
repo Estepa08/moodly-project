@@ -71,7 +71,7 @@ export default function EmotionJournal({ state }: EmotionJournalProps) {
       {/* Прогресс-бар */}
       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-4">
         <div
-          className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+          className="bg-gradient-to-r from-primary to-accent h-2 rounded-full transition-all duration-500"
           style={{ width: `${(state.discoveredCount / state.totalDyads) * 100}%` }}
         />
       </div>
