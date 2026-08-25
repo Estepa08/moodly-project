@@ -79,16 +79,25 @@ export default {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+        '3xl': '1rem',
+        '4xl': '1.25rem',
       },
       fontFamily: {
         sans: ['Golos Text', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Source Serif 4', 'system-ui', '-apple-system', 'serif'],
         serif: ['Source Serif 4', 'system-ui', '-apple-system', 'serif'],
         heading: ['Source Serif 4', 'system-ui', '-apple-system', 'serif'],
+        // Третий, служебный регистр — только для мета-данных (даты, счётчики,
+        // подписи периода), см. components/ui/eyebrow.tsx. Не используется
+        // для основного текста.
+        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       backgroundImage: {
-        /* Тихий кабинет: ни одной настоящей смеси цветов — плоская заливка через токен */
-        'card-gradient': 'linear-gradient(180deg, hsl(var(--card)), hsl(var(--card)))',
+        /* Тихий кабинет: ни одной настоящей смеси цветов — плоская заливка через токен.
+           card-gradient несёт ещё едва заметное бумажное зерно (alpha-шум,
+           не влияет на контраст текста, который рендерится отдельным слоем поверх). */
+        'card-gradient':
+          "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMDAnIGhlaWdodD0nMjAwJz4KPGZpbHRlciBpZD0nbic+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjxmZUNvbG9yTWF0cml4IHR5cGU9J3NhdHVyYXRlJyB2YWx1ZXM9JzAnLz48L2ZpbHRlcj4KPHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI24pJyBvcGFjaXR5PScwLjAzNScvPgo8L3N2Zz4='), linear-gradient(180deg, hsl(var(--card)), hsl(var(--card)))",
         'btn-gradient': 'linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary)))',
         'btn-gradient-hot': 'linear-gradient(180deg, hsl(var(--accent)), hsl(var(--accent)))',
       },
@@ -106,9 +115,12 @@ export default {
         clay: 'var(--clay-shadow)',
         'clay-lg': 'var(--clay-shadow-lg)',
       },
-      borderRadius: {
-        '3xl': '1rem',
-        '4xl': '1.25rem',
+      transitionTimingFunction: {
+        // Сигнатурный тайминг интерфейсной "хромы" (карточки, кнопки, чипы):
+        // элементы оседают на место, а не подпрыгивают — pet-* keyframes
+        // (bounce/spring) намеренно остаются другим, "живым" регистром
+        // компаньона и этим правилом не покрываются.
+        settle: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
       },
     },
   },

@@ -17,6 +17,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Slider } from '../components/ui/slider';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { IconButton } from '../components/ui/icon-button';
+import Eyebrow from '../components/ui/eyebrow';
 import {
   Flame,
   ClipboardList,
@@ -432,7 +433,7 @@ export default function ThoughtJournalPage() {
                       />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs text-muted-foreground">{formatDate(e.createdAt)}</p>
+                      <Eyebrow className="mb-0.5">{formatDate(e.createdAt)}</Eyebrow>
                       {e.note ? (
                         <p className="text-sm text-foreground whitespace-pre-line line-clamp-3">
                           {e.note}

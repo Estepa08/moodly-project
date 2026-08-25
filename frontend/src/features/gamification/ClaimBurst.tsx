@@ -10,7 +10,12 @@ import { Sparkles, Star } from 'lucide-react';
 const rand = (min: number, max: number) => Math.random() * (max - min) + min;
 
 const ICONS = [Sparkles, Star];
-const COLORS = ['#F5A623', '#D63A85', '#7B5BF2', '#0B7A55'];
+const COLORS = [
+  'hsl(var(--chart-4))',
+  'hsl(var(--chart-5))',
+  'hsl(var(--primary-muted))',
+  'hsl(var(--success))',
+];
 
 interface ClaimBurstProps {
   /** Инкрементируется при каждом новом всплеске — меняет `key` частиц, чтобы анимация переигралась. */

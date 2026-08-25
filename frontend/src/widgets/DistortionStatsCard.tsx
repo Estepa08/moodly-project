@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { BrainCircuit, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import PeriodSelect from '../components/ui/PeriodSelect';
+import PullQuote from '../components/ui/pull-quote';
 import Spinner from '../components/ui/spinner';
 import { Period } from '../lib/constants';
 import { getDateRange } from '../lib/utils';
@@ -58,10 +59,7 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
           )}
         </div>
         <span className="flex shrink-0 items-center gap-1.5">
-          <span
-            className="rounded-full px-2.5 py-0.5 text-xs font-bold"
-            style={{ color: '#7B5BF2', backgroundColor: '#EDE7FC' }}
-          >
+          <span className="rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-bold text-accent">
             {s.count}
           </span>
           <ChevronRight aria-hidden="true" className="w-3.5 h-3.5 text-muted-foreground" />
@@ -100,7 +98,7 @@ export default function DistortionStatsCard({ period, onPeriodChange }: Distorti
               </div>
             )}
             <div className="space-y-2">{result.stats.slice(0, 5).map(renderRow)}</div>
-            <p className="text-xs text-muted-foreground">{t('distortionStats.statsHint')}</p>
+            <PullQuote>{t('distortionStats.statsHint')}</PullQuote>
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-10 px-6 text-center">

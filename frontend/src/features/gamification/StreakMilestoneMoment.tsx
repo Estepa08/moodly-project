@@ -53,14 +53,14 @@ const TIER_CONFIG: Record<
     accentClass: 'text-accent',
     ringClass: 'bg-accent/20',
     sparkleCount: 5,
-    confetti: { particleCount: 60, colors: ['#7B5BF2', '#D63A85', '#F5A623'] },
+    confetti: { particleCount: 60, colors: ['accent', 'chart-4', 'chart-5'] },
     sideBursts: false,
   },
   100: {
     accentClass: 'text-warning',
     ringClass: 'bg-warning/25',
     sparkleCount: 6,
-    confetti: { particleCount: 120, colors: ['#F5A623', '#FFD166', '#D63A85', '#7B5BF2'] },
+    confetti: { particleCount: 120, colors: ['warning', 'chart-4', 'chart-5', 'accent'] },
     sideBursts: true,
   },
 };

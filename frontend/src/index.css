@@ -64,6 +64,9 @@
     --chart-3: 215 80% 42%;
     --chart-4: 36 95% 35%;
     --chart-5: 350 75% 40%;
+    /* Намеренно НЕ приглушены до тона quiet cabinet — компаньон и данные
+       остаются единственным ярким пятном в приглушённой комнате. Не тушить
+       эти токены "для единообразия" при будущих правках палитры. */
     --pet-1: 262 78% 70%;
     --pet-2: 330 85% 70%;
     --pet-3: 190 95% 55%;
@@ -86,6 +89,11 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     background-color: hsl(var(--background));
+    /* Тихий кабинет: едва заметное зерно вместо чистой плоской заливки —
+       тёплая бумага, а не пластик. Alpha-шум (feTurbulence), не тон —
+       не влияет на контраст текста, который рендерится поверх отдельным слоем. */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMDAnIGhlaWdodD0nMjAwJz4KPGZpbHRlciBpZD0nbic+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgbnVtT2N0YXZlcz0nMicgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjxmZUNvbG9yTWF0cml4IHR5cGU9J3NhdHVyYXRlJyB2YWx1ZXM9JzAnLz48L2ZpbHRlcj4KPHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI24pJyBvcGFjaXR5PScwLjAzNScvPgo8L3N2Zz4=');
+    background-repeat: repeat;
     color: hsl(var(--foreground));
     font-family:
       'Golos Text',
@@ -158,14 +166,14 @@
     --muted: 80 9% 16%;
     --muted-foreground: 42 12% 60%;
     --destructive: 0 70% 70%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 84 9% 10%;
     --destructive-strong: 0 70% 52%;
     --success: 160 60% 70%;
-    --success-foreground: 0 0% 100%;
+    --success-foreground: 84 9% 10%;
     --warning: 36 92% 70%;
-    --warning-foreground: 0 0% 100%;
+    --warning-foreground: 84 9% 10%;
     --info: 199 75% 70%;
-    --info-foreground: 0 0% 100%;
+    --info-foreground: 84 9% 10%;
     --border: 73 9% 19%;
     --input: 73 9% 19%;
     --ring: 91 18% 55%;
