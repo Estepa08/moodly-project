@@ -178,8 +178,24 @@ export async function runMission(page: Page, missionKey: string): Promise<void> 
   }
 }
 
+// The daily-missions list lives inside a CollapsibleSection that starts
+// collapsed (defaultOpen=false). A collapsed section's content still reports
+// a bounding box to Playwright's actionability checks, so
+// `expect(...).toBeVisible()` passes and clicks *look* like they should
+// work — but the real click lands on whatever the page actually renders at
+// those coordinates (the section's own header, or the page background),
+// and the mission's mutation never fires. Must explicitly expand it first.
+async function expandMissionsSection(page: Page): Promise<void> {
+  const header = page.getByRole("button", { name: /Ежедневные задания/ });
+  if ((await header.getAttribute("aria-expanded")) !== "true") {
+    await header.click();
+  }
+  await expect(header).toHaveAttribute("aria-expanded", "true");
+}
+
 async function pickMission(page: Page): Promise<string> {
   await gotoApp(page, "/progress");
+  await expandMissionsSection(page);
   const missionCards = page.locator("[data-testid^='mission-']");
   await expect(missionCards.first()).toBeVisible();
   const testids = await missionCards.evaluateAll((els) =>
@@ -203,6 +219,7 @@ test(
     await runMission(page, missionKey);
 
     await gotoApp(page, "/progress");
+    await expandMissionsSection(page);
     const card = page.getByTestId(`mission-${missionKey}`);
     const claimButton = card.getByRole("button", { name: "Забрать награду" });
     await expect(claimButton).toBeVisible();
@@ -211,16 +228,16 @@ test(
     const xpText = page.getByText(/\d+\/\d+ XP/).first();
     const before = await xpText.textContent();
 
-    await page.locator('[aria-expanded="true"]').waitFor({ state: "hidden" });
-
     const responsePromise = page.waitForResponse(
-      (response) => response.url().includes("/api/missions/claim") && response.status() === 200,
+      (response) =>
+        response.url().includes("/creature/missions/") &&
+        response.url().endsWith("/claim") &&
+        response.status() === 200,
     );
-    await claimButton.click({ force: true });
+    await claimButton.click();
     const response = await responsePromise;
     console.log(await response.json());
 
-    await claimButton.click({ force: true });
     await expect(claimButton).not.toBeVisible();
     await expect(card.locator(".text-success")).toBeVisible();
 
