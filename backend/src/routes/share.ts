@@ -49,9 +49,9 @@ function renderSharePage(params: { title: string; imageUrl: string; pageUrl: str
 <meta name="twitter:description" content="${description}">
 <meta name="twitter:image" content="${params.imageUrl}">
 <style>
-  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:linear-gradient(135deg,#6D4CE0,#B23E8C); color:#fff; text-align:center; padding:24px; box-sizing:border-box; }
-  img { max-width:min(560px,90vw); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.35); }
-  a { display:inline-block; margin-top:8px; padding:12px 28px; border-radius:999px; background:#fff; color:#6D4CE0; font-weight:700; text-decoration:none; }
+  body { margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#5C6E4E; color:#fff; text-align:center; padding:24px; box-sizing:border-box; }
+  img { max-width:min(560px,90vw); border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.25); }
+  a { display:inline-block; margin-top:8px; padding:12px 28px; border-radius:8px; background:#fff; color:#5C6E4E; font-weight:600; text-decoration:none; }
 </style>
 </head>
 <body>

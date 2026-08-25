@@ -81,17 +81,16 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ["'DM Sans'", 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Nunito', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['Nunito', 'system-ui', '-apple-system', 'sans-serif'],
-        heading: ['Nunito', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Golos Text', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Source Serif 4', 'system-ui', '-apple-system', 'serif'],
+        serif: ['Source Serif 4', 'system-ui', '-apple-system', 'serif'],
+        heading: ['Source Serif 4', 'system-ui', '-apple-system', 'serif'],
       },
       backgroundImage: {
-        'card-gradient': 'linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)))',
-        'btn-gradient': 'linear-gradient(120deg, hsl(264 95% 60%), hsl(262 85% 55%))',
-        'btn-gradient-hot': 'linear-gradient(120deg, hsl(328 100% 74%), hsl(330 82% 54%))',
-        aurora:
-          'radial-gradient(120% 120% at 15% 0%, hsl(255 90% 70% / 0.20), transparent 45%), radial-gradient(120% 120% at 100% 100%, hsl(330 80% 70% / 0.18), transparent 45%), radial-gradient(80% 80% at 80% 0%, hsl(160 80% 60% / 0.14), transparent 50%)',
+        /* Тихий кабинет: ни одной настоящей смеси цветов — плоская заливка через токен */
+        'card-gradient': 'linear-gradient(180deg, hsl(var(--card)), hsl(var(--card)))',
+        'btn-gradient': 'linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary)))',
+        'btn-gradient-hot': 'linear-gradient(180deg, hsl(var(--accent)), hsl(var(--accent)))',
       },
       boxShadow: {
         'neumorphic-sm': 'var(--elevation-1)',
@@ -108,8 +107,8 @@ export default {
         'clay-lg': 'var(--clay-shadow-lg)',
       },
       borderRadius: {
-        '3xl': '1.5rem',
-        '4xl': '2rem',
+        '3xl': '1rem',
+        '4xl': '1.25rem',
       },
     },
   },

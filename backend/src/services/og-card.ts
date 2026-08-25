@@ -75,15 +75,15 @@ let fontDataCache: Buffer | null = null;
 function loadFont(): Buffer {
   if (!fontDataCache) {
     const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-    const fontPath = path.resolve(moduleDir, '../../assets/fonts/Nunito-800.ttf');
+    const fontPath = path.resolve(moduleDir, '../../assets/fonts/SourceSerif4-600.ttf');
     fontDataCache = readFileSync(fontPath);
   }
   return fontDataCache;
 }
 
-// Nunito — текстовый шрифт без emoji-глифов, satori без доп. настройки
-// рендерит эмодзи как пустые квадраты. graphemeImages подставляет вместо
-// каждого эмодзи локальный PNG (Twemoji, предзагружен один раз в
+// Source Serif 4 — текстовый шрифт без emoji-глифов, satori без доп.
+// настройки рендерит эмодзи как пустые квадраты. graphemeImages подставляет
+// вместо каждого эмодзи локальный PNG (Twemoji, предзагружен один раз в
 // assets/emoji/ — не идёт в сеть в рантайме, только читает файлы с диска).
 let graphemeImagesCache: Record<string, string> | null = null;
 function loadGraphemeImages(): Record<string, string> {
@@ -133,15 +133,15 @@ export async function renderStreakCardPng({ days, petType }: StreakCardParams): 
       width: '100%',
       height: '100%',
       flexDirection: 'column',
-      backgroundImage: 'linear-gradient(135deg, #6D4CE0 0%, #B23E8C 100%)',
-      fontFamily: 'Nunito',
+      backgroundColor: '#5C6E4E',
+      fontFamily: 'Source Serif 4',
       position: 'relative',
     },
     flex(
       { position: 'absolute', top: 40, left: 48, alignItems: 'center', gap: 10 },
       React.createElement(
         'span',
-        { style: { fontSize: 32, fontWeight: 800, color: '#FFFFFF' } },
+        { style: { fontSize: 32, fontWeight: 600, color: '#FFFFFF' } },
         '🦊 Moodly',
       ),
     ),
@@ -164,7 +164,7 @@ export async function renderStreakCardPng({ days, petType }: StreakCardParams): 
         { flexDirection: 'column' },
         React.createElement(
           'span',
-          { style: { fontSize: 176, fontWeight: 800, color: '#FFFFFF', lineHeight: 1 } },
+          { style: { fontSize: 176, fontWeight: 600, color: '#FFFFFF', lineHeight: 1 } },
           String(days),
         ),
         React.createElement(
@@ -172,7 +172,7 @@ export async function renderStreakCardPng({ days, petType }: StreakCardParams): 
           {
             style: {
               fontSize: 48,
-              fontWeight: 800,
+              fontWeight: 600,
               color: 'rgba(255,255,255,0.92)',
               marginTop: 12,
             },
@@ -185,7 +185,7 @@ export async function renderStreakCardPng({ days, petType }: StreakCardParams): 
       { position: 'absolute', bottom: 40, left: 48 },
       React.createElement(
         'span',
-        { style: { fontSize: 30, fontWeight: 800, color: 'rgba(255,255,255,0.85)' } },
+        { style: { fontSize: 30, fontWeight: 600, color: 'rgba(255,255,255,0.85)' } },
         'mymoodly.ru',
       ),
     ),
@@ -194,7 +194,7 @@ export async function renderStreakCardPng({ days, petType }: StreakCardParams): 
   const svg = await satori(element, {
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    fonts: [{ name: 'Nunito', data: font, weight: 800, style: 'normal' }],
+    fonts: [{ name: 'Source Serif 4', data: font, weight: 600, style: 'normal' }],
     graphemeImages: loadGraphemeImages(),
   });
 

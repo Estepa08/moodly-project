@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import { useCreatureState, usePets } from './useCreature';
 import { usePetReward } from './usePetReward';
 import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { PET_CYCLE } from '@moodly/shared';
-import PetAvatar, { type PetHide, type PetHideVariant } from './PetAvatar';
+import PetAvatar from './PetAvatar';
 import PlayButton from './PlayButton';
 import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
 import { useDayPhase } from '../../hooks/useDayPhase';
@@ -19,14 +18,6 @@ interface PetGreeterCardProps {
   onCheckIn: () => void;
 }
 
-const IDLE_VISIBLE_MS = 10_000;
-const IDLE_HIDE_MS = 3_600;
-const IDLE_PAUSE_MS = 1_500;
-const IDLE_APPEAR_MS = 650;
-const HIDE_VARIANTS: PetHideVariant[] = ['sink', 'melt', 'dissolve', 'collapse', 'tumble'];
-
-type IdlePhase = 'visible' | 'hiding' | 'hidden' | 'appearing';
-
 export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const { t } = useTranslation();
   const { data: creature, isLoading } = useCreatureState();
@@ -36,39 +27,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const { data: message } = useMessageOfDay(phase);
   const isReducedMotion = useReducedMotion();
   const isMobile = useMediaQuery('(max-width: 768px)');
-
-  const [idlePhase, setIdlePhase] = useState<IdlePhase>('visible');
-  const [hide, setHide] = useState<PetHide | null>(null);
-
-  // Таймлайн idle-цикла
-  useEffect(() => {
-    if (isReducedMotion) return;
-    let timer: ReturnType<typeof setTimeout>;
-    switch (idlePhase) {
-      case 'visible':
-        timer = setTimeout(() => {
-          setHide({
-            id: Date.now(),
-            variant: HIDE_VARIANTS[Math.floor(Math.random() * HIDE_VARIANTS.length)],
-          });
-          setIdlePhase('hiding');
-        }, IDLE_VISIBLE_MS);
-        break;
-      case 'hiding':
-        timer = setTimeout(() => setIdlePhase('hidden'), IDLE_HIDE_MS);
-        break;
-      case 'hidden':
-        timer = setTimeout(() => {
-          setHide(null);
-          setIdlePhase('appearing');
-        }, IDLE_PAUSE_MS);
-        break;
-      case 'appearing':
-        timer = setTimeout(() => setIdlePhase('visible'), IDLE_APPEAR_MS);
-        break;
-    }
-    return () => clearTimeout(timer);
-  }, [idlePhase, isReducedMotion]);
 
   if (isLoading || !creature) return null;
 
@@ -139,7 +97,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
           className={cn(
             'h-28 w-28 rounded-full bg-card/60 flex items-center justify-center',
             !isReducedMotion && 'animate-pet-float',
-            (idlePhase === 'hiding' || idlePhase === 'hidden') && 'overflow-hidden',
           )}
         >
           <PetAvatar
@@ -152,8 +109,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             reward={reward}
             glow={glow}
             stage={creature.stage}
-            reappear={idlePhase === 'appearing'}
-            hide={hide}
             onTap={handleTap}
             ariaLabel={displayName}
             particleFallLimit={100}

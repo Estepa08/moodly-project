@@ -76,7 +76,7 @@ function renderSteps(steps: WelcomeContent['steps']): string {
       (step, i) => `
       <tr>
         <td style="padding: 10px 0; vertical-align: top;">
-          <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: #ede9fe; color: #6d28d9; text-align: center; line-height: 24px; font-weight: 600; font-size: 13px;">${i + 1}</span>
+          <span style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: #E3E8DD; color: #3E4A36; text-align: center; line-height: 24px; font-weight: 600; font-size: 13px;">${i + 1}</span>
           <span style="font-weight: 600; color: #1f2937;">${step.title}</span>
           <p style="margin: 2px 0 0 32px; color: #6b7280; font-size: 14px;">${step.text}</p>
         </td>
@@ -93,7 +93,7 @@ export function welcomeEmailHtml({ name, lang }: { name: string; lang: 'ru' | 'e
 <html>
 <head><meta charset="utf-8"></head>
 <body style="font-family: sans-serif; padding: 26px; max-width: 480px; margin: 0 auto; color: #374151;">
-  <h2 style="color: #6d28d9; margin-bottom: 4px;">Moodly</h2>
+  <h2 style="color: #3E4A36; margin-bottom: 4px;">Moodly</h2>
   <p style="color: #9ca3af; font-size: 12px;">${c.preheader}</p>
   <h3 style="color: #111827;">${c.greeting(name)}</h3>
   <p style="font-size: 15px; line-height: 1.6;">${c.intro}</p>
@@ -101,7 +101,7 @@ export function welcomeEmailHtml({ name, lang }: { name: string; lang: 'ru' | 'e
     ${steps}
   </table>
   <p style="margin-top: 24px;">
-    <a href="${c.ctaLink}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; text-decoration: none; border-radius: 10px; font-weight: 600;">
+    <a href="${c.ctaLink}" style="display: inline-block; padding: 12px 24px; background: #5C6E4E; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600;">
       ${c.cta}
     </a>
   </p>

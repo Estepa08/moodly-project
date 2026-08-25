@@ -12,6 +12,8 @@ frontend/dev-dist/
 .env.prod.ru
 .env.e2e
 .DS_Store
+__pycache__/
+*.pyc
 .prisma/
 .next/
 *.tsbuildinfo

@@ -9,23 +9,23 @@
     --sal: env(safe-area-inset-left, 0px);
     --sar: env(safe-area-inset-right, 0px);
 
-    /* CLAY-EMOTIVE: прохладная лаванда (никогда чистый белый фон) */
-    --background: 255 40% 96%;
-    --foreground: 255 8% 22%;
-    --card: 0 0% 100%;
-    --card-foreground: 255 8% 22%;
-    --primary: 262 83% 58%;
+    /* ТИХИЙ КАБИНЕТ: тёплый камень, без глянца (никогда чистый белый фон) */
+    --background: 40 27% 91%;
+    --foreground: 90 7% 17%;
+    --card: 44 41% 95%;
+    --card-foreground: 90 7% 17%;
+    --primary: 94 17% 37%;
     --primary-foreground: 0 0% 100%;
-    --primary-strong: 262 83% 50%;
-    --primary-muted: 262 70% 59%;
-    --primary-dim: 262 60% 57%;
-    --secondary: 255 60% 93%;
-    --secondary-foreground: 255 8% 22%;
-    --accent: 330 82% 45%;
+    --primary-strong: 94 22% 28%;
+    --primary-muted: 94 15% 44%;
+    --primary-dim: 94 13% 42%;
+    --secondary: 43 30% 86%;
+    --secondary-foreground: 90 7% 17%;
+    --accent: 24 40% 40%;
     --accent-foreground: 0 0% 100%;
-    --accent-strong: 330 82% 45%;
-    --muted: 260 22% 95%;
-    --muted-foreground: 267 8% 40%;
+    --accent-strong: 21 43% 32%;
+    --muted: 43 24% 89%;
+    --muted-foreground: 42 12% 39%;
     --destructive: 0 84% 46%;
     --destructive-foreground: 0 0% 100%;
     --destructive-strong: 0 84% 46%;
@@ -35,31 +35,31 @@
     --warning-foreground: 0 0% 100%;
     --info: 200 90% 35%;
     --info-foreground: 0 0% 100%;
-    --border: 255 40% 90%;
-    --input: 255 40% 90%;
-    --ring: 262 83% 58%;
-    --pet-gradient-1: 262 70% 95%;
-    --pet-gradient-2: 330 70% 96%;
+    --border: 43 24% 83%;
+    --input: 43 24% 83%;
+    --ring: 94 17% 37%;
+    --pet-gradient-1: 94 20% 88%;
+    --pet-gradient-2: 24 30% 90%;
 
-    --radius: 1rem;
+    --radius: 0.625rem;
 
-    /* CLAY-тени: теплый offset + белый hightlight */
-    --elevation-1: 0 2px 5px rgba(155, 135, 205, 0.28), 0 1px 2px rgba(255, 255, 255, 0.95);
-    --elevation-2: 0 4px 10px rgba(150, 128, 190, 0.32), 0 1px 3px rgba(255, 255, 255, 0.9);
-    --elevation-3: 0 8px 20px rgba(145, 120, 180, 0.38), 0 1px 3px rgba(255, 255, 255, 0.9);
-    --elevation-4: 0 12px 28px rgba(140, 115, 170, 0.42), 0 1px 4px rgba(255, 255, 255, 0.9);
-    --elevation-inset: inset 0 2px 4px rgba(155, 135, 205, 0.22);
-    --clay-shadow: 0 4px 10px rgba(150, 128, 185, 0.35), 0 1px 2px rgba(255, 255, 255, 0.95);
-    --clay-shadow-lg: 0 10px 24px rgba(140, 115, 175, 0.42), 0 1px 3px rgba(255, 255, 255, 0.95);
+    /* Тихие тени: одна мягкая тень, без цветного двойного контура */
+    --elevation-1: 0 1px 2px rgba(43, 46, 40, 0.06);
+    --elevation-2: 0 2px 5px rgba(43, 46, 40, 0.08);
+    --elevation-3: 0 4px 10px rgba(43, 46, 40, 0.1);
+    --elevation-4: 0 8px 18px rgba(43, 46, 40, 0.12);
+    --elevation-inset: inset 0 1px 2px rgba(43, 46, 40, 0.07);
+    --clay-shadow: 0 2px 6px rgba(43, 46, 40, 0.08);
+    --clay-shadow-lg: 0 6px 16px rgba(43, 46, 40, 0.1);
 
     --param-sleep: 199 89% 34%;
     --param-energy: 38 92% 31%;
-    --param-mood: 262 83% 58%;
+    --param-mood: 94 17% 37%;
     --severity-mild: 46 93% 47%;
     --severity-moderate: 25 95% 53%;
-    --chart-grid: 255 40% 90%;
-    --chart-tick: 267 8% 44%;
-    --chart-1: 262 83% 58%;
+    --chart-grid: 43 24% 83%;
+    --chart-tick: 42 12% 39%;
+    --chart-1: 94 17% 37%;
     --chart-2: 170 65% 32%;
     --chart-3: 215 80% 42%;
     --chart-4: 36 95% 35%;
@@ -79,9 +79,6 @@
     --pet-13: 120 45% 55%;
     --pet-14: 220 40% 58%;
     --pet-15: 15 85% 52%;
-    --aurora-1: 262 83% 58%;
-    --aurora-2: 330 82% 54%;
-    --aurora-3: 160 84% 39%;
   }
 
   body {
@@ -89,14 +86,9 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     background-color: hsl(var(--background));
-    background-image:
-      radial-gradient(120% 120% at 15% 0%, hsl(var(--aurora-1) / 0.12), transparent 45%),
-      radial-gradient(120% 120% at 100% 100%, hsl(var(--aurora-2) / 0.1), transparent 45%),
-      radial-gradient(80% 80% at 80% 0%, hsl(var(--aurora-3) / 0.08), transparent 50%);
-    background-attachment: fixed;
     color: hsl(var(--foreground));
     font-family:
-      "'DM Sans'",
+      'Golos Text',
       system-ui,
       -apple-system,
       sans-serif;
@@ -122,11 +114,11 @@
   h5,
   h6 {
     font-family:
-      'Nunito',
+      'Source Serif 4',
       system-ui,
       -apple-system,
-      sans-serif;
-    font-weight: 800;
+      serif;
+    font-weight: 500;
     text-wrap: balance;
   }
 
@@ -149,22 +141,22 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --background: 262 30% 12%;
-    --foreground: 255 60% 94%;
-    --card: 262 26% 16%;
-    --card-foreground: 255 60% 94%;
-    --primary: 262 75% 68%;
-    --primary-foreground: 0 0% 100%;
-    --primary-strong: 262 75% 50%;
-    --primary-muted: 262 70% 68%;
-    --primary-dim: 262 60% 68%;
-    --secondary: 262 22% 22%;
-    --secondary-foreground: 255 60% 94%;
-    --accent: 330 72% 70%;
-    --accent-foreground: 0 0% 100%;
-    --accent-strong: 330 72% 50%;
-    --muted: 262 20% 18%;
-    --muted-foreground: 262 15% 70%;
+    --background: 84 9% 10%;
+    --foreground: 45 26% 88%;
+    --card: 80 9% 13%;
+    --card-foreground: 45 26% 88%;
+    --primary: 91 18% 55%;
+    --primary-foreground: 84 9% 10%;
+    --primary-strong: 91 22% 44%;
+    --primary-muted: 91 16% 60%;
+    --primary-dim: 91 14% 58%;
+    --secondary: 80 11% 16%;
+    --secondary-foreground: 45 26% 88%;
+    --accent: 26 49% 66%;
+    --accent-foreground: 84 9% 10%;
+    --accent-strong: 26 45% 56%;
+    --muted: 80 9% 16%;
+    --muted-foreground: 42 12% 60%;
     --destructive: 0 70% 70%;
     --destructive-foreground: 0 0% 100%;
     --destructive-strong: 0 70% 52%;
@@ -174,30 +166,30 @@
     --warning-foreground: 0 0% 100%;
     --info: 199 75% 70%;
     --info-foreground: 0 0% 100%;
-    --border: 262 18% 24%;
-    --input: 262 18% 24%;
-    --ring: 262 75% 66%;
-    --pet-gradient-1: 262 30% 24%;
-    --pet-gradient-2: 330 26% 22%;
+    --border: 73 9% 19%;
+    --input: 73 9% 19%;
+    --ring: 91 18% 55%;
+    --pet-gradient-1: 94 12% 20%;
+    --pet-gradient-2: 24 18% 20%;
 
-    --elevation-1: 0 2px 5px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(255, 255, 255, 0.04);
-    --elevation-2: 0 4px 12px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(255, 255, 255, 0.03);
-    --elevation-3: 0 8px 22px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(255, 255, 255, 0.03);
-    --elevation-4: 0 12px 30px rgba(0, 0, 0, 0.66), 0 1px 4px rgba(255, 255, 255, 0.03);
-    --elevation-inset: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-    --clay-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(255, 255, 255, 0.04);
-    --clay-shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(255, 255, 255, 0.04);
+    --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --elevation-2: 0 2px 6px rgba(0, 0, 0, 0.35);
+    --elevation-3: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --elevation-4: 0 8px 20px rgba(0, 0, 0, 0.45);
+    --elevation-inset: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+    --clay-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --clay-shadow-lg: 0 6px 18px rgba(0, 0, 0, 0.4);
 
-    --chart-grid: 262 30% 54%;
-    --chart-tick: 262 15% 62%;
-    --chart-1: 262 75% 68%;
+    --chart-grid: 73 9% 26%;
+    --chart-tick: 42 12% 60%;
+    --chart-1: 91 18% 55%;
     --chart-2: 170 65% 45%;
     --chart-3: 200 80% 60%;
     --chart-4: 36 90% 62%;
     --chart-5: 350 75% 60%;
     --param-sleep: 199 89% 62%;
     --param-energy: 38 92% 62%;
-    --param-mood: 262 83% 70%;
+    --param-mood: 91 18% 55%;
     --pet-1: 262 78% 74%;
     --pet-2: 330 85% 74%;
     --pet-3: 190 95% 60%;
@@ -213,9 +205,6 @@
     --pet-13: 120 45% 62%;
     --pet-14: 220 40% 65%;
     --pet-15: 15 85% 60%;
-    --aurora-1: 262 75% 70%;
-    --aurora-2: 330 72% 68%;
-    --aurora-3: 160 84% 50%;
   }
 }
 
@@ -494,107 +483,6 @@
 
 .animate-pet-pop-in {
   animation: pet-pop-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* Idle-цикл PetGreeterCard: 5 вариантов медленного скрытия внутри круга
-   (см. docs/pet-greeter-hide-animations.svg). Только transform/opacity. */
-@keyframes pet-hide-sink {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
-  70% {
-    opacity: 0.9;
-    transform: translate(0, 34px) scale(0.85);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(0, 58px) scale(0.55);
-  }
-}
-
-.animate-pet-hide-sink {
-  animation: pet-hide-sink 3.5s ease-in forwards;
-}
-
-@keyframes pet-hide-melt {
-  0% {
-    transform: translate(0, 0) scale(1, 1);
-    opacity: 1;
-  }
-  70% {
-    opacity: 0.85;
-    transform: translate(0, 26px) scale(1, 0.28);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(0, 40px) scale(1, 0.08);
-  }
-}
-
-.animate-pet-hide-melt {
-  transform-origin: bottom;
-  animation: pet-hide-melt 3.5s ease-out forwards;
-}
-
-@keyframes pet-hide-collapse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  70% {
-    transform: scale(0.4);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(0);
-    opacity: 0;
-  }
-}
-
-.animate-pet-hide-collapse {
-  transform-origin: center;
-  animation: pet-hide-collapse 3s ease-in forwards;
-}
-
-@keyframes pet-hide-tumble {
-  0% {
-    transform: translate(0, 0) rotate(0deg) scale(1);
-    opacity: 1;
-  }
-  70% {
-    opacity: 0.85;
-    transform: translate(0, 30px) rotate(220deg) scale(0.85);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(0, 56px) rotate(320deg) scale(0.5);
-  }
-}
-
-.animate-pet-hide-tumble {
-  transform-origin: center;
-  animation: pet-hide-tumble 3.5s ease-in-out forwards;
-}
-
-/* Фон для «рассыпается»: сам питомец плавно гаснет, осколки разлетаются отдельно */
-@keyframes pet-hide-fade {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  60% {
-    opacity: 0.5;
-    transform: scale(0.92);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
-
-.animate-pet-hide-fade {
-  animation: pet-hide-fade 3.2s ease-out forwards;
 }
 
 /* Пробежка компаньона: уход за край экрана + возврат с противоположной стороны */
