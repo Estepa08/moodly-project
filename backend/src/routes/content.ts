@@ -1,9 +1,6 @@
 import type { FastifyInstance } from 'fastify';
-import { contentService, type MessageInput } from '../services/content.js';
+import { contentService, MESSAGE_TYPES, LOCALES, type MessageInput } from '../services/content.js';
 import { AppError } from '../lib/errors.js';
-
-const MESSAGE_TYPES = ['morning', 'day', 'evening'];
-const LOCALES = ['ru', 'en'];
 
 export default async function contentRoutes(fastify: FastifyInstance) {
   fastify.get<{ Querystring: { type?: string; locale?: string } }>(

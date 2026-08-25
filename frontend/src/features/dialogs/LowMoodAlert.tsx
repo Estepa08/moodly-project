@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Wind } from 'lucide-react';
 import { ModalShell } from '../../components/ui/modal-shell';
 import { Button } from '../../components/ui/button';
-import PetAvatar from '../gamification/PetAvatar';
-import { usePets } from '../gamification';
-import { PET_DEFINITIONS } from '../gamification/pets';
+import { PetAvatar, usePets, PET_DEFINITIONS } from '../gamification';
 
 interface LowMoodAlertProps {
   open: boolean;

@@ -4,6 +4,7 @@ import { Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import { DISTORTION_KEYS, DistortionKey } from '../../lib/distortionsQuiz';
 import { suggestDistortion } from '../../lib/distortionKeywordHints';
 import { cn } from '../../lib/utils';
+import ChipMultiSelect from '../shared/ChipMultiSelect';
 
 interface DistortionTagsSelectorProps {
   value: DistortionKey[];
@@ -49,35 +50,39 @@ export default function DistortionTagsSelector({
 
   const visible = expanded ? ordered : ordered.slice(0, VISIBLE_COUNT);
   const hasMore = ordered.length > VISIBLE_COUNT;
+  const visibleOptions = useMemo(() => visible.map((key) => ({ key })), [visible]);
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap gap-1.5">
-        {visible.map((key) => (
+      <ChipMultiSelect
+        options={visibleOptions}
+        selected={value}
+        renderChip={(option, selected) => (
           <DistortionChip
-            key={key}
-            label={t(`cognitiveDistortions.${key}`)}
-            selected={isSelected(key)}
-            suggested={isSuggested(key)}
-            onClick={() => handleToggle(key)}
+            label={t(`cognitiveDistortions.${option.key}`)}
+            selected={selected}
+            suggested={isSuggested(option.key)}
+            onClick={() => handleToggle(option.key)}
           />
-        ))}
-        {hasMore && (
-          <button
-            type="button"
-            onClick={() => setExpanded((v) => !v)}
-            aria-expanded={expanded}
-            className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            {t(expanded ? 'cognitiveDistortions.less' : 'cognitiveDistortions.more')}
-            {expanded ? (
-              <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
-            ) : (
-              <ChevronDown aria-hidden="true" className="w-3.5 h-3.5" />
-            )}
-          </button>
         )}
-      </div>
+        trailing={
+          hasMore && (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {t(expanded ? 'cognitiveDistortions.less' : 'cognitiveDistortions.more')}
+              {expanded ? (
+                <ChevronUp aria-hidden="true" className="w-3.5 h-3.5" />
+              ) : (
+                <ChevronDown aria-hidden="true" className="w-3.5 h-3.5" />
+              )}
+            </button>
+          )
+        }
+      />
 
       {suggested && !isSelected(suggested) && (
         <p className="flex items-start gap-1.5 text-xs text-amber-700 dark:text-amber-400">

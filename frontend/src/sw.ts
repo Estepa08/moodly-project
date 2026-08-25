@@ -55,9 +55,24 @@ self.addEventListener('push', (event) => {
   );
 });
 
+// Данные пуша (event.notification.data.url) приходят с бэкенда, но push-payload
+// не аутентифицирован end-to-end так же строго, как обычные API-ответы —
+// defense-in-depth на случай скомпрометированного/неверно сконфигурированного
+// источника: не даём открыть произвольный чужой origin через openWindow.
+function resolveNotificationUrl(rawUrl: string | undefined): string {
+  const fallback = '/';
+  if (!rawUrl) return fallback;
+  try {
+    const resolved = new URL(rawUrl, self.location.origin);
+    return resolved.origin === self.location.origin ? resolved.href : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const urlToOpen = (event.notification.data as { url?: string })?.url || '/';
+  const urlToOpen = resolveNotificationUrl((event.notification.data as { url?: string })?.url);
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientsList) => {
       const matchingClient = clientsList.find(

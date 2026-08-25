@@ -149,16 +149,6 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
     );
   };
 
-  const addCustomFromCategory = () => {
-    const text = customText.trim();
-    if (!text) return;
-    const item = createMyActivity(text);
-    setMyActivities((prev) => [...prev, item]);
-    setSaved(false);
-    setSelected((prev) => [...prev, { key: item.key, custom: true, label: text }]);
-    setCustomText('');
-  };
-
   const filteredByCategory = useMemo(() => {
     if (view.step !== 'category') return [];
     const q = query.trim().toLowerCase();
@@ -290,14 +280,14 @@ export default function DayActivitiesSection({ onClose }: DayActivitiesSectionPr
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') addCustomFromCategory();
+                if (e.key === 'Enter') addCustom();
               }}
             />
             <Button
               type="button"
               variant="secondary"
               size="sm"
-              onClick={addCustomFromCategory}
+              onClick={addCustom}
               disabled={!customText.trim() || customExists(customText)}
             >
               <Plus aria-hidden="true" className="mr-1 h-4 w-4" />

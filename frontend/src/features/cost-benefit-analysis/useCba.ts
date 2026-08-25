@@ -2,19 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { reportError } from '../../lib/errorReporter';
+import { reportMutationError } from '../shared/reportMutationError';
 import type { components } from '../../lib/api-types';
 
 type CbaEntryCreate = components['schemas']['CbaEntryCreate'];
-
-// Логирует реальную причину ошибки сохранения CBA-записи (как и в useEntries).
-function reportCbaSaveError(operation: string, err: unknown): void {
-  const message =
-    err instanceof Error
-      ? `saveError [cba-${operation}] ${err.name}: ${err.message}`
-      : `saveError [cba-${operation}] Unexpected error: ${String(err)}`;
-  reportError({ message, stack: err instanceof Error ? err.stack : undefined });
-}
 
 export function useCbaExamples() {
   return useQuery({
@@ -51,7 +42,7 @@ export function useCreateCbaEntry(onSuccess?: () => void) {
       onSuccess?.();
     },
     onError: (err) => {
-      reportCbaSaveError('create', err);
+      reportMutationError('cba-create', err);
       toast.error(t('cba.saveError'));
     },
   });
@@ -67,7 +58,7 @@ export function useDeleteCbaEntry() {
       queryClient.invalidateQueries({ queryKey: ['cba-entries'] });
     },
     onError: (err) => {
-      reportCbaSaveError('delete', err);
+      reportMutationError('cba-delete', err);
       toast.error(t('cba.saveError'));
     },
   });

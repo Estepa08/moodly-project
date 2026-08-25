@@ -1,3 +1,5 @@
+import { readStorageArray, writeStorageArray } from './localStorageArray';
+
 export interface RelaxationWheelCustomItem {
   key: string;
   label: string;
@@ -6,27 +8,21 @@ export interface RelaxationWheelCustomItem {
 
 const STORAGE_KEY = 'moodly_relaxation_wheel_items';
 
+function isRelaxationWheelCustomItem(a: unknown): a is RelaxationWheelCustomItem {
+  return (
+    !!a &&
+    typeof a === 'object' &&
+    typeof (a as RelaxationWheelCustomItem).key === 'string' &&
+    typeof (a as RelaxationWheelCustomItem).label === 'string'
+  );
+}
+
 function readStorage(): RelaxationWheelCustomItem[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (a): a is RelaxationWheelCustomItem =>
-        !!a && typeof a === 'object' && typeof a.key === 'string' && typeof a.label === 'string',
-    );
-  } catch {
-    return [];
-  }
+  return readStorageArray(STORAGE_KEY, isRelaxationWheelCustomItem);
 }
 
 function writeStorage(list: RelaxationWheelCustomItem[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch {
-    /* localStorage may be unavailable */
-  }
+  writeStorageArray(STORAGE_KEY, list);
 }
 
 export function loadRelaxationWheelItems(): RelaxationWheelCustomItem[] {

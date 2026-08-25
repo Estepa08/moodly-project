@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { EVOLUTION_STAGES } from '@moodly/shared';
 import { useCreatureState } from '../features/gamification/useCreature';
+import { safeLocalStorage } from '../lib/safeStorage';
 
 const STORAGE_KEY = 'moodly_pet_stage_seen';
 
@@ -9,20 +10,11 @@ function stageIndex(stage: string): number {
 }
 
 function readStoredStage(): string | null {
-  try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    /* localStorage may throw in private browsing */
-    return null;
-  }
+  return safeLocalStorage.getItem(STORAGE_KEY);
 }
 
 function writeStoredStage(stage: string) {
-  try {
-    localStorage.setItem(STORAGE_KEY, stage);
-  } catch {
-    /* localStorage may throw in private browsing */
-  }
+  safeLocalStorage.setItem(STORAGE_KEY, stage);
 }
 
 export interface EvolutionTransition {

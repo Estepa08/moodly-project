@@ -1,9 +1,8 @@
 import { lazy, Suspense, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from './hooks/useAuth';
+import { useAuth, hasAccountFlag } from './hooks/useAuth';
 import { useCurrentUser } from './hooks/useCurrentUser';
 import { hasSessionKey } from './lib/crypto/session';
-import { HAS_ACCOUNT_KEY } from './lib/constants';
 import SyncCoordinator from './lib/offline/SyncCoordinator';
 import Layout from './components/Layout';
 import OnboardingGate from './components/OnboardingGate';
@@ -117,7 +116,7 @@ function PublicRoute() {
   // На этом устройстве уже когда-то входили (флаг переживает logout и не зависит
   // от refresh-cookie), но сейчас не авторизованы — значит cookie истекла/удалена.
   // Не показываем маркетинговый лендинг повторно зарегистрированным, ведём на /login.
-  if (!isAuthenticated && location.pathname === '/' && localStorage.getItem(HAS_ACCOUNT_KEY)) {
+  if (!isAuthenticated && location.pathname === '/' && hasAccountFlag()) {
     return <Navigate to="/login" replace />;
   }
   return <Outlet />;
@@ -162,7 +161,6 @@ export default function App() {
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/my-day" element={<MyDayPage />} />
           <Route path="/statistics" element={<StatisticsPage />} />
-          <Route path="/my-day" element={<Navigate to="/my-day" replace />} />
           <Route path="/practices" element={<PracticesPage />} />
           <Route path="/tests" element={<TestsPage />} />
           <Route path="/tests/:testId" element={<TestDetailPage />} />

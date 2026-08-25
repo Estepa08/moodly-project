@@ -148,6 +148,76 @@ describe('Auth', () => {
     expect(codes[1]).toBe(401);
     expect(codes).not.toContain(500);
   });
+
+  it('POST /auth/refresh — reusing an already-consumed token is detected and revokes the whole family', async () => {
+    const email = `refresh-reuse-${Date.now()}@example.com`;
+    const reg = await app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      payload: { email, password: 'secret123', ageConfirmed: true, pdpConsent: true, ...E2E_KEYS },
+    });
+    const originalCookie = (reg.headers['set-cookie'] as string).split(';')[0];
+
+    const rotated = await app.inject({
+      method: 'POST',
+      url: '/auth/refresh',
+      headers: { cookie: originalCookie },
+    });
+    expect(rotated.statusCode).toBe(200);
+    const rotatedCookie = (rotated.headers['set-cookie'] as string).split(';')[0];
+
+    // Реплей уже потреблённого токена — признак кражи.
+    const replay = await app.inject({
+      method: 'POST',
+      url: '/auth/refresh',
+      headers: { cookie: originalCookie },
+    });
+    expect(replay.statusCode).toBe(401);
+    expect(replay.json().code).toBe('REFRESH_TOKEN_REUSED');
+
+    // Вся семья отозвана — даже честно ротированный токен теперь недействителен.
+    const afterRevoke = await app.inject({
+      method: 'POST',
+      url: '/auth/refresh',
+      headers: { cookie: rotatedCookie },
+    });
+    expect(afterRevoke.statusCode).toBe(401);
+  });
+
+  it('POST /auth/login — locks the account after repeated failed attempts', async () => {
+    const email = `lockout-${Date.now()}@example.com`;
+    const reg = await app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      payload: { email, password: 'secret123', ageConfirmed: true, pdpConsent: true, ...E2E_KEYS },
+    });
+    expect(reg.statusCode).toBe(200);
+
+    for (let i = 0; i < 10; i++) {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        payload: { email, password: 'wrong' },
+      });
+      expect(res.statusCode).toBe(401);
+    }
+
+    const locked = await app.inject({
+      method: 'POST',
+      url: '/auth/login',
+      payload: { email, password: 'wrong' },
+    });
+    expect(locked.statusCode).toBe(429);
+    expect(locked.json().code).toBe('ACCOUNT_LOCKED');
+
+    // Даже с правильным паролем — заблокировано до истечения lockedUntil.
+    const correctButLocked = await app.inject({
+      method: 'POST',
+      url: '/auth/login',
+      payload: { email, password: 'secret123' },
+    });
+    expect(correctButLocked.statusCode).toBe(429);
+  });
 });
 
 describe('Auth /auth/reset-password', () => {

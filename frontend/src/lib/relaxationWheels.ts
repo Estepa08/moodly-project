@@ -1,4 +1,5 @@
 import { DEFAULT_WHEEL_ITEM_KEYS } from './relaxationWheel';
+import { readStorageArray, writeStorageArray } from './localStorageArray';
 
 export interface RelaxationWheel {
   id: string;
@@ -9,32 +10,23 @@ export interface RelaxationWheel {
 const STORAGE_KEY = 'moodly_relaxation_wheels';
 export const DEFAULT_WHEEL_ID = 'default';
 
+function isRelaxationWheel(w: unknown): w is RelaxationWheel {
+  return (
+    !!w &&
+    typeof w === 'object' &&
+    typeof (w as RelaxationWheel).id === 'string' &&
+    typeof (w as RelaxationWheel).name === 'string' &&
+    Array.isArray((w as RelaxationWheel).itemKeys) &&
+    (w as RelaxationWheel).itemKeys.every((k: unknown) => typeof k === 'string')
+  );
+}
+
 function readStorage(): RelaxationWheel[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (w): w is RelaxationWheel =>
-        !!w &&
-        typeof w === 'object' &&
-        typeof w.id === 'string' &&
-        typeof w.name === 'string' &&
-        Array.isArray(w.itemKeys) &&
-        w.itemKeys.every((k: unknown) => typeof k === 'string'),
-    );
-  } catch {
-    return [];
-  }
+  return readStorageArray(STORAGE_KEY, isRelaxationWheel);
 }
 
 function writeStorage(list: RelaxationWheel[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch {
-    /* localStorage may be unavailable */
-  }
+  writeStorageArray(STORAGE_KEY, list);
 }
 
 /** При первом обращении сеет дефолтное колесо с встроенным набором пунктов. */

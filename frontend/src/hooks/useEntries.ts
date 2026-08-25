@@ -4,7 +4,12 @@ import { isNetworkError, isServerError } from '../lib/api-error';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { enqueue } from '../lib/offline/sync';
-import { deleteLocalEntry, listLocalEntries, saveLocalEntry } from '../lib/offline/db';
+import {
+  deleteLocalEntry,
+  listLocalEntries,
+  saveLocalEntry,
+  type LocalEntry,
+} from '../lib/offline/db';
 import { uuidv7 } from '@moodly/shared';
 import { reportError } from '../lib/errorReporter';
 import { decryptSettled } from '../lib/decryptSettled';
@@ -27,6 +32,25 @@ function reportSaveError(operation: string, err: unknown): void {
     err instanceof Error ? `${err.name}: ${err.message}` : `Unexpected error: ${String(err)}`;
   const stack = err instanceof Error ? err.stack : undefined;
   reportError({ message: `saveError [${operation}] ${message}`, stack });
+}
+
+/**
+ * Общий хвост для офлайн-режима и для отказа сервера (сеть/5xx): кладём
+ * операцию в офлайн-очередь, зеркалим её в локальный кэш (IndexedDB) и
+ * возвращаем «оптимистичный» результат так, как будто запись сохранилась —
+ * синк дошлёт её на сервер позже. Используется и из ветки `!navigator.onLine`,
+ * и из catch-блока после неудачного запроса — обе ветки должны вести себя
+ * идентично, чтобы не терять данные.
+ */
+async function offlineFallback<T>(args: {
+  id: string;
+  enqueueData: Record<string, unknown>;
+  localEntry: Partial<LocalEntry> & { id: string };
+  toResult: () => T;
+}): Promise<T> {
+  await enqueue('entry', 'upsert', args.id, args.enqueueData);
+  await saveLocalEntry(args.localEntry);
+  return args.toResult();
 }
 
 export interface DecryptedEntry extends Entry {
@@ -117,34 +141,37 @@ export function useCreateEntry(onSuccess?: () => void) {
         },
         id,
       );
+      const fallback = () =>
+        offlineFallback({
+          id,
+          enqueueData: { parameterId: data.parameterId, encryptedData },
+          localEntry: {
+            id,
+            userId: '',
+            parameterId: data.parameterId,
+            encryptedData,
+            value: data.value,
+            note: data.note ?? null,
+            createdAt: new Date().toISOString(),
+          },
+          toResult: () => ({
+            id,
+            userId: '',
+            parameterId: data.parameterId,
+            value: data.value,
+            note: data.note ?? null,
+            activities: data.activities ?? [],
+            distortions: data.distortions ?? [],
+            beliefBefore: data.beliefBefore,
+            beliefAfter: data.beliefAfter,
+            alternativeThought: data.alternativeThought,
+            emotions: data.emotions ?? [],
+            createdAt: new Date().toISOString(),
+          }),
+        });
+
       if (!navigator.onLine) {
-        await enqueue('entry', 'upsert', id, {
-          parameterId: data.parameterId,
-          encryptedData,
-        });
-        await saveLocalEntry({
-          id,
-          userId: '',
-          parameterId: data.parameterId,
-          encryptedData,
-          value: data.value,
-          note: data.note ?? null,
-          createdAt: new Date().toISOString(),
-        });
-        return {
-          id,
-          userId: '',
-          parameterId: data.parameterId,
-          value: data.value,
-          note: data.note ?? null,
-          activities: data.activities ?? [],
-          distortions: data.distortions ?? [],
-          beliefBefore: data.beliefBefore,
-          beliefAfter: data.beliefAfter,
-          alternativeThought: data.alternativeThought,
-          emotions: data.emotions ?? [],
-          createdAt: new Date().toISOString(),
-        };
+        return fallback();
       }
       try {
         return await api.entries.create({ id, parameterId: data.parameterId, encryptedData });
@@ -153,33 +180,7 @@ export function useCreateEntry(onSuccess?: () => void) {
         // Сервер недоступен (ERR_CONNECTION_REFUSED) или ответил 5xx (деплой,
         // перезапуск, сбой БД) — кладём в офлайн-очередь и локальное зеркало,
         // чтобы не потерять запись: синк отправит её позже.
-        await enqueue('entry', 'upsert', id, {
-          parameterId: data.parameterId,
-          encryptedData,
-        });
-        await saveLocalEntry({
-          id,
-          userId: '',
-          parameterId: data.parameterId,
-          encryptedData,
-          value: data.value,
-          note: data.note ?? null,
-          createdAt: new Date().toISOString(),
-        });
-        return {
-          id,
-          userId: '',
-          parameterId: data.parameterId,
-          value: data.value,
-          note: data.note ?? null,
-          activities: data.activities ?? [],
-          distortions: data.distortions ?? [],
-          beliefBefore: data.beliefBefore,
-          beliefAfter: data.beliefAfter,
-          alternativeThought: data.alternativeThought,
-          emotions: data.emotions ?? [],
-          createdAt: new Date().toISOString(),
-        };
+        return fallback();
       }
     },
     onSuccess: () => {
@@ -262,44 +263,35 @@ export function useUpdateEntry() {
         },
         id,
       );
-      if (!navigator.onLine) {
-        await enqueue('entry', 'upsert', id, { encryptedData });
-        await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
-        return {
+      const fallback = () =>
+        offlineFallback({
           id,
-          userId: '',
-          parameterId: '',
-          value,
-          note: note ?? null,
-          activities: activities ?? [],
-          distortions: distortions ?? [],
-          beliefBefore,
-          beliefAfter,
-          alternativeThought,
-          emotions: emotions ?? [],
-          createdAt: new Date().toISOString(),
-        };
+          enqueueData: { encryptedData },
+          localEntry: { id, encryptedData, value, note: note ?? null },
+          toResult: () => ({
+            id,
+            userId: '',
+            parameterId: '',
+            value,
+            note: note ?? null,
+            activities: activities ?? [],
+            distortions: distortions ?? [],
+            beliefBefore,
+            beliefAfter,
+            alternativeThought,
+            emotions: emotions ?? [],
+            createdAt: new Date().toISOString(),
+          }),
+        });
+
+      if (!navigator.onLine) {
+        return fallback();
       }
       try {
         return await api.entries.update(id, { encryptedData });
       } catch (err) {
         if (!isNetworkError(err) && !isServerError(err)) throw err;
-        await enqueue('entry', 'upsert', id, { encryptedData });
-        await saveLocalEntry({ id, encryptedData, value, note: note ?? null });
-        return {
-          id,
-          userId: '',
-          parameterId: '',
-          value,
-          note: note ?? null,
-          activities: activities ?? [],
-          distortions: distortions ?? [],
-          beliefBefore,
-          beliefAfter,
-          alternativeThought,
-          emotions: emotions ?? [],
-          createdAt: new Date().toISOString(),
-        };
+        return fallback();
       }
     },
     onSuccess: () => {

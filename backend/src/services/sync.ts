@@ -213,6 +213,36 @@ function sanitizeCreatureState(payload: Record<string, unknown>): Record<string,
   return out;
 }
 
+// Единая точка соответствия SyncEntity → Prisma-делегат. Имя сущности всегда
+// совпадает с именем свойства делегата (entry → tx.entry, testResult →
+// tx.testResult, ...), поэтому вместо трёх параллельных switch по одному и
+// тому же списку сущностей (add upsert / soft-delete / pull — легко забыть
+// одну из трёх веток при добавлении сущности) используем прямой доступ по
+// имени + небольшую конфигурацию особых случаев. Каждая ветка и так была
+// типизирована через `as never`/Unchecked*Input — здесь та же строгость.
+interface SyncEntityConfig {
+  // Singleton-таблица без собственного id (userId уникален, LWW по строке) —
+  // upsert идёт по userId, soft-delete недоступен.
+  singleton?: boolean;
+  // pull-only: клиент не пушит (sanitize() уже бросает раньше для upsert;
+  // delete — молчаливый no-op).
+  pullOnly?: boolean;
+}
+
+const ENTITY_CONFIG: Record<SyncEntity, SyncEntityConfig> = {
+  entry: {},
+  feedback: {},
+  testResult: {},
+  breathingSession: {},
+  practiceCompletion: {},
+  creatureState: { singleton: true },
+  userAchievement: { pullOnly: true },
+};
+
+function delegateOf(client: Prisma.TransactionClient | typeof prisma, entity: SyncEntity) {
+  return (client as unknown as Record<SyncEntity, any>)[entity];
+}
+
 async function applyUpsert(
   tx: Prisma.TransactionClient,
   entity: SyncEntity,
@@ -220,51 +250,14 @@ async function applyUpsert(
   id: string,
   data: Record<string, unknown>,
 ): Promise<void> {
-  switch (entity) {
-    case 'entry':
-      await tx.entry.upsert({
-        where: { id },
-        create: { id, userId, ...data } as Prisma.EntryUncheckedCreateInput,
-        update: data as Prisma.EntryUncheckedUpdateInput,
-      });
-      return;
-    case 'feedback':
-      await tx.feedback.upsert({
-        where: { id },
-        create: { id, userId, ...data } as Prisma.FeedbackUncheckedCreateInput,
-        update: data as Prisma.FeedbackUncheckedUpdateInput,
-      });
-      return;
-    case 'testResult':
-      await tx.testResult.upsert({
-        where: { id },
-        create: { id, userId, ...data } as Prisma.TestResultUncheckedCreateInput,
-        update: data as Prisma.TestResultUncheckedUpdateInput,
-      });
-      return;
-    case 'breathingSession':
-      await tx.breathingSession.upsert({
-        where: { id },
-        create: { id, userId, ...data } as Prisma.BreathingSessionUncheckedCreateInput,
-        update: data as Prisma.BreathingSessionUncheckedUpdateInput,
-      });
-      return;
-    case 'practiceCompletion':
-      await tx.practiceCompletion.upsert({
-        where: { id },
-        create: { id, userId, ...data } as Prisma.PracticeCompletionUncheckedCreateInput,
-        update: data as Prisma.PracticeCompletionUncheckedUpdateInput,
-      });
-      return;
-    case 'creatureState':
-      // Singleton-строка (userId @unique): клиент — автор истины, LWW по строке.
-      await tx.creatureState.upsert({
-        where: { userId },
-        create: { userId, ...data } as Prisma.CreatureStateUncheckedCreateInput,
-        update: data as Prisma.CreatureStateUncheckedUpdateInput,
-      });
-      return;
+  const config = ENTITY_CONFIG[entity];
+  if (config.pullOnly) return;
+  const delegate = delegateOf(tx, entity);
+  if (config.singleton) {
+    await delegate.upsert({ where: { userId }, create: { userId, ...data }, update: data });
+    return;
   }
+  await delegate.upsert({ where: { id }, create: { id, userId, ...data }, update: data });
 }
 
 async function applySoftDelete(
@@ -273,48 +266,15 @@ async function applySoftDelete(
   userId: string,
   id: string,
 ): Promise<void> {
+  const config = ENTITY_CONFIG[entity];
+  if (config.singleton || config.pullOnly) return;
   const deletedAt = new Date();
   // updateMany не триггерит @updatedAt в Prisma, поэтому обновляем updatedAt явно:
   // иначе tombstone не попадёт в pull (курсор фильтрует по updatedAt > cursor).
-  switch (entity) {
-    case 'entry': {
-      await tx.entry.updateMany({
-        where: { id, userId },
-        data: { deletedAt, updatedAt: deletedAt },
-      });
-      return;
-    }
-    case 'feedback':
-      await tx.feedback.updateMany({
-        where: { id, userId },
-        data: { deletedAt, updatedAt: deletedAt },
-      });
-      return;
-    case 'testResult':
-      await tx.testResult.updateMany({
-        where: { id, userId },
-        data: { deletedAt, updatedAt: deletedAt },
-      });
-      return;
-    case 'breathingSession':
-      await tx.breathingSession.updateMany({
-        where: { id, userId },
-        data: { deletedAt, updatedAt: deletedAt },
-      });
-      return;
-    case 'practiceCompletion':
-      await tx.practiceCompletion.updateMany({
-        where: { id, userId },
-        data: { deletedAt, updatedAt: deletedAt },
-      });
-      return;
-    case 'creatureState':
-      // Singleton без deletedAt: удаление не поддерживается.
-      return;
-    case 'userAchievement':
-      // pull-only сущность: клиент не удаляет разблокировки.
-      return;
-  }
+  await delegateOf(tx, entity).updateMany({
+    where: { id, userId },
+    data: { deletedAt, updatedAt: deletedAt },
+  });
 }
 
 export const syncService = {
@@ -493,50 +453,11 @@ async function pullRows(
       } as never)
     : ({ userId, updatedAt: { gt: cursor } } as never);
 
-  switch (entity) {
-    case 'entry':
-      return (await prisma.entry.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-    case 'feedback':
-      return (await prisma.feedback.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-    case 'testResult':
-      return (await prisma.testResult.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-    case 'breathingSession':
-      return (await prisma.breathingSession.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-    case 'practiceCompletion':
-      return (await prisma.practiceCompletion.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-    case 'creatureState':
-      return (await prisma.creatureState.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-    case 'userAchievement':
-      return (await prisma.userAchievement.findMany({
-        where: base,
-        orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
-        take: limit,
-      })) as never;
-  }
+  return delegateOf(prisma, entity).findMany({
+    where: base,
+    orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }],
+    take: limit,
+  }) as never;
 }
 
 function sleep(ms: number): Promise<void> {

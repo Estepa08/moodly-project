@@ -1,4 +1,16 @@
 import { z } from 'zod';
+import { AppError } from './errors.js';
+
+// Общий паттерн во всех роутах: safeParse → если невалидно, 400 с первым
+// сообщением issue. Вынесено сюда, чтобы не повторять эти 4 строки на
+// каждый эндпоинт.
+export function parseOrThrow<T extends z.ZodTypeAny>(schema: T, data: unknown): z.infer<T> {
+  const parsed = schema.safeParse(data);
+  if (!parsed.success) {
+    throw new AppError('VALIDATION_ERROR', 400, parsed.error.issues[0].message);
+  }
+  return parsed.data;
+}
 
 export const emailSchema = z.string().email('Invalid email format').max(255);
 
@@ -72,4 +84,16 @@ export const createEntrySchema = z.object({
   id: z.string().min(8).max(80),
   parameterId: z.string().min(1).max(100),
   encryptedData: z.string().min(1).max(65536),
+});
+
+export const pushSubscribeSchema = z.object({
+  endpoint: z.string().url().max(2000),
+  keys: z.object({
+    p256dh: z.string().min(1).max(512),
+    auth: z.string().min(1).max(512),
+  }),
+});
+
+export const pushUnsubscribeSchema = z.object({
+  endpoint: z.string().url().max(2000),
 });

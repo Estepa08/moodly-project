@@ -19,7 +19,6 @@ import {
 import { ChartTooltip } from './chart-tooltip';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import EmptyState from '../components/ui/empty-state';
-import PeriodSelector from '../components/ui/PeriodSelector';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from './utils';
 
@@ -42,11 +41,6 @@ export interface ChartProps {
   isLoading?: boolean;
   emptyMessage?: string;
   emptyIcon?: LucideIcon;
-
-  periodOptions?: { key: string; label: string }[];
-  period?: string;
-  onPeriodChange?: (value: string) => void;
-  periodLabel?: string;
 
   formatTooltip?: (name: string, value: number, row?: Record<string, unknown>) => string;
 
@@ -75,10 +69,6 @@ export function Chart({
   isLoading,
   emptyMessage,
   emptyIcon,
-  periodOptions,
-  period,
-  onPeriodChange,
-  periodLabel,
   formatTooltip,
   height = 220,
   yDomain = [0, 10],
@@ -98,18 +88,6 @@ export function Chart({
 
   const chart = (
     <>
-      {periodOptions && period && onPeriodChange && (
-        <div className="mb-3">
-          <PeriodSelector
-            options={periodOptions}
-            value={period}
-            onChange={onPeriodChange}
-            size="sm"
-            label={periodLabel}
-          />
-        </div>
-      )}
-
       {!hasData ? (
         <EmptyState icon={emptyIcon} title={emptyMessage ?? title ?? ''} />
       ) : (

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Info } from 'lucide-react';
 import { EMOTIONS } from '@moodly/shared';
 import { cn } from '../../lib/utils';
+import ChipMultiSelect from '../shared/ChipMultiSelect';
 import { emotionMeta, dyadByKey } from './emotionLab';
 import { emotionDefinition } from './emotionLibrary';
 import { useEmotionLabState } from './useEmotionLab';
@@ -54,15 +55,16 @@ export default function EmotionTagPicker({
 
   return (
     <div className={cn('space-y-2', className)}>
-      <div className="flex flex-wrap justify-center gap-1.5">
-        {chips.map((chip) => {
+      <ChipMultiSelect
+        className="justify-center"
+        options={chips}
+        selected={value}
+        renderChip={(chip, selected) => {
           const meta = emotionMeta(chip.key);
           const Icon = meta.icon;
-          const selected = value.includes(chip.key);
           const disabled = !selected && value.length >= max;
           return (
             <button
-              key={chip.key}
               type="button"
               onClick={() => toggle(chip.key)}
               disabled={disabled}
@@ -80,8 +82,8 @@ export default function EmotionTagPicker({
               {t(chip.labelKey)}
             </button>
           );
-        })}
-      </div>
+        }}
+      />
 
       {previewText && (
         <p className="flex items-start gap-1.5 text-[11px] text-muted-foreground leading-snug px-1">

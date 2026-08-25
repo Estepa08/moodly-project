@@ -1,6 +1,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { ChevronDown, type LucideIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { safeSessionStorage } from '../../lib/safeStorage';
 
 interface CollapsibleSectionProps {
   title: string;
@@ -28,12 +29,8 @@ export default function CollapsibleSection({
 }: CollapsibleSectionProps) {
   const [open, setOpen] = useState(() => {
     if (storageKey) {
-      try {
-        const stored = sessionStorage.getItem(storageKey);
-        if (stored !== null) return stored === '1';
-      } catch {
-        /* sessionStorage may throw in private browsing */
-      }
+      const stored = safeSessionStorage.getItem(storageKey);
+      if (stored !== null) return stored === '1';
     }
     return defaultOpen;
   });
@@ -44,11 +41,7 @@ export default function CollapsibleSection({
     setOpen((prev) => {
       const next = !prev;
       if (storageKey) {
-        try {
-          sessionStorage.setItem(storageKey, next ? '1' : '0');
-        } catch {
-          /* sessionStorage may throw in private browsing */
-        }
+        safeSessionStorage.setItem(storageKey, next ? '1' : '0');
       }
       return next;
     });

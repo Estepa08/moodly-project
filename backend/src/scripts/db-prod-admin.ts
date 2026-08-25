@@ -1,24 +1,8 @@
 import { prisma } from '../lib/prisma.js';
-
-function dbHost(): string {
-  const url = process.env.DATABASE_URL;
-  if (!url) return 'не задан (нужен DATABASE_URL)';
-  try {
-    return new URL(url).host;
-  } catch {
-    return url.split('@').pop() ?? url;
-  }
-}
-
-function parseEmail(argv: string[]): string | undefined {
-  for (const a of argv) {
-    if (a.startsWith('--email=')) return a.slice('--email='.length).trim();
-  }
-  return undefined;
-}
+import { dbHost, parseArgs } from './cli-helpers.js';
 
 async function main() {
-  const email = parseEmail(process.argv.slice(2))?.toLowerCase();
+  const email = parseArgs(process.argv.slice(2)).values.get('--email')?.trim().toLowerCase();
   if (!email) {
     console.error('Использование: db-prod-admin.ts --email=user@example.com');
     process.exitCode = 1;

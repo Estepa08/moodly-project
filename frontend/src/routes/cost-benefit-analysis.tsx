@@ -12,7 +12,7 @@ import {
 } from '../features/cost-benefit-analysis';
 import { useRewardPractice, PracticeSource } from '../features/gamification';
 import Spinner from '../components/ui/spinner';
-import { SegmentControl, SegmentControlItem } from '../components/ui/segment-control';
+import { SegmentGroup, SegmentButton } from '../components/ui/segment-button';
 
 const TABS = [
   { key: 'library', labelKey: 'cba.tabLibrary' },
@@ -42,7 +42,7 @@ export default function CostBenefitAnalysisPage() {
       </div>
 
       <div className="flex justify-center">
-        <SegmentControl
+        <SegmentGroup
           role="tablist"
           aria-label={t('cba.title')}
           onKeyDown={(e) => {
@@ -52,7 +52,7 @@ export default function CostBenefitAnalysisPage() {
           }}
         >
           {TABS.map((item) => (
-            <SegmentControlItem
+            <SegmentButton
               key={item.key}
               role="tab"
               aria-selected={tab === item.key}
@@ -61,9 +61,9 @@ export default function CostBenefitAnalysisPage() {
               onClick={() => setTab(item.key)}
             >
               {t(item.labelKey)}
-            </SegmentControlItem>
+            </SegmentButton>
           ))}
-        </SegmentControl>
+        </SegmentGroup>
       </div>
 
       <div

@@ -3,8 +3,10 @@ import { NotFoundError } from '../lib/errors.js';
 
 export type MessageType = 'morning' | 'day' | 'evening';
 
-const MESSAGE_TYPES: MessageType[] = ['morning', 'day', 'evening'];
-const LOCALES = ['ru', 'en'];
+// string[], а не MessageType[]: используется и там, где значение ещё не
+// сужено до MessageType (роут проверяет сырую query-строку).
+export const MESSAGE_TYPES: string[] = ['morning', 'day', 'evening'];
+export const LOCALES: string[] = ['ru', 'en'];
 
 export interface MessageInput {
   type: MessageType;

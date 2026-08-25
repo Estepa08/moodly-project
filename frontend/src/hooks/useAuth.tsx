@@ -5,6 +5,19 @@ import { toast } from 'sonner';
 import { setToken, setOnSessionExpired, api } from '../lib/api';
 import { ONBOARDING_DONE_KEY, HAS_ACCOUNT_KEY } from '../lib/constants';
 import { clearSessionKey } from '../lib/crypto/session';
+import { safeLocalStorage } from '../lib/safeStorage';
+
+/**
+ * true, если на этом устройстве уже когда-то входили в аккаунт. Флаг
+ * переживает logout и не зависит от refresh-cookie — используется в
+ * PublicRoute (App.tsx), чтобы отличить «уже был зарегистрирован» от нового
+ * посетителя. Единственный владелец ключа HAS_ACCOUNT_KEY — этот модуль,
+ * остальной код должен читать флаг только через этот аксессор.
+ */
+/* eslint-disable-next-line react-refresh/only-export-components */
+export function hasAccountFlag(): boolean {
+  return !!safeLocalStorage.getItem(HAS_ACCOUNT_KEY);
+}
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -58,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.clear();
       setToken(token);
       setIsAuthenticated(true);
-      localStorage.setItem(HAS_ACCOUNT_KEY, '1');
+      safeLocalStorage.setItem(HAS_ACCOUNT_KEY, '1');
     },
     [queryClient],
   );
@@ -75,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setIsAuthenticated(false);
     clearSessionKey();
-    localStorage.removeItem(ONBOARDING_DONE_KEY);
+    safeLocalStorage.removeItem(ONBOARDING_DONE_KEY);
   }, [queryClient]);
 
   return (

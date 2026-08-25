@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { feedbackService } from '../services/feedback.js';
 import { ValidationError } from '../lib/errors.js';
+import { parsePagination, sendPaginated } from '../lib/pagination.js';
 
 interface FeedbackCreateBody {
   rating: number;
@@ -24,13 +25,8 @@ export default async function feedbackRoutes(fastify: FastifyInstance) {
   );
 
   fastify.get('/feedback/me', { preHandler: [fastify.authenticate] }, async (request, reply) => {
-    const { skip, take } = request.query as { skip?: string; take?: string };
-    const result = await feedbackService.listByUser(
-      request.userId,
-      skip ? parseInt(skip, 10) : undefined,
-      take ? parseInt(take, 10) : undefined,
-    );
-    reply.header('X-Total-Count', result.total);
-    return result.data;
+    const { skip, take } = parsePagination(request.query as { skip?: string; take?: string });
+    const result = await feedbackService.listByUser(request.userId, skip, take);
+    return sendPaginated(reply, result);
   });
 }

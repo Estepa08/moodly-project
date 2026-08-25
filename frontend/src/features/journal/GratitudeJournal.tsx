@@ -11,8 +11,7 @@ import { Chip } from '../../components/ui/chip';
 import { Textarea } from '../../components/ui/textarea';
 import { Card, CardContent } from '../../components/ui/card';
 import EmptyState from '../../components/ui/empty-state';
-import { usePets } from '../gamification';
-import { PET_DEFINITIONS } from '../gamification/pets';
+import { usePets, PET_DEFINITIONS } from '../gamification';
 
 interface GratitudeJournalProps {
   parameterId: string | undefined;

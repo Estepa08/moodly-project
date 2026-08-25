@@ -3,10 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Flame, CalendarRange, Moon } from 'lucide-react';
 import { Dialog, DialogContent } from '../../components/ui/dialog';
-import PetAvatar, { type PetGlow } from '../gamification/PetAvatar';
-import { usePets, useCreatureState, celebrate, emitSpeech } from '../gamification';
-import { PET_DEFINITIONS } from '../gamification/pets';
-import { buildComebackSignal, type PetRewardSignal } from '../gamification/petRewards';
+import {
+  PetAvatar,
+  type PetGlow,
+  usePets,
+  useCreatureState,
+  celebrate,
+  emitSpeech,
+  PET_DEFINITIONS,
+  buildComebackSignal,
+  type PetRewardSignal,
+} from '../gamification';
 import { api } from '../../lib/api';
 import { useParameters } from '../../hooks/useParameters';
 import { useCreateEntry } from '../../hooks/useEntries';

@@ -1,6 +1,7 @@
 import { prisma } from '../lib/prisma.js';
 import { NotFoundError, AppError } from '../lib/errors.js';
 import { lockUser } from '../lib/user-lock.js';
+import { deleteOwned } from '../lib/ownership.js';
 import { creatureService } from './creature.js';
 
 export interface EntryCreateInput {
@@ -100,7 +101,6 @@ export const entryService = {
   },
 
   async delete(id: string, userId: string) {
-    const deleted = await prisma.entry.deleteMany({ where: { id, userId } });
-    if (deleted.count === 0) throw new NotFoundError('Entry');
+    await deleteOwned(prisma.entry, id, userId, 'Entry');
   },
 };

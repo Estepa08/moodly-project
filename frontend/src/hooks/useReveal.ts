@@ -5,8 +5,7 @@ import { useEffect, useRef, useState } from 'react';
  * Добавляет класс `reveal-visible`, когда элемент входит во вьюпорт.
  * Уважает prefers-reduced-motion.
  */
-export const REVEAL_DIRECTIONS = ['up', 'left', 'right', 'fade'] as const;
-export type RevealDirection = (typeof REVEAL_DIRECTIONS)[number];
+export type RevealDirection = 'up' | 'left' | 'right' | 'fade';
 
 export function useReveal<T extends HTMLElement = HTMLDivElement>(
   options: { once?: boolean; threshold?: number; delay?: number } = {},
