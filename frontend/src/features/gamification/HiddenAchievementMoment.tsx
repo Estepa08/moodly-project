@@ -42,7 +42,7 @@ export default function HiddenAchievementMoment({
 
   useEffect(() => {
     if (!open || !achievement || isReducedMotion) return;
-    burstConfetti({ particleCount: 70, colors: ['#F5A623', '#7B5BF2', '#D63A85'] });
+    burstConfetti({ particleCount: 70, colors: ['warning', 'chart-4', 'chart-5'] });
   }, [open, achievement, isReducedMotion, burstConfetti]);
 
   if (!achievement) return null;

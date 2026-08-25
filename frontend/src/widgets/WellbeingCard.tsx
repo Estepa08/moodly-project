@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Heart, ChevronDown } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/card';
+import Eyebrow from '../components/ui/eyebrow';
+import { Period } from '../lib/constants';
+import { PERIODS } from '../lib/utils';
 
 interface WellbeingCardProps {
   average: number | null;
@@ -8,6 +11,9 @@ interface WellbeingCardProps {
   expanded: boolean;
   onToggle: () => void;
   panelId: string;
+  /** Период, за который считается среднее — подпись над числом (регистр
+      "недельного обзора", в отличие от функционального повседневного ввода). */
+  period?: Period;
 }
 
 export default function WellbeingCard({
@@ -16,8 +22,10 @@ export default function WellbeingCard({
   expanded,
   onToggle,
   panelId,
+  period,
 }: WellbeingCardProps) {
   const { t } = useTranslation();
+  const periodLabelKey = period ? PERIODS.find((p) => p.key === period)?.labelKey : undefined;
 
   const colorClass =
     average !== null
@@ -53,8 +61,9 @@ export default function WellbeingCard({
                 {t('dashboard.practicesLoading')}
               </span>
             ) : (
-              <div className="flex items-end gap-2">
-                <span className={`text-5xl font-bold font-serif ${colorClass}`}>
+              <div className="flex flex-col items-end">
+                {periodLabelKey && average !== null && <Eyebrow>{t(periodLabelKey)}</Eyebrow>}
+                <span className={`text-5xl font-bold font-serif leading-none ${colorClass}`}>
                   {average !== null ? average.toFixed(1) : '—'}
                 </span>
               </div>

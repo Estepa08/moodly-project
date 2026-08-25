@@ -135,6 +135,7 @@ export default function Dashboard() {
       <WellbeingCard
         average={wellbeing.average}
         isLoading={isDataLoading}
+        period={period.wellbeing}
         expanded={expanded}
         onToggle={() => {
           setExpanded((v) => {

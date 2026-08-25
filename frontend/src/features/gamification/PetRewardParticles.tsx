@@ -24,44 +24,53 @@ import type { PetRewardSignal } from './petRewards';
 
 const rand = (min: number, max: number) => Math.random() * (max - min) + min;
 
-const GOLD = '#F5A623';
-const SUN = '#FF9F0A';
-const PINK = '#E0509C';
-const BLUE = '#5E8FD8';
-const PURPLE = '#8F5ED8';
-const XP_GREEN = '#22C55E';
-const TEAL = '#0EA5A5';
-const COMBO_COLORS = ['#7B5BF2', '#D63A85', '#F5A623', '#4CC38A', '#5E8FD8', '#8F5ED8'];
+// Тихий кабинет: без фиолетового/маджента — только токены палитры
+// (olive/terracotta/chart-*), совпадающие с остальным приложением.
+const GOLD = 'hsl(var(--chart-4))';
+const SUN = 'hsl(var(--accent))';
+const ROSE = 'hsl(var(--chart-5))';
+const BLUE = 'hsl(var(--info))';
+const SAGE = 'hsl(var(--primary-muted))';
+const XP_GREEN = 'hsl(var(--success))';
+const TEAL = 'hsl(var(--chart-2))';
+const COMBO_COLORS = [
+  'hsl(var(--primary))',
+  'hsl(var(--accent))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-4))',
+  'hsl(var(--info))',
+  'hsl(var(--chart-5))',
+];
 const COMBO_ICONS: Array<typeof Sparkles> = [Sparkles, Star, Heart, Trophy, Sun];
 
 // Микс-пулы «иконка + цвет»: внутри одного залпа частицы не повторяются,
 // чтобы не было 3-5 одинаковых иконок одновременно.
 const STANDARD_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
   { icon: Sparkles, color: GOLD },
-  { icon: Trophy, color: PINK },
-  { icon: ThumbsUp, color: PURPLE },
+  { icon: Trophy, color: ROSE },
+  { icon: ThumbsUp, color: SAGE },
 ];
 const MORNING_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
   { icon: Sunrise, color: SUN },
   { icon: Sparkles, color: GOLD },
-  { icon: Star, color: '#F2A71B' },
-  { icon: SunMedium, color: '#FFC53D' },
-  { icon: Sparkles, color: '#F0803C' },
+  { icon: Star, color: 'hsl(var(--warning))' },
+  { icon: SunMedium, color: 'hsl(var(--accent-strong))' },
+  { icon: Sparkles, color: 'hsl(var(--chart-4) / 0.8)' },
 ];
 const WELCOME_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
-  { icon: HeartHandshake, color: PINK },
-  { icon: Sparkles, color: PURPLE },
+  { icon: HeartHandshake, color: ROSE },
+  { icon: Sparkles, color: SAGE },
   { icon: Star, color: GOLD },
-  { icon: Heart, color: '#D63A85' },
-  { icon: Gem, color: '#B26AE8' },
+  { icon: Heart, color: 'hsl(var(--accent-strong))' },
+  { icon: Gem, color: 'hsl(var(--primary-strong))' },
 ];
 // «Прогулка»: подарок/компас — тема «принёс находку», не сердечки welcome.
 const ADVENTURE_MIX: Array<{ icon: typeof Sparkles; color: string }> = [
   { icon: Gift, color: TEAL },
   { icon: Compass, color: GOLD },
-  { icon: Sparkles, color: PURPLE },
-  { icon: Gift, color: '#0C8A8A' },
-  { icon: Compass, color: '#D98A1A' },
+  { icon: Sparkles, color: SAGE },
+  { icon: Gift, color: 'hsl(var(--success))' },
+  { icon: Compass, color: 'hsl(var(--warning))' },
 ];
 
 // Фиксированные количества частиц (ровно, без случайных диапазонов — без перебора).
@@ -178,7 +187,7 @@ export default function PetRewardParticles({
         <motion.span
           className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
           style={{
-            color: signal.kind === 'welcome' ? PINK : signal.kind === 'adventure' ? TEAL : XP_GREEN,
+            color: signal.kind === 'welcome' ? ROSE : signal.kind === 'adventure' ? TEAL : XP_GREEN,
           }}
           initial={{ y: 0, opacity: 0, scale: 0.7 }}
           animate={{ y: -64, opacity: [0, 1, 1, 0], scale: 1 }}
@@ -193,7 +202,8 @@ export default function PetRewardParticles({
       {/* Подзаголовок «С возвращением!» */}
       {signal.kind === 'welcome' && !reducedMotion && (
         <motion.span
-          className="absolute -translate-x-1/2 -translate-y-1/2 text-xs font-bold whitespace-nowrap text-pink-500"
+          className="absolute -translate-x-1/2 -translate-y-1/2 text-xs font-bold whitespace-nowrap"
+          style={{ color: ROSE }}
           initial={{ y: 8, opacity: 0 }}
           animate={{ y: -30, opacity: [0, 1, 1, 0] }}
           transition={{ duration: 1.4, delay: 0.25, ease: 'easeOut' }}
@@ -221,9 +231,7 @@ export default function PetRewardParticles({
           className="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap shadow-lg"
           style={{
             background:
-              comboCount >= 5
-                ? 'linear-gradient(90deg, #7B5BF2, #D63A85)'
-                : 'linear-gradient(90deg, #B26AE8, #7B5BF2)',
+              comboCount >= 5 ? 'hsl(var(--accent-strong))' : 'hsl(var(--primary-strong))',
           }}
           initial={{ y: 0, opacity: 0, scale: 0.6 }}
           animate={{ y: -28, opacity: [0, 1, 1, 0], scale: 1 }}
@@ -247,7 +255,7 @@ export default function PetRewardParticles({
               style={{
                 width: 34,
                 height: 34,
-                borderColor: i % 2 === 0 ? BLUE : PURPLE,
+                borderColor: i % 2 === 0 ? BLUE : SAGE,
               }}
               initial={{ x: -17, y: -17, scale: 0.3, opacity: 0.7 }}
               animate={{ x: -17, y: -17, scale: waveScale, opacity: 0 }}
