@@ -110,13 +110,21 @@ export default function ThoughtBattleGame() {
   if (step === 'victory') {
     const plansRemaining = playDailyLimit - (playCount + 1);
     return (
-      <div className="rounded-2xl bg-card shadow-neumorphic p-6 space-y-4 text-center relative overflow-hidden">
-        <Sparkles
-          aria-hidden="true"
-          className="w-8 h-8 text-warning mx-auto animate-evolution-confetti"
-        />
+      <div className="rounded-2xl bg-card shadow-neumorphic p-6 space-y-4 text-center relative overflow-hidden animate-card-enter">
+        <span className="icon-well flex items-center justify-center w-14 h-14 rounded-full bg-warning/10 mx-auto animate-icon-pop">
+          <Sparkles
+            aria-hidden="true"
+            className="w-8 h-8 text-warning animate-evolution-confetti"
+          />
+        </span>
         <p className="text-base font-bold text-foreground">{t('thoughtBattle.victoryTitle')}</p>
-        <div className="rounded-xl bg-muted/50 p-3 text-left space-y-1">
+        {/* Развязка «было → стало» — смысловой центр победы, поэтому она не
+            появляется одновременно с карточкой, а раскрывается по шагам вслед
+            за ней (тот же animate-card-enter, только с задержкой). */}
+        <div
+          className="rounded-xl bg-muted/50 p-3 text-left space-y-1 animate-card-enter"
+          style={{ animationDelay: '120ms' }}
+        >
           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
             {t('thoughtBattle.wasLabel')}
           </p>
@@ -124,13 +132,16 @@ export default function ThoughtBattleGame() {
             {content.bossText}
           </p>
         </div>
-        <div className="rounded-xl bg-primary/10 p-3 text-left space-y-1">
+        <div
+          className="rounded-xl bg-primary/10 p-3 text-left space-y-1 animate-card-enter"
+          style={{ animationDelay: '260ms' }}
+        >
           <p className="text-[10px] font-bold text-primary uppercase tracking-wider">
             {t('thoughtBattle.becameLabel')}
           </p>
           <p className="text-sm font-semibold text-foreground">{reframeChosen}</p>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 animate-card-enter" style={{ animationDelay: '380ms' }}>
           {plansRemaining > 0 && (
             <Button variant="default" onClick={playAgain} className="w-full">
               {t('thoughtBattle.playAgainCta')}
