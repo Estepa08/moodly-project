@@ -41,6 +41,9 @@
     "sleepHygiene": "Сон",
     "cba": "Сравнение",
     "thoughtJournal": "Дневник мыслей",
+    "thoughtBattle": "Тренажёр мысли",
+    "responsibilityPie": "Пирог ответственности",
+    "decatastrophizing": "Декатастрофизация",
     "tests": "Тесты",
     "settings": "Настройки",
     "progress": "Прогресс",
@@ -60,6 +63,9 @@
       "distortions": "Искажения",
       "sleepHygiene": "Сон",
       "cba": "Сравнение",
+      "thoughtBattle": "Тренажёр",
+      "responsibilityPie": "Пирог",
+      "decatastrophizing": "Декатастроф.",
       "breathing": "Дыхание",
       "progress": "Прогресс",
       "tests": "Тесты",
@@ -696,8 +702,6 @@
     "timeSleepHygiene": "3–5 минут",
     "timeCba": "5–10 минут",
     "timeThoughtJournal": "1–3 минуты",
-    "categoryBody": "Тело",
-    "categoryMind": "Разум",
     "testsSection": "Тесты · клиническая оценка",
     "testsSubtitle": "Быстрая самодиагностика — 3–7 минут",
     "testCategory": "Тесты",
@@ -708,7 +712,66 @@
     "descEmotionLab": "Алхимия эмоций по колесу Плутчика — открывайте новые чувства",
     "timeEmotionLab": "2–5 минут",
     "descRelaxationWheel": "Крутите колесо — случайная идея, как позаботиться о себе",
-    "timeRelaxationWheel": "1–30 минут"
+    "timeRelaxationWheel": "1–30 минут",
+    "descThoughtBattle": "Разбери тревожную мысль по шагам — от искажения до баланса",
+    "timeThoughtBattle": "5–7 минут",
+    "descResponsibilityPie": "Раздели ответственность за ситуацию по факторам",
+    "timeResponsibilityPie": "3–5 минут",
+    "descDecatastrophizing": "Пройди худший сценарий и найди реалистичный",
+    "timeDecatastrophizing": "5–8 минут",
+    "groupMindWork": "Работа с мыслями",
+    "groupEmotions": "Эмоции",
+    "groupBody": "Тело и релаксация",
+    "groupHabits": "Привычки",
+    "groupPositivePsychology": "Позитивная психология"
+  },
+  "responsibilityPie": {
+    "title": "Пирог ответственности",
+    "subtitle": "Раздели ответственность за ситуацию — сколько в ней действительно твоей доли",
+    "formTitle": "Разбор ситуации",
+    "situationLabel": "Какая задача вызвала тревогу?",
+    "situationPlaceholder": "Опишите ситуацию коротко…",
+    "chartLabel": "Пирог ответственности",
+    "factor": {
+      "me": "Я",
+      "colleagues": "Коллеги",
+      "external": "Внешние обстоятельства",
+      "forceMajeure": "Форс-мажор"
+    },
+    "addFactorCta": "Добавить свой фактор",
+    "addFactorPlaceholder": "Название фактора",
+    "removeFactor": "Убрать фактор",
+    "maxFactorsHint": "Больше факторов добавить нельзя",
+    "takeaway": "Твоя доля — {{percent}}%. Остальное — вне твоего контроля.",
+    "saveCta": "Сохранить",
+    "tabForm": "Форма",
+    "tabHistory": "История",
+    "historyEmpty": "Пока нет ни одной записи",
+    "deleteEntry": "Удалить запись",
+    "saveError": "Не удалось сохранить запись. Попробуйте ещё раз."
+  },
+  "decatastrophizing": {
+    "title": "Декатастрофизация",
+    "subtitle": "Разложи тревожную мысль на три шага — от худшего сценария к реалистичному",
+    "tabPractice": "Практика",
+    "tabHistory": "История",
+    "step1Title": "Что самое худшее может случиться?",
+    "step1Placeholder": "Опишите худший сценарий…",
+    "step2Title": "Что я буду делать, если это произойдёт?",
+    "step2Placeholder": "Опишите план действий…",
+    "step3Title": "Что вероятнее всего случится на самом деле?",
+    "step3Placeholder": "Опишите реалистичный сценарий…",
+    "nextCta": "Далее",
+    "backCta": "Назад",
+    "compareCta": "Сравнить",
+    "saveCta": "Сохранить",
+    "summaryTitle": "Сравнение",
+    "worstCaseLabel": "Худший сценарий",
+    "copingPlanLabel": "План действий",
+    "mostLikelyLabel": "Наиболее вероятный сценарий",
+    "historyEmpty": "Пока нет ни одной записи",
+    "deleteEntry": "Удалить запись",
+    "saveError": "Не удалось сохранить запись. Попробуйте ещё раз."
   },
   "thoughtJournal": {
     "title": "Дневник мыслей",
@@ -1645,6 +1708,9 @@
     "activityEmotionLab": "Эмоции",
     "activityThoughtJournalCycle": "Разобранный цикл",
     "activityRelaxationWheel": "Колесо релаксации",
+    "activityThoughtBattle": "Тренажёр мысли",
+    "activityResponsibilityPie": "Пирог ответственности",
+    "activityDecatastrophizing": "Декатастрофизация",
     "weeklyTitle": "Недельный календарь",
     "weeklySubtitle": "Любые 5 дней из 7 — без штрафов за пропуск"
   },
@@ -1770,12 +1836,7 @@
         "Тёпленько!",
         "Красота!"
       ]
-    },
-    "playCta": "Играть",
-    "playHint": "Осталось игр сегодня: {{remaining}}",
-    "playLimitHint": "На сегодня хватит игр — заходи завтра 🌙",
-    "playNoEnergyHint": "Слишком устал для игры — восстанови энергию практикой",
-    "playToast": "🎾 +{{xp}} XP · −{{cost}} ⚡"
+    }
   },
   "petMood": {
     "happy": "В отличном настроении",
@@ -2860,7 +2921,6 @@
     "victoryTitle": "Мысль переосмыслена!",
     "wasLabel": "Было",
     "becameLabel": "Стало",
-    "notAvailableTitle": "Игра недоступна",
     "content": {
       "allOrNothing": {
         "evidence": [

@@ -39,6 +39,9 @@ const PRACTICE_REWARD_XP: Record<string, number> = {
   distortions: 10,
   cba: 10,
   thoughtJournal: 5,
+  thoughtBattle: 12,
+  responsibilityPie: 10,
+  decatastrophizing: 10,
   weeklyGoal: 25,
 };
 

@@ -48,3 +48,55 @@ test("страницы практик открываются", { tag: "@practice
   await gotoApp(page, "/practices/cost-benefit-analysis");
   await expect(page.getByText("Анализ издержек и выгод").first()).toBeVisible();
 });
+
+test("хаб практик: группы и новые практики", { tag: "@practices" }, async ({ page }) => {
+  await register(page, uniqueEmail("practice-hub"));
+
+  await gotoApp(page, "/practices");
+  await expect(page.getByText("Работа с мыслями")).toBeVisible();
+  await expect(page.getByText("Позитивная психология")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Тренажёр мысли/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Пирог ответственности/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Декатастрофизация/ })).toBeVisible();
+
+  await page.getByRole("link", { name: /Тренажёр мысли/ }).click();
+  await expect(page).toHaveURL(/\/practices\/thought-battle/);
+  await expect(page.getByText("Опознай искажение")).toBeVisible();
+});
+
+test("пирог ответственности: сохраняется запись", { tag: "@practices" }, async ({ page }) => {
+  await register(page, uniqueEmail("practice-resp-pie"));
+
+  await gotoApp(page, "/practices/responsibility-pie");
+  await page
+    .getByPlaceholder("Опишите ситуацию коротко…")
+    .fill("e2e-ситуация: провалил дедлайн по проекту");
+  await page.getByRole("button", { name: "Сохранить" }).click();
+
+  await expect(page.getByText("e2e-ситуация: провалил дедлайн по проекту")).toBeVisible();
+});
+
+test("декатастрофизация: визард из 3 шагов сохраняется", { tag: "@practices" }, async ({
+  page,
+}) => {
+  await register(page, uniqueEmail("practice-decatastrophizing"));
+
+  await gotoApp(page, "/practices/decatastrophizing");
+  await page.getByPlaceholder("Опишите худший сценарий…").fill("e2e-худший сценарий");
+  await page.getByRole("button", { name: "Далее" }).click();
+
+  await expect(page.getByText("e2e-худший сценарий")).toBeVisible();
+  await page.getByPlaceholder("Опишите план действий…").fill("e2e-план действий");
+  await page.getByRole("button", { name: "Далее" }).click();
+
+  await page.getByPlaceholder("Опишите реалистичный сценарий…").fill("e2e-реалистичный сценарий");
+  await page.getByRole("button", { name: "Сравнить" }).click();
+
+  await expect(page.getByText("e2e-худший сценарий")).toBeVisible();
+  await expect(page.getByText("e2e-план действий")).toBeVisible();
+  await expect(page.getByText("e2e-реалистичный сценарий")).toBeVisible();
+  await page.getByRole("button", { name: "Сохранить" }).click();
+
+  await expect(page.getByText("e2e-худший сценарий").first()).toBeVisible();
+  await expect(page.getByText("e2e-реалистичный сценарий").first()).toBeVisible();
+});

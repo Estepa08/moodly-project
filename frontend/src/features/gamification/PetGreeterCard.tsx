@@ -5,7 +5,6 @@ import { usePetReward } from './usePetReward';
 import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { PET_CYCLE } from '@moodly/shared';
 import PetAvatar from './PetAvatar';
-import PlayButton from './PlayButton';
 import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
 import { useDayPhase } from '../../hooks/useDayPhase';
 import { useMessageOfDay } from '../../hooks/useMessageOfDay';
@@ -37,7 +36,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
 
   const petCount = creature.petCount ?? 0;
   const energy = creature.energy ?? 100;
-  const playCount = creature.playCount ?? 0;
   const cyclePosition = (petCount % PET_CYCLE) + 1;
   const energyPercent = Math.max(0, Math.min(100, energy));
 
@@ -115,15 +113,6 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
             bubbleClearance={32}
           />
         </div>
-      </div>
-
-      {/* NEW: кнопка «Играть» — тратит энергию, даёт XP (A1) */}
-      <div className="flex justify-center">
-        <PlayButton
-          energy={energy}
-          playCount={playCount}
-          playDailyLimit={creature.playDailyLimit}
-        />
       </div>
 
       <button

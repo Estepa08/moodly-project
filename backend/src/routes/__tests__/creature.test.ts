@@ -1084,168 +1084,53 @@ describe('Creature adventure claim', () => {
   });
 });
 
-describe('Creature play (A1 — energy revival)', () => {
-  it('POST /creature/play — costs 10 energy, awards +2 XP, increments playCount', async () => {
-    const user = await registerAndLogin(app, 'creature-play@example.com', 'secret123', 'Player');
+describe('Creature reward — thoughtBattle (Тренажёр мысли)', () => {
+  it('POST /creature/reward {source: "thoughtBattle"} — awards configured XP and energy', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-thoughtbattle@example.com',
+      'secret123',
+      'Battler',
+    );
 
     const res = await app.inject({
       method: 'POST',
-      url: '/creature/play',
+      url: '/creature/reward',
       headers: { authorization: `Bearer ${user.token}` },
+      payload: { source: 'thoughtBattle' },
     });
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toMatchObject({
-      xpAwarded: 2,
-      playCount: 1,
-      playDailyLimit: 3,
-      playCountRemaining: 2,
-    });
-    expect(res.json().state.energy).toBe(90);
-  });
+    expect(res.json().state.experience).toBe(12);
 
-  it('POST /creature/play — free tier: rejects once the daily play limit (3) is reached', async () => {
-    const user = await registerAndLogin(
-      app,
-      'creature-play-limit@example.com',
-      'secret123',
-      'PlayLimit',
-    );
-    for (let i = 0; i < 3; i++) {
-      const ok = await app.inject({
-        method: 'POST',
-        url: '/creature/play',
-        headers: { authorization: `Bearer ${user.token}` },
-      });
-      expect(ok.statusCode).toBe(200);
-    }
-    const res = await app.inject({
-      method: 'POST',
-      url: '/creature/play',
-      headers: { authorization: `Bearer ${user.token}` },
-    });
-    expect(res.statusCode).toBe(400);
-  });
-
-  it('POST /creature/play — active premium tier gets 5 plays/day instead of 3', async () => {
-    const user = await registerAndLogin(
-      app,
-      'creature-play-premium@example.com',
-      'secret123',
-      'Premium',
-    );
-    await prisma.user.update({
-      where: { id: user.userId },
-      data: { subscriptionTier: 'premium', subscriptionExpiresAt: null },
-    });
-
-    for (let i = 0; i < 5; i++) {
-      const ok = await app.inject({
-        method: 'POST',
-        url: '/creature/play',
-        headers: { authorization: `Bearer ${user.token}` },
-      });
-      expect(ok.statusCode).toBe(200);
-      expect(ok.json().playDailyLimit).toBe(5);
-    }
-    const res = await app.inject({
-      method: 'POST',
-      url: '/creature/play',
-      headers: { authorization: `Bearer ${user.token}` },
-    });
-    expect(res.statusCode).toBe(400);
-  });
-
-  it('POST /creature/play — expired premium falls back to the free tier limit (3)', async () => {
-    const user = await registerAndLogin(
-      app,
-      'creature-play-expired@example.com',
-      'secret123',
-      'Expired',
-    );
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    await prisma.user.update({
-      where: { id: user.userId },
-      data: { subscriptionTier: 'premium', subscriptionExpiresAt: yesterday },
-    });
-
-    const res = await app.inject({
-      method: 'POST',
-      url: '/creature/play',
-      headers: { authorization: `Bearer ${user.token}` },
-    });
-    expect(res.json().playDailyLimit).toBe(3);
-  });
-
-  it('POST /creature/play — rejects when energy is below the play cost', async () => {
-    const user = await registerAndLogin(
-      app,
-      'creature-play-noenergy@example.com',
-      'secret123',
-      'NoEnergy',
-    );
-    await app.inject({
+    const completions = await app.inject({
       method: 'GET',
-      url: '/creature',
+      url: '/creature/completions',
       headers: { authorization: `Bearer ${user.token}` },
     });
-    await prisma.creatureState.update({
-      where: { userId: user.userId },
-      data: { energy: 5 },
-    });
-    const res = await app.inject({
-      method: 'POST',
-      url: '/creature/play',
-      headers: { authorization: `Bearer ${user.token}` },
-    });
-    expect(res.statusCode).toBe(400);
-  });
-
-  it('GET /creature — reports playDailyLimit/playCountRemaining for the free tier', async () => {
-    const user = await registerAndLogin(
-      app,
-      'creature-play-state@example.com',
-      'secret123',
-      'PlayState',
+    expect(completions.json()).toContainEqual(
+      expect.objectContaining({ source: 'thoughtBattle', xpAwarded: 12 }),
     );
-    const res = await app.inject({
-      method: 'GET',
-      url: '/creature',
-      headers: { authorization: `Bearer ${user.token}` },
-    });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toMatchObject({
-      playCount: 0,
-      playDailyLimit: 3,
-      playCountRemaining: 3,
-    });
   });
 
-  it('play completions are excluded from practice counters and weekly calendar', async () => {
+  it('thoughtBattle completions count toward practice counters and the weekly calendar', async () => {
     const user = await registerAndLogin(
       app,
-      'creature-play-exclude@example.com',
+      'creature-thoughtbattle-count@example.com',
       'secret123',
-      'PlayExcl',
+      'BattlerCount',
     );
     await app.inject({
       method: 'POST',
-      url: '/creature/play',
+      url: '/creature/reward',
       headers: { authorization: `Bearer ${user.token}` },
+      payload: { source: 'thoughtBattle' },
     });
     const stats = await app.inject({
       method: 'GET',
       url: '/creature/stats',
       headers: { authorization: `Bearer ${user.token}` },
     });
-    expect(stats.json().totalPractices).toBe(0);
-
-    const weekly = await app.inject({
-      method: 'GET',
-      url: '/creature/weekly',
-      headers: { authorization: `Bearer ${user.token}` },
-    });
-    expect(weekly.json().completedCount).toBe(0);
+    expect(stats.json().totalPractices).toBe(1);
   });
 });
 

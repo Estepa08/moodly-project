@@ -14,6 +14,8 @@ tags:
   - name: Reports
   - name: Breathing
   - name: Cba
+  - name: ResponsibilityPie
+  - name: Decatastrophizing
   - name: EmotionLab
   - name: Admin
   - name: Content
@@ -560,24 +562,10 @@ paths:
                 $ref: '#/components/schemas/PetCollection'
       tags:
         - Breathing
-  /creature/play:
-    post:
-      operationId: Creature_play
-      description: 'Играть с компаньоном: −10 энергии, +2 XP, лимит 5 игр в сутки'
-      parameters: []
-      responses:
-        '200':
-          description: The request has succeeded.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlayResponse'
-      tags:
-        - Breathing
   /creature/reward:
     post:
       operationId: Creature_reward
-      description: Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba)
+      description: Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba, thoughtBattle, responsibilityPie, decatastrophizing)
       parameters: []
       responses:
         '200':
@@ -622,6 +610,54 @@ paths:
                 $ref: '#/components/schemas/ClaimWeeklyResponse'
       tags:
         - Breathing
+  /decatastrophizing/entries:
+    post:
+      operationId: Decatastrophizing_createEntry
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecatastrophizingEntry'
+      tags:
+        - Decatastrophizing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecatastrophizingEntryCreate'
+    get:
+      operationId: Decatastrophizing_listEntries
+      description: История записей текущего пользователя, новые сверху
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DecatastrophizingEntry'
+      tags:
+        - Decatastrophizing
+  /decatastrophizing/entries/{id}:
+    delete:
+      operationId: Decatastrophizing_deleteEntry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - Decatastrophizing
   /emotion-lab/attempt:
     post:
       operationId: EmotionLab_attempt
@@ -910,6 +946,54 @@ paths:
                 format: binary
       tags:
         - Reports
+  /responsibility-pie/entries:
+    post:
+      operationId: ResponsibilityPie_createEntry
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsibilityPieEntry'
+      tags:
+        - ResponsibilityPie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponsibilityPieEntryCreate'
+    get:
+      operationId: ResponsibilityPie_listEntries
+      description: История записей текущего пользователя, новые сверху
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponsibilityPieEntry'
+      tags:
+        - ResponsibilityPie
+  /responsibility-pie/entries/{id}:
+    delete:
+      operationId: ResponsibilityPie_deleteEntry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+      tags:
+        - ResponsibilityPie
   /test-results:
     get:
       operationId: TestResults_list
@@ -1561,19 +1645,44 @@ components:
           type: string
           format: date-time
           description: Момент, когда компаньон вернётся с «прогулки» (null — прогулки нет)
-        playCount:
-          type: integer
-          format: int32
-          description: Игр за текущий день (сбрасывается в полночь по серверному времени)
-        playDailyLimit:
-          type: integer
-          format: int32
-          description: Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
-        playCountRemaining:
-          type: integer
-          format: int32
-          description: Сколько игр осталось сегодня
       description: Текущее состояние существа пользователя
+    DecatastrophizingEntry:
+      type: object
+      required:
+        - id
+        - userId
+        - worstCaseText
+        - copingPlanText
+        - mostLikelyText
+        - createdAt
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        worstCaseText:
+          type: string
+        copingPlanText:
+          type: string
+        mostLikelyText:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      description: 'Запись пользователя в технике «Декатастрофизация»: три ответа по шагам декатастрофизации мысли'
+    DecatastrophizingEntryCreate:
+      type: object
+      required:
+        - worstCaseText
+        - copingPlanText
+        - mostLikelyText
+      properties:
+        worstCaseText:
+          type: string
+        copingPlanText:
+          type: string
+        mostLikelyText:
+          type: string
     DyadInfo:
       type: object
       required:
@@ -2122,38 +2231,6 @@ components:
           type: string
           description: Новое имя питомца (пустая строка очищает)
       description: Тело обновления питомца
-    PlayResponse:
-      type: object
-      required:
-        - state
-        - leveledUp
-        - xpAwarded
-        - playCount
-        - playDailyLimit
-        - playCountRemaining
-      properties:
-        state:
-          $ref: '#/components/schemas/CreatureState'
-        leveledUp:
-          type: boolean
-          description: Был ли достигнут новый уровень
-        xpAwarded:
-          type: integer
-          format: int32
-          description: Сколько XP начислено за эту игру
-        playCount:
-          type: integer
-          format: int32
-          description: Игр за текущий день
-        playDailyLimit:
-          type: integer
-          format: int32
-          description: Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
-        playCountRemaining:
-          type: integer
-          format: int32
-          description: Сколько игр осталось сегодня
-      description: Результат игры с компаньоном (тратит энергию, даёт немного XP)
     PracticeCompletion:
       type: object
       required:
@@ -2287,6 +2364,66 @@ components:
           type: string
         message:
           type: string
+    ResponsibilityFactor:
+      type: object
+      required:
+        - id
+        - label
+        - percent
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        percent:
+          type: integer
+          format: int32
+    ResponsibilityFactorInput:
+      type: object
+      required:
+        - label
+        - percent
+      properties:
+        label:
+          type: string
+        percent:
+          type: integer
+          format: int32
+    ResponsibilityPieEntry:
+      type: object
+      required:
+        - id
+        - userId
+        - situationText
+        - createdAt
+        - factors
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        situationText:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        factors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponsibilityFactor'
+      description: 'Запись пользователя в технике «Пирог ответственности»: ситуация + разбивка ответственности по факторам (в сумме 100)'
+    ResponsibilityPieEntryCreate:
+      type: object
+      required:
+        - situationText
+        - factors
+      properties:
+        situationText:
+          type: string
+        factors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponsibilityFactorInput'
     RewardRequest:
       type: object
       required:

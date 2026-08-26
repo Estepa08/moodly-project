@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT_FREE } from '@moodly/shared';
-import { useCreatureState, usePlay } from '../gamification';
+import { useCreatureState, useRewardPractice, PracticeSource } from '../gamification';
 import { Button } from '../../components/ui/button';
 import { LoadingCard } from '../../components/ui/loading-card';
 import BossHealthBar from './BossHealthBar';
@@ -25,9 +24,9 @@ interface RoundContent {
 export default function ThoughtBattleGame() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: creature, isLoading: creatureLoading } = useCreatureState();
+  const { isLoading: creatureLoading } = useCreatureState();
 
-  const play = usePlay();
+  const rewardPractice = useRewardPractice();
 
   const [round, setRound] = useState(0);
   const [step, setStep] = useState<Step>(1);
@@ -44,25 +43,6 @@ export default function ThoughtBattleGame() {
   }, [round]);
 
   if (creatureLoading) return <LoadingCard />;
-
-  const energy = creature?.energy ?? 100;
-  const playCount = creature?.playCount ?? 0;
-  const playDailyLimit = creature?.playDailyLimit ?? PLAY_DAILY_LIMIT_FREE;
-  const available = energy >= PLAY_ENERGY_COST && playCount < playDailyLimit;
-
-  if (!available) {
-    const reason =
-      playCount >= playDailyLimit ? t('companion.playLimitHint') : t('companion.playNoEnergyHint');
-    return (
-      <div className="rounded-2xl bg-card shadow-neumorphic p-6 text-center space-y-3">
-        <p className="text-sm font-bold text-foreground">{t('thoughtBattle.notAvailableTitle')}</p>
-        <p className="text-xs text-muted-foreground">{reason}</p>
-        <Button variant="secondary" onClick={() => navigate('/my-day')}>
-          {t('thoughtBattle.backCta')}
-        </Button>
-      </div>
-    );
-  }
 
   const hit = (amount: number) => {
     setHp((h) => Math.max(0, h - amount));
@@ -87,7 +67,7 @@ export default function ThoughtBattleGame() {
     setHp(0);
     setHitSignal((s) => s + 1);
     setStep('victory');
-    play.mutate();
+    rewardPractice.mutate(PracticeSource.ThoughtBattle);
   };
 
   const playAgain = () => {
@@ -108,7 +88,6 @@ export default function ThoughtBattleGame() {
   };
 
   if (step === 'victory') {
-    const plansRemaining = playDailyLimit - (playCount + 1);
     return (
       <div className="rounded-2xl bg-card shadow-neumorphic p-6 space-y-4 text-center relative overflow-hidden">
         <Sparkles
@@ -131,12 +110,10 @@ export default function ThoughtBattleGame() {
           <p className="text-sm font-semibold text-foreground">{reframeChosen}</p>
         </div>
         <div className="flex flex-col gap-2">
-          {plansRemaining > 0 && (
-            <Button variant="default" onClick={playAgain} className="w-full">
-              {t('thoughtBattle.playAgainCta')}
-              <ArrowRight aria-hidden="true" className="w-4 h-4" />
-            </Button>
-          )}
+          <Button variant="default" onClick={playAgain} className="w-full">
+            {t('thoughtBattle.playAgainCta')}
+            <ArrowRight aria-hidden="true" className="w-4 h-4" />
+          </Button>
           <Button variant="secondary" onClick={() => navigate('/my-day')} className="w-full">
             {t('thoughtBattle.backCta')}
           </Button>

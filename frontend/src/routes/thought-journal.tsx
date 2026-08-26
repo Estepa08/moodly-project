@@ -418,7 +418,7 @@ export default function ThoughtJournalPage() {
                 return (
                   <div
                     key={e.id}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm"
+                    className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm animate-card-enter"
                   >
                     <span className="w-6 h-6 flex-shrink-0 mt-0.5 flex items-center justify-center">
                       <Icon

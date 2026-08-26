@@ -442,23 +442,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/creature/play": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Играть с компаньоном: −10 энергии, +2 XP, лимит 5 игр в сутки */
-        post: operations["Creature_play"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/creature/reward": {
         parameters: {
             query?: never;
@@ -468,7 +451,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba) */
+        /** @description Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba, thoughtBattle, responsibilityPie, decatastrophizing) */
         post: operations["Creature_reward"];
         delete?: never;
         options?: never;
@@ -505,6 +488,39 @@ export interface paths {
         /** @description Забрать недельный подарок +XP (одноразово на неделю, только при достигнутой цели) */
         post: operations["Creature_claimWeekly"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/decatastrophizing/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description История записей текущего пользователя, новые сверху */
+        get: operations["Decatastrophizing_listEntries"];
+        put?: never;
+        post: operations["Decatastrophizing_createEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/decatastrophizing/entries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Decatastrophizing_deleteEntry"];
         options?: never;
         head?: never;
         patch?: never;
@@ -683,6 +699,39 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/responsibility-pie/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description История записей текущего пользователя, новые сверху */
+        get: operations["ResponsibilityPie_listEntries"];
+        put?: never;
+        post: operations["ResponsibilityPie_createEntry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/responsibility-pie/entries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["ResponsibilityPie_deleteEntry"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1088,21 +1137,21 @@ export interface components {
              * @description Момент, когда компаньон вернётся с «прогулки» (null — прогулки нет)
              */
             adventureReturnAt?: string;
-            /**
-             * Format: int32
-             * @description Игр за текущий день (сбрасывается в полночь по серверному времени)
-             */
-            playCount?: number;
-            /**
-             * Format: int32
-             * @description Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
-             */
-            playDailyLimit?: number;
-            /**
-             * Format: int32
-             * @description Сколько игр осталось сегодня
-             */
-            playCountRemaining?: number;
+        };
+        /** @description Запись пользователя в технике «Декатастрофизация»: три ответа по шагам декатастрофизации мысли */
+        DecatastrophizingEntry: {
+            id: string;
+            userId: string;
+            worstCaseText: string;
+            copingPlanText: string;
+            mostLikelyText: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        DecatastrophizingEntryCreate: {
+            worstCaseText: string;
+            copingPlanText: string;
+            mostLikelyText: string;
         };
         /** @description Диада — результат смешивания двух эмоций (алхимия Плутчика) */
         DyadInfo: {
@@ -1414,32 +1463,6 @@ export interface components {
             /** @description Новое имя питомца (пустая строка очищает) */
             petName?: string;
         };
-        /** @description Результат игры с компаньоном (тратит энергию, даёт немного XP) */
-        PlayResponse: {
-            state: components["schemas"]["CreatureState"];
-            /** @description Был ли достигнут новый уровень */
-            leveledUp: boolean;
-            /**
-             * Format: int32
-             * @description Сколько XP начислено за эту игру
-             */
-            xpAwarded: number;
-            /**
-             * Format: int32
-             * @description Игр за текущий день
-             */
-            playCount: number;
-            /**
-             * Format: int32
-             * @description Дневной лимит игр по тарифу пользователя (3 free / 5 premium)
-             */
-            playDailyLimit: number;
-            /**
-             * Format: int32
-             * @description Сколько игр осталось сегодня
-             */
-            playCountRemaining: number;
-        };
         /** @description Запись о выполненной практике и полученном опыте */
         PracticeCompletion: {
             source: string;
@@ -1500,6 +1523,30 @@ export interface components {
             accessToken: string;
             userId: string;
             message: string;
+        };
+        ResponsibilityFactor: {
+            id: string;
+            label: string;
+            /** Format: int32 */
+            percent: number;
+        };
+        ResponsibilityFactorInput: {
+            label: string;
+            /** Format: int32 */
+            percent: number;
+        };
+        /** @description Запись пользователя в технике «Пирог ответственности»: ситуация + разбивка ответственности по факторам (в сумме 100) */
+        ResponsibilityPieEntry: {
+            id: string;
+            userId: string;
+            situationText: string;
+            /** Format: date-time */
+            createdAt: string;
+            factors: components["schemas"]["ResponsibilityFactor"][];
+        };
+        ResponsibilityPieEntryCreate: {
+            situationText: string;
+            factors: components["schemas"]["ResponsibilityFactorInput"][];
         };
         /** @description Запрос на награду за практику */
         RewardRequest: {
@@ -2348,26 +2395,6 @@ export interface operations {
             };
         };
     };
-    Creature_play: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description The request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PlayResponse"];
-                };
-            };
-        };
-    };
     Creature_reward: {
         parameters: {
             query?: never;
@@ -2429,6 +2456,70 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ClaimWeeklyResponse"];
                 };
+            };
+        };
+    };
+    Decatastrophizing_listEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecatastrophizingEntry"][];
+                };
+            };
+        };
+    };
+    Decatastrophizing_createEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecatastrophizingEntryCreate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecatastrophizingEntry"];
+                };
+            };
+        };
+    };
+    Decatastrophizing_deleteEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2781,6 +2872,70 @@ export interface operations {
                 content: {
                     "application/octet-stream": string;
                 };
+            };
+        };
+    };
+    ResponsibilityPie_listEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponsibilityPieEntry"][];
+                };
+            };
+        };
+    };
+    ResponsibilityPie_createEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResponsibilityPieEntryCreate"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponsibilityPieEntry"];
+                };
+            };
+        };
+    };
+    ResponsibilityPie_deleteEntry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description There is no content to send for this request, but the headers may be useful. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

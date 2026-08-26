@@ -403,12 +403,6 @@ model CreatureState {
   streakFreezeCount: int32;
   @doc("Момент, когда компаньон вернётся с «прогулки» (null — прогулки нет)")
   adventureReturnAt?: utcDateTime;
-  @doc("Игр за текущий день (сбрасывается в полночь по серверному времени)")
-  playCount?: int32;
-  @doc("Дневной лимит игр по тарифу пользователя (3 free / 5 premium)")
-  playDailyLimit?: int32;
-  @doc("Сколько игр осталось сегодня")
-  playCountRemaining?: int32;
 }
 
 @doc("Коллекция питомцев пользователя")
@@ -484,21 +478,6 @@ model PetResponse {
 model PetRequest {
   @doc("Пользователь записал грустное настроение/тревогу — активировать бонус «Эмпатия»")
   empathy?: boolean;
-}
-
-@doc("Результат игры с компаньоном (тратит энергию, даёт немного XP)")
-model PlayResponse {
-  state: CreatureState;
-  @doc("Был ли достигнут новый уровень")
-  leveledUp: boolean;
-  @doc("Сколько XP начислено за эту игру")
-  xpAwarded: int32;
-  @doc("Игр за текущий день")
-  playCount: int32;
-  @doc("Дневной лимит игр по тарифу пользователя (3 free / 5 premium)")
-  playDailyLimit: int32;
-  @doc("Сколько игр осталось сегодня")
-  playCountRemaining: int32;
 }
 
 @doc("Один день недельного календаря практик (Пн–Вс)")
@@ -667,6 +646,51 @@ model CbaEntryCreate {
   prosWeight: int32;
   consWeight: int32;
   items: CbaEntryItemInput[];
+}
+
+// ---------- Responsibility Pie ----------
+
+model ResponsibilityFactorInput {
+  label: string;
+  percent: int32;
+}
+
+model ResponsibilityFactor {
+  id: string;
+  label: string;
+  percent: int32;
+}
+
+@doc("Запись пользователя в технике «Пирог ответственности»: ситуация + разбивка ответственности по факторам (в сумме 100)")
+model ResponsibilityPieEntry {
+  id: string;
+  userId: string;
+  situationText: string;
+  createdAt: utcDateTime;
+  factors: ResponsibilityFactor[];
+}
+
+model ResponsibilityPieEntryCreate {
+  situationText: string;
+  factors: ResponsibilityFactorInput[];
+}
+
+// ---------- Decatastrophizing ----------
+
+@doc("Запись пользователя в технике «Декатастрофизация»: три ответа по шагам декатастрофизации мысли")
+model DecatastrophizingEntry {
+  id: string;
+  userId: string;
+  worstCaseText: string;
+  copingPlanText: string;
+  mostLikelyText: string;
+  createdAt: utcDateTime;
+}
+
+model DecatastrophizingEntryCreate {
+  worstCaseText: string;
+  copingPlanText: string;
+  mostLikelyText: string;
 }
 
 // ---------- Motivation Message ----------

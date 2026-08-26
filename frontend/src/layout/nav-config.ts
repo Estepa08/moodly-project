@@ -15,6 +15,9 @@ import {
   type LucideIcon,
   FlaskConical,
   Shuffle,
+  Swords,
+  PieChart,
+  AlertTriangle,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -68,6 +71,24 @@ export const PRACTICE_ITEMS: NavItem[] = [
     shortLabelKey: 'nav.short.cba',
     path: '/practices/cost-benefit-analysis',
     icon: Scale,
+  },
+  {
+    labelKey: 'nav.thoughtBattle',
+    shortLabelKey: 'nav.short.thoughtBattle',
+    path: '/practices/thought-battle',
+    icon: Swords,
+  },
+  {
+    labelKey: 'nav.responsibilityPie',
+    shortLabelKey: 'nav.short.responsibilityPie',
+    path: '/practices/responsibility-pie',
+    icon: PieChart,
+  },
+  {
+    labelKey: 'nav.decatastrophizing',
+    shortLabelKey: 'nav.short.decatastrophizing',
+    path: '/practices/decatastrophizing',
+    icon: AlertTriangle,
   },
   {
     labelKey: 'nav.breathing',
