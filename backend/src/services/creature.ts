@@ -59,6 +59,17 @@ async function getOrCreateCreatureState(client: CreatureClient, userId: string) 
   return client.creatureState.create({ data: { userId, calmness: 50 } });
 }
 
+// `stage` не хранится в БД — только getState() считал его через
+// stageForLevel(). Остальные мутации (pet/feed/checkIn/...) возвращали
+// сырую строку из Prisma без stage, и клиент временно клал её в кэш
+// ['creature'] как оптимистичное обновление (см. useCreature.ts) — бейдж
+// стадии на секунду откатывался на «Малыш», пока не подтягивался
+// инвалидированный getState(). Оборачиваем каждый `state:` в ответе,
+// чтобы форма была одинаковой везде.
+function withStage<T extends { level: number }>(state: T): T & { stage: string } {
+  return { ...state, stage: stageForLevel(state.level) };
+}
+
 export const creatureService = {
   async getState(userId: string) {
     const state = await getOrCreateCreatureState(prisma, userId);
@@ -417,7 +428,7 @@ export const creatureService = {
     achievementsService.check(userId).catch(() => {});
 
     return {
-      state: { ...updated, sessionCount },
+      state: withStage({ ...updated, sessionCount }),
       leveledUp,
     };
   },
@@ -511,7 +522,7 @@ export const creatureService = {
     achievementsService.check(userId).catch(() => {});
 
     return {
-      state: { ...result.updated, sessionCount },
+      state: withStage({ ...result.updated, sessionCount }),
       leveledUp: result.leveledUp,
       streakFreezeUsed: result.streakFreezeUsed,
       comebackDays: result.comebackDays,
@@ -556,7 +567,7 @@ export const creatureService = {
     achievementsService.check(userId).catch(() => {});
 
     return {
-      state: { ...result.updated, sessionCount },
+      state: withStage({ ...result.updated, sessionCount }),
       leveledUp: result.leveledUp,
       xpAwarded: ADVENTURE_XP,
       comfortGain: ADVENTURE_COMFORT_GAIN,
@@ -592,7 +603,7 @@ export const creatureService = {
     achievementsService.check(userId).catch(() => {});
 
     return {
-      state: { ...updated, sessionCount },
+      state: withStage({ ...updated, sessionCount }),
       leveledUp,
     };
   },
@@ -678,7 +689,7 @@ export const creatureService = {
     achievementsService.check(userId).catch(() => {});
 
     return {
-      state: { ...updated, sessionCount },
+      state: withStage({ ...updated, sessionCount }),
       leveledUp,
       xpAwarded,
       feedCount: updated.feedCount,
@@ -909,12 +920,12 @@ export const creatureService = {
     const sessionCount = await prisma.breathingSession.count({ where: { userId } });
 
     return {
-      state: {
+      state: withStage({
         ...result.updated,
         petCount: result.petCount,
         petCountRemaining: Math.max(0, PET_DAILY_CLICK_LIMIT - result.petCount),
         sessionCount,
-      },
+      }),
       leveledUp: result.leveledUp,
       xpAwarded: result.xp,
       petCount: result.petCount,

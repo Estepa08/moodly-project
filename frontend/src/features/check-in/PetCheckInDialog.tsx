@@ -295,7 +295,11 @@ export default function PetCheckInDialog({
                 <p className="text-sm font-semibold text-foreground">
                   {t('petCheckIn.emotionPrompt')}
                 </p>
-                <EmotionTagPicker value={moodEmotions} onChange={setMoodEmotions} />
+                <EmotionTagPicker
+                  value={moodEmotions}
+                  onChange={setMoodEmotions}
+                  moodValue={pendingMoodValue}
+                />
                 <button
                   type="button"
                   onClick={() => submitEntry(pendingMoodValue, moodEmotions)}

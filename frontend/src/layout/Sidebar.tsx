@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useNavHighlights } from '../hooks/useNavHighlights';
-import { useStalePractices } from '../hooks/useStalePractices';
-import { User, Sparkles, ChevronDown, ClipboardList } from 'lucide-react';
-import { DASHBOARD_ITEM, PRACTICE_ITEMS, OTHER_ITEMS, ADMIN_ITEM } from './nav-config';
-import { PATH_TO_SOURCE } from '../lib/practicePaths';
+import { User } from 'lucide-react';
+import { DASHBOARD_ITEM, PRACTICES_ITEM, OTHER_ITEMS, ADMIN_ITEM } from './nav-config';
 
 export default function Sidebar() {
   const { t } = useTranslation();
@@ -14,16 +11,8 @@ export default function Sidebar() {
   const { data: userData } = useCurrentUser();
 
   const highlights = useNavHighlights();
-  const { isStale } = useStalePractices(3);
 
-  const isPracticeActive =
-    location.pathname === '/practices' ||
-    PRACTICE_ITEMS.some((item) => location.pathname.startsWith(item.path));
-  const [practicesOpen, setPracticesOpen] = useState(isPracticeActive);
-
-  useEffect(() => {
-    setPracticesOpen(isPracticeActive);
-  }, [isPracticeActive]);
+  const isPracticeActive = location.pathname.startsWith('/practices');
 
   const navButtonClass = (isActive: boolean) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-[color,background-color,transform] duration-150 active:scale-[0.97] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
@@ -68,60 +57,19 @@ export default function Sidebar() {
         </span>
       </Link>
 
-      <button
-        onClick={() => setPracticesOpen((o) => !o)}
-        aria-expanded={practicesOpen}
+      <Link
+        to={PRACTICES_ITEM.path}
         className={navButtonClass(isPracticeActive)}
+        aria-current={isPracticeActive ? 'page' : undefined}
       >
-        <Sparkles
+        <PRACTICES_ITEM.icon
           aria-hidden="true"
           className={`w-5 h-5 shrink-0 ${highlights.practices ? 'text-primary' : ''}`}
         />
-        <span className="text-sm font-medium truncate flex-1 text-left">
-          {t('nav.short.practices')}
+        <span className="text-sm font-medium truncate">
+          {t(PRACTICES_ITEM.shortLabelKey ?? PRACTICES_ITEM.labelKey)}
         </span>
-        <ChevronDown
-          aria-hidden="true"
-          className={`w-4 h-4 shrink-0 transition-transform duration-150 ${practicesOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
-
-      {practicesOpen && (
-        <div className="ml-4 pl-3 border-l border-border flex flex-col gap-1">
-          {PRACTICE_ITEMS.map((item) => {
-            const source = PATH_TO_SOURCE[item.path];
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={navButtonClass(location.pathname.startsWith(item.path))}
-                aria-current={location.pathname === item.path ? 'page' : undefined}
-              >
-                <item.icon
-                  aria-hidden="true"
-                  className={`w-4 h-4 shrink-0 ${source && isStale(source) ? 'text-primary' : ''}`}
-                />
-                <span className="text-sm font-medium truncate">
-                  {t(item.shortLabelKey ?? item.labelKey)}
-                </span>
-              </Link>
-            );
-          })}
-          <Link
-            to="/tests"
-            className={navButtonClass(
-              location.pathname === '/tests' || location.pathname.startsWith('/tests/'),
-            )}
-            aria-current={location.pathname === '/tests' ? 'page' : undefined}
-          >
-            <ClipboardList
-              aria-hidden="true"
-              className={`w-4 h-4 shrink-0 ${highlights.tests ? 'text-primary' : ''}`}
-            />
-            <span className="text-sm font-medium truncate">{t('nav.short.tests')}</span>
-          </Link>
-        </div>
-      )}
+      </Link>
 
       {OTHER_ITEMS.map((item) => (
         <Link

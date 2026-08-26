@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Reveal from '../../components/Reveal';
-import { useSeo, withCanonical, breadcrumbLd } from '../../lib/seo';
+import { useSeo, withCanonical, breadcrumbLd, OG_IMAGE } from '../../lib/seo';
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -32,7 +32,7 @@ export default function BlogPage() {
       title: 'Блог Moodly — статьи о психологии',
       description:
         'Практические советы по ведению дневника настроения, работе с тревогой и улучшению сна.',
-      image: 'https://mymoodly.ru/og-blog.jpg',
+      image: OG_IMAGE,
       url: withCanonical('/blog'),
       type: 'website',
     },

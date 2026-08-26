@@ -90,23 +90,18 @@ export function useDashboardData(period: Period) {
 
   const trendData = useMemo(() => {
     if (!chartEntries || chartEntries.length === 0) return [];
-    const grouped = new Map<string, Record<string, unknown>>();
     const sorted = [...chartEntries].sort(
       (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
-    for (const e of sorted) {
-      const day = formatChartDate(new Date(e.createdAt), i18n.language, period === Period.All);
+    return sorted.map((e) => {
+      const created = new Date(e.createdAt);
       const name = paramMap.get(e.parameterId) ?? e.parameterId;
-      if (!grouped.has(day)) {
-        grouped.set(day, { date: day, _values: {} as Record<string, number[]> });
-      }
-      const row = grouped.get(day)!;
-      const values = row._values as Record<string, number[]>;
-      if (!values[name]) values[name] = [];
-      values[name].push(e.value);
-      row[name] = values[name].reduce((s, v) => s + v, 0) / values[name].length;
-    }
-    return Array.from(grouped.values());
+      return {
+        date: created.getTime(),
+        dateLabel: formatChartDate(created, i18n.language, period === Period.All),
+        [name]: e.value,
+      };
+    });
   }, [chartEntries, paramMap, i18n.language, period]);
 
   const wellbeing = useMemo(() => {

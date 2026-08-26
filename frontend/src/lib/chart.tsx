@@ -33,6 +33,9 @@ export interface ChartProps {
   data: Record<string, unknown>[];
   series: ChartSeries[];
   xKey: string;
+  xType?: 'category' | 'number';
+  xTickFormatter?: (value: number) => string;
+  tooltipLabelFormatter?: (value: number) => string;
 
   title?: string;
   icon?: ReactNode;
@@ -63,6 +66,9 @@ export function Chart({
   data,
   series,
   xKey,
+  xType = 'category',
+  xTickFormatter,
+  tooltipLabelFormatter,
   title,
   icon,
   noCard,
@@ -96,9 +102,19 @@ export function Chart({
             {type === 'line' ? (
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-                <XAxis dataKey={xKey} fontSize={11} stroke="hsl(var(--chart-tick))" />
+                <XAxis
+                  dataKey={xKey}
+                  type={xType}
+                  domain={xType === 'number' ? ['dataMin', 'dataMax'] : undefined}
+                  tickFormatter={xTickFormatter}
+                  fontSize={11}
+                  stroke="hsl(var(--chart-tick))"
+                />
                 <YAxis domain={yDomain} fontSize={11} stroke="hsl(var(--chart-tick))" />
-                <Tooltip content={<ChartTooltip formatLabel={formatTooltip} />} />
+                <Tooltip
+                  labelFormatter={tooltipLabelFormatter}
+                  content={<ChartTooltip formatLabel={formatTooltip} />}
+                />
                 {showLegend && (
                   <Legend
                     wrapperStyle={{

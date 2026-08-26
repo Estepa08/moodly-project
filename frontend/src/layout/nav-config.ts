@@ -41,6 +41,13 @@ export const STATISTICS_ITEM: NavItem = {
   icon: BarChart3,
 };
 
+export const PRACTICES_ITEM: NavItem = {
+  labelKey: 'nav.practices',
+  shortLabelKey: 'nav.short.practices',
+  path: '/practices',
+  icon: Sparkles,
+};
+
 export const PRACTICE_ITEMS: NavItem[] = [
   {
     labelKey: 'nav.thoughtJournal',
@@ -128,12 +135,7 @@ export const OTHER_ITEMS: NavItem[] = [
 
 export const BOTTOM_NAV_ITEMS: NavItem[] = [
   DASHBOARD_ITEM,
-  {
-    labelKey: 'nav.practices',
-    shortLabelKey: 'nav.short.practices',
-    path: '/practices',
-    icon: Sparkles,
-  },
+  PRACTICES_ITEM,
   STATISTICS_ITEM,
   {
     labelKey: 'nav.progress',
