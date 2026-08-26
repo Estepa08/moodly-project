@@ -19,10 +19,7 @@ const MIN_FACTORS = 2;
 const MAX_FACTORS = 8;
 
 function validateEntryInput(input: ResponsibilityPieEntryCreateInput) {
-  if (
-    input.situationText.length === 0 ||
-    input.situationText.length > MAX_SITUATION_TEXT_LENGTH
-  ) {
+  if (input.situationText.length === 0 || input.situationText.length > MAX_SITUATION_TEXT_LENGTH) {
     throw new AppError(
       'VALIDATION_ERROR',
       400,

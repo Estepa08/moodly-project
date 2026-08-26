@@ -19,7 +19,11 @@ function validateEntryInput(input: DecatastrophizingEntryCreateInput) {
   ];
   for (const [name, value] of fields) {
     if (value.length === 0 || value.length > MAX_TEXT_LENGTH) {
-      throw new AppError('VALIDATION_ERROR', 400, `${name} must be 1-${MAX_TEXT_LENGTH} characters`);
+      throw new AppError(
+        'VALIDATION_ERROR',
+        400,
+        `${name} must be 1-${MAX_TEXT_LENGTH} characters`,
+      );
     }
   }
 }
