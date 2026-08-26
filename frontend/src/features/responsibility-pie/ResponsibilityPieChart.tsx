@@ -45,7 +45,13 @@ export default function ResponsibilityPieChart({ factors }: ResponsibilityPieCha
       className="w-44 h-44 mx-auto"
     >
       {slices.map((slice) => (
-        <path key={slice.id} d={slice.path} fill={slice.color} stroke="hsl(var(--card))" strokeWidth={2} />
+        <path
+          key={slice.id}
+          d={slice.path}
+          fill={slice.color}
+          stroke="hsl(var(--card))"
+          strokeWidth={2}
+        />
       ))}
     </svg>
   );

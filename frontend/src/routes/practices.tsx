@@ -179,7 +179,9 @@ export default function PracticesPage() {
                               {t(p.timeKey)}
                             </p>
                             {stale && (
-                              <p className="text-xs text-primary mt-1">{t('practices.staleLabel')}</p>
+                              <p className="text-xs text-primary mt-1">
+                                {t('practices.staleLabel')}
+                              </p>
                             )}
                           </div>
                         </CardContent>

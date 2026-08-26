@@ -116,7 +116,11 @@ export default function ResponsibilityPieForm({ createEntry }: ResponsibilityPie
           </p>
         )}
 
-        <Button className="w-full" disabled={!canSave || createEntry.isPending} onClick={handleSave}>
+        <Button
+          className="w-full"
+          disabled={!canSave || createEntry.isPending}
+          onClick={handleSave}
+        >
           {createEntry.isPending ? t('common.saving') : t('responsibilityPie.saveCta')}
         </Button>
       </CardContent>
