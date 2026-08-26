@@ -10,4 +10,7 @@ export const PATH_TO_SOURCE: Record<string, PracticeSource> = {
   '/practices/breathing': PracticeSource.Breathing,
   '/practices/emotion-lab': PracticeSource.EmotionLab,
   '/practices/relaxation-wheel': PracticeSource.RelaxationWheel,
+  '/practices/thought-battle': PracticeSource.ThoughtBattle,
+  '/practices/responsibility-pie': PracticeSource.ResponsibilityPie,
+  '/practices/decatastrophizing': PracticeSource.Decatastrophizing,
 };

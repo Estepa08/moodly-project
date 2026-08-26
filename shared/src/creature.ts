@@ -126,15 +126,10 @@ export const PRACTICE_ENERGY_REWARD: Record<string, number> = {
   sleepHygiene: 15,
   emotionLab: 15,
   relaxationWheel: 15,
+  thoughtBattle: 20,
+  responsibilityPie: 20,
+  decatastrophizing: 20,
 };
-
-// «Играть»: тратит энергию, даёт немного XP, ограничено в сутки — источник
-// XP, за который нужно "платить" энергией, накопленной практиками/чек-ином.
-// Лимит игр в день зависит от тарифа пользователя (see backend/src/entitlements.ts).
-export const PLAY_ENERGY_COST = 10;
-export const PLAY_XP = 2;
-export const PLAY_DAILY_LIMIT_FREE = 3;
-export const PLAY_DAILY_LIMIT_PREMIUM = 5;
 
 // Недельный календарь практик: неделя Пн–Вс, цель — любые N дней с
 // практикой/чек-ином (без штрафа за пропуск, счётчик накопительный).
@@ -163,6 +158,9 @@ export const PRACTICE_XP: Record<string, number> = {
   thoughtJournalCycle: 12,
   emotionLab: 5,
   relaxationWheel: 5,
+  thoughtBattle: 12,
+  responsibilityPie: 10,
+  decatastrophizing: 10,
 };
 
 export interface MissionDefinition {

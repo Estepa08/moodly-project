@@ -3,7 +3,6 @@ import { prisma } from '../lib/prisma.js';
 import { AppError } from '../lib/errors.js';
 import { lockUser } from '../lib/user-lock.js';
 import { achievementsService } from './achievements.js';
-import { getPlayDailyLimit } from '../entitlements.js';
 import {
   applyLevelUp,
   stageForLevel,
@@ -37,8 +36,6 @@ import {
   isEveningWindow,
   computeComboCount,
   comebackTierForGap,
-  PLAY_ENERGY_COST,
-  PLAY_XP,
   WEEKLY_GOAL_DAYS,
   WEEKLY_XP_REWARD,
   WEEKLY_EXCLUDED_SOURCES,
@@ -72,8 +69,6 @@ export const creatureService = {
     // Fallback для старых аккаунтов без значения.
     const petMood = (state.petMood ?? (state.calmness ?? 50) >= 70) ? 'happy' : 'calm';
     const petSummary = this._petSummary(state);
-    const playDailyLimit = await this._playDailyLimit(userId);
-    const playCount = this._playCountToday(state);
     return {
       ...state,
       petCount: petSummary.petCountToday,
@@ -85,37 +80,7 @@ export const creatureService = {
       sessionCount,
       petMood,
       stage: stageForLevel(level),
-      playCount,
-      playDailyLimit,
-      playCountRemaining: Math.max(0, playDailyLimit - playCount),
     };
-  },
-
-  // Тариф хранится на User (subscriptionTier/subscriptionExpiresAt),
-  // выставляется вручную из админ-панели (PATCH /admin/users/:id/tier) —
-  // биллинга нет. free → 3 игры/день, активный premium → 5.
-  async _playDailyLimit(userId: string): Promise<number> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { subscriptionTier: true, subscriptionExpiresAt: true },
-    });
-    return getPlayDailyLimit(user ?? { subscriptionTier: 'free', subscriptionExpiresAt: null });
-  },
-
-  // Счётчик игр за сутки по серверному времени — тот же сброс-по-дню
-  // паттерн, что и у _petSummary (см. lastPlayAt/playCount на CreatureState).
-  _playCountToday(state: { lastPlayAt?: Date | null; playCount?: number | null }): number {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const lastPlay = state.lastPlayAt ? new Date(state.lastPlayAt) : null;
-    if (lastPlay) {
-      const lastPlayDate = new Date(lastPlay);
-      lastPlayDate.setHours(0, 0, 0, 0);
-      if (lastPlayDate.getTime() === today.getTime()) {
-        return state.playCount ?? 0;
-      }
-    }
-    return 0;
   },
 
   // Поглаживания считаются за сутки по серверному времени: если последнее
@@ -718,69 +683,6 @@ export const creatureService = {
       xpAwarded,
       feedCount: updated.feedCount,
       feedCounts: (updated.feedCounts as Record<string, number>) ?? {},
-    };
-  },
-
-  // «Играть»: быстрый источник XP, но тратит энергию (ресурс, который
-  // пополняют практики/чек-ин). Дневной лимит игр зависит от тарифа
-  // (см. entitlements.getPlayDailyLimit) и независим от лимита поглаживаний
-  // (petCount). Транзакция + lockUser —
-  // как у pet()/checkIn(), т.к. лимит и энергия должны быть согласованы
-  // при параллельных запросах.
-  async play(userId: string) {
-    const result = await prisma.$transaction(async (tx) => {
-      await lockUser(tx, userId);
-
-      const state = await getOrCreateCreatureState(tx, userId);
-
-      const playCount = this._playCountToday(state);
-
-      const dbUser = await tx.user.findUnique({
-        where: { id: userId },
-        select: { subscriptionTier: true, subscriptionExpiresAt: true },
-      });
-      const playDailyLimit = getPlayDailyLimit(
-        dbUser ?? { subscriptionTier: 'free', subscriptionExpiresAt: null },
-      );
-
-      if (playCount >= playDailyLimit) {
-        throw new AppError('PLAY_LIMIT_REACHED', 400, 'Daily play limit reached');
-      }
-      const energy = state.energy ?? MAX_ENERGY;
-      if (energy < PLAY_ENERGY_COST) {
-        throw new AppError('NOT_ENOUGH_ENERGY', 400, 'Not enough energy to play');
-      }
-
-      const nextEnergy = Math.max(0, energy - PLAY_ENERGY_COST);
-      const nextPlayCount = playCount + 1;
-      const { experience, level, leveledUp } = applyLevelUp(state, PLAY_XP);
-
-      const updated = await tx.creatureState.update({
-        where: { userId },
-        data: {
-          energy: nextEnergy,
-          playCount: nextPlayCount,
-          lastPlayAt: new Date(),
-          experience,
-          level,
-        },
-      });
-      await tx.practiceCompletion.create({
-        data: { userId, source: 'play', xpAwarded: PLAY_XP },
-      });
-
-      return { updated, leveledUp, playCount: nextPlayCount, playDailyLimit };
-    });
-
-    const sessionCount = await prisma.breathingSession.count({ where: { userId } });
-
-    return {
-      state: { ...result.updated, sessionCount },
-      leveledUp: result.leveledUp,
-      xpAwarded: PLAY_XP,
-      playCount: result.playCount,
-      playDailyLimit: result.playDailyLimit,
-      playCountRemaining: Math.max(0, result.playDailyLimit - result.playCount),
     };
   },
 

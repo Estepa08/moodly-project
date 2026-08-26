@@ -9,4 +9,7 @@ export enum PracticeSource {
   /** Полный цикл в дневнике мыслей: тег + вера-до + альтернатива + вера-после. */
   ThoughtJournalCycle = 'thoughtJournalCycle',
   RelaxationWheel = 'relaxationWheel',
+  ThoughtBattle = 'thoughtBattle',
+  ResponsibilityPie = 'responsibilityPie',
+  Decatastrophizing = 'decatastrophizing',
 }

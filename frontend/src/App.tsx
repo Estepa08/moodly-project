@@ -29,6 +29,8 @@ const SleepHygienePage = lazy(() => import('./routes/sleep-hygiene'));
 const ThoughtJournalPage = lazy(() => import('./routes/thought-journal'));
 const CostBenefitAnalysisPage = lazy(() => import('./routes/cost-benefit-analysis'));
 const ThoughtBattlePage = lazy(() => import('./routes/thought-battle'));
+const ResponsibilityPiePage = lazy(() => import('./routes/responsibility-pie'));
+const DecatastrophizingPage = lazy(() => import('./routes/decatastrophizing'));
 const EmotionLabPage = lazy(() => import('./routes/emotion-lab'));
 const RelaxationWheelPage = lazy(() => import('./routes/relaxation-wheel'));
 const SettingsPage = lazy(() => import('./routes/settings'));
@@ -172,6 +174,8 @@ export default function App() {
           <Route path="/practices/thought-journal" element={<ThoughtJournalPage />} />
           <Route path="/practices/cost-benefit-analysis" element={<CostBenefitAnalysisPage />} />
           <Route path="/practices/thought-battle" element={<ThoughtBattlePage />} />
+          <Route path="/practices/responsibility-pie" element={<ResponsibilityPiePage />} />
+          <Route path="/practices/decatastrophizing" element={<DecatastrophizingPage />} />
           <Route path="/practices/emotion-lab" element={<EmotionLabPage />} />
           <Route path="/practices/relaxation-wheel" element={<RelaxationWheelPage />} />
 

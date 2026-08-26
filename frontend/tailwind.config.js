@@ -57,6 +57,15 @@ export default {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+        neon: {
+          DEFAULT: 'hsl(var(--promo-neon))',
+          foreground: 'hsl(var(--promo-neon-foreground))',
+        },
+        nature: {
+          leaf: 'hsl(var(--nature-leaf))',
+          growth: 'hsl(var(--nature-growth))',
+          muted: 'hsl(var(--nature-muted))',
+        },
         pet: {
           1: 'hsl(var(--pet-1))',
           2: 'hsl(var(--pet-2))',

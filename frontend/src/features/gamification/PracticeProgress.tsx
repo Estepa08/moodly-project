@@ -10,6 +10,9 @@ import {
   Sparkles,
   FlaskConical,
   Shuffle,
+  Swords,
+  PieChart,
+  AlertTriangle,
 } from 'lucide-react';
 import { useCompletions } from './useCreature';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
@@ -34,6 +37,15 @@ const SOURCE_CONFIG: Record<PracticeSource, { icon: typeof Wind; labelKey: strin
     labelKey: 'progress.activityThoughtJournalCycle',
   },
   [PracticeSource.RelaxationWheel]: { icon: Shuffle, labelKey: 'progress.activityRelaxationWheel' },
+  [PracticeSource.ThoughtBattle]: { icon: Swords, labelKey: 'progress.activityThoughtBattle' },
+  [PracticeSource.ResponsibilityPie]: {
+    icon: PieChart,
+    labelKey: 'progress.activityResponsibilityPie',
+  },
+  [PracticeSource.Decatastrophizing]: {
+    icon: AlertTriangle,
+    labelKey: 'progress.activityDecatastrophizing',
+  },
 };
 
 const SOURCE_PATH: Record<PracticeSource, string> = {
@@ -46,6 +58,9 @@ const SOURCE_PATH: Record<PracticeSource, string> = {
   [PracticeSource.EmotionLab]: '/practices/emotion-lab',
   [PracticeSource.ThoughtJournalCycle]: '/practices/thought-journal',
   [PracticeSource.RelaxationWheel]: '/practices/relaxation-wheel',
+  [PracticeSource.ThoughtBattle]: '/practices/thought-battle',
+  [PracticeSource.ResponsibilityPie]: '/practices/responsibility-pie',
+  [PracticeSource.Decatastrophizing]: '/practices/decatastrophizing',
 };
 
 const ALL_SOURCES = Object.values(PracticeSource);

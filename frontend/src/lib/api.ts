@@ -54,6 +54,10 @@ type CbaExample = components['schemas']['CbaExample'];
 type CbaCommonItem = components['schemas']['CbaCommonItem'];
 type CbaEntry = components['schemas']['CbaEntry'];
 type CbaEntryCreate = components['schemas']['CbaEntryCreate'];
+type ResponsibilityPieEntry = components['schemas']['ResponsibilityPieEntry'];
+type ResponsibilityPieEntryCreate = components['schemas']['ResponsibilityPieEntryCreate'];
+type DecatastrophizingEntry = components['schemas']['DecatastrophizingEntry'];
+type DecatastrophizingEntryCreate = components['schemas']['DecatastrophizingEntryCreate'];
 type EmotionLabState = components['schemas']['EmotionLabState'];
 type EmotionLabAttemptRequest = components['schemas']['EmotionLabAttemptRequest'];
 type EmotionLabAttemptResponse = components['schemas']['EmotionLabAttemptResponse'];
@@ -131,9 +135,6 @@ export interface CreatureState {
   petCountRemaining?: number;
   lastPetAt?: string | null;
   comfort?: number;
-  playCount?: number;
-  playDailyLimit?: number;
-  playCountRemaining?: number;
   weeklyClaimWeek?: string | null;
   streakFreezeCount: number;
   adventureReturnAt?: string | null;
@@ -243,15 +244,6 @@ export interface ClaimMissionResponse {
   claimed: boolean;
   xpAwarded: number;
   leveledUp: boolean;
-}
-
-export interface PlayResponse {
-  state: CreatureState;
-  leveledUp: boolean;
-  xpAwarded: number;
-  playCount: number;
-  playDailyLimit: number;
-  playCountRemaining: number;
 }
 
 export interface WeeklyDay {
@@ -506,7 +498,6 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify({ title }),
       }),
-    play: () => request<PlayResponse>('/creature/play', { method: 'POST' }),
     getWeekly: () => request<WeeklyState>('/creature/weekly'),
     claimWeekly: () => request<ClaimWeeklyResponse>('/creature/weekly/claim', { method: 'POST' }),
     claimAdventure: () =>
@@ -541,6 +532,30 @@ export const api = {
       create: (body: CbaEntryCreate) =>
         request<CbaEntry>('/cba/entries', { method: 'POST', body: JSON.stringify(body) }),
       delete: (id: string) => request<void>(`/cba/entries/${id}`, { method: 'DELETE' }),
+    },
+  },
+  responsibilityPie: {
+    entries: {
+      list: () => request<ResponsibilityPieEntry[]>('/responsibility-pie/entries'),
+      create: (body: ResponsibilityPieEntryCreate) =>
+        request<ResponsibilityPieEntry>('/responsibility-pie/entries', {
+          method: 'POST',
+          body: JSON.stringify(body),
+        }),
+      delete: (id: string) =>
+        request<void>(`/responsibility-pie/entries/${id}`, { method: 'DELETE' }),
+    },
+  },
+  decatastrophizing: {
+    entries: {
+      list: () => request<DecatastrophizingEntry[]>('/decatastrophizing/entries'),
+      create: (body: DecatastrophizingEntryCreate) =>
+        request<DecatastrophizingEntry>('/decatastrophizing/entries', {
+          method: 'POST',
+          body: JSON.stringify(body),
+        }),
+      delete: (id: string) =>
+        request<void>(`/decatastrophizing/entries/${id}`, { method: 'DELETE' }),
     },
   },
   emotionLab: {

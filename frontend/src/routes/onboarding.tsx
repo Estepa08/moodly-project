@@ -146,7 +146,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center p-4 promo-scope">
       <Card className="w-full max-w-md">
         <CardContent className="pt-6 text-center space-y-6">
           <div className="flex justify-center gap-1.5">
@@ -427,7 +427,7 @@ export default function OnboardingPage() {
                 <Button variant="ghost" onClick={() => setStep(4)}>
                   {t('common.back')}
                 </Button>
-                <Button onClick={() => handleFinish('/')} disabled={saving}>
+                <Button onClick={() => handleFinish('/')} disabled={saving} className="btn-neon">
                   {saving ? t('common.saving') : t('onboarding.getStarted')}
                 </Button>
               </div>

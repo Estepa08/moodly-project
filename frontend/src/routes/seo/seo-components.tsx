@@ -217,7 +217,7 @@ function CtaBanner({
   to?: string;
 }) {
   return (
-    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16 promo-scope">
       <Reveal>
         <div className="rounded-3xl bg-btn-gradient shadow-clay-lg p-8 sm:p-12 text-center">
           <h2 className="text-2xl sm:text-[34px] font-extrabold text-white text-balance">
@@ -227,7 +227,7 @@ function CtaBanner({
           <Button
             size="lg"
             variant="secondary"
-            className="mt-7 bg-white text-primary hover:bg-white/95"
+            className="mt-7 btn-neon bg-white text-primary hover:bg-white/95"
             asChild
           >
             <Link to={to}>

@@ -177,7 +177,7 @@ interface Creature {
 
   @post
   @route("/reward")
-  @doc("Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba)")
+  @doc("Начислить опыт за выполнение практики (gratitude, sleepHygiene, distortions, cba, thoughtBattle, responsibilityPie, decatastrophizing)")
   reward(@body body: RewardRequest): RewardResponse;
 
   @get
@@ -199,11 +199,6 @@ interface Creature {
   @route("/pet")
   @doc("Активировать питомца и/или задать имя")
   setPet(@body body: PetUpdateRequest): PetCollection;
-
-  @post
-  @route("/play")
-  @doc("Играть с компаньоном: −10 энергии, +2 XP, лимит 5 игр в сутки")
-  play(): PlayResponse;
 
   @get
   @route("/weekly")
@@ -242,6 +237,40 @@ interface Cba {
   @route("/entries")
   @doc("История записей текущего пользователя, новые сверху")
   listEntries(): CbaEntry[];
+
+  @delete
+  @route("/entries/{id}")
+  deleteEntry(@path id: string): void;
+}
+
+@tag("ResponsibilityPie")
+@route("/responsibility-pie")
+interface ResponsibilityPie {
+  @post
+  @route("/entries")
+  createEntry(@body body: ResponsibilityPieEntryCreate): ResponsibilityPieEntry;
+
+  @get
+  @route("/entries")
+  @doc("История записей текущего пользователя, новые сверху")
+  listEntries(): ResponsibilityPieEntry[];
+
+  @delete
+  @route("/entries/{id}")
+  deleteEntry(@path id: string): void;
+}
+
+@tag("Decatastrophizing")
+@route("/decatastrophizing")
+interface Decatastrophizing {
+  @post
+  @route("/entries")
+  createEntry(@body body: DecatastrophizingEntryCreate): DecatastrophizingEntry;
+
+  @get
+  @route("/entries")
+  @doc("История записей текущего пользователя, новые сверху")
+  listEntries(): DecatastrophizingEntry[];
 
   @delete
   @route("/entries/{id}")

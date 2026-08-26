@@ -55,6 +55,8 @@ model User {
   breathingSessions BreathingSession[]
   practiceCompletions PracticeCompletion[]
   cbaEntries    CbaEntry[]
+  responsibilityPieEntries ResponsibilityPieEntry[]
+  decatastrophizingEntries DecatastrophizingEntry[]
   userPreference UserPreference?
   pushSubscriptions PushSubscription[]
   userAchievements UserAchievement[]
@@ -511,4 +513,48 @@ model CbaEntryItem {
   entry CbaEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
 
   @@index([entryId])
+}
+
+model ResponsibilityPieEntry {
+  id            String    @id @default(cuid())
+  userId        String
+  situationText String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  user    User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  factors ResponsibilityPieFactor[]
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}
+
+model ResponsibilityPieFactor {
+  id        String    @id @default(cuid())
+  entryId   String
+  label     String
+  percent   Int
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  entry ResponsibilityPieEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@index([entryId])
+}
+
+model DecatastrophizingEntry {
+  id             String    @id @default(cuid())
+  userId         String
+  worstCaseText  String
+  copingPlanText String
+  mostLikelyText String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, createdAt])
 }

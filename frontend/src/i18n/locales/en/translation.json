@@ -41,6 +41,9 @@
     "sleepHygiene": "Sleep",
     "cba": "Cost-Benefit",
     "thoughtJournal": "Thought Journal",
+    "thoughtBattle": "Thought Trainer",
+    "responsibilityPie": "Responsibility Pie",
+    "decatastrophizing": "Decatastrophizing",
     "tests": "Tests",
     "settings": "Settings",
     "progress": "Progress",
@@ -60,6 +63,9 @@
       "distortions": "Distortions",
       "sleepHygiene": "Sleep",
       "cba": "CBA",
+      "thoughtBattle": "Trainer",
+      "responsibilityPie": "Pie",
+      "decatastrophizing": "Decatastr.",
       "breathing": "Breathing",
       "progress": "Progress",
       "tests": "Tests",
@@ -691,8 +697,6 @@
     "timeSleepHygiene": "3–5 min",
     "timeCba": "5–10 min",
     "timeThoughtJournal": "1–3 min",
-    "categoryBody": "Body",
-    "categoryMind": "Mind",
     "testsSection": "Tests · Clinical assessment",
     "testsSubtitle": "Quick self-assessment — 3–7 minutes",
     "testCategory": "Tests",
@@ -701,7 +705,66 @@
     "descEmotionLab": "Emotion alchemy on Plutchik's wheel — discover new feelings",
     "timeEmotionLab": "2–5 min",
     "descRelaxationWheel": "Spin the wheel — a random idea to take care of yourself",
-    "timeRelaxationWheel": "1–30 min"
+    "timeRelaxationWheel": "1–30 min",
+    "descThoughtBattle": "Work through an anxious thought step by step — from distortion to balance",
+    "timeThoughtBattle": "5–7 min",
+    "descResponsibilityPie": "Split responsibility for a situation across factors",
+    "timeResponsibilityPie": "3–5 min",
+    "descDecatastrophizing": "Walk through the worst case and find the realistic one",
+    "timeDecatastrophizing": "5–8 min",
+    "groupMindWork": "Working With Thoughts",
+    "groupEmotions": "Emotions",
+    "groupBody": "Body & Relaxation",
+    "groupHabits": "Habits",
+    "groupPositivePsychology": "Positive Psychology"
+  },
+  "responsibilityPie": {
+    "title": "Responsibility Pie",
+    "subtitle": "Split responsibility for a situation — how much of it is really yours",
+    "formTitle": "Break down the situation",
+    "situationLabel": "What situation triggered the anxiety?",
+    "situationPlaceholder": "Describe the situation briefly…",
+    "chartLabel": "Responsibility pie chart",
+    "factor": {
+      "me": "Me",
+      "colleagues": "Colleagues",
+      "external": "External circumstances",
+      "forceMajeure": "Force majeure"
+    },
+    "addFactorCta": "Add your own factor",
+    "addFactorPlaceholder": "Factor name",
+    "removeFactor": "Remove factor",
+    "maxFactorsHint": "No more factors can be added",
+    "takeaway": "Your share — {{percent}}%. The rest is outside your control.",
+    "saveCta": "Save",
+    "tabForm": "Form",
+    "tabHistory": "History",
+    "historyEmpty": "No entries yet",
+    "deleteEntry": "Delete entry",
+    "saveError": "Couldn't save the entry. Please try again."
+  },
+  "decatastrophizing": {
+    "title": "Decatastrophizing",
+    "subtitle": "Break an anxious thought into three steps — from the worst case to the realistic one",
+    "tabPractice": "Practice",
+    "tabHistory": "History",
+    "step1Title": "What's the worst that could happen?",
+    "step1Placeholder": "Describe the worst-case scenario…",
+    "step2Title": "What will I do if it happens?",
+    "step2Placeholder": "Describe your coping plan…",
+    "step3Title": "What will most likely actually happen?",
+    "step3Placeholder": "Describe the realistic scenario…",
+    "nextCta": "Next",
+    "backCta": "Back",
+    "compareCta": "Compare",
+    "saveCta": "Save",
+    "summaryTitle": "Comparison",
+    "worstCaseLabel": "Worst case",
+    "copingPlanLabel": "Coping plan",
+    "mostLikelyLabel": "Most likely scenario",
+    "historyEmpty": "No entries yet",
+    "deleteEntry": "Delete entry",
+    "saveError": "Couldn't save the entry. Please try again."
   },
   "thoughtJournal": {
     "title": "Thought Journal",
@@ -1636,6 +1699,9 @@
     "speech_other": "You're on a {{count}}-day streak at level {{level}} — keep it up! 🚀",
     "activityThoughtJournalCycle": "Full reframe",
     "activityRelaxationWheel": "Relaxation wheel",
+    "activityThoughtBattle": "Thought Trainer",
+    "activityResponsibilityPie": "Responsibility Pie",
+    "activityDecatastrophizing": "Decatastrophizing",
     "weeklyTitle": "Weekly calendar",
     "weeklySubtitle": "Any 5 days out of 7 — no penalty for missing one"
   },
@@ -1761,12 +1827,7 @@
         "Snug!",
         "Beauty!"
       ]
-    },
-    "playCta": "Play",
-    "playHint": "{{remaining}} plays left today",
-    "playLimitHint": "That's enough for today — come back tomorrow 🌙",
-    "playNoEnergyHint": "Too tired to play — restore energy with a practice",
-    "playToast": "🎾 +{{xp}} XP · −{{cost}} ⚡"
+    }
   },
   "petMood": {
     "happy": "In a great mood",
@@ -2841,7 +2902,6 @@
     "victoryTitle": "Thought reframed!",
     "wasLabel": "Was",
     "becameLabel": "Now",
-    "notAvailableTitle": "Not available right now",
     "content": {
       "allOrNothing": {
         "evidence": [

@@ -22,7 +22,6 @@ export {
   useMissions,
   useClaimMission,
   useAchievements,
-  usePlay,
   useWeekly,
   useClaimWeekly,
 } from './useCreature';

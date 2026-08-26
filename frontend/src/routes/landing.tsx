@@ -168,7 +168,7 @@ function HeroMock() {
                 key={i}
                 className={cn(
                   'w-full rounded-md animate-bar-grow',
-                  i === 3 || i === 6 ? 'bg-primary' : 'bg-primary/30',
+                  i === 3 || i === 6 ? 'bg-nature-growth' : 'bg-primary/30',
                 )}
                 style={{ height: `${h}px`, animationDelay: `${i * 120}ms` }}
               />
@@ -215,7 +215,7 @@ function LandingHero() {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-            <Button size="lg" asChild>
+            <Button size="lg" className="btn-neon" asChild>
               <Link to="/register">
                 {t('landing.start')}
                 <ArrowRight aria-hidden="true" className="w-5 h-5" />
@@ -862,7 +862,7 @@ export default function LandingPage() {
   const { t } = useTranslation();
   useLandingSeo();
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background promo-scope">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-3 focus:py-2 focus:rounded-lg focus:text-primary"
