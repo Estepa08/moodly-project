@@ -6,6 +6,7 @@ import { useEntries } from '../hooks/useEntries';
 import { useParameters } from '../hooks/useParameters';
 import { useSleepHygieneEntry } from '../hooks/useSleepHygieneEntry';
 import PetGreeterCard from '../features/gamification/PetGreeterCard';
+import { DailyMotivationCard } from '../features/dailyCard';
 import PetCheckInDialog, {
   shouldAutoOpenCheckIn,
   markCheckInDone,
@@ -135,6 +136,8 @@ export default function MyDay() {
       </div>
 
       <PetGreeterCard onCheckIn={() => setCheckInOpen(true)} />
+
+      <DailyMotivationCard />
 
       {showMorningStatus && <MorningStatus />}
 

@@ -3351,9 +3351,18 @@
     "emptyWheelHint": "Add at least one item to start spinning",
     "goToCustomize": "Customize",
     "categories": {
-      "quickRegulation": { "title": "Calm down fast", "subtitle": "For acute stress, 1-3 minutes" },
-      "softReset": { "title": "Soft reset", "subtitle": "Tired, but not in crisis" },
-      "selfCare": { "title": "Treat yourself", "subtitle": "Mindful pleasure" }
+      "quickRegulation": {
+        "title": "Calm down fast",
+        "subtitle": "For acute stress, 1-3 minutes"
+      },
+      "softReset": {
+        "title": "Soft reset",
+        "subtitle": "Tired, but not in crisis"
+      },
+      "selfCare": {
+        "title": "Treat yourself",
+        "subtitle": "Mindful pleasure"
+      }
     },
     "items": {
       "breathing478": {
@@ -3421,5 +3430,18 @@
         "description": "Light a candle, tidy up a little, turn on some warm light."
       }
     }
+  },
+  "dailyCard": {
+    "title": "Card of the day",
+    "cta": "Open today’s card",
+    "principle": {
+      "autonomy": "Autonomy",
+      "competence": "Competence",
+      "relatedness": "Relatedness",
+      "processPraise": "Process over outcome",
+      "effortOverTalent": "Effort over talent",
+      "challengeReframe": "Reframing challenge"
+    },
+    "ctaTearAgain": "Tap again"
   }
 }
