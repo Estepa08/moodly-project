@@ -1,18 +1,12 @@
 import { DISTORTION_KEYS, DistortionKey } from '../../lib/distortionsQuiz';
-import type { DecryptedEntry } from '../../hooks/useEntries';
-
-export type BossSource = 'journal' | 'library';
 
 export interface Boss {
-  /** Уникальный ключ раунда (для аналитики/повтора не нужен, но полезен как React key) */
+  /** Ключ мысли-босса в библиотеке (совпадает с i18n-ключом thoughtBattle.bosses.<key>) */
   key: string;
   distortionKey: DistortionKey;
-  /** Текст мысли-босса — либо литерал из дневника пользователя, либо i18n-ключ библиотеки */
-  text: string;
-  source: BossSource;
 }
 
-// Библиотека мыслей-боссов: 5 вариантов на каждое искажение (i18n-ключи,
+// Библиотека мыслей-боссов: 10 вариантов на каждое искажение (i18n-ключи,
 // см. thoughtBattle.bosses.<key> в translation.json). Первый вариант —
 // канонический пример из distortionsLibrary.<key>.example, остальные новые.
 const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
@@ -22,6 +16,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'allOrNothing_3',
     'allOrNothing_4',
     'allOrNothing_5',
+    'allOrNothing_6',
+    'allOrNothing_7',
+    'allOrNothing_8',
+    'allOrNothing_9',
+    'allOrNothing_10',
   ],
   [DistortionKey.Overgeneralization]: [
     'overgeneralization_1',
@@ -29,6 +28,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'overgeneralization_3',
     'overgeneralization_4',
     'overgeneralization_5',
+    'overgeneralization_6',
+    'overgeneralization_7',
+    'overgeneralization_8',
+    'overgeneralization_9',
+    'overgeneralization_10',
   ],
   [DistortionKey.MentalFilter]: [
     'mentalFilter_1',
@@ -36,6 +40,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'mentalFilter_3',
     'mentalFilter_4',
     'mentalFilter_5',
+    'mentalFilter_6',
+    'mentalFilter_7',
+    'mentalFilter_8',
+    'mentalFilter_9',
+    'mentalFilter_10',
   ],
   [DistortionKey.DiscountingPositive]: [
     'discountingPositive_1',
@@ -43,6 +52,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'discountingPositive_3',
     'discountingPositive_4',
     'discountingPositive_5',
+    'discountingPositive_6',
+    'discountingPositive_7',
+    'discountingPositive_8',
+    'discountingPositive_9',
+    'discountingPositive_10',
   ],
   [DistortionKey.JumpingToConclusions]: [
     'jumpingToConclusions_1',
@@ -50,6 +64,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'jumpingToConclusions_3',
     'jumpingToConclusions_4',
     'jumpingToConclusions_5',
+    'jumpingToConclusions_6',
+    'jumpingToConclusions_7',
+    'jumpingToConclusions_8',
+    'jumpingToConclusions_9',
+    'jumpingToConclusions_10',
   ],
   [DistortionKey.Magnification]: [
     'magnification_1',
@@ -57,6 +76,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'magnification_3',
     'magnification_4',
     'magnification_5',
+    'magnification_6',
+    'magnification_7',
+    'magnification_8',
+    'magnification_9',
+    'magnification_10',
   ],
   [DistortionKey.EmotionalReasoning]: [
     'emotionalReasoning_1',
@@ -64,6 +88,11 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'emotionalReasoning_3',
     'emotionalReasoning_4',
     'emotionalReasoning_5',
+    'emotionalReasoning_6',
+    'emotionalReasoning_7',
+    'emotionalReasoning_8',
+    'emotionalReasoning_9',
+    'emotionalReasoning_10',
   ],
   [DistortionKey.ShouldStatements]: [
     'shouldStatements_1',
@@ -71,30 +100,45 @@ const LIBRARY_BOSS_KEYS: Record<DistortionKey, string[]> = {
     'shouldStatements_3',
     'shouldStatements_4',
     'shouldStatements_5',
+    'shouldStatements_6',
+    'shouldStatements_7',
+    'shouldStatements_8',
+    'shouldStatements_9',
+    'shouldStatements_10',
   ],
-  [DistortionKey.Labeling]: ['labeling_1', 'labeling_2', 'labeling_3', 'labeling_4', 'labeling_5'],
+  [DistortionKey.Labeling]: [
+    'labeling_1',
+    'labeling_2',
+    'labeling_3',
+    'labeling_4',
+    'labeling_5',
+    'labeling_6',
+    'labeling_7',
+    'labeling_8',
+    'labeling_9',
+    'labeling_10',
+  ],
   [DistortionKey.Personalization]: [
     'personalization_1',
     'personalization_2',
     'personalization_3',
     'personalization_4',
     'personalization_5',
+    'personalization_6',
+    'personalization_7',
+    'personalization_8',
+    'personalization_9',
+    'personalization_10',
   ],
 };
 
-interface LibraryBoss {
-  key: string;
-  distortionKey: DistortionKey;
-}
-
-const LIBRARY_BOSSES: LibraryBoss[] = DISTORTION_KEYS.flatMap((distortionKey) =>
+const LIBRARY_BOSSES: Boss[] = DISTORTION_KEYS.flatMap((distortionKey) =>
   LIBRARY_BOSS_KEYS[distortionKey].map((key) => ({ key, distortionKey })),
 );
 
-// Держим в localStorage несколько последних показанных боссов (и из
-// библиотеки, и из дневника — единый список по key), чтобы одна и та же
-// мысль не всплывала снова и снова подряд. Как только пул исчерпан —
-// ограничение снимается само (см. pickAvoiding).
+// Держим в localStorage несколько последних показанных боссов, чтобы одна
+// и та же мысль не всплывала снова и снова подряд. Как только пул
+// исчерпан — ограничение снимается само (см. pickAvoidingRecent).
 const RECENT_STORAGE_KEY = 'moodly_thought_battle_recent';
 const RECENT_LIMIT = 8;
 
@@ -136,55 +180,14 @@ export function pickDistractors(correct: DistortionKey, count = 3): DistortionKe
   return shuffled.slice(0, count);
 }
 
-// Блок «Мысль» в note дневника мыслей записан как «<label>\n<текст>» между
-// пустыми строками (см. buildNote() в routes/thought-journal.tsx).
-function extractThoughtBlock(note: string, thoughtLabel: string): string | null {
-  const blocks = note.split('\n\n');
-  for (const block of blocks) {
-    if (block.startsWith(thoughtLabel)) {
-      const text = block.slice(thoughtLabel.length).trim();
-      return text || null;
-    }
-  }
-  return null;
-}
-
 /**
- * Выбирает мысль-босса: сперва пробует найти отмеченную искажением запись
- * дневника мыслей (личная, более ценная клинически), иначе — случайную из
- * библиотеки. В обоих случаях старается не повторять недавно показанных
- * (см. RECENT_LIMIT) — если пул отфильтрован полностью, ограничение снимается.
+ * Выбирает случайную мысль-босса из библиотеки, по возможности минуя
+ * недавно показанные (см. RECENT_LIMIT) — если пул отфильтрован полностью,
+ * ограничение снимается само.
  */
-export function pickBoss(entries: DecryptedEntry[], thoughtLabel: string): Boss {
+export function pickBoss(): Boss {
   const recent = new Set(getRecentKeys());
-
-  const journalCandidates = entries
-    .filter((e) => e.distortions && e.distortions.length > 0 && e.note)
-    .map((e) => ({ key: `journal-${e.id}`, entry: e }));
-
-  if (journalCandidates.length > 0) {
-    const picked = pickAvoidingRecent(journalCandidates, recent);
-    const distortionKey = pickRandom(picked.entry.distortions!);
-    const extracted = picked.entry.note
-      ? extractThoughtBlock(picked.entry.note, thoughtLabel)
-      : null;
-    if (extracted) {
-      pushRecentKey(picked.key);
-      return {
-        key: picked.key,
-        distortionKey,
-        text: extracted,
-        source: 'journal',
-      };
-    }
-  }
-
   const boss = pickAvoidingRecent(LIBRARY_BOSSES, recent);
   pushRecentKey(boss.key);
-  return {
-    key: boss.key,
-    distortionKey: boss.distortionKey,
-    text: '', // текст берётся из i18n по boss.key на стороне компонента
-    source: 'library',
-  };
+  return boss;
 }
