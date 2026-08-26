@@ -4,8 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { PLAY_ENERGY_COST, PLAY_DAILY_LIMIT_FREE } from '@moodly/shared';
 import { useCreatureState, usePlay } from '../gamification';
-import { useEntries } from '../../hooks/useEntries';
-import { roundDownToMinute } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { LoadingCard } from '../../components/ui/loading-card';
 import BossHealthBar from './BossHealthBar';
@@ -18,8 +16,6 @@ import { pickBoss, pickDistractors, type Boss } from './thoughtBattleContent';
 
 type Step = 1 | 2 | 3 | 4 | 'victory';
 
-const JOURNAL_LOOKBACK_DAYS = 365;
-
 interface RoundContent {
   boss: Boss;
   bossText: string;
@@ -31,13 +27,6 @@ export default function ThoughtBattleGame() {
   const navigate = useNavigate();
   const { data: creature, isLoading: creatureLoading } = useCreatureState();
 
-  const since = useMemo(() => {
-    const d = roundDownToMinute(new Date());
-    d.setDate(d.getDate() - JOURNAL_LOOKBACK_DAYS);
-    return d.toISOString();
-  }, []);
-  const { data: entries, isLoading: entriesLoading } = useEntries({ from: since });
-
   const play = usePlay();
 
   const [round, setRound] = useState(0);
@@ -46,17 +35,15 @@ export default function ThoughtBattleGame() {
   const [hitSignal, setHitSignal] = useState(0);
   const [reframeChosen, setReframeChosen] = useState('');
 
-  const content: RoundContent | null = useMemo(() => {
-    if (!entries) return null;
-    const thoughtLabel = t('thoughtJournal.lblThought');
-    const boss = pickBoss(entries, thoughtLabel);
-    const bossText = boss.source === 'journal' ? boss.text : t(`thoughtBattle.bosses.${boss.key}`);
+  const content: RoundContent = useMemo(() => {
+    const boss = pickBoss();
+    const bossText = t(`thoughtBattle.bosses.${boss.key}`);
     const distractors = pickDistractors(boss.distortionKey, 3);
     return { boss, bossText, distractors };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entries, round]);
+  }, [round]);
 
-  if (creatureLoading || entriesLoading || !content) return <LoadingCard />;
+  if (creatureLoading) return <LoadingCard />;
 
   const energy = creature?.energy ?? 100;
   const playCount = creature?.playCount ?? 0;
@@ -164,9 +151,7 @@ export default function ThoughtBattleGame() {
 
       <div className="rounded-xl bg-muted/40 p-3 space-y-1">
         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-          {content.boss.source === 'journal'
-            ? t('thoughtBattle.sourceJournal')
-            : t('thoughtBattle.sourceLibrary')}
+          {t('thoughtBattle.sourceLibrary')}
         </p>
         <p className="text-sm font-semibold text-foreground italic">«{content.bossText}»</p>
       </div>
