@@ -5,6 +5,16 @@
     auto_https off
 }
 
+# CSP для SPA: Vite-бандл из 'self', инлайн-стили React/Tailwind,
+# Google Fonts (fonts.googleapis.com / fonts.gstatic.com), data:/blob: картинки,
+# Яндекс.Метрика (mc.yandex.ru / yastatic.net / yandex.ru / yandex.net).
+# frame-src обязателен отдельно от default-src: webvisor/clickmap Метрики
+# открывают вспомогательный iframe на mc.yandex.ru, а frame-src не наследует
+# script-src/connect-src — без него default-src 'self' блокирует фрейм.
+(csp) {
+    header Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://mc.yandex.ru; connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://yandex.net wss://mc.yandex.ru; frame-src https://mc.yandex.ru; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+}
+
 # --- Caddy слушает HTTP на порту, куда панель проксирует маршрут ---
 :80 {
     # Исторический домен mymoodly.online не является основным (основной — mymoodly.ru).
@@ -42,22 +52,32 @@
         }
     }
 
-    # 2. Обработка всех остальных запросов (SPA-маршрутизация)
+    # 2. Авторизованные SPA-маршруты (личный кабинет): контент специфичен
+    # для пользователя, поэтому prerender.mjs их не пререндерит и
+    # {path}/index.html для них не существует. Отдаём общий index.html,
+    # чтобы React Router подхватил маршрут сам — иначе прямой переход по
+    # ссылке (клик по пуш-уведомлению, закладка, ручной reload) ловит
+    # настоящий 404 раньше, чем успевает загрузиться и перехватить
+    # навигацию service worker.
+    @app_routes path /onboarding /my-day /statistics /practices /practices/* /tests /tests/* /results /breathing /gratitude-journal /distortions /sleep-hygiene /thought-journal /cost-benefit-analysis /progress /settings /content /admin
+    handle @app_routes {
+        import csp
+        rewrite * /index.html
+        file_server
+    }
+
+    # 3. Обработка всех остальных запросов (публичные/пререндеренные SPA-маршруты)
     handle {
-        # CSP для SPA: Vite-бандл из 'self', инлайн-стили React/Tailwind,
-        # Google Fonts (fonts.googleapis.com / fonts.gstatic.com), data:/blob: картинки,
-        # Яндекс.Метрика (mc.yandex.ru / yastatic.net / yandex.ru / yandex.net)
-        header {
-            Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; worker-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://mc.yandex.ru; connect-src 'self' https://mc.yandex.ru https://yastatic.net https://yandex.ru https://yandex.net wss://mc.yandex.ru; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-        }
+        import csp
         # Пытаемся найти файл. Сначала реальные файлы ({path}), затем
         # пререндеренный HTML маршрута ({path}/index.html), и только потом —
         # ошибка 404 (перехватывается handle_errors → пререндеренная /404).
         # Пререндер (frontend/scripts/prerender.mjs) кладёт статический HTML
         # в dist/<route>/index.html — его отдают роботам/браузерам сразу.
-        # Намеренно НЕ используем SPA-fallback на /index.html: иначе любой
-        # несуществующий путь отдавал бы главную с HTTP 200 и index,follow
-        # (soft-404), что тратит краулинговый бюджет Google впустую.
+        # Намеренно НЕ используем SPA-fallback на /index.html здесь: иначе
+        # любой несуществующий путь отдавал бы главную с HTTP 200 и
+        # index,follow (soft-404), что тратит краулинговый бюджет Google
+        # впустую. Авторизованные маршруты со своим фолбэком — в блоке выше.
         try_files {path} {path}/index.html 404
         # Раздаём файлы из корня /srv
         file_server
