@@ -5,6 +5,7 @@ import PetAvatar from './PetAvatar';
 import { usePets, useCreatureState, useClaimAdventure } from './useCreature';
 import { usePetReward } from './usePetReward';
 import { buildAdventureSignal, type PetRewardSignal } from './petRewards';
+import { playRewardSound } from './rewardSound';
 import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { PET_CYCLE } from '@moodly/shared';
 import { isCompanionHidden, subscribeCompanionVisibility } from './companionVisibility';
@@ -61,6 +62,7 @@ export default function FloatingCompanion() {
     claimAdventure.mutate(undefined, {
       onSuccess: () => {
         setAdventureReward(buildAdventureSignal());
+        playRewardSound();
         setJustReturned(true);
         setGreetSignal(Date.now());
         setTimeout(() => setJustReturned(false), 700);

@@ -1451,6 +1451,8 @@
     "companionToggleDesc": "Show the companion in the bottom-right corner of the screen",
     "speechToggleLabel": "Pet speech bubble",
     "speechToggleDesc": "Show the pet's messages in a floating bubble",
+    "soundToggleLabel": "Reward sound",
+    "soundToggleDesc": "A short sound on companion taps and other rewards. Off by default.",
     "deleteAccount": "Delete Account",
     "deleteDesc": "Permanently delete your account and all associated data. This action cannot be undone.",
     "deleteButton": "Delete my account",

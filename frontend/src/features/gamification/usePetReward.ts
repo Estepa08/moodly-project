@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { usePet, useEmpathyActive } from './useCreature';
 import { buildRewardSignal, type PetRewardSignal } from './petRewards';
+import { playRewardSound } from './rewardSound';
 import { isMorningWindow, isEveningWindow } from '@moodly/shared';
 import type { PetGlow } from './PetAvatar';
 import type { PetResponse } from '../../lib/api';
@@ -27,7 +28,9 @@ export function usePetReward() {
       { empathy: empathyActive },
       {
         onSuccess: (data) => {
-          setReward(buildRewardSignal(data));
+          const signal = buildRewardSignal(data);
+          setReward(signal);
+          if (signal.kind !== 'none') playRewardSound();
           onSuccess?.(data);
         },
       },

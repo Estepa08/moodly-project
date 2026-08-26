@@ -12,6 +12,7 @@ import {
   emitSpeech,
   PET_DEFINITIONS,
   buildComebackSignal,
+  playRewardSound,
   type PetRewardSignal,
 } from '../gamification';
 import { api } from '../../lib/api';
@@ -91,6 +92,7 @@ export default function PetCheckInDialog({
         setReward(buildComebackSignal(data.comebackDays));
         setGlow(data.comebackDays === 30 ? 'warm' : null);
         celebrate(t('dailyCheckIn.comebackBody'), { title: t('dailyCheckIn.comebackTitle') });
+        playRewardSound();
       }
     },
     onError: () => {

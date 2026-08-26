@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PetRewardSignal } from './petRewards';
+import { emitEnergyPulse } from './energyPulse';
 
 // Компонент «частиц награды»: рендерит уникальную анимацию для каждого типа
 // клика по компаньону (см. docs/companion-gamified-rewards.svg). Частицы
@@ -180,24 +181,81 @@ export default function PetRewardParticles({
   const comboCount = signal.comboCount ?? 0;
   const showComboBadge = comboCount >= 3;
 
+  // Долёт XP до бейджа энергии (⚡ NN) в шапке, если он есть на экране —
+  // см. energyPulse.ts. Считаем смещение раз на новый signal.id, до отрисовки
+  // (useLayoutEffect), чтобы не было кадра с неверной траекторией. Нет
+  // бейджа на этом экране (FloatingCompanion, диалоги, лендинг) — flyOffset
+  // остаётся null, и текст плывёт по старому сценарию (вверх и тает).
+  const anchorRef = useRef<HTMLSpanElement>(null);
+  const [flyOffset, setFlyOffset] = useState<{ dx: number; dy: number } | null>(null);
+
+  useLayoutEffect(() => {
+    if (!signal.xpText || reducedMotion || typeof document === 'undefined') {
+      setFlyOffset(null);
+      return;
+    }
+    const anchor = anchorRef.current;
+    const target = document.querySelector<HTMLElement>('[data-role="pet-energy-badge"]');
+    if (!anchor || !target) {
+      setFlyOffset(null);
+      return;
+    }
+    const anchorRect = anchor.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    setFlyOffset({
+      dx: targetRect.left + targetRect.width / 2 - (anchorRect.left + anchorRect.width / 2),
+      dy: targetRect.top + targetRect.height / 2 - (anchorRect.top + anchorRect.height / 2),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signal.id, reducedMotion]);
+
   return (
-    <span aria-hidden="true" className="absolute left-1/2 top-1/2 pointer-events-none">
-      {/* Плавающий текст награды */}
-      {signal.xpText && !reducedMotion && (
-        <motion.span
-          className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
-          style={{
-            color: signal.kind === 'welcome' ? ROSE : signal.kind === 'adventure' ? TEAL : XP_GREEN,
-          }}
-          initial={{ y: 0, opacity: 0, scale: 0.7 }}
-          animate={{ y: -64, opacity: [0, 1, 1, 0], scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.05, ease: 'easeOut' }}
-        >
-          {signal.xpText}
-          {signal.kind === 'welcome' && ' 💖'}
-          {signal.kind === 'adventure' && ' 🎁'}
-        </motion.span>
-      )}
+    <span
+      ref={anchorRef}
+      aria-hidden="true"
+      className="absolute left-1/2 top-1/2 pointer-events-none"
+    >
+      {/* Плавающий текст награды: долетает до бейджа энергии, если он есть
+          на экране, иначе — по-старому вверх и тает. */}
+      {signal.xpText &&
+        !reducedMotion &&
+        (flyOffset ? (
+          <motion.span
+            className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
+            style={{
+              color:
+                signal.kind === 'welcome' ? ROSE : signal.kind === 'adventure' ? TEAL : XP_GREEN,
+            }}
+            initial={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
+            animate={{
+              x: [0, flyOffset.dx * 0.55, flyOffset.dx],
+              y: [0, Math.min(flyOffset.dy * 0.4, -18), flyOffset.dy],
+              opacity: [0, 1, 1, 0.15],
+              scale: [0.6, 1.05, 0.45],
+            }}
+            transition={{ duration: 0.62, times: [0, 0.55, 1], ease: [0.3, 0, 0.4, 1] }}
+            onAnimationComplete={() => emitEnergyPulse()}
+          >
+            {signal.xpText}
+            {signal.kind === 'welcome' && ' 💖'}
+            {signal.kind === 'adventure' && ' 🎁'}
+          </motion.span>
+        ) : (
+          <motion.span
+            className="absolute -translate-x-1/2 -translate-y-1/2 font-extrabold text-base whitespace-nowrap drop-shadow"
+            style={{
+              color:
+                signal.kind === 'welcome' ? ROSE : signal.kind === 'adventure' ? TEAL : XP_GREEN,
+            }}
+            initial={{ y: 0, opacity: 0, scale: 0.7 }}
+            animate={{ y: -64, opacity: [0, 1, 1, 0], scale: 1 }}
+            transition={{ duration: 1.2, delay: 0.05, ease: 'easeOut' }}
+          >
+            {signal.xpText}
+            {signal.kind === 'welcome' && ' 💖'}
+            {signal.kind === 'adventure' && ' 🎁'}
+          </motion.span>
+        ))}
 
       {/* Подзаголовок «С возвращением!» */}
       {signal.kind === 'welcome' && !reducedMotion && (
@@ -396,29 +454,41 @@ export default function PetRewardParticles({
           );
         })}
 
-      {/* Взрыв комбо */}
+      {/* Взрыв комбо — самый интенсивный залп, поэтому единственный получает
+          шлейф: полупрозрачный «призрак» той же частицы с небольшой задержкой
+          и более быстрым угасанием, читается как ощущение скорости. */}
       {signal.kind === 'combo' &&
         !reducedMotion &&
         particles.map((p, i) => {
           const Icon = COMBO_ICONS[i % COMBO_ICONS.length];
+          const color = COMBO_COLORS[i % COMBO_COLORS.length];
           const y = fallLimit === undefined ? p.y : Math.min(p.y, fallLimit);
           return (
-            <motion.span
-              key={`combo-${p.id}`}
-              className="pet-particle-icon absolute left-0 top-0"
-              style={{ color: COMBO_COLORS[i % COMBO_COLORS.length] }}
-              initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
-              animate={{
-                x: p.x,
-                y,
-                opacity: [0, 1, 1, 0],
-                scale: p.scale,
-                rotate: rand(-360, 360),
-              }}
-              transition={{ duration: 1.2, delay: p.delay, ease: 'easeOut' }}
-            >
-              <Icon className="w-5 h-5" />
-            </motion.span>
+            <span key={`combo-wrap-${p.id}`} className="contents">
+              <motion.span
+                aria-hidden="true"
+                className="absolute left-0 top-0 rounded-full"
+                style={{ width: 7, height: 7, background: color, filter: 'blur(2px)' }}
+                initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                animate={{ x: p.x * 0.85, y: y * 0.85, opacity: [0, 0.45, 0], scale: 0.8 }}
+                transition={{ duration: 0.75, delay: p.delay + 0.07, ease: 'easeOut' }}
+              />
+              <motion.span
+                className="pet-particle-icon absolute left-0 top-0"
+                style={{ color }}
+                initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                animate={{
+                  x: p.x,
+                  y,
+                  opacity: [0, 1, 1, 0],
+                  scale: p.scale,
+                  rotate: rand(-360, 360),
+                }}
+                transition={{ duration: 1.2, delay: p.delay, ease: 'easeOut' }}
+              >
+                <Icon className="w-5 h-5" />
+              </motion.span>
+            </span>
           );
         })}
     </span>

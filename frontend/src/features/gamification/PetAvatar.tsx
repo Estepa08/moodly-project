@@ -5,7 +5,13 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { PET_DEFINITIONS, STAGE_SCALE, hasPetEmotion, type PetEmotion } from './pets';
 import { usePetAnimation } from './usePetAnimation';
 import PetRewardParticles from './PetRewardParticles';
-import { pickPetWordIndex, type PetRewardSignal } from './petRewards';
+import {
+  pickPetWordIndex,
+  getWordTone,
+  WORD_TONE_COLOR,
+  type PetRewardSignal,
+  type WordTone,
+} from './petRewards';
 import { cn } from '../../lib/utils';
 
 export type PetAvatarSize = 'sm' | 'md' | 'lg';
@@ -61,6 +67,8 @@ interface FloatItem {
   emoji?: string;
   /** Если задан — рендерится текстовый пузырь (например «+1 XP») вместо эмоджи */
   label?: string;
+  /** Тон слова-пиллы → цвет фона и хвостика (см. WORD_TONE_COLOR) */
+  tone?: WordTone;
   offset: number;
   delay: number;
   depth: BubbleDepth;
@@ -163,11 +171,11 @@ export default function PetAvatar({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reward?.id]);
 
-  const pickWord = () => {
+  const pickWord = (): { label: string; tone: WordTone } | undefined => {
     if (words.length === 0) return undefined;
     const idx = pickPetWordIndex(words.length, lastWordIndexRef.current);
     lastWordIndexRef.current = idx;
-    return words[idx];
+    return { label: words[idx], tone: getWordTone(idx) };
   };
 
   // «Пробежка»: питомец прыгает за край экрана влево/вправо, затем возвращается
@@ -176,11 +184,11 @@ export default function PetAvatar({
     if (dash) return;
     const dir: 'left' | 'right' = Math.random() > 0.5 ? 'left' : 'right';
     dashDirRef.current = dir;
-    const word = pickWord();
+    const picked = pickWord();
     setDash('out');
     const outTimer = setTimeout(() => {
       setDash('in');
-      if (word) spawnBubble(word);
+      if (picked) spawnBubble(picked.label, picked.tone);
     }, DASH_OUT_MS);
     const inTimer = setTimeout(() => setDash(null), DASH_TOTAL_MS);
     timersRef.current.push(outTimer, inTimer);
@@ -189,11 +197,11 @@ export default function PetAvatar({
   // Одноразовое слово-приветствие (например «Тут я!» после возврата из отлучки).
   useEffect(() => {
     if (!greetSignal || isReducedMotion) return;
-    spawnBubble(t('companion.petReward.returnWord'));
+    spawnBubble(t('companion.petReward.returnWord'), 'affectionate');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [greetSignal]);
 
-  const spawnBubble = (label?: string) => {
+  const spawnBubble = (label?: string, tone: WordTone = 'energetic') => {
     if (!interactive) return;
     // С ~8% вместо обычного пузыря — «пробежка» (не для contained и reduced-motion).
     if (!label && !contained && !isReducedMotion && Math.random() < DASH_CHANCE) {
@@ -205,8 +213,10 @@ export default function PetAvatar({
     if (!label && cyclePosition === 3) return;
     if (!label) {
       if (words.length === 0 || Math.random() >= WORD_CHANCE) return;
-      label = pickWord();
-      if (!label) return;
+      const picked = pickWord();
+      if (!picked) return;
+      label = picked.label;
+      tone = picked.tone;
     }
     const id = Date.now() + Math.random();
     const depth: BubbleDepth = Math.random() > 0.5 ? 'over' : 'under';
@@ -219,7 +229,7 @@ export default function PetAvatar({
     };
     setBubbles((prev) => [
       ...prev,
-      { id, label, offset: Math.random() * 60 - 30, delay: 0, depth, trajectory },
+      { id, label, tone, offset: Math.random() * 60 - 30, delay: 0, depth, trajectory },
     ]);
     const timer = setTimeout(
       () => setBubbles((prev) => prev.filter((b) => b.id !== id)),
@@ -364,9 +374,10 @@ export default function PetAvatar({
           }
         >
           <span
-            className="animate-bubble-sway inline-block whitespace-nowrap px-2 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-xs font-bold text-white shadow-neumorphic-sm"
+            className="relative animate-bubble-sway inline-block whitespace-nowrap px-2 py-1 rounded-full text-xs font-bold text-white shadow-neumorphic-sm"
             style={
               {
+                backgroundColor: WORD_TONE_COLOR[b.tone ?? 'energetic'],
                 '--sway-a': `${b.trajectory.swayA}px`,
                 '--sway-b': `${b.trajectory.swayB}px`,
                 '--tilt': `${b.trajectory.tilt}deg`,
@@ -374,6 +385,12 @@ export default function PetAvatar({
             }
           >
             {b.label}
+            {/* Хвостик-указатель на компаньона — читается как «это он сказал» */}
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-[3px] left-1/2 -translate-x-1/2 rotate-45 w-2 h-2 rounded-[2px]"
+              style={{ backgroundColor: WORD_TONE_COLOR[b.tone ?? 'energetic'] }}
+            />
           </span>
         </span>
       ))}

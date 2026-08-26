@@ -277,19 +277,26 @@
   will-change: transform, opacity;
 }
 
-/* Слова-пиллы (текстовые эмоции): медленный плавный подъём ~5.2s,
-   чтобы успеть прочитать слово. Fade наступает только в самом конце. */
+/* Слова-пиллы (текстовые эмоции): пружинный поп-ин (0-32%, двойной
+   перелёт — сильнее заметен на споне), затем медленный плавный подъём
+   ~5.2s, чтобы успеть прочитать слово. Fade наступает только в конце. */
 @keyframes word-up {
   0% {
     opacity: 0;
     transform: translateY(0) scale(0.3);
   }
-  10% {
+  8% {
     opacity: 1;
-    transform: translateY(0) scale(1.06);
+    transform: translateY(0) scale(1.28);
   }
-  18% {
-    transform: translateY(-6%) scale(0.98);
+  16% {
+    transform: translateY(-4%) scale(0.9);
+  }
+  24% {
+    transform: translateY(-6%) scale(1.05);
+  }
+  32% {
+    transform: translateY(-6%) scale(1);
   }
   82% {
     opacity: 1;
@@ -463,6 +470,29 @@
 
 .animate-pet-happy {
   animation: pet-happy-bounce 1.4s ease-in-out infinite;
+}
+
+/* Пульс бейджа энергии (⚡ NN) в момент, когда долетевший XP-текст его
+   «касается» — см. energyPulse.ts. Однократный, не infinite. */
+@keyframes energy-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: var(--elevation-1);
+  }
+  35% {
+    transform: scale(1.16);
+    box-shadow:
+      0 0 0 5px hsl(var(--accent) / 0.18),
+      var(--elevation-3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: var(--elevation-1);
+  }
+}
+
+.animate-energy-pulse {
+  animation: energy-pulse 0.42s ease-out;
 }
 
 @keyframes pet-float {

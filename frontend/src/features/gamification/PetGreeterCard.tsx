@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowRight } from 'lucide-react';
 import { useCreatureState, usePets } from './useCreature';
 import { usePetReward } from './usePetReward';
+import { usePetEnergyPulse } from './energyPulse';
 import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { PET_CYCLE } from '@moodly/shared';
 import PetAvatar from './PetAvatar';
@@ -26,6 +27,7 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
   const { data: message } = useMessageOfDay(phase);
   const isReducedMotion = useReducedMotion();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const energyPulsing = usePetEnergyPulse();
 
   if (isLoading || !creature) return null;
 
@@ -69,7 +71,11 @@ export default function PetGreeterCard({ onCheckIn }: PetGreeterCardProps) {
         )}
         <span className="ml-auto flex items-center gap-1.5 shrink-0">
           <span
-            className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm"
+            data-role="pet-energy-badge"
+            className={cn(
+              'flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm',
+              energyPulsing && 'animate-energy-pulse',
+            )}
             title={t('companion.energy', { value: energy })}
           >
             <span className="w-8 h-1.5 rounded-full bg-muted overflow-hidden">
