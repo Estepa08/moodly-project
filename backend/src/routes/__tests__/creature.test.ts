@@ -120,6 +120,11 @@ describe('Creature petting (cycle 1-2-3 + energy)', () => {
     });
     expect(res.json().state.petCount).toBe(1);
     expect(res.json().state.energy).toBe(100);
+    // stage не хранится в БД — только вычисляется от level (см. withStage() в
+    // creature.ts). Раньше POST /creature/pet возвращал его пустым, и клиент
+    // на секунду откатывал бейдж стадии на «Малыш» при оптимистичном
+    // обновлении кэша (см. useCreature.ts usePet()).
+    expect(res.json().state.stage).toBe('baby');
   });
 
   it('POST /creature/pet — 2nd tap: no XP, cyclePosition 2', async () => {

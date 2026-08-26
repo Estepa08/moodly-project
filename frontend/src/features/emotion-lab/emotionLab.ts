@@ -69,6 +69,26 @@ export function emotionMeta(key: string): EmotionMeta {
   );
 }
 
+// Валентность базовых эмоций Плутчика — используется, чтобы при отметке
+// настроения показывать сперва наиболее вероятные эмоции (после плохого
+// mood-score — negative, после хорошего — positive), а не весь список подряд.
+export type EmotionValence = 'positive' | 'neutral' | 'negative';
+
+const EMOTION_VALENCE: Record<string, EmotionValence> = {
+  joy: 'positive',
+  trust: 'positive',
+  anticipation: 'positive',
+  surprise: 'neutral',
+  fear: 'negative',
+  sadness: 'negative',
+  disgust: 'negative',
+  anger: 'negative',
+};
+
+export function emotionValence(key: string): EmotionValence {
+  return EMOTION_VALENCE[key] ?? 'neutral';
+}
+
 export type DyadView = DyadInfo;
 
 export const DYADS_BY_LEVEL: Record<1 | 2 | 3 | 4, DyadView[]> = {

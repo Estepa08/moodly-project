@@ -53,6 +53,27 @@ const SIGNAL_LIFETIME_MS: Record<PetRewardSignal['kind'], number> = {
   adventure: 1600,
 };
 
+// Слово-пилла позиционируется относительно компаньона (который на десктопе
+// часто стоит у самого края экрана — см. FloatingCompanion), поэтому после
+// монтирования подправляем marginLeft, чтобы текст не уезжал за viewport.
+// Отступ с запасом: клип измеряется на споне, а следом ещё идёт пружинный
+// scale(1.28) поп-ин (см. keyframes word-up) и покачивание (bubble-sway),
+// которые на пару десятков px раздвигают пузырь уже после замера.
+const BUBBLE_EDGE_PADDING = 40;
+
+function clampBubbleToViewport(el: HTMLSpanElement | null) {
+  if (!el) return;
+  const baseOffset = parseFloat(el.style.marginLeft || '0');
+  const rect = el.getBoundingClientRect();
+  const maxRight = window.innerWidth - BUBBLE_EDGE_PADDING;
+  let correction = 0;
+  if (rect.right > maxRight) correction = maxRight - rect.right;
+  else if (rect.left < BUBBLE_EDGE_PADDING) correction = BUBBLE_EDGE_PADDING - rect.left;
+  if (correction !== 0) {
+    el.style.marginLeft = `${baseOffset + correction}px`;
+  }
+}
+
 type BubbleDepth = 'over' | 'under';
 
 interface BubbleTrajectory {
@@ -221,8 +242,11 @@ export default function PetAvatar({
     const id = Date.now() + Math.random();
     const depth: BubbleDepth = Math.random() > 0.5 ? 'over' : 'under';
     const trajectory: BubbleTrajectory = {
-      swayA: Math.random() * 40 - 20,
-      swayB: Math.random() * 60 - 30,
+      // Небольшое покачивание — амплитуда специально небольшая, т.к. это
+      // единственное горизонтальное смещение, которое clampBubbleToViewport
+      // не отслеживает (transform не влияет на layout-прямоугольник обёртки).
+      swayA: Math.random() * 16 - 8,
+      swayB: Math.random() * 20 - 10,
       tilt: (Math.random() - 0.5) * 36,
       // Слова поднимаются выше и медленнее — за 5.2s, чтобы успеть прочитать.
       by: -(300 + Math.random() * 90),
@@ -360,6 +384,7 @@ export default function PetAvatar({
       {bubbles.map((b) => (
         <span
           key={b.id}
+          ref={clampBubbleToViewport}
           aria-hidden="true"
           className={cn(
             'absolute left-1/2 flex items-center justify-center pointer-events-none min-w-[3rem] h-7 px-1 animate-word-up',

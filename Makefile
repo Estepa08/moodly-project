@@ -5,7 +5,7 @@
 .PHONY: db-prod-ru-users db-prod-ru-user-delete db-prod-ru-studio db-prod-ru-admin db-prod-ru-create-user
 .PHONY: db-create-user db-prod-create-user
 .PHONY: lint lint-backend lint-frontend lint-fix format format-check
-.PHONY: start-feature
+.PHONY: start-feature check-seo
 
 # ─── Install ────────────────────────────────────────────
 
@@ -53,6 +53,9 @@ build-frontend:
 	cd frontend && npm run build
 
 build: generate build-backend build-frontend
+
+check-seo: build-frontend
+	./check-seo.sh
 
 # ─── Test ───────────────────────────────────────────────
 

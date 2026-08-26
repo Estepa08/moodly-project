@@ -228,12 +228,16 @@ export default function PetRewardParticles({
             }}
             initial={{ x: 0, y: 0, opacity: 0, scale: 0.6 }}
             animate={{
-              x: [0, flyOffset.dx * 0.55, flyOffset.dx],
-              y: [0, Math.min(flyOffset.dy * 0.4, -18), flyOffset.dy],
+              // Держим текст читаемым у стартовой точки почти весь клип
+              // (0–70%) и только в последней трети «засасываем» к бейджу —
+              // раньше долёт занимал весь клип целиком, и +N XP мелькал,
+              // не успевая прочитаться.
+              x: [0, 0, flyOffset.dx * 0.2, flyOffset.dx],
+              y: [0, 0, Math.min(flyOffset.dy * 0.2, -10), flyOffset.dy],
               opacity: [0, 1, 1, 0.15],
-              scale: [0.6, 1.05, 0.45],
+              scale: [0.6, 1.08, 1, 0.45],
             }}
-            transition={{ duration: 0.62, times: [0, 0.55, 1], ease: [0.3, 0, 0.4, 1] }}
+            transition={{ duration: 1.1, times: [0, 0.18, 0.7, 1], ease: [0.3, 0, 0.4, 1] }}
             onAnimationComplete={() => emitEnergyPulse()}
           >
             {signal.xpText}

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useParams, Navigate, Link } from 'react-router-dom';
 import Reveal from '../../components/Reveal';
-import { useSeo, withCanonical, breadcrumbLd, blogPostingLd } from '../../lib/seo';
+import { useSeo, withCanonical, breadcrumbLd, blogPostingLd, OG_IMAGE } from '../../lib/seo';
 import {
   SeoHeader,
   SeoBreadcrumbs,
@@ -37,7 +37,7 @@ export default function BlogPostPage() {
           type: 'article',
           title: seoTitle,
           description: seoDescription,
-          image: 'https://mymoodly.ru/og-blog.jpg',
+          image: OG_IMAGE,
           url: withCanonical(`/blog/${post.slug}`),
         }
       : undefined,
@@ -46,7 +46,7 @@ export default function BlogPostPage() {
           card: 'summary_large_image',
           title: seoTitle,
           description: seoDescription,
-          image: 'https://mymoodly.ru/og-blog.jpg',
+          image: OG_IMAGE,
         }
       : undefined,
     jsonLd: post
@@ -66,7 +66,7 @@ export default function BlogPostPage() {
             description: seoDescription,
             date: post.date,
             updatedAt: post.updatedAt,
-            image: 'https://mymoodly.ru/og-blog.jpg',
+            image: OG_IMAGE,
           }),
         ]
       : undefined,

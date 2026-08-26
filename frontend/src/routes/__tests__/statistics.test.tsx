@@ -113,6 +113,45 @@ describe('Statistics', () => {
     expect(screen.queryByTestId('quick-entry-saved-Anxiety')).not.toBeInTheDocument();
   });
 
+  it('plots every check-in of the day as its own point instead of averaging them', async () => {
+    mockDashboardApi();
+    const rect = HTMLElement.prototype.getBoundingClientRect;
+    HTMLElement.prototype.getBoundingClientRect = () =>
+      ({ width: 400, height: 220, top: 0, left: 0, bottom: 220, right: 400 }) as DOMRect;
+
+    const today = new Date();
+    const at = (hour: number) => {
+      const d = new Date(today);
+      d.setHours(hour, 0, 0, 0);
+      return d.toISOString();
+    };
+    (api.entries.list as Mock).mockResolvedValue([
+      { id: 'e1', userId: 'u1', parameterId: '1', value: 2, createdAt: at(8) },
+      { id: 'e2', userId: 'u1', parameterId: '1', value: 9, createdAt: at(12) },
+      { id: 'e3', userId: 'u1', parameterId: '1', value: 3, createdAt: at(16) },
+      { id: 'e4', userId: 'u1', parameterId: '1', value: 8, createdAt: at(20) },
+      { id: 'e5', userId: 'u1', parameterId: '2', value: 4, createdAt: at(9) },
+    ]);
+
+    try {
+      renderWithProviders(<Statistics />);
+      expect(await screen.findByText("How You've Been Feeling")).toBeInTheDocument();
+
+      // The Mood line must be a curve through 4 distinct points (one per
+      // check-in today), not a single averaged point for the whole day.
+      const path = document.querySelector('.recharts-line-curve');
+      const d = path?.getAttribute('d') ?? '';
+      expect((d.match(/C/g) ?? []).length).toBe(3); // 3 segments = 4 points
+
+      // The swings must be real: high and low values stay far apart in
+      // pixel-space instead of collapsing toward a flattened average.
+      const ys = [...d.matchAll(/-?\d+(?:\.\d+)?,(-?\d+(?:\.\d+)?)/g)].map((m) => Number(m[1]));
+      expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThan(80);
+    } finally {
+      HTMLElement.prototype.getBoundingClientRect = rect;
+    }
+  });
+
   it('renders thinking patterns radar when CD results are in the period', async () => {
     mockDashboardApi();
     (api.testResults.list as Mock).mockResolvedValue([

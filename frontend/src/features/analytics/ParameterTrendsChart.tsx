@@ -24,7 +24,8 @@ export default function ParameterTrendsChart({
   period,
   onPeriodChange,
 }: ParameterTrendsChartProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language === 'ru' ? 'ru-RU' : 'en-US';
   const defaultParam = paramNames.includes('Mood') ? 'Mood' : paramNames[0];
   const [visibleParams, setVisibleParams] = useState<Set<string>>(
     () => new Set(defaultParam ? [defaultParam] : []),
@@ -81,16 +82,22 @@ export default function ParameterTrendsChart({
               data={trendData}
               series={visibleSeries}
               xKey="date"
+              xType="number"
+              xTickFormatter={(value) =>
+                new Date(value).toLocaleDateString(locale, { month: 'short', day: 'numeric' })
+              }
+              tooltipLabelFormatter={(value) =>
+                new Date(value).toLocaleString(locale, {
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              }
               title=""
               noCard
-              formatTooltip={(name, value, row) => {
-                const entryValues = (row?.['_values'] as Record<string, number[]> | undefined)?.[
-                  name
-                ];
+              formatTooltip={(name, value) => {
                 const label = t(PARAM_NAME_KEYS[name as ParameterName] ?? name);
-                if (entryValues && entryValues.length > 1) {
-                  return `${label}: ${(value as number).toFixed(1)} (${entryValues.join(', ')})`;
-                }
                 return `${label}: ${value}`;
               }}
               height={220}
@@ -109,7 +116,7 @@ export default function ParameterTrendsChart({
               <tbody>
                 {trendData.map((row: Record<string, unknown>, i) => (
                   <tr key={i}>
-                    <td>{row.date as string}</td>
+                    <td>{row.dateLabel as string}</td>
                     {[...visibleParams].map((name) => (
                       <td key={name}>{row[name] != null ? String(row[name]) : '—'}</td>
                     ))}

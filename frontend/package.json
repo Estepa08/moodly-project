@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/prerender.mjs",
+    "build": "npm run generate:sitemap && tsc -b && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "generate:api": "openapi-typescript ../api-contract/generated/openapi.yaml -o src/lib/api-types.ts",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "generate": "npm run generate:api",
     "test": "vitest run",
     "bundle:check": "node scripts/check-bundle.mjs",

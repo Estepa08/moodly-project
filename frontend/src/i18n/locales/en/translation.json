@@ -2170,19 +2170,19 @@
       "stats": {
         "1": {
           "value": "30 sec",
-          "label": "per daily check-in"
+          "label": "average time per entry"
         },
         "2": {
           "value": "4",
           "label": "metrics: mood, energy, sleep, anxiety"
         },
         "3": {
-          "value": "36",
-          "label": "companions"
+          "value": "7 days",
+          "label": "to notice first patterns"
         },
         "4": {
-          "value": "152-FZ",
-          "label": "data stored in RU"
+          "value": "30 days",
+          "label": "to see a steady trend"
         }
       },
       "why": {
@@ -2210,19 +2210,19 @@
         "title": "4 metrics of your state",
         "1": {
           "title": "Mood",
-          "sub": "emotional background"
+          "sub": "Track your emotional swings"
         },
         "2": {
           "title": "Energy",
-          "sub": "charge and activity"
+          "sub": "Notice how your activity changes"
         },
         "3": {
-          "title": "Sleep",
-          "sub": "sleep quality"
+          "title": "Anxiety",
+          "sub": "Track your anxiety level"
         },
         "4": {
-          "title": "Anxiety",
-          "sub": "tension level"
+          "title": "Sleep",
+          "sub": "See the link between sleep and mood"
         }
       },
       "how": {
@@ -2245,19 +2245,25 @@
         }
       },
       "faq": {
-        "1": {
-          "q": "Is it free?",
-          "a": "Yes, the core diary and all practices are free. Premium features come later, with no paywall at launch."
-        },
-        "2": {
-          "q": "How private are my entries?",
-          "a": "Entries are encrypted on your device, the key stays with you. Data is stored on servers in Russia per 152-FZ."
-        },
-        "3": {
-          "q": "Do I need internet?",
-          "a": "No. The app works offline and syncs when you're back online."
-        },
-        "title": "Frequently asked questions"
+        "title": "Frequently asked questions",
+        "items": [
+          {
+            "q": "How often should I keep a diary?",
+            "a": "Start with 3-5 minutes a day. Research shows consistency matters more than length. Even 30 seconds a day pays off within 2-3 weeks."
+          },
+          {
+            "q": "What if I miss a day?",
+            "a": "Just start again. Don't try to \"catch up\" on missed days. What matters is the overall trend, not a perfect streak. A broken streak is normal — just keep going."
+          },
+          {
+            "q": "Does journaling help with anxiety?",
+            "a": "Yes. Regular journaling is one of the tools psychologists most often recommend for heightened anxiety: it helps you notice triggers and reduce the intensity of thoughts by putting them into words. The effect builds up gradually and is usually noticeable after a few weeks of regular practice."
+          },
+          {
+            "q": "What else can I track in the diary?",
+            "a": "Besides mood, add energy, sleep and anxiety. This helps you see connections — for example, \"slept poorly → low energy → anxiety.\" Insights like these are the key to managing your state."
+          }
+        ]
       },
       "cta": {
         "title": "Start spotting patterns",
@@ -2783,6 +2789,8 @@
     "learnMore": "Learn more",
     "loadError": "Couldn't load the lab. Please try again.",
     "attemptError": "Couldn't mix the emotions. Please try again.",
+    "moreShades": "More shades ({{count}})",
+    "hideShades": "Hide shades",
     "hide": "Hide",
     "show": "Show",
     "complete": "Full collection!",

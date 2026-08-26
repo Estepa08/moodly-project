@@ -195,7 +195,11 @@ export default function QuickEntryIcons({
                   })()}
 
                   {cfg.parameterName === ParameterName.Mood && (
-                    <EmotionTagPicker value={emotions} onChange={setEmotions} />
+                    <EmotionTagPicker
+                      value={emotions}
+                      onChange={setEmotions}
+                      moodValue={sliderValue}
+                    />
                   )}
 
                   <div className="flex items-center justify-center gap-2">
