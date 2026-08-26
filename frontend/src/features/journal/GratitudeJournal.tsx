@@ -4,7 +4,7 @@ import type { components } from '../../lib/api-types';
 import { toast } from 'sonner';
 import { Heart, ChevronDown, ChevronUp } from 'lucide-react';
 import type { CreateEntryMutation } from '../../lib/app-types';
-import { formatDateShort } from '../../lib/utils';
+import { cn, formatDateShort } from '../../lib/utils';
 import { GratitudeCategory } from '../../lib/gratitudePrompts';
 import { Button } from '../../components/ui/button';
 import { Chip } from '../../components/ui/chip';
@@ -36,6 +36,7 @@ export default function GratitudeJournal({
   const [note, setNote] = useState('');
   const [activePrompt, setActivePrompt] = useState<GratitudeCategory | null>(null);
   const [showAllHistory, setShowAllHistory] = useState(false);
+  const [saveSignal, setSaveSignal] = useState(0);
 
   const recentEntries = entries.slice(-limit).reverse();
 
@@ -51,6 +52,7 @@ export default function GratitudeJournal({
         onSuccess: () => {
           setNote('');
           setActivePrompt(null);
+          setSaveSignal((s) => s + 1);
           toast.success(t('dashboard.gratitudeSaved'));
         },
       },
@@ -92,7 +94,11 @@ export default function GratitudeJournal({
             disabled={!note.trim() || createEntry.isPending}
             className="w-full"
           >
-            <Heart aria-hidden="true" className="w-4 h-4 mr-1.5" />
+            <Heart
+              key={saveSignal}
+              aria-hidden="true"
+              className={cn('w-4 h-4 mr-1.5', saveSignal > 0 && 'animate-icon-pop')}
+            />
             {t('dashboard.gratitudeSave')}
           </Button>
         </CardContent>
@@ -103,9 +109,11 @@ export default function GratitudeJournal({
           {(showAllHistory ? recentEntries : recentEntries.slice(0, 3)).map((entry) => (
             <div
               key={entry.id}
-              className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm"
+              className="flex items-start gap-3 p-3 rounded-xl bg-card shadow-neumorphic-sm animate-card-enter"
             >
-              <Heart aria-hidden="true" className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+              <span className="icon-well flex items-center justify-center w-7 h-7 rounded-full bg-accent/10 shrink-0">
+                <Heart aria-hidden="true" className="w-3.5 h-3.5 text-accent" />
+              </span>
               <div className="min-w-0">
                 <p className="text-sm text-foreground break-words">{entry.note || entry.value}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">

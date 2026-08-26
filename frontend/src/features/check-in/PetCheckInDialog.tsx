@@ -184,7 +184,7 @@ export default function PetCheckInDialog({
         </div>
 
         {done ? (
-          <div className="space-y-3">
+          <div className="space-y-3 animate-card-enter">
             <p className="text-lg font-bold font-serif text-foreground">
               {t('petCheckIn.thanksTitle')}
             </p>
@@ -192,8 +192,11 @@ export default function PetCheckInDialog({
               {t('petCheckIn.thanksText')}
             </p>
 
+            {/* Награда — сама суть ежедневного ритуала, поэтому не появляется
+                одновременно с «спасибо», а чуть отстаёт (та же логика, что и
+                развязка «было → стало» в thought-battle). */}
             {checkIn && (
-              <div className="space-y-2">
+              <div className="space-y-2 animate-card-enter" style={{ animationDelay: '140ms' }}>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-accent/10 py-2.5">
                     <span className="text-sm font-bold text-accent">
@@ -208,7 +211,9 @@ export default function PetCheckInDialog({
                 </div>
                 {checkIn.streak > 0 && (
                   <div className="flex items-center justify-center gap-1.5 rounded-2xl bg-card shadow-neumorphic-sm py-2">
-                    <Flame aria-hidden="true" className="w-4 h-4 text-accent" />
+                    <span className="icon-well flex items-center justify-center w-6 h-6 rounded-full bg-accent/10 animate-icon-pop">
+                      <Flame aria-hidden="true" className="w-3.5 h-3.5 text-accent" />
+                    </span>
                     <span className="text-xs font-semibold text-foreground">
                       {t('petCheckIn.rewardStreak', { count: checkIn.streak })}
                     </span>
@@ -311,12 +316,14 @@ export default function PetCheckInDialog({
                       onClick={() => handleSelect(lv.value)}
                       disabled={createEntry.isPending}
                       className={cn(
-                        'flex flex-col items-center justify-center gap-1 rounded-2xl bg-card shadow-neumorphic-sm h-16 px-1',
+                        'icon-well-hover flex flex-col items-center justify-center gap-1 rounded-2xl bg-card shadow-neumorphic-sm h-16 px-1',
                         'transition-[transform,box-shadow] duration-150 active:scale-95 hover:shadow-neumorphic',
                         'cursor-pointer disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       )}
                     >
-                      <Icon aria-hidden="true" className="w-6 h-6 text-primary" />
+                      <span className="icon-well flex items-center justify-center w-9 h-9 rounded-full bg-muted">
+                        <Icon aria-hidden="true" className="w-5 h-5 text-primary" />
+                      </span>
                       <span className="text-[10px] font-medium text-foreground leading-tight text-center">
                         {t(lv.labelKey)}
                       </span>
