@@ -7,6 +7,7 @@ export { default as PracticeProgress } from './PracticeProgress';
 export { celebrate, celebrateReward, subscribeSpeech, emitSpeech } from './celebration';
 export { PET_DEFINITIONS, type PetDefinition, type PetEmotion } from './pets';
 export { buildComebackSignal, buildAdventureSignal, type PetRewardSignal } from './petRewards';
+export { playRewardSound, isRewardSoundEnabled, setRewardSoundEnabled } from './rewardSound';
 export { usePetAnimation } from './usePetAnimation';
 export {
   useCreatureState,

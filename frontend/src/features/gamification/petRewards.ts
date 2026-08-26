@@ -75,6 +75,52 @@ export function pickPetWordIndex(poolSize: number, lastIndex: number | null): nu
   return i;
 }
 
+// Тон слова-пиллы определяет её цвет (см. PetAvatar). Привязан к ИНДЕКСУ
+// слова в companion.petReward.words, а не к тексту — порядок одинаков в
+// ru/en, так что маппинг не ломается при правке переводов.
+export type WordTone = 'energetic' | 'affectionate' | 'calm';
+
+const WORD_TONES: readonly WordTone[] = [
+  'energetic', // Вау! / Wow!
+  'energetic', // Ура! / Yay!
+  'energetic', // Класс! / Nice!
+  'energetic', // Ещё! / More!
+  'affectionate', // Спасибо! / Thanks!
+  'affectionate', // Обнимаю! / Hug!
+  'energetic', // Здорово! / Great!
+  'affectionate', // Люблю! / Love!
+  'energetic', // Отлично! / Awesome!
+  'energetic', // Ого! / Oops!
+  'energetic', // Супер! / Super!
+  'calm', // Привет! / Hi!
+  'energetic', // Кул! / Fun!
+  'affectionate', // Пушисто! / Fluffy!
+  'affectionate', // Тепло! / Warm!
+  'affectionate', // Нежно! / Gentle!
+  'affectionate', // Уютно! / Cozy!
+  'calm', // Радость! / Joy!
+  'energetic', // Искры! / Sparks!
+  'calm', // Буль! / Blub!
+  'affectionate', // Чмок! / Smooch!
+  'calm', // Солнышко! / Sunshine!
+  'calm', // Звёздочка! / Star!
+  'energetic', // Чудо! / Miracle!
+  'energetic', // Восторг! / Delight!
+  'calm', // Весна! / Spring!
+  'affectionate', // Тёпленько! / Snug!
+  'affectionate', // Красота! / Beauty!
+];
+
+export function getWordTone(index: number): WordTone {
+  return WORD_TONES[index] ?? 'energetic';
+}
+
+export const WORD_TONE_COLOR: Record<WordTone, string> = {
+  energetic: 'hsl(var(--chart-4))',
+  affectionate: 'hsl(var(--chart-5))',
+  calm: 'hsl(var(--chart-2))',
+};
+
 // «Текущая сессия» для бонуса «Эмпатия»: записи грусти/тревоги за последние 24 ч.
 export const EMPATHY_WINDOW_MS = 24 * 60 * 60 * 1000;
 

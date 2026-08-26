@@ -5,11 +5,13 @@ import PetAvatar from './PetAvatar';
 import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { usePets } from './useCreature';
 import { usePetReward } from './usePetReward';
+import { usePetEnergyPulse } from './energyPulse';
 import { StreakIndicator } from './index';
 import { ProgressBar } from '../../components/ui/progress-bar';
 import { EXP_PER_LEVEL, ENERGY_COLOR } from '../../lib/constants';
 import { PET_CYCLE } from '@moodly/shared';
 import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
+import { cn } from '../../lib/utils';
 import type { CreatureState } from '../../lib/api';
 
 interface ProgressHeroProps {
@@ -20,6 +22,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { t } = useTranslation();
   const { data: pets } = usePets();
   const { reward, glow, handlePet } = usePetReward();
+  const energyPulsing = usePetEnergyPulse();
 
   const petType = pets?.activePetType ?? 'puff';
   const petName =
@@ -89,7 +92,11 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
             )}
             <StreakIndicator streak={creature.streak} freezeCount={creature.streakFreezeCount} />
             <span
-              className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm"
+              data-role="pet-energy-badge"
+              className={cn(
+                'ml-auto flex items-center gap-1.5 px-2 py-1 rounded-full bg-card shadow-neumorphic-sm',
+                energyPulsing && 'animate-energy-pulse',
+              )}
               title={t('companion.energy', { value: energy })}
             >
               <span className="w-8 h-1.5 rounded-full bg-muted overflow-hidden">
