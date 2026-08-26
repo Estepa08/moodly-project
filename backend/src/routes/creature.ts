@@ -61,7 +61,17 @@ export default async function creatureRoutes(fastify: FastifyInstance) {
 
   fastify.post<{ Body: PetTapBody }>(
     '/creature/pet',
-    { preHandler: [fastify.authenticate] },
+    {
+      preHandler: [fastify.authenticate],
+      // Тап по компаньону — быстрая, "тактильная" реакция (см. PetAvatar), без
+      // клиентского debounce: пользователь может настукать много запросов за
+      // секунды. Экономику (XP/энергию) всё равно ограничивает дневной кап
+      // PET_DAILY_CLICK_LIMIT в creatureService.pet(), так что здесь достаточно
+      // держать лимит выше общего write-лимита, а не резать сам тап по 429.
+      config: {
+        rateLimit: { max: 300, timeWindow: '1 minute' },
+      },
+    },
     async (request) => {
       return creatureService.pet(request.userId, request.body?.empathy === true);
     },
