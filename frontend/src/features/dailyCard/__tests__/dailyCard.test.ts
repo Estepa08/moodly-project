@@ -3,10 +3,20 @@ import type { SafeStorage } from '../../../lib/safeStorage';
 import {
   getOrCreateAnchorDateKey,
   getDayNumber,
+  getDayNumberForDateKey,
   getTodayCard,
+  getCardRange,
+  getNextMidnight,
   isOpenedToday,
   markOpenedToday,
-  getRevealVariant,
+  isCardOpened,
+  markCardOpened,
+  getFavorites,
+  isFavorite,
+  toggleFavorite,
+  removeFavorite,
+  getCardTheme,
+  setCardTheme,
 } from '../dailyCard';
 
 function fakeStorage(): SafeStorage {
@@ -79,11 +89,112 @@ describe('isOpenedToday / markOpenedToday', () => {
   });
 });
 
-describe('getRevealVariant', () => {
-  it('чередует bloom / flip / tear по дню, циклически', () => {
-    expect(getRevealVariant(1)).toBe('bloom');
-    expect(getRevealVariant(2)).toBe('flip');
-    expect(getRevealVariant(3)).toBe('tear');
-    expect(getRevealVariant(4)).toBe('bloom');
+describe('getDayNumberForDateKey', () => {
+  it('null для даты раньше anchor, число — для anchor и позже', () => {
+    const anchor = '2026-03-05';
+    expect(getDayNumberForDateKey(anchor, '2026-03-04')).toBeNull();
+    expect(getDayNumberForDateKey(anchor, '2026-03-05')).toBe(1);
+    expect(getDayNumberForDateKey(anchor, '2026-03-06')).toBe(2);
+  });
+});
+
+describe('getCardRange', () => {
+  it('в день первого визита прошлые дни недоступны (dayNumber/card = null)', () => {
+    const storage = fakeStorage();
+    const result = getCardRange(
+      new Date('2026-03-05T09:00:00'),
+      { daysBack: 7, daysForward: 1 },
+      storage,
+    );
+    expect(result).toHaveLength(9);
+    const past = result.filter((d) => d.offset < 0);
+    expect(past.every((d) => d.dayNumber === null && d.card === null)).toBe(true);
+    const today = result.find((d) => d.offset === 0);
+    expect(today?.dayNumber).toBe(1);
+    const tomorrow = result.find((d) => d.offset === 1);
+    expect(tomorrow?.dayNumber).toBe(2);
+  });
+
+  it('после недели использования доступны все 7 дней назад последовательными day-номерами', () => {
+    const storage = fakeStorage();
+    getOrCreateAnchorDateKey(new Date('2026-03-01T09:00:00'), storage);
+    const result = getCardRange(
+      new Date('2026-03-10T09:00:00'),
+      { daysBack: 7, daysForward: 1 },
+      storage,
+    );
+    const byOffset = new Map(result.map((d) => [d.offset, d]));
+    expect(byOffset.get(-7)?.dayNumber).toBe(3);
+    expect(byOffset.get(-1)?.dayNumber).toBe(9);
+    expect(byOffset.get(0)?.dayNumber).toBe(10);
+    expect(byOffset.get(1)?.dayNumber).toBe(11);
+  });
+});
+
+describe('getNextMidnight', () => {
+  it('возвращает timestamp ближайшей местной полуночи', () => {
+    const now = new Date('2026-03-05T18:30:00');
+    const next = new Date(getNextMidnight(now));
+    expect(next.getDate()).toBe(6);
+    expect(next.getHours()).toBe(0);
+    expect(next.getMinutes()).toBe(0);
+  });
+});
+
+describe('isCardOpened / markCardOpened', () => {
+  it('отслеживает несколько дат независимо', () => {
+    const storage = fakeStorage();
+    expect(isCardOpened('2026-03-01', storage)).toBe(false);
+    markCardOpened('2026-03-01', storage);
+    expect(isCardOpened('2026-03-01', storage)).toBe(true);
+    expect(isCardOpened('2026-03-02', storage)).toBe(false);
+    markCardOpened('2026-03-02', storage);
+    expect(isCardOpened('2026-03-01', storage)).toBe(true);
+    expect(isCardOpened('2026-03-02', storage)).toBe(true);
+  });
+
+  it('подхватывает легаси-ключ одиночной даты, если новый ещё не писался', () => {
+    const storage = fakeStorage();
+    storage.setItem('moodly_daily_card_opened_date', '2026-03-01');
+    expect(isCardOpened('2026-03-01', storage)).toBe(true);
+    expect(isOpenedToday(new Date('2026-03-01T12:00:00'), storage)).toBe(true);
+  });
+});
+
+describe('избранное', () => {
+  it('toggleFavorite добавляет и убирает по dayNumber, порядок — новые сверху', () => {
+    const storage = fakeStorage();
+    expect(getFavorites(storage)).toEqual([]);
+
+    toggleFavorite({ dayNumber: 1, principle: 'autonomy', text: 'A' }, storage);
+    toggleFavorite({ dayNumber: 2, principle: 'competence', text: 'B' }, storage);
+    const favorites = getFavorites(storage);
+    expect(favorites.map((f) => f.dayNumber)).toEqual([2, 1]);
+    expect(isFavorite(1, storage)).toBe(true);
+    expect(isFavorite(3, storage)).toBe(false);
+
+    toggleFavorite({ dayNumber: 1, principle: 'autonomy', text: 'A' }, storage);
+    expect(isFavorite(1, storage)).toBe(false);
+    expect(getFavorites(storage).map((f) => f.dayNumber)).toEqual([2]);
+  });
+
+  it('removeFavorite убирает конкретную запись', () => {
+    const storage = fakeStorage();
+    toggleFavorite({ dayNumber: 5, principle: 'relatedness', text: 'C' }, storage);
+    removeFavorite(5, storage);
+    expect(getFavorites(storage)).toEqual([]);
+  });
+});
+
+describe('getCardTheme / setCardTheme', () => {
+  it('по умолчанию "warm", хранит валидный выбор, игнорирует мусор в storage', () => {
+    const storage = fakeStorage();
+    expect(getCardTheme(storage)).toBe('warm');
+
+    setCardTheme('neon', storage);
+    expect(getCardTheme(storage)).toBe('neon');
+
+    storage.setItem('moodly_daily_card_theme', 'not-a-real-theme');
+    expect(getCardTheme(storage)).toBe('warm');
   });
 });

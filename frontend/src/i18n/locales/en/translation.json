@@ -3623,7 +3623,8 @@
       "today": "Today",
       "tomorrow": "Tomorrow",
       "recallCta": "Recall",
-      "noHistory": "Nothing here yet",
+      "daysAgo_one": "{{count}} day ago",
+      "daysAgo_other": "{{count}} days ago",
       "unlocksIn": "Unlocks in",
       "flipBack": "Flip back"
     },
@@ -3633,6 +3634,10 @@
       "modalTitle": "Favorite quotes",
       "modalDescription": "Quotes you've saved from the card of the day.",
       "empty": "Nothing yet — open a card you like and tap the star."
+    },
+    "theme": {
+      "label": "Card style",
+      "select": "Choose style"
     }
   }
 }
