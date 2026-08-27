@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,7 +24,9 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import Reveal from '../components/Reveal';
 import { useLoginForm } from '../hooks/useLoginForm';
-import { useSeo, withCanonical } from '../lib/seo';
+import { useSeo, withCanonical, getSeoTrafficOrigin } from '../lib/seo';
+import { trackGoal } from '../lib/metrika';
+import { captureReferralCode } from '../lib/referral';
 import { cn } from '../lib/utils';
 import { ACTIVITY_CATALOG } from '../lib/dayActivities';
 import { PostCard } from './blog/PostCard';
@@ -58,6 +60,20 @@ function useLandingSeo() {
     description: t('landing.seo.description'),
     canonical: withCanonical('/'),
   });
+
+  // Инвайт-механика (Сессия 8, three-personas-design-gaps.md): если на
+  // лендинг пришли по реферальной ссылке (`?ref=<код>`, см. lib/referral.ts),
+  // сохраняем код на сессию вкладки и фиксируем сам факт перехода как цель —
+  // конверсия в регистрацию с тем же кодом фиксируется отдельно в
+  // useRegisterForm. Полноценной атрибуции (join кода к конкретному
+  // пригласившему) сознательно нет — минимальное отслеживание по значению
+  // кода в целях Метрики достаточно для этой сессии.
+  useEffect(() => {
+    const ref = captureReferralCode(window.location.search);
+    if (ref) trackGoal('referral_landing_visit', { ref });
+    // Срабатывает один раз при монтировании лендинга — ref не меняется в
+    // рамках одного захода.
+  }, []);
 }
 
 function LangSwitch({ className }: { className?: string }) {
@@ -192,9 +208,141 @@ function HeroMock() {
   );
 }
 
+// Спокойная версия мокапа телефона для "рационального" сегмента (Сессия 3,
+// three-personas-design-gaps.md): вместо ряда с питомцем — блок про шифрование
+// на устройстве, вместо декоративной практики — тот же нейтральный список.
+// Ни одного питомца в первом экране для этого сегмента.
+function HeroMockRational() {
+  const { t } = useTranslation();
+  return (
+    <div className="relative mx-auto max-w-sm w-full">
+      <div className="bg-card rounded-[2rem] border border-border shadow-clay-lg p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-foreground" translate="no">
+            Moodly
+          </span>
+          <span className="text-[10px] text-muted-foreground">
+            {t('landing.heroRational.mockWeekLabel')}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <span className="w-[56px] h-[56px] rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+            <Lock aria-hidden="true" className="w-6 h-6 text-primary" />
+          </span>
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-foreground">
+              {t('landing.heroRational.mockPrivacyTitle')}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t('landing.heroRational.mockPrivacySub')}
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-secondary/70 p-3">
+          <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-2">
+            {t('landing.heroRational.mockMood')}
+          </p>
+          <div className="flex items-end gap-1.5 h-[134px]">
+            {MOOD_BAR_HEIGHTS.map((h, i) => (
+              <span
+                key={i}
+                className={cn(
+                  'w-full rounded-md animate-bar-grow',
+                  i === 3 || i === 6 ? 'bg-nature-growth' : 'bg-primary/30',
+                )}
+                style={{ height: `${h}px`, animationDelay: `${i * 120}ms` }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-card border border-border p-3 flex items-center gap-3 shadow-neumorphic-sm">
+          <span className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <Sparkles aria-hidden="true" className="w-5 h-5 text-primary" />
+          </span>
+          <div>
+            <p className="text-xs font-semibold text-foreground">
+              {t('landing.heroRational.mockPractice')}
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              {t('landing.heroRational.mockPracticeSub')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LandingHero() {
   const { t } = useTranslation();
   const { demoMode, demoLoading, handleDemo } = useLoginForm();
+  // Сегментация по трафику (Сессия 3): пользователь, пришедший с одного из
+  // SEO-лендингов про тревогу/стресс/сон, отмечен флагом в sessionStorage
+  // (см. useSeo({ markSeoOrigin }) в frontend/src/routes/seo/*.tsx). Флаг ставится
+  // самой SPA-навигацией, поэтому document.referrer тут не подходит — переход
+  // на "/" происходит через client-side роутинг без перезагрузки документа.
+  const [seoOrigin] = useState(() => getSeoTrafficOrigin());
+  const isRationalSegment = seoOrigin !== null;
+
+  useEffect(() => {
+    trackGoal('landing_hero_variant_shown', {
+      variant: isRationalSegment ? 'rational' : 'default',
+      seoOrigin: seoOrigin ?? undefined,
+    });
+    // Событие показа фиксируется один раз при монтировании лендинга — variant/seoOrigin
+    // не меняются после первого рендера в рамках одного захода на "/".
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (isRationalSegment) {
+    return (
+      <section className="relative overflow-hidden">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-14 grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="text-center lg:text-left">
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-xs font-semibold px-3.5 py-1.5 mb-5">
+              {t('landing.heroRational.badge')}
+            </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-[52px] font-extrabold text-foreground leading-[1.1] text-balance">
+              {t('landing.heroRational.titlePrefix')}{' '}
+              <span className="text-primary">{t('landing.heroRational.accent')}</span>{' '}
+              {t('landing.heroRational.titleSuffix')}
+            </h1>
+            <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+              {t('landing.heroRational.text')}
+            </p>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+              <Button size="lg" asChild>
+                <Link to="/register">
+                  {t('landing.heroRational.primaryCta')}
+                  <ArrowRight aria-hidden="true" className="w-5 h-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link to="/demo">
+                  <Play aria-hidden="true" className="w-4 h-4" />
+                  {t('landing.demoPreview')}
+                </Link>
+              </Button>
+              {demoMode && (
+                <Button size="lg" variant="secondary" onClick={handleDemo} disabled={demoLoading}>
+                  <Play aria-hidden="true" className="w-4 h-4" />
+                  {demoLoading ? '...' : t('landing.demo')}
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <Reveal direction="right" delay={120}>
+            <HeroMockRational />
+          </Reveal>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative overflow-hidden">
@@ -213,12 +361,26 @@ function LandingHero() {
           <p className="mt-5 text-muted-foreground text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
             {t('landing.hero.text')}
           </p>
+          {/* Сессия 10 (three-personas-design-gaps.md): короткий тезис про
+              шифрование сразу у оффера в первом экране, а не только в блоке
+              #privacy в середине скролла. Аналог уже есть в heroRational —
+              здесь тот же тезис одной строкой для обычного варианта хиро. */}
+          <p className="mt-3 flex items-center justify-center lg:justify-start gap-1.5 text-xs text-muted-foreground">
+            <Lock aria-hidden="true" className="w-3.5 h-3.5 shrink-0" />
+            {t('landing.hero.privacyNote')}
+          </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
             <Button size="lg" className="btn-neon" asChild>
               <Link to="/register">
                 {t('landing.start')}
                 <ArrowRight aria-hidden="true" className="w-5 h-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/demo">
+                <Play aria-hidden="true" className="w-4 h-4" />
+                {t('landing.demoPreview')}
               </Link>
             </Button>
             {demoMode && (

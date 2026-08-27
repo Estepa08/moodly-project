@@ -42,6 +42,7 @@ export default function SleepHygieneGuidePage() {
     title: t('seoPages.sleepHygiene.meta.title'),
     description: t('seoPages.sleepHygiene.meta.description'),
     canonical: withCanonical('/sleep-hygiene-guide'),
+    markSeoOrigin: 'sleep-hygiene-guide',
     jsonLd: [
       breadcrumbLd([
         { name: t('seoPages.sleepHygiene.breadcrumb.home'), url: withCanonical('/') },

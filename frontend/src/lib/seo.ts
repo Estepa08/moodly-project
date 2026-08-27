@@ -30,6 +30,40 @@ export interface SeoMeta {
   };
   /** Структурированные данные: объект-граф или массив графов JSON-LD. */
   jsonLd?: object | object[];
+  /**
+   * Сегментация трафика с SEO-лендингов (Сессия 3, three-personas-design-gaps.md):
+   * если задано, при монтировании страницы в sessionStorage выставляется флаг
+   * «пользователь пришёл с этого SEO-лендинга». Лендинг (`/`) читает флаг
+   * (`getSeoTrafficOrigin`) через клиентскую SPA-навигацию (Link/логотип/хлебные
+   * крошки ведут на `/` без перезагрузки документа, поэтому `document.referrer`
+   * для этого не подходит — он остаётся referrer'ом самого первого захода в SPA-сессию,
+   * а не предыдущего роута) и показывает альтернативный первый экран для «рационального»
+   * сегмента (SEO про тревогу/стресс/сон). Флаг живёт в пределах вкладки/сессии.
+   */
+  markSeoOrigin?: string;
+}
+
+const SEO_TRAFFIC_ORIGIN_KEY = 'moodly:seo-traffic-origin';
+
+/** Отмечает, что текущая сессия вкладки начиналась с SEO-лендинга `origin`. */
+export function markSeoTrafficOrigin(origin: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(SEO_TRAFFIC_ORIGIN_KEY, origin);
+  } catch {
+    // sessionStorage недоступен (приватный режим, квота и т.п.) — сегментация
+    // просто не сработает, для лендинга это не критично.
+  }
+}
+
+/** Читает отметку SEO-происхождения текущей сессии, если она есть. */
+export function getSeoTrafficOrigin(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.sessionStorage.getItem(SEO_TRAFFIC_ORIGIN_KEY);
+  } catch {
+    return null;
+  }
 }
 
 const JSONLD_SELECTOR = 'script[data-seo-jsonld]';
@@ -73,7 +107,16 @@ function applyMetaTag(attr: 'name' | 'property', key: string, content: string): 
  * Open Graph, Twitter Card и JSON-LD. Все изменения безопасно откатываются
  * при размонтировании компонента.
  */
-export function useSeo({ title, description, canonical, noindex, og, twitter, jsonLd }: SeoMeta) {
+export function useSeo({
+  title,
+  description,
+  canonical,
+  noindex,
+  og,
+  twitter,
+  jsonLd,
+  markSeoOrigin,
+}: SeoMeta) {
   const ogTitle = og?.title ?? title;
   const ogDescription = og?.description ?? description;
   const ogUrl = og?.url ?? canonical;
@@ -87,6 +130,8 @@ export function useSeo({ title, description, canonical, noindex, og, twitter, js
   const jsonLdKey = jsonLd === undefined ? '' : JSON.stringify(jsonLd);
 
   useEffect(() => {
+    if (markSeoOrigin) markSeoTrafficOrigin(markSeoOrigin);
+
     const prevTitle = document.title;
     const prevCanonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     const prevRobots = metaEl('robots');
@@ -180,6 +225,7 @@ export function useSeo({ title, description, canonical, noindex, og, twitter, js
     twImage,
     needsSocial,
     jsonLdKey,
+    markSeoOrigin,
   ]);
 }
 

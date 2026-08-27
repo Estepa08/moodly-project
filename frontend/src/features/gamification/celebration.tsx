@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import { toast } from 'sonner';
 import i18n from '../../i18n/i18n';
+import { isClassicMode } from './interfaceModeStore';
 
 const RewardMoment = lazy(() => import('./RewardMoment'));
 
@@ -66,6 +67,12 @@ export function celebrateReward(
   source: string,
   data: { leveledUp?: boolean; state?: { level: number } },
 ) {
+  // Классический режим (docs/plans/three-personas-design-gaps.md, Сессия 1):
+  // бэкенд продолжает считать XP/level-up и в classic (вызывающие хуки в
+  // useCreature.ts не знают о режиме — они общие для практик, доступных в
+  // обоих режимах), но сам тост/анимация награды не показывается.
+  if (isClassicMode()) return;
+
   const t = i18n.t.bind(i18n);
 
   if (data.leveledUp && Date.now() - lastRewardAt >= REWARD_COOLDOWN_MS) {

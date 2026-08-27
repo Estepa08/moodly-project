@@ -959,6 +959,132 @@ describe('Creature check-in — comeback tiers', () => {
   });
 });
 
+// Session 7 (docs/plans/three-personas-design-gaps.md): companions must not
+// punish pure passivity. Energy/comfort may only ever move via an explicit
+// action (pet/practice/check-in reward) — never drop just because time
+// passed without any activity. These tests pin that invariant down.
+describe('Creature — no passive-inactivity penalty', () => {
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
+  it('GET /creature — reading state after a long idle gap does not lower stored energy/comfort', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-idle-read@example.com',
+      'secret123',
+      'IdleRead',
+    );
+    // CreatureState is created lazily on first access.
+    await app.inject({
+      method: 'GET',
+      url: '/creature',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: {
+        energy: 40,
+        comfort: 30,
+        lastCheckInAt: new Date(Date.now() - 20 * DAY_MS),
+        lastPetAt: new Date(Date.now() - 20 * DAY_MS),
+      },
+    });
+
+    const res = await app.inject({
+      method: 'GET',
+      url: '/creature',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    // Merely fetching state after being idle must not apply any decay.
+    expect(res.json().energy).toBe(40);
+    expect(res.json().comfort).toBe(30);
+  });
+
+  it('POST /creature/check-in — a long lapse never leaves energy/comfort below their prior values', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-idle-checkin@example.com',
+      'secret123',
+      'IdleCheckin',
+    );
+    // A first check-in creates the CreatureState row (lazily created).
+    await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: {
+        energy: 10,
+        comfort: 30,
+        lastCheckInAt: new Date(Date.now() - 15 * DAY_MS),
+      },
+    });
+
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/check-in',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    // Check-in always recharges energy to full and only ever grows comfort
+    // (comeback tiers add to it) — a missed period never pushes either
+    // value down.
+    expect(res.json().state.energy).toBe(100);
+    expect(res.json().state.comfort).toBeGreaterThanOrEqual(30);
+  });
+
+  it('POST /creature/pet — a long pause before petting adds no extra energy/comfort penalty beyond the normal per-tap cost', async () => {
+    const user = await registerAndLogin(
+      app,
+      'creature-idle-pet@example.com',
+      'secret123',
+      'IdlePet',
+    );
+    // A first tap creates the CreatureState row (lazily created).
+    await app.inject({
+      method: 'POST',
+      url: '/creature/pet',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await prisma.creatureState.update({
+      where: { userId: user.userId },
+      data: {
+        energy: 50,
+        comfort: 20,
+        lastPetAt: new Date(Date.now() - 30 * DAY_MS),
+        petCount: 0,
+      },
+    });
+
+    await app.inject({
+      method: 'POST',
+      url: '/creature/pet',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    await app.inject({
+      method: 'POST',
+      url: '/creature/pet',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+    const res = await app.inject({
+      method: 'POST',
+      url: '/creature/pet',
+      headers: { authorization: `Bearer ${user.token}` },
+    });
+
+    expect(res.statusCode).toBe(200);
+    // Only the standard per-tap energy cost (-1 on the XP-awarding 3rd tap)
+    // applies — the 30-day pause itself does not additionally drain energy,
+    // and comfort (no empathy flag) is untouched.
+    expect(res.json().state.energy).toBe(49);
+    expect(res.json().state.comfort).toBe(20);
+  });
+});
+
 describe('Creature check-in — companion adventure', () => {
   it('POST /creature/check-in — starts an adventure when none is active', async () => {
     const user = await registerAndLogin(

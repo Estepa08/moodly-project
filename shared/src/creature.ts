@@ -139,7 +139,10 @@ export const WEEKLY_XP_REWARD = 25;
 // те же вспомогательные механики, что исключены из статистики практик.
 export const WEEKLY_EXCLUDED_SOURCES = ["feed", "moodEntry", "play", "weeklyGoal"];
 
-export const STARTER_PET_TYPES = ["puff", "sloth", "fox"];
+// "sprout" — неантропоморфный вариант (растение в горшке), см. Сессия 7 в
+// docs/plans/three-personas-design-gaps.md: для тех, кто остался с
+// компаньоном, но не хочет мультяшный персонаж.
+export const STARTER_PET_TYPES = ["puff", "sloth", "fox", "sprout"];
 
 export const EVOLUTION_STAGES = [
   { key: "baby", minLevel: 1 },

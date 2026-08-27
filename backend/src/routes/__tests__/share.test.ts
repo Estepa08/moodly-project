@@ -106,6 +106,27 @@ describe('GET /share/streak (публичный, без авторизации)'
     const res = await app.inject({ method: 'GET', url: '/share/streak' });
     expect(res.statusCode).toBe(400);
   });
+
+  it('format=story — вертикальные og:image:width/height (1080x1920) и format в ссылке на картинку', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/share/streak?days=30&pet=fox&format=story',
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toContain('og:image:width" content="1080"');
+    expect(res.body).toContain('og:image:height" content="1920"');
+    expect(res.body).toContain('format=story');
+  });
+
+  it('без format (или неизвестное значение) — остаётся классический 1200x630', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/share/streak?days=30&pet=fox&format=bogus',
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toContain('og:image:width" content="1200"');
+    expect(res.body).not.toContain('format=story');
+  });
 });
 
 describe('GET /share/streak/card.png (публичный, без авторизации)', () => {
@@ -138,4 +159,15 @@ describe('GET /share/streak/card.png (публичный, без авториз�
     });
     expect(res.statusCode).toBe(400);
   });
+
+  it('format=story — рендерит вертикальный 1080x1920 PNG тем же пайплайном', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/share/streak/card.png?days=100&pet=fox&format=story',
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['content-type']).toBe('image/png');
+    expect(res.rawPayload.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect(res.rawPayload.length).toBeGreaterThan(1000);
+  }, 20_000);
 });

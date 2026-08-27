@@ -37,6 +37,7 @@ function stripUser(user: {
   createdAt: Date;
   emailVerified: boolean;
   password: string;
+  interfaceMode: string;
 }) {
   return {
     id: user.id,
@@ -45,6 +46,7 @@ function stripUser(user: {
     role: user.role,
     createdAt: user.createdAt,
     emailVerified: user.emailVerified,
+    interfaceMode: user.interfaceMode,
   };
 }
 
@@ -192,9 +194,12 @@ export const userService = {
     });
   },
 
-  async update(id: string, data: { name?: string }) {
-    const sanitized: { name?: string } = {};
+  async update(id: string, data: { name?: string; interfaceMode?: string }) {
+    // Явный whitelist полей: этот роут не должен пропускать role/email/password
+    // и т.п. — даже если позже кто-то расширит вызывающий тип.
+    const sanitized: { name?: string; interfaceMode?: string } = {};
     if (data?.name !== undefined) sanitized.name = data.name;
+    if (data?.interfaceMode !== undefined) sanitized.interfaceMode = data.interfaceMode;
     const user = await prisma.user.update({
       where: { id },
       data: sanitized,
@@ -218,11 +223,21 @@ export const userService = {
       experienceLevel?: string;
       dailyReminder?: boolean;
       reminderTime?: string;
+      reminderMode?: string;
+      reminderWindowStart?: string;
+      reminderWindowEnd?: string;
       afternoonReminder?: boolean;
       afternoonTime?: string;
+      afternoonMode?: string;
+      afternoonWindowStart?: string;
+      afternoonWindowEnd?: string;
       eveningReminder?: boolean;
       eveningTime?: string;
+      eveningMode?: string;
+      eveningWindowStart?: string;
+      eveningWindowEnd?: string;
       onboardingDone?: boolean;
+      showSupportResources?: boolean;
     },
   ) {
     const prefs = await prisma.userPreference.upsert({

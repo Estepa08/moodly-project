@@ -70,6 +70,14 @@ function withStage<T extends { level: number }>(state: T): T & { stage: string }
   return { ...state, stage: stageForLevel(state.level) };
 }
 
+// Инвариант «без штрафа за бездействие» (Сессия 7,
+// docs/plans/three-personas-design-gaps.md): energy/comfort меняются только
+// явным действием (поглаживание тратит energy, практики/comeback-тиры/
+// «Эмпатия»/«Прогулка» его или comfort увеличивают) — нет ни одного места,
+// которое понижало бы их просто по факту прошедшего времени без действий.
+// checkIn() всегда восстанавливает energy до MAX_ENERGY и никогда не
+// уменьшает comfort, независимо от длины пропуска (см. ниже). Если будете
+// добавлять новую механику — не вводите здесь decay по времени.
 export const creatureService = {
   async getState(userId: string) {
     const state = await getOrCreateCreatureState(prisma, userId);

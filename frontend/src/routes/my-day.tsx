@@ -5,12 +5,14 @@ import { useDayPhase } from '../hooks/useDayPhase';
 import { useEntries } from '../hooks/useEntries';
 import { useParameters } from '../hooks/useParameters';
 import { useSleepHygieneEntry } from '../hooks/useSleepHygieneEntry';
+import { useInterfaceMode } from '../hooks/useInterfaceMode';
 import PetGreeterCard from '../features/gamification/PetGreeterCard';
 import { DailyMotivationCard } from '../features/dailyCard';
 import PetCheckInDialog, {
   shouldAutoOpenCheckIn,
   markCheckInDone,
 } from '../features/check-in/PetCheckInDialog';
+import ClassicCheckInCard from '../features/check-in/ClassicCheckInCard';
 import DayActivitiesCard from '../features/check-in/DayActivitiesCard';
 import DayActivitiesSection from '../features/check-in/DayActivitiesSection';
 import SleepHygieneChecklist from '../features/check-in/SleepHygieneChecklist';
@@ -94,6 +96,7 @@ function MorningStatus() {
 export default function MyDay() {
   const { t } = useTranslation();
   const phase = useDayPhase();
+  const { isClassic } = useInterfaceMode();
   const { paramIdByName, savedTodayParamIds } = useTodayParamIds();
   const [checkInOpen, setCheckInOpen] = useState(false);
   const [activitiesModalOpen, setActivitiesModalOpen] = useState(false);
@@ -135,7 +138,11 @@ export default function MyDay() {
         <PhaseHeader />
       </div>
 
-      <PetGreeterCard onCheckIn={() => setCheckInOpen(true)} />
+      {isClassic ? (
+        <ClassicCheckInCard onCheckIn={() => setCheckInOpen(true)} />
+      ) : (
+        <PetGreeterCard onCheckIn={() => setCheckInOpen(true)} />
+      )}
 
       <DailyMotivationCard />
 

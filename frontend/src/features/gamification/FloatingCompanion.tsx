@@ -11,6 +11,7 @@ import { PET_CYCLE } from '@moodly/shared';
 import { isCompanionHidden, subscribeCompanionVisibility } from './companionVisibility';
 import { adventurePhase, formatReturnTime } from './petAway';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useInterfaceMode } from '../../hooks/useInterfaceMode';
 import { cn } from '../../lib/utils';
 
 const HIDDEN_PATHS = ['/tests/', '/practices/breathing', '/onboarding'];
@@ -23,6 +24,7 @@ const ADVENTURE_TICK_MS = 30_000;
 export default function FloatingCompanion() {
   const { t } = useTranslation();
   const location = useLocation();
+  const { isClassic } = useInterfaceMode();
   const { data: pets } = usePets();
   const { data: creature } = useCreatureState();
   const { reward, glow, handlePet } = usePetReward();
@@ -44,6 +46,7 @@ export default function FloatingCompanion() {
     return () => clearInterval(id);
   }, [creature?.adventureReturnAt]);
 
+  if (isClassic) return null;
   if (hidden) return null;
   if (HIDDEN_PATHS.some((path) => location.pathname.startsWith(path))) return null;
 

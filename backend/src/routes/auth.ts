@@ -47,6 +47,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         keySalt,
         recoveryWrappedKey,
         recoverySalt,
+        referralCode,
       } = parseOrThrow(registerSchema, request.body);
       const { user } = await userService.register({
         email,
@@ -60,6 +61,17 @@ export default async function authRoutes(fastify: FastifyInstance) {
         recoveryWrappedKey,
         recoverySalt,
       });
+
+      // Инвайт-механика (Сессия 8, three-personas-design-gaps.md): минимальное
+      // отслеживание конверсии реферальной ссылки — обычный лог, без
+      // серверной таблицы атрибуции. Код с лендинга (lib/referral.ts на
+      // фронтенде) непрямой (хэш userId пригласившего, не сырой ID), сюда
+      // приходит как есть и нигде не сверяется с реальными пользователями —
+      // достаточно, чтобы по логам можно было посчитать, сколько регистраций
+      // пришло с каждым конкретным кодом.
+      if (referralCode) {
+        request.log.info({ referralCode, newUserId: user.id }, 'referral signup');
+      }
       const accessToken = await reply.jwtSign(
         { userId: user.id },
         { expiresIn: authService.accessTokenExpiry },

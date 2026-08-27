@@ -24,6 +24,7 @@ const CATEGORY_KEYS: Record<string, string> = {
   sleep: 'seoPages.blog.categories.sleep',
   thinking: 'seoPages.blog.categories.thinking',
   motivation: 'seoPages.blog.categories.motivation',
+  burnout: 'seoPages.blog.categories.burnout',
 };
 
 // Мотивация не имеет своего продуктового лендинга — для неё пилларной ссылки нет.

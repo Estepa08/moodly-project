@@ -44,6 +44,7 @@ export default function AnxietySelfHelpPage() {
     title: t('seoPages.anxietySelfHelp.meta.title'),
     description: t('seoPages.anxietySelfHelp.meta.description'),
     canonical: withCanonical('/anxiety-self-help'),
+    markSeoOrigin: 'anxiety-self-help',
     jsonLd: [
       breadcrumbLd([
         { name: t('seoPages.anxietySelfHelp.breadcrumb.home'), url: withCanonical('/') },

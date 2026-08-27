@@ -81,6 +81,14 @@ export enum ExpLevel {
   Advanced = 'advanced',
 }
 
+// Классический режим: тот же трекер настроения без питомца/XP/достижений/
+// streak-heatmap в UI. Бэкенд продолжает считать прогресс компаньона фоново
+// в обоих режимах — переключение обратимо и ничего не обнуляет.
+export enum InterfaceMode {
+  Companion = 'companion',
+  Classic = 'classic',
+}
+
 export const CLICK_THRESHOLD = 5;
 export const LOCKOUT_DURATION_MS = 5000;
 export const CLICK_WINDOW_MS = 2000;

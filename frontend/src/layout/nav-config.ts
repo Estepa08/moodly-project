@@ -152,3 +152,15 @@ export const ADMIN_ITEM: NavItem = {
   path: '/admin',
   icon: ShieldCheck,
 };
+
+// Пункт «Прогресс» (серии/heatmap/уровень/XP/достижения/коллекция питомцев) —
+// целиком игровая надстройка, скрывается в классическом режиме (см.
+// docs/plans/three-personas-design-gaps.md, Сессия 1). /progress сам по себе
+// редиректит на /my-day в классическом режиме (routes/progress.tsx), так что
+// прямая ссылка не ведёт на пустой экран.
+export const PROGRESS_PATH = '/progress';
+
+export function filterNavForMode(items: NavItem[], isClassic: boolean): NavItem[] {
+  if (!isClassic) return items;
+  return items.filter((item) => item.path !== PROGRESS_PATH);
+}

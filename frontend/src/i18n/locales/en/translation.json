@@ -86,7 +86,10 @@
     "morningDone_one": "Morning done: {{count}} of {{total}}",
     "morningDone_few": "Morning done: {{count}} of {{total}}",
     "morningDone_many": "Morning done: {{count}} of {{total}}",
-    "morningDone_other": "Morning done: {{count}} of {{total}}"
+    "morningDone_other": "Morning done: {{count}} of {{total}}",
+    "classicCheckInTitle": "How are you today?",
+    "classicCheckInDesc": "Check in with your mood — takes 30 seconds",
+    "classicCheckInCta": "Check in"
   },
   "petGreeter": {
     "question": {
@@ -106,6 +109,7 @@
     "emotionSkip": "Skip this step",
     "thanksTitle": "Thank you!",
     "thanksText": "I saved it all and I'll be right here — come back later to wrap up your day.",
+    "thanksTextClassic": "Saved — come back later to wrap up your day.",
     "done": "Done",
     "skip": "Skip",
     "markActivities": "Mark today's activities",
@@ -360,6 +364,11 @@
     "thinkingPatternsBetter": "↓ better",
     "thinkingPatternsWorse": "↑ worse",
     "thinkingPatternsSame": "— unchanged",
+    "thinkingPatternsTrend": {
+      "better": "Thinking got more flexible since last time",
+      "worse": "More distortions than last time",
+      "same": "No significant change"
+    },
     "thinkingPatternsLast": "Latest test · {{date}}",
     "thinkingPatternsPrevious": "Previous test · {{date}}",
     "thinkingPatternsSingle": "Take the test again to see the trend.",
@@ -1325,6 +1334,12 @@
   "onboarding2": {
     "welcomeTitle": "Welcome to Moodly",
     "welcomeDesc": "A few quick questions to tailor your experience.",
+    "modeTitle": "Choose your format",
+    "modeDesc": "You can change this later in settings.",
+    "modeCompanionTitle": "With a companion",
+    "modeCompanionDesc": "A pet, levels, achievements, and gentle game motivation.",
+    "modeClassicTitle": "Classic diary",
+    "modeClassicDesc": "Just a mood tracker — no pet, XP, or rewards.",
     "goalsTitle": "What brings you here?",
     "goalsDesc": "Pick what matters to you (you can change later).",
     "goalStress": "Manage stress",
@@ -1337,8 +1352,13 @@
     "expBeginner": "Beginner — new to mood tracking",
     "expIntermediate": "Intermediate — some experience",
     "expAdvanced": "Advanced — regular practitioner",
+    "quickStartTitle": "I'm short on time",
+    "quickStartDesc": "Skip the extra questions — quick setup, everything can be changed later in settings.",
     "reminderTitle": "Daily reminder?",
     "reminderDesc": "Get a gentle nudge to check in each day.",
+    "reminderQuickDesc": "One preset instead of three decisions — fine-tune it later in settings.",
+    "reminderQuickPreset": "Flexible window, 8:00–11:00 PM",
+    "reminderQuickHint": "You can set an exact time and other slots later in Settings → Reminders.",
     "petTitle": "Meet your companion",
     "petDesc": "They just arrived! Give them a name and pick who'll be by your side.",
     "petNameLabel": "What's your companion's name?",
@@ -1444,7 +1464,26 @@
     "pushSubscribeFailed": "Couldn't enable push notifications",
     "pushNotConfigured": "Push notifications are temporarily unavailable — try again later",
     "remindersSaveFailed": "Failed to save settings",
+    "remindersModeExact": "Exact time",
+    "remindersModeWindow": "Flexible window",
+    "remindersModeWindowHint": "Arrives at a random moment within the window — handy when your free time varies",
+    "remindersWindowFrom": "from",
+    "remindersWindowTo": "to",
     "comingSoon": "Coming soon",
+    "modeSection": "Interface mode",
+    "modeSectionDesc": "You can switch anytime — your companion's progress is never lost.",
+    "modeSaveFailed": "Couldn't change the mode",
+    "textScaleSection": "Text size",
+    "textScaleSectionDesc": "Applies across the whole app, saved on this device",
+    "textScaleNormal": "Normal",
+    "textScaleLarge": "Large",
+    "textScaleXLarge": "Extra large",
+    "inviteSection": "Invite a friend",
+    "inviteSectionDesc": "Send your personal Moodly link to someone who might like it.",
+    "inviteButton": "Invite a friend",
+    "inviteShareText": "I'm tracking my mood with Moodly — join me!",
+    "inviteCopied": "Link copied",
+    "inviteCopyFailed": "Couldn't copy the link",
     "language": "Language",
     "companionSection": "Companion",
     "companionToggleLabel": "Floating companion",
@@ -1705,7 +1744,10 @@
     "activityResponsibilityPie": "Responsibility Pie",
     "activityDecatastrophizing": "Decatastrophizing",
     "weeklyTitle": "Weekly calendar",
-    "weeklySubtitle": "Any 5 days out of 7 — no penalty for missing one"
+    "weeklySubtitle": "Any 5 days out of 7 — no penalty for missing one",
+    "shareStory": "Share to Stories",
+    "shareStoryDownloaded": "Image saved — add it to your story manually",
+    "shareStoryError": "Couldn't prepare the card, please try again"
   },
   "missions": {
     "checkin": "Check in today",
@@ -1731,6 +1773,7 @@
     "puff": "Puff",
     "sloth": "Sloth",
     "fox": "Fox",
+    "sprout": "Sprout",
     "giraffe": "Giraffe",
     "dove": "Dove",
     "tiger": "Tiger",
@@ -1938,17 +1981,33 @@
     "signIn": "Sign in",
     "start": "Try for free",
     "demo": "Watch demo",
+    "demoPreview": "See the demo",
     "badge": "30 seconds a day is enough",
     "hero": {
       "titlePrefix": "A mood diary that",
       "accent": "cares",
       "titleSuffix": "about you",
       "text": "Track your mood, energy, sleep and anxiety in half a minute. See trends, calm down with practices and raise your companion. Private, per 152-FZ.",
+      "privacyNote": "Your entries are encrypted on your device — only you have access",
       "mockCompanion": "Companion · lvl 7",
       "mockStreak": "Streak: 12 days 🔥",
       "mockMood": "Mood · this week",
       "mockPractice": "Practice · Breathing",
       "mockPracticeSub": "2 min of calm"
+    },
+    "heroRational": {
+      "badge": "Private, to the point, no fluff",
+      "titlePrefix": "A mood diary for people who want",
+      "accent": "facts",
+      "titleSuffix": "not cartoons",
+      "text": "Log anxiety, sleep and mood in 30 seconds a day and see the trend in real numbers. Your data is encrypted on your device — only you have access. If you don't want game elements, there's a classic mode: a plain tracker with no pet, levels or rewards.",
+      "primaryCta": "Start for free",
+      "mockWeekLabel": "This week",
+      "mockPrivacyTitle": "On-device encryption",
+      "mockPrivacySub": "Only you hold the key",
+      "mockMood": "Mood · 7 days",
+      "mockPractice": "Practice · Breathing",
+      "mockPracticeSub": "2 minutes, no sign-up"
     },
     "stats": {
       "pets": "companions",
@@ -2119,6 +2178,42 @@
     "seo": {
       "title": "Moodly — a mood diary that cares about you",
       "description": "Track your mood, energy, sleep and anxiety in half a minute. Practices, self-discovery tests and a companion always by your side. Private, per 152-FZ."
+    }
+  },
+  "demo": {
+    "backToLanding": "Back to home",
+    "register": "Sign up",
+    "badge": "Demo mode · no sign-up",
+    "title": "See how it works",
+    "subtitle": "This is a preview with sample data. Switch between the companion mode and the classic diary.",
+    "notice": "This is a demo with sample data. Changes here are not saved and don't affect anyone's account — sign up to keep your own diary.",
+    "saveHint": "Changes aren't saved in demo mode. Sign up to start your own diary.",
+    "checkin": {
+      "title": "How are you feeling?",
+      "hint": "In the real app this entry would be saved and show up in your stats."
+    },
+    "chart": {
+      "title": "Mood · this week",
+      "caption": "A sample 7-day trend from the demo data."
+    },
+    "companion": {
+      "level": "Companion · lvl 7",
+      "streak": "12-day streak",
+      "xp": "62% to the next level",
+      "achievementsTitle": "Achievements"
+    },
+    "classic": {
+      "title": "Classic diary",
+      "text": "The classic mode has no pet, XP or achievements — just a clean mood tracker and practices."
+    },
+    "cta": {
+      "title": "Like what you see? Start your own diary",
+      "text": "Signing up takes less than a minute. Every entry is encrypted and only you can read it.",
+      "button": "Sign up for free"
+    },
+    "seo": {
+      "title": "Moodly demo — try it without signing up",
+      "description": "See how the Moodly mood diary works with sample data — no sign-up or personal information needed."
     }
   },
   "notFound": {
@@ -2731,7 +2826,8 @@
         "anxiety": "Anxiety",
         "sleep": "Sleep",
         "thinking": "Thinking",
-        "motivation": "Motivation"
+        "motivation": "Motivation",
+        "burnout": "Burnout"
       },
       "backToBlog": "Back to all posts",
       "author": "Moodly Team",
@@ -2795,7 +2891,7 @@
     "limitDescription": "Attempts reset at midnight. Come back — every new feeling brings you closer to the full wheel.",
     "premiumOffer": "Premium — {{count}} attempts a day",
     "premiumOfferDesc": "Discover more, faster — no waiting around.",
-    "learnMore": "Learn more",
+    "moreAttemptsSoon": "More attempts — coming soon",
     "loadError": "Couldn't load the lab. Please try again.",
     "attemptError": "Couldn't mix the emotions. Please try again.",
     "moreShades": "More shades ({{count}})",
@@ -3521,6 +3617,22 @@
       "effortOverTalent": "Effort over talent",
       "challengeReframe": "Reframing challenge"
     },
-    "ctaTearAgain": "Tap again"
+    "ctaTearAgain": "Tap again",
+    "slot": {
+      "yesterday": "Yesterday",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "recallCta": "Recall",
+      "noHistory": "Nothing here yet",
+      "unlocksIn": "Unlocks in",
+      "flipBack": "Flip back"
+    },
+    "favorite": {
+      "add": "Add to favorites",
+      "remove": "Remove from favorites",
+      "modalTitle": "Favorite quotes",
+      "modalDescription": "Quotes you've saved from the card of the day.",
+      "empty": "Nothing yet — open a card you like and tap the star."
+    }
   }
 }

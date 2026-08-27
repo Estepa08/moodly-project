@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { FlaskConical } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Card, CardContent } from '../../components/ui/card';
@@ -20,7 +19,6 @@ import {
 
 export default function EmotionLabScreen() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>([]);
   const [result, setResult] = useState<EmotionLabAttemptResponse | null>(null);
 
@@ -120,12 +118,7 @@ export default function EmotionLabScreen() {
 
       {/* Лимит достигнут */}
       {state.limitReached ? (
-        <EmotionLimit
-          tier={state.tier}
-          dailyLimit={state.dailyLimit}
-          resetsAt={state.resetsAt}
-          onLearnMore={() => navigate('/settings')}
-        />
+        <EmotionLimit tier={state.tier} dailyLimit={state.dailyLimit} resetsAt={state.resetsAt} />
       ) : (
         <Card className="shadow-elevation-2">
           <CardContent className="p-5">

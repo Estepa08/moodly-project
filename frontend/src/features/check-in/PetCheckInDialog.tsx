@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Flame, CalendarRange, Moon } from 'lucide-react';
+import { Flame, CalendarRange, Moon, CheckCircle2 } from 'lucide-react';
 import { Dialog, DialogContent } from '../../components/ui/dialog';
 import {
   PetAvatar,
@@ -19,6 +19,7 @@ import { api } from '../../lib/api';
 import { useParameters } from '../../hooks/useParameters';
 import { useCreateEntry } from '../../hooks/useEntries';
 import { useDayPhase, getDayPhase, type DayPhase } from '../../hooks/useDayPhase';
+import { useInterfaceMode } from '../../hooks/useInterfaceMode';
 import { ParameterName, PARAM_NAME_KEYS } from '../../lib/constants';
 import { RATING_LEVELS, type RatingLevel } from '../../lib/ratingLevels';
 import { cn } from '../../lib/utils';
@@ -52,6 +53,10 @@ export default function PetCheckInDialog({
   const { t } = useTranslation();
   const phase = useDayPhase();
   const flow = FLOWS[phase];
+  // Классический режим (Сессия 1, docs/plans/three-personas-design-gaps.md):
+  // тот же чек-ин-флоу и та же запись streak/XP на бэкенде, но без питомца,
+  // XP-плашек и level-up/comeback тостов в этом модале.
+  const { isClassic } = useInterfaceMode();
 
   const queryClient = useQueryClient();
   const { data: params } = useParameters();
@@ -80,6 +85,10 @@ export default function PetCheckInDialog({
     onSuccess: (data) => {
       setCheckIn({ streak: data.state.streak ?? 0, leveledUp: data.leveledUp });
       queryClient.invalidateQueries({ queryKey: ['creature'] });
+      // Бэкенд продолжает считать XP/streak/level-up и в классическом режиме
+      // (прогресс компаньона не обнуляется), но эти игровые тосты и анимации
+      // в классическом режиме не показываем.
+      if (isClassic) return;
       if (data.leveledUp) {
         celebrate(t('dailyCheckIn.levelUpBody', { level: data.state.level }), {
           title: t('dailyCheckIn.levelUpTitle'),
@@ -140,7 +149,7 @@ export default function PetCheckInDialog({
           setMoodEmotions([]);
           if (step >= flow.length - 1) {
             setDone(true);
-            emitSpeech(t('petSpeech.thanks'));
+            if (!isClassic) emitSpeech(t('petSpeech.thanks'));
             // Завершение флоу = дневной чек-ин (сервер сам защищает от повтора в день).
             checkInMutation.mutate(undefined);
           } else {
@@ -171,18 +180,27 @@ export default function PetCheckInDialog({
         className="pet-gradient-bg text-foreground rounded-3xl max-w-sm w-[calc(100%-2rem)] p-5 text-center overflow-visible"
       >
         <div className="flex justify-center">
-          <PetAvatar
-            petType={activePetType}
-            size="lg"
-            interactive
-            feedSignal={feedSignal}
-            emotion="happy"
-            ariaLabel={petName}
-            reward={reward}
-            glow={glow}
-            particleBoundary={64}
-            particleFallLimit={0}
-          />
+          {isClassic ? (
+            <span
+              aria-hidden="true"
+              className="w-20 h-20 rounded-full bg-primary/10 text-primary grid place-items-center"
+            >
+              <CheckCircle2 className="w-9 h-9" />
+            </span>
+          ) : (
+            <PetAvatar
+              petType={activePetType}
+              size="lg"
+              interactive
+              feedSignal={feedSignal}
+              emotion="happy"
+              ariaLabel={petName}
+              reward={reward}
+              glow={glow}
+              particleBoundary={64}
+              particleFallLimit={0}
+            />
+          )}
         </div>
 
         {done ? (
@@ -191,13 +209,14 @@ export default function PetCheckInDialog({
               {t('petCheckIn.thanksTitle')}
             </p>
             <p className="text-sm text-muted-foreground leading-snug">
-              {t('petCheckIn.thanksText')}
+              {t(isClassic ? 'petCheckIn.thanksTextClassic' : 'petCheckIn.thanksText')}
             </p>
 
             {/* Награда — сама суть ежедневного ритуала, поэтому не появляется
                 одновременно с «спасибо», а чуть отстаёт (та же логика, что и
-                развязка «было → стало» в thought-battle). */}
-            {checkIn && (
+                развязка «было → стало» в thought-battle). В классическом режиме
+                эту XP/streak-плашку не показываем — прогресс копится фоново. */}
+            {!isClassic && checkIn && (
               <div className="space-y-2 animate-card-enter" style={{ animationDelay: '140ms' }}>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex flex-col items-center justify-center gap-0.5 rounded-2xl bg-accent/10 py-2.5">

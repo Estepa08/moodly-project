@@ -28,6 +28,7 @@ export default function MoodDiaryPage() {
     title: t('seoPages.moodDiary.meta.title'),
     description: t('seoPages.moodDiary.meta.description'),
     canonical: withCanonical('/mood-diary'),
+    markSeoOrigin: 'mood-diary',
     jsonLd: [
       breadcrumbLd([
         { name: t('seoPages.moodDiary.breadcrumb.home'), url: withCanonical('/') },

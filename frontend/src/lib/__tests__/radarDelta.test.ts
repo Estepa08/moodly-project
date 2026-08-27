@@ -5,6 +5,7 @@ import {
   distortionDelta,
   getDistortions,
   hasDistortionsFlags,
+  summarizeRadarTrend,
 } from '../radarDelta';
 
 const cdResult = (completedAt: string, distortions: Partial<Record<DistortionKey, number>>) => ({
@@ -111,5 +112,36 @@ describe('distortionDelta', () => {
 
   it('возвращает null, если ключ отсутствует в одном из наборов', () => {
     expect(distortionDelta(previous, current, DistortionKey.MentalFilter)).toBeNull();
+  });
+});
+
+describe('summarizeRadarTrend', () => {
+  it('возвращает null без предыдущего результата', () => {
+    const comparison = buildRadarComparison([cdResult('2026-01-01', { allOrNothing: 5 })])!;
+    expect(summarizeRadarTrend(comparison)).toBeNull();
+  });
+
+  it('better — суммарный балл искажений снизился', () => {
+    const comparison = buildRadarComparison([
+      cdResult('2026-01-01', { allOrNothing: 7, labeling: 6 }),
+      cdResult('2026-02-01', { allOrNothing: 3, labeling: 2 }),
+    ])!;
+    expect(summarizeRadarTrend(comparison)).toBe('better');
+  });
+
+  it('worse — суммарный балл искажений вырос', () => {
+    const comparison = buildRadarComparison([
+      cdResult('2026-01-01', { allOrNothing: 2, labeling: 2 }),
+      cdResult('2026-02-01', { allOrNothing: 6, labeling: 5 }),
+    ])!;
+    expect(summarizeRadarTrend(comparison)).toBe('worse');
+  });
+
+  it('same — суммарный балл не изменился', () => {
+    const comparison = buildRadarComparison([
+      cdResult('2026-01-01', { allOrNothing: 4, labeling: 3 }),
+      cdResult('2026-02-01', { allOrNothing: 3, labeling: 4 }),
+    ])!;
+    expect(summarizeRadarTrend(comparison)).toBe('same');
   });
 });

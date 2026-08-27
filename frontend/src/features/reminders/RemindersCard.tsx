@@ -16,21 +16,36 @@ const SLOTS = [
     labelKey: 'settings.slotMorning',
     enabledField: 'dailyReminder' as const,
     timeField: 'reminderTime' as const,
+    modeField: 'reminderMode' as const,
+    windowStartField: 'reminderWindowStart' as const,
+    windowEndField: 'reminderWindowEnd' as const,
     defaultTime: '09:00',
+    defaultWindowStart: '09:00',
+    defaultWindowEnd: '12:00',
   },
   {
     key: 'day',
     labelKey: 'settings.slotDay',
     enabledField: 'afternoonReminder' as const,
     timeField: 'afternoonTime' as const,
+    modeField: 'afternoonMode' as const,
+    windowStartField: 'afternoonWindowStart' as const,
+    windowEndField: 'afternoonWindowEnd' as const,
     defaultTime: '14:00',
+    defaultWindowStart: '14:00',
+    defaultWindowEnd: '17:00',
   },
   {
     key: 'evening',
     labelKey: 'settings.slotEvening',
     enabledField: 'eveningReminder' as const,
     timeField: 'eveningTime' as const,
+    modeField: 'eveningMode' as const,
+    windowStartField: 'eveningWindowStart' as const,
+    windowEndField: 'eveningWindowEnd' as const,
     defaultTime: '20:00',
+    defaultWindowStart: '20:00',
+    defaultWindowEnd: '23:00',
   },
 ] as const;
 
@@ -39,28 +54,80 @@ type SlotConfig = (typeof SLOTS)[number];
 const DEFAULT_PREFS = {
   dailyReminder: false,
   reminderTime: '09:00',
+  reminderMode: 'exact',
+  reminderWindowStart: '09:00',
+  reminderWindowEnd: '12:00',
   afternoonReminder: false,
   afternoonTime: '14:00',
+  afternoonMode: 'exact',
+  afternoonWindowStart: '14:00',
+  afternoonWindowEnd: '17:00',
   eveningReminder: false,
   eveningTime: '20:00',
+  eveningMode: 'exact',
+  eveningWindowStart: '20:00',
+  eveningWindowEnd: '23:00',
 } as const;
+
+function TimeSelect({
+  value,
+  onChange,
+  disabled,
+  label,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  disabled: boolean;
+  label: string;
+}) {
+  return (
+    <label className="relative">
+      <span className="sr-only">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="h-9 min-w-[88px] rounded-lg border border-border bg-background px-3 pr-8 text-sm font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+      >
+        {TIMES.map((time) => (
+          <option key={time} value={time}>
+            {time}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
 
 function SlotRow({
   slot,
   enabled,
   time,
+  mode,
+  windowStart,
+  windowEnd,
   saving,
   onToggle,
   onTime,
+  onMode,
+  onWindowStart,
+  onWindowEnd,
 }: {
   slot: SlotConfig;
   enabled: boolean;
   time?: string;
+  mode: string;
+  windowStart?: string;
+  windowEnd?: string;
   saving: boolean;
   onToggle: (next: boolean) => void;
   onTime: (next: string) => void;
+  onMode: (next: 'exact' | 'window') => void;
+  onWindowStart: (next: string) => void;
+  onWindowEnd: (next: string) => void;
 }) {
   const { t } = useTranslation();
+  const isWindow = mode === 'window';
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-4">
@@ -79,23 +146,77 @@ function SlotRow({
       </div>
 
       {enabled && (
-        <div className="flex items-center justify-between gap-4 pl-1">
-          <p className="text-sm font-medium">{t('settings.remindersTimeLabel')}</p>
-          <label className="relative">
-            <span className="sr-only">{t('settings.remindersTimeLabel')}</span>
-            <select
-              value={time ?? slot.defaultTime}
-              onChange={(e) => onTime(e.target.value)}
+        <div className="space-y-2 pl-1">
+          <div
+            role="radiogroup"
+            aria-label={t('settings.remindersTimeLabel')}
+            className="inline-flex rounded-lg border border-border bg-muted/40 p-0.5"
+          >
+            <button
+              type="button"
+              role="radio"
+              aria-checked={!isWindow}
               disabled={saving}
-              className="h-9 min-w-[88px] rounded-lg border border-border bg-background px-3 pr-8 text-sm font-medium cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+              onClick={() => onMode('exact')}
+              className={cn(
+                'rounded-md px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer disabled:cursor-not-allowed',
+                !isWindow ? 'bg-card shadow-sm' : 'text-muted-foreground hover:text-foreground',
+              )}
             >
-              {TIMES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </label>
+              {t('settings.remindersModeExact')}
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={isWindow}
+              disabled={saving}
+              onClick={() => onMode('window')}
+              className={cn(
+                'rounded-md px-2.5 py-1 text-xs font-semibold transition-colors cursor-pointer disabled:cursor-not-allowed',
+                isWindow ? 'bg-card shadow-sm' : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {t('settings.remindersModeWindow')}
+            </button>
+          </div>
+
+          {!isWindow && (
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-medium">{t('settings.remindersTimeLabel')}</p>
+              <TimeSelect
+                value={time ?? slot.defaultTime}
+                onChange={onTime}
+                disabled={saving}
+                label={t('settings.remindersTimeLabel')}
+              />
+            </div>
+          )}
+
+          {isWindow && (
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm font-medium">{t('settings.remindersWindowFrom')}</p>
+                <TimeSelect
+                  value={windowStart ?? slot.defaultWindowStart}
+                  onChange={onWindowStart}
+                  disabled={saving}
+                  label={t('settings.remindersWindowFrom')}
+                />
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm font-medium">{t('settings.remindersWindowTo')}</p>
+                <TimeSelect
+                  value={windowEnd ?? slot.defaultWindowEnd}
+                  onChange={onWindowEnd}
+                  disabled={saving}
+                  label={t('settings.remindersWindowTo')}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t('settings.remindersModeWindowHint')}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -179,9 +300,15 @@ export function RemindersCard() {
           slot={slot}
           enabled={Boolean(current[slot.enabledField])}
           time={current[slot.timeField]}
+          mode={current[slot.modeField] ?? 'exact'}
+          windowStart={current[slot.windowStartField]}
+          windowEnd={current[slot.windowEndField]}
           saving={saving}
           onToggle={(next) => toggleSlot(slot, next)}
           onTime={(next) => save({ [slot.timeField]: next })}
+          onMode={(next) => save({ [slot.modeField]: next })}
+          onWindowStart={(next) => save({ [slot.windowStartField]: next })}
+          onWindowEnd={(next) => save({ [slot.windowEndField]: next })}
         />
       ))}
 

@@ -1642,6 +1642,8 @@ export interface components {
             role: string;
             /** Format: date-time */
             createdAt: string;
+            /** @description Режим интерфейса: companion (с питомцем/XP/достижениями) | classic (чистый трекер настроения) */
+            interfaceMode: string;
         };
         UserCreate: {
             email: string;
@@ -1659,6 +1661,8 @@ export interface components {
             recoveryWrappedKey: string;
             /** @description Соль для вывода KEK_recovery из recovery-кода */
             recoverySalt: string;
+            /** @description Реферальный код с лендинга (?ref=), если пользователь пришёл по инвайт-ссылке. Только логируется на бэкенде, атрибуция не хранится. */
+            referralCode?: string;
         };
         /** @description Настройки и предпочтения пользователя */
         UserPreference: {
@@ -1666,10 +1670,24 @@ export interface components {
             experienceLevel: string;
             dailyReminder: boolean;
             reminderTime?: string;
+            /** @description Режим слота «Утро»: exact (точное время) | window (гибкое окно) */
+            reminderMode?: string;
+            /** @description Начало гибкого окна слота «Утро», HH:MM */
+            reminderWindowStart?: string;
+            /** @description Конец гибкого окна слота «Утро», HH:MM */
+            reminderWindowEnd?: string;
             afternoonReminder: boolean;
             afternoonTime?: string;
+            /** @description Режим слота «День»: exact | window */
+            afternoonMode?: string;
+            afternoonWindowStart?: string;
+            afternoonWindowEnd?: string;
             eveningReminder: boolean;
             eveningTime?: string;
+            /** @description Режим слота «Вечер»: exact | window */
+            eveningMode?: string;
+            eveningWindowStart?: string;
+            eveningWindowEnd?: string;
             onboardingDone: boolean;
         };
         UserPreferenceUpdate: {
@@ -1677,14 +1695,25 @@ export interface components {
             experienceLevel?: string;
             dailyReminder?: boolean;
             reminderTime?: string;
+            reminderMode?: string;
+            reminderWindowStart?: string;
+            reminderWindowEnd?: string;
             afternoonReminder?: boolean;
             afternoonTime?: string;
+            afternoonMode?: string;
+            afternoonWindowStart?: string;
+            afternoonWindowEnd?: string;
             eveningReminder?: boolean;
             eveningTime?: string;
+            eveningMode?: string;
+            eveningWindowStart?: string;
+            eveningWindowEnd?: string;
             onboardingDone?: boolean;
         };
         UserUpdate: {
             name?: string;
+            /** @description Режим интерфейса: companion | classic */
+            interfaceMode?: string;
         };
         /** @description Один день недельного календаря практик (Пн–Вс) */
         WeeklyDay: {

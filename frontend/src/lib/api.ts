@@ -12,6 +12,8 @@ export interface RegisterBody {
   keySalt: string;
   recoveryWrappedKey: string;
   recoverySalt: string;
+  /** Реферальный код с лендинга (Сессия 8) — необязателен, только для лога. */
+  referralCode?: string;
 }
 
 export interface ResetPasswordBody {
@@ -62,15 +64,26 @@ type EmotionLabState = components['schemas']['EmotionLabState'];
 type EmotionLabAttemptRequest = components['schemas']['EmotionLabAttemptRequest'];
 type EmotionLabAttemptResponse = components['schemas']['EmotionLabAttemptResponse'];
 
+export type ReminderMode = 'exact' | 'window';
+
 export interface UserPreference {
   goals: string[];
   experienceLevel: string;
   dailyReminder: boolean;
   reminderTime?: string;
+  reminderMode?: ReminderMode;
+  reminderWindowStart?: string;
+  reminderWindowEnd?: string;
   afternoonReminder: boolean;
   afternoonTime?: string;
+  afternoonMode?: ReminderMode;
+  afternoonWindowStart?: string;
+  afternoonWindowEnd?: string;
   eveningReminder: boolean;
   eveningTime?: string;
+  eveningMode?: ReminderMode;
+  eveningWindowStart?: string;
+  eveningWindowEnd?: string;
   onboardingDone: boolean;
   showSupportResources: boolean;
 }
