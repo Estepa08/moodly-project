@@ -42,7 +42,14 @@ FROM node:22-bookworm-slim AS backend-build
 WORKDIR /workspace
 COPY --from=shared-build /workspace/shared /workspace/shared
 WORKDIR /workspace/backend
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+# Билд-окружение CI блокирует исходящий порт 80, поэтому apt (по умолчанию
+# ходящий на deb.debian.org по http://) не может достучаться до зеркал —
+# переключаем источники на https:// (порт 443 у CI открыт, это подтверждает
+# успешная загрузка через npm/GitHub/CDN в соседних стадиях).
+RUN for f in /etc/apt/sources.list /etc/apt/sources.list.d/debian.sources; do \
+      [ -f "$f" ] && sed -i 's|http://deb.debian.org|https://deb.debian.org|g; s|http://security.debian.org|https://security.debian.org|g' "$f"; \
+    done; \
+    apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY backend/package.json backend/package-lock.json ./
 RUN npm ci
 COPY backend/prisma ./prisma
