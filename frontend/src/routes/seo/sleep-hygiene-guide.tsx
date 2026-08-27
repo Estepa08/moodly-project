@@ -11,6 +11,7 @@ import {
   SeoSectionHeading,
   FaqAccordion,
   CtaBanner,
+  RelatedBlogPosts,
   SeoDisclaimer,
   SeoFooter,
 } from './seo-components';
@@ -192,6 +193,8 @@ export default function SleepHygieneGuidePage() {
 
         {/* FAQ */}
         <FaqAccordion title={t('seoPages.sleepHygiene.faq.title')} items={faq} />
+
+        <RelatedBlogPosts category="sleep" title={t('seo.relatedArticles')} />
 
         {/* CTA */}
         <CtaBanner

@@ -11,6 +11,7 @@ import {
   SeoSectionHeading,
   FaqAccordion,
   CtaBanner,
+  RelatedBlogPosts,
   SeoDisclaimer,
   SeoFooter,
 } from './seo-components';
@@ -197,6 +198,8 @@ export default function AnxietySelfHelpPage() {
 
         {/* FAQ */}
         <FaqAccordion title={t('seoPages.anxietySelfHelp.faq.title')} items={faq} />
+
+        <RelatedBlogPosts category="anxiety" title={t('seo.relatedArticles')} />
 
         {/* CTA */}
         <CtaBanner

@@ -10,7 +10,7 @@ import {
   SeoFooter,
 } from '../seo/seo-components';
 import { PostCard } from './PostCard';
-import { getPostBySlug, getRelatedPosts, getCategoryName, formatDate } from './posts';
+import { getPostBySlug, getRelatedPosts, getCategoryName, formatDate, type CategorySlug } from './posts';
 
 const CATEGORY_KEYS: Record<string, string> = {
   journal: 'seoPages.blog.categories.journal',
@@ -18,6 +18,14 @@ const CATEGORY_KEYS: Record<string, string> = {
   sleep: 'seoPages.blog.categories.sleep',
   thinking: 'seoPages.blog.categories.thinking',
   motivation: 'seoPages.blog.categories.motivation',
+};
+
+// Мотивация не имеет своего продуктового лендинга — для неё пилларной ссылки нет.
+const CATEGORY_PILLAR: Partial<Record<CategorySlug, { path: string; labelKey: string }>> = {
+  journal: { path: '/mood-diary', labelKey: 'seo.nav.moodDiary' },
+  anxiety: { path: '/anxiety-test', labelKey: 'seo.nav.anxietyTest' },
+  sleep: { path: '/sleep-hygiene-guide', labelKey: 'seo.nav.sleepHygiene' },
+  thinking: { path: '/thinking-habits-test', labelKey: 'seo.nav.thinkingHabits' },
 };
 
 export default function BlogPostPage() {
@@ -76,6 +84,7 @@ export default function BlogPostPage() {
 
   const related = getRelatedPosts(post);
   const readingTime = post.readingTime;
+  const pillar = CATEGORY_PILLAR[post.category];
 
   return (
     <div className="min-h-screen bg-background">
@@ -162,6 +171,17 @@ export default function BlogPostPage() {
                 <PostCard key={p.slug} post={p} delay={i * 100} />
               ))}
             </div>
+          </section>
+        )}
+
+        {pillar && (
+          <section className="mx-auto max-w-3xl px-4 sm:px-6 pb-4 text-center">
+            <p className="text-sm text-muted-foreground">
+              {t('seoPages.blog.tryTool')}{' '}
+              <Link to={pillar.path} className="font-semibold text-primary hover:underline">
+                {t(pillar.labelKey)}
+              </Link>
+            </p>
           </section>
         )}
 

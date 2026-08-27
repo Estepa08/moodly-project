@@ -835,12 +835,33 @@ function LandingFooter() {
               <p className="text-xs text-muted-foreground">{t('landing.footer.about')}</p>
             </div>
           </div>
-          <div className="flex items-center gap-5 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
             <Link to="/mood-diary" className="hover:text-primary transition-colors duration-150">
               {t('landing.footer.diary')}
             </Link>
             <Link to="/anxiety-test" className="hover:text-primary transition-colors duration-150">
               {t('landing.footer.anxiety')}
+            </Link>
+            <Link
+              to="/anxiety-self-help"
+              className="hover:text-primary transition-colors duration-150"
+            >
+              {t('seo.nav.anxietySelfHelp')}
+            </Link>
+            <Link
+              to="/thinking-habits-test"
+              className="hover:text-primary transition-colors duration-150"
+            >
+              {t('seo.nav.thinkingHabits')}
+            </Link>
+            <Link
+              to="/sleep-hygiene-guide"
+              className="hover:text-primary transition-colors duration-150"
+            >
+              {t('seo.nav.sleepHygiene')}
+            </Link>
+            <Link to="/blog" className="hover:text-primary transition-colors duration-150">
+              {t('seo.nav.blog')}
             </Link>
             <Link to="/privacy" className="hover:text-primary transition-colors duration-150">
               {t('nav.privacy')}

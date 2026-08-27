@@ -11,6 +11,7 @@ import {
   SeoSectionHeading,
   FaqAccordion,
   CtaBanner,
+  RelatedBlogPosts,
   SeoDisclaimer,
   SeoFooter,
 } from './seo-components';
@@ -196,6 +197,8 @@ export default function ThinkingHabitsTestPage() {
 
         {/* FAQ */}
         <FaqAccordion title={t('seoPages.thinkingHabits.faq.title')} items={faq} />
+
+        <RelatedBlogPosts category="thinking" title={t('seo.relatedArticles')} />
 
         {/* CTA */}
         <CtaBanner

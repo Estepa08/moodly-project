@@ -11,6 +11,7 @@ import {
   SeoSectionHeading,
   FaqAccordion,
   CtaBanner,
+  RelatedBlogPosts,
   SeoDisclaimer,
   SeoFooter,
 } from './seo-components';
@@ -194,6 +195,8 @@ export default function MoodDiaryPage() {
 
         {/* FAQ */}
         <FaqAccordion title={t('seoPages.moodDiary.faq.title')} items={faq} />
+
+        <RelatedBlogPosts category="journal" title={t('seo.relatedArticles')} />
 
         {/* CTA */}
         <CtaBanner
