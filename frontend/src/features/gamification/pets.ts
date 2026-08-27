@@ -1,4 +1,7 @@
-export const STARTER_PET_TYPES = ['puff', 'sloth', 'fox'] as const;
+// "sprout" — неантропоморфный вариант (растение в горшке): для тех, кто
+// остался с компаньоном, но не хочет мультяшный персонаж или боится
+// «наказания» за пропуск дня (см. Сессия 7, docs/plans/three-personas-design-gaps.md).
+export const STARTER_PET_TYPES = ['puff', 'sloth', 'fox', 'sprout'] as const;
 
 export const PET_EMOTIONS = ['happy', 'calm', 'anxious'] as const;
 export type PetEmotion = 'idle' | (typeof PET_EMOTIONS)[number];
@@ -39,6 +42,7 @@ const KNOWN_ORDER = [
   'puff',
   'sloth',
   'fox',
+  'sprout',
   'giraffe',
   'dove',
   'tiger',
@@ -78,6 +82,10 @@ const PET_META: Record<string, PetMeta> = {
   puff: { labelKey: 'pets.puff', color: 'bg-pet-1', emoji: '🦐', feed: ['🦐'] },
   sloth: { labelKey: 'pets.sloth', color: 'bg-pet-3', emoji: '🦥', feed: ['🍃'] },
   fox: { labelKey: 'pets.fox', color: 'bg-pet-4', emoji: '🦊', feed: ['🍓'] },
+  // Неантропоморфный вариант: растение в горшке — для тех, кто остался с
+  // компаньоном, но не хочет мультяшный персонаж (Сессия 7). Кормится водой,
+  // а не едой.
+  sprout: { labelKey: 'pets.sprout', color: 'bg-pet-13', emoji: '🪴', feed: ['💧'] },
   giraffe: { labelKey: 'pets.giraffe', color: 'bg-pet-7', emoji: '🦒', feed: ['🌿'] },
   dove: { labelKey: 'pets.dove', color: 'bg-pet-8', emoji: '🕊️', feed: ['🌻'] },
   tiger: { labelKey: 'pets.tiger', color: 'bg-pet-9', emoji: '🐯', feed: ['🥩'] },
@@ -128,6 +136,7 @@ const FOLDER_TO_TYPE: Record<string, string> = {
   Корова: 'cow',
   Робот: 'robot',
   Робот2: 'robot2',
+  Росток: 'sprout',
   Тукан: 'tucan',
   Девушка4: 'liza',
   Девушка5: 'nastya',

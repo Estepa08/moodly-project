@@ -28,7 +28,7 @@ pets/
 
 ## Разблокировка
 
-Новый питомец будет в коллекции, но **заблокирован**, пока его тип не попадёт в `unlockedPetTypes` у пользователя (стартовый набор: `puff`, `dewdrop`, `sprout` — в `STARTER_PET_TYPES`). Разблокировать можно:
+Новый питомец будет в коллекции, но **заблокирован**, пока его тип не попадёт в `unlockedPetTypes` у пользователя (стартовый набор сейчас: `puff`, `sloth`, `fox`, `sprout` — в `STARTER_PET_TYPES`; `sprout` — неантропоморфный вариант, растение в горшке, добавлен в Сессии 7 из `docs/plans/three-personas-design-gaps.md`). Разблокировать можно:
 
 - наградой за достижение — `petTypeReward` в `backend/src/seed.ts`;
 - для демо-аккаунта — добавив тип в `unlockedPetTypes` демо-пользователя в `backend/src/seed.ts`.

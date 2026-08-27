@@ -9,6 +9,8 @@ model User {
   name?: string;
   role: string;
   createdAt: utcDateTime;
+  @doc("Режим интерфейса: companion (с питомцем/XP/достижениями) | classic (чистый трекер настроения)")
+  interfaceMode: string;
 }
 
 @doc("Запись списка пользователей для админ-панели")
@@ -61,10 +63,14 @@ model UserCreate {
   recoveryWrappedKey: string;
   @doc("Соль для вывода KEK_recovery из recovery-кода")
   recoverySalt: string;
+  @doc("Реферальный код с лендинга (?ref=), если пользователь пришёл по инвайт-ссылке. Только логируется на бэкенде, атрибуция не хранится.")
+  referralCode?: string;
 }
 
 model UserUpdate {
   name?: string;
+  @doc("Режим интерфейса: companion | classic")
+  interfaceMode?: string;
 }
 
 @doc("Настройки и предпочтения пользователя")
@@ -73,10 +79,24 @@ model UserPreference {
   experienceLevel: string;
   dailyReminder: boolean;
   reminderTime?: string;
+  @doc("Режим слота «Утро»: exact (точное время) | window (гибкое окно)")
+  reminderMode?: string;
+  @doc("Начало гибкого окна слота «Утро», HH:MM")
+  reminderWindowStart?: string;
+  @doc("Конец гибкого окна слота «Утро», HH:MM")
+  reminderWindowEnd?: string;
   afternoonReminder: boolean;
   afternoonTime?: string;
+  @doc("Режим слота «День»: exact | window")
+  afternoonMode?: string;
+  afternoonWindowStart?: string;
+  afternoonWindowEnd?: string;
   eveningReminder: boolean;
   eveningTime?: string;
+  @doc("Режим слота «Вечер»: exact | window")
+  eveningMode?: string;
+  eveningWindowStart?: string;
+  eveningWindowEnd?: string;
   onboardingDone: boolean;
 }
 
@@ -85,10 +105,19 @@ model UserPreferenceUpdate {
   experienceLevel?: string;
   dailyReminder?: boolean;
   reminderTime?: string;
+  reminderMode?: string;
+  reminderWindowStart?: string;
+  reminderWindowEnd?: string;
   afternoonReminder?: boolean;
   afternoonTime?: string;
+  afternoonMode?: string;
+  afternoonWindowStart?: string;
+  afternoonWindowEnd?: string;
   eveningReminder?: boolean;
   eveningTime?: string;
+  eveningMode?: string;
+  eveningWindowStart?: string;
+  eveningWindowEnd?: string;
   onboardingDone?: boolean;
 }
 model LoginRequest {

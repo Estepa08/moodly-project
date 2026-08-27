@@ -65,4 +65,44 @@ describe('Users', () => {
     });
     expect(res.statusCode).toBe(204);
   });
+
+  it('GET /users/me — defaults interfaceMode to companion for new users', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/users/me',
+      headers: { authorization: `Bearer ${token}` },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().interfaceMode).toBe('companion');
+  });
+
+  it('PATCH /users/me — switches interfaceMode to classic and back', async () => {
+    const toClassic = await app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      headers: { authorization: `Bearer ${token}` },
+      payload: { interfaceMode: 'classic' },
+    });
+    expect(toClassic.statusCode).toBe(200);
+    expect(toClassic.json().interfaceMode).toBe('classic');
+
+    const backToCompanion = await app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      headers: { authorization: `Bearer ${token}` },
+      payload: { interfaceMode: 'companion' },
+    });
+    expect(backToCompanion.statusCode).toBe(200);
+    expect(backToCompanion.json().interfaceMode).toBe('companion');
+  });
+
+  it('PATCH /users/me — rejects an invalid interfaceMode value', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      headers: { authorization: `Bearer ${token}` },
+      payload: { interfaceMode: 'premium' },
+    });
+    expect(res.statusCode).toBe(400);
+  });
 });

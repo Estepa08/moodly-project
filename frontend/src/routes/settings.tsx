@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '../components/ui/dialog';
+import { toast } from 'sonner';
 import {
   Globe,
   Bell,
@@ -21,9 +22,11 @@ import {
   AlertTriangle,
   ChevronRight,
   PawPrint,
+  NotebookPen,
   FileText,
   Mail,
   ScrollText,
+  Type,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { ToggleSwitch } from '../components/ui/toggle-switch';
@@ -38,6 +41,16 @@ import {
   setSpeechBubbleHidden,
 } from '../features/gamification/speechBubbleVisibility';
 import { isRewardSoundEnabled, setRewardSoundEnabled } from '../features/gamification/rewardSound';
+import { InterfaceMode } from '../lib/constants';
+import { useInterfaceMode, useSetInterfaceMode } from '../hooks/useInterfaceMode';
+import { TextScale, getTextScale, setTextScale } from '../features/accessibility/textScale';
+import InviteFriendCard from '../features/referral/InviteFriendCard';
+
+const TEXT_SCALE_OPTIONS: { value: TextScale; labelKey: string; previewRem: string }[] = [
+  { value: TextScale.Normal, labelKey: 'settings.textScaleNormal', previewRem: '1.125rem' },
+  { value: TextScale.Large, labelKey: 'settings.textScaleLarge', previewRem: '1.375rem' },
+  { value: TextScale.XLarge, labelKey: 'settings.textScaleXLarge', previewRem: '1.625rem' },
+];
 
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
@@ -52,6 +65,22 @@ export default function SettingsPage() {
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawError, setWithdrawError] = useState('');
+  const { mode: interfaceMode, isClassic } = useInterfaceMode();
+  const setInterfaceMode = useSetInterfaceMode();
+  const [textScale, setTextScaleState] = useState<TextScale>(getTextScale());
+
+  const handleModeChange = (next: InterfaceMode) => {
+    if (next === interfaceMode || setInterfaceMode.isPending) return;
+    setInterfaceMode.mutate(next, {
+      onError: () => toast.error(t('settings.modeSaveFailed')),
+    });
+  };
+
+  const handleTextScaleChange = (next: TextScale) => {
+    if (next === textScale) return;
+    setTextScaleState(next);
+    setTextScale(next);
+  };
 
   const toggleCompanion = () => {
     const next = !companionHidden;
@@ -131,6 +160,66 @@ export default function SettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
+            <PawPrint aria-hidden="true" className="w-4 h-4" />
+            {t('settings.modeSection')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">{t('settings.modeSectionDesc')}</p>
+          <div className="flex flex-col gap-2">
+            {(
+              [
+                { mode: InterfaceMode.Companion, icon: PawPrint },
+                { mode: InterfaceMode.Classic, icon: NotebookPen },
+              ] as const
+            ).map(({ mode, icon: Icon }) => {
+              const isActive = interfaceMode === mode;
+              const titleKey =
+                mode === InterfaceMode.Companion
+                  ? 'onboarding2.modeCompanionTitle'
+                  : 'onboarding2.modeClassicTitle';
+              const descKey =
+                mode === InterfaceMode.Companion
+                  ? 'onboarding2.modeCompanionDesc'
+                  : 'onboarding2.modeClassicDesc';
+              return (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => handleModeChange(mode)}
+                  aria-pressed={isActive}
+                  disabled={setInterfaceMode.isPending}
+                  className={cn(
+                    'flex items-center gap-3 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 text-left cursor-pointer active:scale-[0.97] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isActive
+                      ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                      : 'border-border bg-card shadow-neumorphic-sm',
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'w-9 h-9 rounded-full grid place-items-center shrink-0',
+                      isActive ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
+                    )}
+                  >
+                    <Icon aria-hidden="true" className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{t(titleKey)}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t(descKey)}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      <InviteFriendCard />
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
             <Globe aria-hidden="true" className="w-4 h-4" />
             {t('settings.language')}
           </CardTitle>
@@ -158,6 +247,51 @@ export default function SettingsPage() {
                   )}
                 >
                   {lang === 'ru' ? 'Русский' : 'English'}
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Type aria-hidden="true" className="w-4 h-4" />
+            {t('settings.textScaleSection')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">{t('settings.textScaleSectionDesc')}</p>
+          <div className="grid grid-cols-3 gap-2">
+            {TEXT_SCALE_OPTIONS.map(({ value, labelKey, previewRem }) => {
+              const isActive = textScale === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => handleTextScaleChange(value)}
+                  aria-pressed={isActive}
+                  className={cn(
+                    'flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isActive
+                      ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                      : 'border-border bg-card shadow-neumorphic-sm',
+                  )}
+                >
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      'font-serif font-semibold leading-none',
+                      isActive ? 'text-primary' : 'text-foreground',
+                    )}
+                    style={{ fontSize: previewRem }}
+                  >
+                    Аа
+                  </span>
+                  <span className="text-xs font-medium text-foreground text-center">
+                    {t(labelKey)}
+                  </span>
                 </button>
               );
             })}
@@ -242,57 +376,59 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <PawPrint aria-hidden="true" className="w-4 h-4" />
-            {t('settings.companionSection')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-medium">{t('settings.companionToggleLabel')}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {t('settings.companionToggleDesc')}
-              </p>
+      {!isClassic && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <PawPrint aria-hidden="true" className="w-4 h-4" />
+              {t('settings.companionSection')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium">{t('settings.companionToggleLabel')}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {t('settings.companionToggleDesc')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={!companionHidden}
+                onCheckedChange={toggleCompanion}
+                aria-label={t('settings.companionToggleLabel')}
+              />
             </div>
-            <ToggleSwitch
-              checked={!companionHidden}
-              onCheckedChange={toggleCompanion}
-              aria-label={t('settings.companionToggleLabel')}
-            />
-          </div>
 
-          <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
-            <div>
-              <p className="text-sm font-medium">{t('settings.speechToggleLabel')}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {t('settings.speechToggleDesc')}
-              </p>
+            <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
+              <div>
+                <p className="text-sm font-medium">{t('settings.speechToggleLabel')}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {t('settings.speechToggleDesc')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={!speechHidden}
+                onCheckedChange={toggleSpeech}
+                aria-label={t('settings.speechToggleLabel')}
+              />
             </div>
-            <ToggleSwitch
-              checked={!speechHidden}
-              onCheckedChange={toggleSpeech}
-              aria-label={t('settings.speechToggleLabel')}
-            />
-          </div>
 
-          <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
-            <div>
-              <p className="text-sm font-medium">{t('settings.soundToggleLabel')}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {t('settings.soundToggleDesc')}
-              </p>
+            <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
+              <div>
+                <p className="text-sm font-medium">{t('settings.soundToggleLabel')}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {t('settings.soundToggleDesc')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={soundEnabled}
+                onCheckedChange={toggleSound}
+                aria-label={t('settings.soundToggleLabel')}
+              />
             </div>
-            <ToggleSwitch
-              checked={soundEnabled}
-              onCheckedChange={toggleSound}
-              aria-label={t('settings.soundToggleLabel')}
-            />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>

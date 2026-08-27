@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { BrainCircuit } from 'lucide-react';
-import { buildRadarComparison } from '../lib/radarDelta';
+import { buildRadarComparison, summarizeRadarTrend } from '../lib/radarDelta';
 import { RadarChart } from '../features/analytics';
 import EmptyState from '../components/ui/empty-state';
 import PeriodCardShell from '../components/ui/PeriodCardShell';
 import { Period } from '../lib/constants';
+import { cn } from '../lib/utils';
 import type { components } from '../lib/api-types';
 
 type TestResult = components['schemas']['TestResult'];
@@ -28,6 +29,10 @@ export default function ThinkingPatternsCard({
   const navigate = useNavigate();
 
   const comparison = useMemo(() => buildRadarComparison(results), [results]);
+  // Переиспользуем ту же сумму сдвигов, что уже посчитана для сравнения на
+  // радар-графике (Сессия 10, three-personas-design-gaps.md) — не пересчитываем
+  // результаты теста заново, только сворачиваем их в один вывод по тренду.
+  const trend = useMemo(() => (comparison ? summarizeRadarTrend(comparison) : null), [comparison]);
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US');
@@ -73,8 +78,20 @@ export default function ThinkingPatternsCard({
       {comparison ? (
         <>
           <RadarChart data={comparison.current} previousData={comparison.previous} />
+          {trend && (
+            <p
+              className={cn(
+                'mt-3 text-sm font-bold',
+                trend === 'better' && 'text-success',
+                trend === 'worse' && 'text-destructive',
+                trend === 'same' && 'text-muted-foreground',
+              )}
+            >
+              {t(`testResults.thinkingPatternsTrend.${trend}`)}
+            </p>
+          )}
           {comparison.previous && (
-            <p className="mt-3 text-xs text-muted-foreground">
+            <p className="mt-1.5 text-xs text-muted-foreground">
               {t('testResults.thinkingPatternsBetter')} · {t('testResults.thinkingPatternsWorse')} ·{' '}
               {t('testResults.thinkingPatternsSame')}
             </p>

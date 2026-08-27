@@ -2,13 +2,16 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { useNavHighlights } from '../hooks/useNavHighlights';
-import { BOTTOM_NAV_ITEMS } from './nav-config';
+import { useInterfaceMode } from '../hooks/useInterfaceMode';
+import { BOTTOM_NAV_ITEMS, filterNavForMode } from './nav-config';
 
 export default function BottomNav() {
   const { t } = useTranslation();
   const location = useLocation();
+  const { isClassic } = useInterfaceMode();
 
   const highlights = useNavHighlights();
+  const items = filterNavForMode(BOTTOM_NAV_ITEMS, isClassic);
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -27,7 +30,7 @@ export default function BottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card shadow-elevation-4 rounded-t-xl px-1 pt-2 flex items-center justify-around"
       style={{ paddingBottom: 'calc(0.5rem + var(--sab))' }}
     >
-      {BOTTOM_NAV_ITEMS.map((item) => {
+      {items.map((item) => {
         const active = isActive(item.path);
         return (
           <Link

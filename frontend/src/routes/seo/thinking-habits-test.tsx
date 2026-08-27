@@ -42,6 +42,7 @@ export default function ThinkingHabitsTestPage() {
     title: t('seoPages.thinkingHabits.meta.title'),
     description: t('seoPages.thinkingHabits.meta.description'),
     canonical: withCanonical('/thinking-habits-test'),
+    markSeoOrigin: 'thinking-habits-test',
     jsonLd: [
       breadcrumbLd([
         { name: t('seoPages.thinkingHabits.breadcrumb.home'), url: withCanonical('/') },

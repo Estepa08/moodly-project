@@ -12,6 +12,7 @@ const CATEGORY_KEYS: Record<string, string> = {
   sleep: 'seoPages.blog.categories.sleep',
   thinking: 'seoPages.blog.categories.thinking',
   motivation: 'seoPages.blog.categories.motivation',
+  burnout: 'seoPages.blog.categories.burnout',
 };
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
@@ -24,6 +25,8 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     'Статьи о привычках мышления: когнитивные искажения, анализ мыслей и понимание собственных паттернов.',
   motivation:
     'Статьи о мотивации и привычках: геймификация, серии и способы не бросать заботу о себе.',
+  burnout:
+    'Статьи о выгорании и восстановлении ресурса: как заметить накопленную усталость и что с ней делать.',
 };
 
 export default function BlogCategoryPage() {

@@ -7,6 +7,8 @@ import { useAuth } from './useAuth';
 import { createRegistrationKeys } from '../lib/crypto/auth-keys';
 import { generateRecoveryCode } from '../lib/crypto/keys';
 import { setSessionUserId } from '../lib/crypto/session';
+import { getStoredReferralCode } from '../lib/referral';
+import { trackGoal } from '../lib/metrika';
 
 export type RegisterStep = 'form' | 'recovery';
 
@@ -49,6 +51,12 @@ export function useRegisterForm() {
     try {
       const code = generateRecoveryCode();
       const keys = await createRegistrationKeys(password, code);
+      // Инвайт-механика (Сессия 8): код сохранён на лендинге в sessionStorage
+      // (captureReferralCode), если пользователь пришёл по реферальной
+      // ссылке — здесь просто читаем и пробрасываем как есть, без валидации
+      // против списка реальных пользователей (backend его нигде не смотрит,
+      // только логирует).
+      const referralCode = getStoredReferralCode() ?? undefined;
       const res = await api.auth.register({
         email,
         password,
@@ -59,9 +67,11 @@ export function useRegisterForm() {
         keySalt: keys.keySalt,
         recoveryWrappedKey: keys.recoveryWrappedKey,
         recoverySalt: keys.recoverySalt,
+        referralCode,
       });
       login(res.accessToken);
       setSessionUserId(res.user.id);
+      if (referralCode) trackGoal('referral_signup', { ref: referralCode });
       setRecoveryCode(code);
       setStep('recovery');
     } catch (err) {

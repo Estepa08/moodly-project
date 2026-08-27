@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "linux-musl-openssl-3.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -9,17 +9,23 @@ datasource db {
 }
 
 model User {
-  id                    String                 @id @default(cuid())
-  email                 String                 @unique
+  id                    String              @id @default(cuid())
+  email                 String              @unique
   password              String
   name                  String?
-  role                  String                 @default("user")
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
+  role                  String              @default("user")
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
   deletedAt             DateTime?
-  subscriptionTier      String                 @default("free")
+  subscriptionTier      String              @default("free")
   subscriptionExpiresAt DateTime?
   emotionLabProgress    EmotionLabProgress?
+
+  // Классический режим: полностью отключает игровую надстройку (питомец, XP,
+  // достижения, streak-heatmap) в UI — трекер настроения без геймификации.
+  // Бэкенд продолжает фоново считать XP/streak даже в classic — переключение
+  // обратно на companion ничего не теряет (см. docs/plans/three-personas-design-gaps.md, Сессия 1).
+  interfaceMode String @default("companion")
 
   // 18+ confirmation and personal-data processing consent, recorded at
   // registration time so consent can be demonstrated per account rather than
@@ -41,33 +47,33 @@ model User {
   // E2E-шифрование: DEK, зашифрованный KEK (из пароля) и KEK_recovery (из recovery-кода).
   // Ключи генерируются на клиенте; сервер хранит только wrappedKey и соли и не может
   // расшифровать данные пользователя.
-  wrappedKey        String?
-  keySalt           String?
+  wrappedKey         String?
+  keySalt            String?
   recoveryWrappedKey String?
-  recoverySalt      String?
+  recoverySalt       String?
 
-  entries     Entry[]
-  testResults TestResult[]
-  feedback    Feedback[]
-  reports     Report[]
-  refreshTokens RefreshToken[]
-  resetTokens   ResetToken[]
-  breathingSessions BreathingSession[]
-  practiceCompletions PracticeCompletion[]
-  cbaEntries    CbaEntry[]
+  entries                  Entry[]
+  testResults              TestResult[]
+  feedback                 Feedback[]
+  reports                  Report[]
+  refreshTokens            RefreshToken[]
+  resetTokens              ResetToken[]
+  breathingSessions        BreathingSession[]
+  practiceCompletions      PracticeCompletion[]
+  cbaEntries               CbaEntry[]
   responsibilityPieEntries ResponsibilityPieEntry[]
   decatastrophizingEntries DecatastrophizingEntry[]
-  userPreference UserPreference?
-  pushSubscriptions PushSubscription[]
-  userAchievements UserAchievement[]
-  creatureState CreatureState?
-  dailyMissions  DailyMission[]
-  devices   Device[]
-  syncCursor SyncCursor?
+  userPreference           UserPreference?
+  pushSubscriptions        PushSubscription[]
+  userAchievements         UserAchievement[]
+  creatureState            CreatureState?
+  dailyMissions            DailyMission[]
+  devices                  Device[]
+  syncCursor               SyncCursor?
 }
 
 model Parameter {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
   unit        String?
@@ -76,17 +82,17 @@ model Parameter {
 }
 
 model Entry {
-  id             String   @id @default(cuid())
-  userId         String
-  parameterId    String
-  value          Float?
-  note           String?
+  id            String    @id @default(cuid())
+  userId        String
+  parameterId   String
+  value         Float?
+  note          String?
   // E2E: шифротекст {value, note}. value/note ниже nullable — только для миграции
   // существующих данных; новые записи хранят значение только в encryptedData.
-  encryptedData  String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  deletedAt      DateTime?
+  encryptedData String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parameter Parameter @relation(fields: [parameterId], references: [id])
@@ -123,7 +129,7 @@ model TestScoreBand {
 }
 
 model TestResult {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   testId         String
   userId         String
   score          Int?
@@ -133,8 +139,8 @@ model TestResult {
   // E2E: шифротекст {score, interpretation, recommendation, flags}.
   // Открытые поля выше nullable — только для миграции существующих данных.
   encryptedData  String?
-  completedAt    DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  completedAt    DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   deletedAt      DateTime?
 
   test Test @relation(fields: [testId], references: [id])
@@ -146,12 +152,12 @@ model TestResult {
 }
 
 model Feedback {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  rating    Int      @default(0)
+  rating    Int       @default(0)
   message   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -183,20 +189,20 @@ model Report {
 }
 
 model Achievement {
-  id          String   @id @default(cuid())
-  key         String   @unique
-  category    String
-  titleKey    String
-  descKey     String
-  iconName    String
-  skinReward    String?
-  titleReward   String?
-  petTypeReward String?
-  xpReward      Int      @default(0)
+  id                 String  @id @default(cuid())
+  key                String  @unique
+  category           String
+  titleKey           String
+  descKey            String
+  iconName           String
+  skinReward         String?
+  titleReward        String?
+  petTypeReward      String?
+  xpReward           Int     @default(0)
   // Сколько токенов заморозки стрика выдаётся при разблокировке этой ачивки.
   streakFreezeReward Int?
-  criteria    Json
-  sortOrder   Int      @default(0)
+  criteria           Json
+  sortOrder          Int     @default(0)
 
   userAchievements UserAchievement[]
 }
@@ -218,71 +224,88 @@ model UserAchievement {
 }
 
 model CreatureState {
-  id               String   @id @default(cuid())
-  userId           String   @unique
-  calmness         Int      @default(50)
-  energy           Int      @default(100)
-  level            Int      @default(1)
-  experience       Int      @default(0)
-  streak           Int      @default(0)
-  lastCheckInAt    DateTime?
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  calmness          Int       @default(50)
+  energy            Int       @default(100)
+  level             Int       @default(1)
+  experience        Int       @default(0)
+  streak            Int       @default(0)
+  lastCheckInAt     DateTime?
   // Токены заморозки стрика: пропуск дня при streakFreezeCount > 0 не сбрасывает streak,
   // а списывает один токен (см. creature.ts checkIn()).
-  streakFreezeCount Int     @default(0)
+  streakFreezeCount Int       @default(0)
   // «Прогулка» компаньона: стартует автоматически после checkIn(), если нет
   // активной. adventureReturnAt = момент, когда можно забрать награду
   // (claimAdventureReturn), adventureNotified — уже отправлен ли пуш «вернулся».
   adventureReturnAt DateTime?
-  adventureNotified Boolean  @default(false)
-  lastExerciseAt   DateTime?
-  activeSkin       String   @default("default")
-  unlockedSkins    String[] @default(["default"])
-  activeTitle      String?
-  unlockedTitles   String[] @default([])
-  petType          String   @default("puff")
-  unlockedPetTypes String[] @default(["puff", "fox"])
-  petName          String?
+  adventureNotified Boolean   @default(false)
+  lastExerciseAt    DateTime?
+  activeSkin        String    @default("default")
+  unlockedSkins     String[]  @default(["default"])
+  activeTitle       String?
+  unlockedTitles    String[]  @default([])
+  petType           String    @default("puff")
+  unlockedPetTypes  String[]  @default(["puff", "fox"])
+  petName           String?
   // E2E: настроение питомца считает клиент (сервер больше не видит entry.value).
-  petMood          String?
-  feedCount        Int      @default(0)
-  feedCounts       Json     @default("{}")
+  petMood           String?
+  feedCount         Int       @default(0)
+  feedCounts        Json      @default("{}")
   // Дата последнего поглаживания и счётчик поглаживаний за текущий день.
   // Счётчик сбрасывается в 0 при наступлении нового дня (см. creature.ts).
-  lastPetAt        DateTime?
-  petCount         Int      @default(0)
+  lastPetAt         DateTime?
+  petCount          Int       @default(0)
   // «Утешение» — скрытый параметр, растёт от бонуса «Эмпатия» (грустное настроение).
-  comfort          Int      @default(0)
+  comfort           Int       @default(0)
   // Сколько кликов бонуса «Возвращение» уже использовано после паузы > 4 ч.
-  welcomeUsed      Int      @default(0)
+  welcomeUsed       Int       @default(0)
   // Недавние времена поглаживаний (для подсчёта серии «Комбо»).
-  petTimes         Json     @default("[]")
+  petTimes          Json      @default("[]")
   // «Играть»: дневной счётчик игр и дата последней игры (сброс по дню, как petCount/lastPetAt).
-  playCount        Int      @default(0)
-  lastPlayAt       DateTime?
+  playCount         Int       @default(0)
+  lastPlayAt        DateTime?
   // Неделя (ключ = дата понедельника), за которую уже забран недельный подарок +XP.
-  weeklyClaimWeek  String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  weeklyClaimWeek   String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserPreference {
-  id              String  @id @default(cuid())
-  userId          String  @unique
-  goals           Json    @default("[]")
-  experienceLevel String  @default("beginner")
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  goals                Json     @default("[]")
+  experienceLevel      String   @default("beginner")
   // Слот «Утро» (наследует прежние dailyReminder/reminderTime).
-  dailyReminder   Boolean @default(false)
-  reminderTime    String? @default("09:00")
+  dailyReminder        Boolean  @default(false)
+  reminderTime         String?  @default("09:00")
+  // Режим слота «Утро»: "exact" — точное время (reminderTime, как раньше),
+  // "window" — гибкое окно: сервер выбирает случайный момент отправки внутри
+  // [reminderWindowStart; reminderWindowEnd] на каждый день заново
+  // (см. backend/src/jobs/reminder-scheduler.ts). Для пользователей с
+  // плавающим графиком (например, родитель с детьми) точное время часто
+  // промахивается мимо их реального свободного окна.
+  reminderMode         String   @default("exact")
+  reminderWindowStart  String?  @default("09:00")
+  reminderWindowEnd    String?  @default("12:00")
   // Слот «День».
-  afternoonReminder Boolean @default(false)
-  afternoonTime     String? @default("14:00")
+  afternoonReminder    Boolean  @default(false)
+  afternoonTime        String?  @default("14:00")
+  // Режим слота «День» — см. reminderMode выше.
+  afternoonMode        String   @default("exact")
+  afternoonWindowStart String?  @default("14:00")
+  afternoonWindowEnd   String?  @default("17:00")
   // Слот «Вечер» — итог дня («Мой день»).
-  eveningReminder   Boolean @default(false)
-  eveningTime       String? @default("20:00")
-  onboardingDone       Boolean @default(false)
-  showSupportResources Boolean @default(true)
+  eveningReminder      Boolean  @default(false)
+  eveningTime          String?  @default("20:00")
+  // Режим слота «Вечер» — см. reminderMode выше.
+  eveningMode          String   @default("exact")
+  eveningWindowStart   String?  @default("20:00")
+  eveningWindowEnd     String?  @default("23:00")
+  onboardingDone       Boolean  @default(false)
+  showSupportResources Boolean  @default(true)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
@@ -304,12 +327,12 @@ model MotivationMessage {
 }
 
 model PracticeCompletion {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
   source    String
   xpAwarded Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -347,7 +370,7 @@ model RefreshToken {
   familyId  String    @default(cuid())
   revokedAt DateTime?
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   device Device? @relation(fields: [deviceId], references: [id])
 
   @@index([userId])
@@ -364,7 +387,7 @@ model Device {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   refreshTokens RefreshToken[]
 
   @@index([userId])
@@ -385,24 +408,24 @@ model SyncCursor {
 // данные, поэтому хранятся на сервере открыто (в отличие от записей трекера).
 // dailyAttemptsUsed сбрасывается в 0 при наступлении нового дня (см. emotion-lab.ts).
 model EmotionLabProgress {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  dailyAttemptsUsed Int      @default(0)
+  id                String    @id @default(cuid())
+  userId            String    @unique
+  dailyAttemptsUsed Int       @default(0)
   lastAttemptDate   DateTime?
-  discoveredDyads   String[] @default([]) // ключи диад, напр. "love", "guilt"
-  updatedAt         DateTime @updatedAt
+  discoveredDyads   String[]  @default([]) // ключи диад, напр. "love", "guilt"
+  updatedAt         DateTime  @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model BreathingSession {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   userId          String
   duration        Int
   initialCalmness Int
   finalCalmness   Int
-  completedAt     DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  completedAt     DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   deletedAt       DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -455,13 +478,13 @@ model CbaCommonItem {
 }
 
 model CbaEntry {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
   thoughtText String
   prosWeight  Int
   consWeight  Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 
   user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -472,22 +495,22 @@ model CbaEntry {
 }
 
 model DailyMission {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   userId     String
   date       DateTime
   missionKey String
   labelKey   String
-  xpReward   Int      @default(10)
-  claimed    Boolean  @default(false)
-sortOrder  Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
+  xpReward   Int       @default(10)
+  claimed    Boolean   @default(false)
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, date])
   @@unique([userId, date, missionKey])
+  @@index([userId, date])
 }
 
 model PushSubscription {
@@ -503,11 +526,11 @@ model PushSubscription {
 }
 
 model CbaEntryItem {
-  id       String @id @default(cuid())
-  entryId  String
-  itemType String
-  itemText String
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(cuid())
+  entryId   String
+  itemType  String
+  itemText  String
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   entry CbaEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
@@ -523,7 +546,7 @@ model ResponsibilityPieEntry {
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
 
-  user    User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
   factors ResponsibilityPieFactor[]
 
   @@index([userId])

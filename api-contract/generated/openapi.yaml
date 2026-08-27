@@ -2621,6 +2621,7 @@ components:
         - email
         - role
         - createdAt
+        - interfaceMode
       properties:
         id:
           type: string
@@ -2633,6 +2634,9 @@ components:
         createdAt:
           type: string
           format: date-time
+        interfaceMode:
+          type: string
+          description: 'Режим интерфейса: companion (с питомцем/XP/достижениями) | classic (чистый трекер настроения)'
       description: Пользователь приложения
     UserCreate:
       type: object
@@ -2671,6 +2675,9 @@ components:
         recoverySalt:
           type: string
           description: Соль для вывода KEK_recovery из recovery-кода
+        referralCode:
+          type: string
+          description: Реферальный код с лендинга (?ref=), если пользователь пришёл по инвайт-ссылке. Только логируется на бэкенде, атрибуция не хранится.
     UserPreference:
       type: object
       required:
@@ -2691,13 +2698,36 @@ components:
           type: boolean
         reminderTime:
           type: string
+        reminderMode:
+          type: string
+          description: 'Режим слота «Утро»: exact (точное время) | window (гибкое окно)'
+        reminderWindowStart:
+          type: string
+          description: Начало гибкого окна слота «Утро», HH:MM
+        reminderWindowEnd:
+          type: string
+          description: Конец гибкого окна слота «Утро», HH:MM
         afternoonReminder:
           type: boolean
         afternoonTime:
           type: string
+        afternoonMode:
+          type: string
+          description: 'Режим слота «День»: exact | window'
+        afternoonWindowStart:
+          type: string
+        afternoonWindowEnd:
+          type: string
         eveningReminder:
           type: boolean
         eveningTime:
+          type: string
+        eveningMode:
+          type: string
+          description: 'Режим слота «Вечер»: exact | window'
+        eveningWindowStart:
+          type: string
+        eveningWindowEnd:
           type: string
         onboardingDone:
           type: boolean
@@ -2715,13 +2745,31 @@ components:
           type: boolean
         reminderTime:
           type: string
+        reminderMode:
+          type: string
+        reminderWindowStart:
+          type: string
+        reminderWindowEnd:
+          type: string
         afternoonReminder:
           type: boolean
         afternoonTime:
           type: string
+        afternoonMode:
+          type: string
+        afternoonWindowStart:
+          type: string
+        afternoonWindowEnd:
+          type: string
         eveningReminder:
           type: boolean
         eveningTime:
+          type: string
+        eveningMode:
+          type: string
+        eveningWindowStart:
+          type: string
+        eveningWindowEnd:
           type: string
         onboardingDone:
           type: boolean
@@ -2730,6 +2778,9 @@ components:
       properties:
         name:
           type: string
+        interfaceMode:
+          type: string
+          description: 'Режим интерфейса: companion | classic'
     WeeklyDay:
       type: object
       required:

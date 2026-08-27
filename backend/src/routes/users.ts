@@ -4,6 +4,7 @@ import { updateMeSchema, updatePreferencesSchema, parseOrThrow } from '../lib/va
 
 interface UpdateMeBody {
   name?: string;
+  interfaceMode?: string;
 }
 
 interface PreferencesBody {
@@ -11,10 +12,19 @@ interface PreferencesBody {
   experienceLevel?: string;
   dailyReminder?: boolean;
   reminderTime?: string;
+  reminderMode?: string;
+  reminderWindowStart?: string;
+  reminderWindowEnd?: string;
   afternoonReminder?: boolean;
   afternoonTime?: string;
+  afternoonMode?: string;
+  afternoonWindowStart?: string;
+  afternoonWindowEnd?: string;
   eveningReminder?: boolean;
   eveningTime?: string;
+  eveningMode?: string;
+  eveningWindowStart?: string;
+  eveningWindowEnd?: string;
   onboardingDone?: boolean;
   showSupportResources?: boolean;
 }

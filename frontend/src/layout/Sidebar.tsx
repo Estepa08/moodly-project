@@ -2,15 +2,24 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { useNavHighlights } from '../hooks/useNavHighlights';
+import { useInterfaceMode } from '../hooks/useInterfaceMode';
 import { User } from 'lucide-react';
-import { DASHBOARD_ITEM, PRACTICES_ITEM, OTHER_ITEMS, ADMIN_ITEM } from './nav-config';
+import {
+  DASHBOARD_ITEM,
+  PRACTICES_ITEM,
+  OTHER_ITEMS,
+  ADMIN_ITEM,
+  filterNavForMode,
+} from './nav-config';
 
 export default function Sidebar() {
   const { t } = useTranslation();
   const location = useLocation();
   const { data: userData } = useCurrentUser();
+  const { isClassic } = useInterfaceMode();
 
   const highlights = useNavHighlights();
+  const otherItems = filterNavForMode(OTHER_ITEMS, isClassic);
 
   const isPracticeActive = location.pathname.startsWith('/practices');
 
@@ -71,7 +80,7 @@ export default function Sidebar() {
         </span>
       </Link>
 
-      {OTHER_ITEMS.map((item) => (
+      {otherItems.map((item) => (
         <Link
           key={item.path}
           to={item.path}

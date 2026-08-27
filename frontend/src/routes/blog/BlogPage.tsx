@@ -18,6 +18,7 @@ const CATEGORY_KEYS: Record<string, string> = {
   sleep: 'seoPages.blog.categories.sleep',
   thinking: 'seoPages.blog.categories.thinking',
   motivation: 'seoPages.blog.categories.motivation',
+  burnout: 'seoPages.blog.categories.burnout',
 };
 
 export default function BlogPage() {

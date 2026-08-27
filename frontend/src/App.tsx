@@ -46,6 +46,7 @@ const AnxietySelfHelpPage = lazy(() => import('./routes/seo/anxiety-self-help'))
 const BlogPage = lazy(() => import('./routes/blog/BlogPage'));
 const BlogCategoryPage = lazy(() => import('./routes/blog/BlogCategoryPage'));
 const BlogPostPage = lazy(() => import('./routes/blog/BlogPostPage'));
+const DemoPage = lazy(() => import('./routes/demo'));
 
 function SuspenseFallback() {
   return (
@@ -151,6 +152,7 @@ export default function App() {
         </Route>
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/demo" element={<DemoPage />} />
         <Route path="/mood-diary" element={<MoodDiaryPage />} />
         <Route path="/anxiety-test" element={<AnxietyTestPage />} />
         <Route path="/thinking-habits-test" element={<ThinkingHabitsTestPage />} />

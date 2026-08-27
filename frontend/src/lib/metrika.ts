@@ -73,3 +73,15 @@ export function trackPageView(url: string): void {
   if (!isProductionDomain()) return;
   ym(METRIKA_ID, 'hit', url);
 }
+
+/**
+ * Отправляет цель (goal) в Яндекс.Метрику с опциональными параметрами визита.
+ * Используется, например, для сравнения показов вариантов первого экрана
+ * лендинга (Сессия 3, three-personas-design-gaps.md — «Сегментированные
+ * сообщения на лендинге по трафику»).
+ */
+export function trackGoal(target: string, params?: Record<string, unknown>): void {
+  if (!isProductionDomain()) return;
+  if (params) ym(METRIKA_ID, 'reachGoal', target, params);
+  else ym(METRIKA_ID, 'reachGoal', target);
+}

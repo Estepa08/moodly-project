@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Share2, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import PetAvatar from './PetAvatar';
 import { PET_DEFINITIONS, petMoodToEmotion } from './pets';
 import { usePets } from './useCreature';
@@ -8,10 +9,12 @@ import { usePetReward } from './usePetReward';
 import { usePetEnergyPulse } from './energyPulse';
 import { StreakIndicator } from './index';
 import { ProgressBar } from '../../components/ui/progress-bar';
+import { Button } from '../../components/ui/button';
 import { EXP_PER_LEVEL, ENERGY_COLOR } from '../../lib/constants';
 import { PET_CYCLE } from '@moodly/shared';
 import { TITLE_MAP, TITLE_EMOJI } from './TitleSelector';
 import { cn } from '../../lib/utils';
+import { shareStoryCard } from '../../lib/shareStoryCard';
 import type { CreatureState } from '../../lib/api';
 
 interface ProgressHeroProps {
@@ -23,6 +26,7 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
   const { data: pets } = usePets();
   const { reward, glow, handlePet } = usePetReward();
   const energyPulsing = usePetEnergyPulse();
+  const [isSharingStory, setIsSharingStory] = useState(false);
 
   const petType = pets?.activePetType ?? 'puff';
   const petName =
@@ -42,6 +46,26 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
 
   const handleTap = () => {
     handlePet();
+  };
+
+  // Сессия 9 (three-personas-design-gaps.md): «одно действие с экрана
+  // прогресса» — вертикальная (9:16) карточка стрика для Stories, тем же
+  // бэкенд-рендером, что и обычная OG-карточка (см. lib/shareStoryCard.ts).
+  // Показываем кнопку только когда есть чем поделиться — стрик 0 выглядел бы
+  // странно в сторис.
+  const handleShareStory = async () => {
+    if (isSharingStory || creature.streak <= 0) return;
+    setIsSharingStory(true);
+    try {
+      const result = await shareStoryCard(creature.streak, petType);
+      if (result === 'downloaded') {
+        toast.success(t('progress.shareStoryDownloaded'));
+      } else if (result === 'failed') {
+        toast.error(t('progress.shareStoryError'));
+      }
+    } finally {
+      setIsSharingStory(false);
+    }
   };
 
   return (
@@ -132,6 +156,23 @@ export default function ProgressHero({ creature }: ProgressHeroProps) {
           </div>
         </div>
       </div>
+
+      {creature.streak > 0 && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full mt-4"
+          disabled={isSharingStory}
+          onClick={handleShareStory}
+        >
+          {isSharingStory ? (
+            <Loader2 aria-hidden="true" className="w-4 h-4 animate-spin" />
+          ) : (
+            <Share2 aria-hidden="true" className="w-4 h-4" />
+          )}
+          {t('progress.shareStory')}
+        </Button>
+      )}
     </div>
   );
 }

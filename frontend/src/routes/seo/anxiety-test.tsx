@@ -34,6 +34,7 @@ export default function AnxietyTestPage() {
     title: t('seoPages.anxietyTest.meta.title'),
     description: t('seoPages.anxietyTest.meta.description'),
     canonical: withCanonical('/anxiety-test'),
+    markSeoOrigin: 'anxiety-test',
     jsonLd: [
       breadcrumbLd([
         { name: t('seoPages.anxietyTest.breadcrumb.home'), url: withCanonical('/') },

@@ -1,4 +1,5 @@
 import { DistortionKey } from './distortionsQuiz';
+import { isImprovement, isRegression } from '../features/analytics/analytics.utils';
 
 export interface DistortionEntry {
   key: DistortionKey;
@@ -70,4 +71,28 @@ export function distortionDelta(
   const cur = current.find((entry) => entry.key === key);
   if (prev === undefined || !cur) return null;
   return cur.score - prev.score;
+}
+
+export type RadarTrend = 'better' | 'worse' | 'same';
+
+/**
+ * Итоговая эвристика тренда для текстовой строки-вывода под радар-графиком
+ * (Сессия 10, three-personas-design-gaps.md). Переиспользует те же данные и
+ * ту же логику знака, что уже используются для отрисовки сравнения на самом
+ * графике (`distortionDelta`, `isImprovement`/`isRegression` из
+ * `RadarChart.tsx`) — считаем суммарный сдвиг по всем осям, а не заново
+ * анализируем результаты теста.
+ */
+export function summarizeRadarTrend(comparison: RadarComparison): RadarTrend | null {
+  if (!comparison.previous) return null;
+  const previous = comparison.previous;
+
+  const totalDelta = comparison.current.reduce((sum, entry) => {
+    const delta = distortionDelta(previous, comparison.current, entry.key);
+    return sum + (delta ?? 0);
+  }, 0);
+
+  if (isImprovement(totalDelta, true)) return 'better';
+  if (isRegression(totalDelta, true)) return 'worse';
+  return 'same';
 }

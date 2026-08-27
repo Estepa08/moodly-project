@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
@@ -13,14 +13,18 @@ import {
   Sparkles,
   Bell,
   SunMedium,
+  PawPrint,
+  NotebookPen,
+  Zap,
   type LucideIcon,
 } from 'lucide-react';
 import { useOnboarding } from '../hooks/useOnboarding';
-import { ExpLevel } from '../lib/constants';
+import { ExpLevel, InterfaceMode } from '../lib/constants';
 import Spinner from '../components/ui/spinner';
 import { ToggleSwitch } from '../components/ui/toggle-switch';
 import { useSetPet } from '../features/gamification';
 import { PET_DEFINITIONS, STARTER_PET_TYPES } from '../features/gamification/pets';
+import { useSetInterfaceMode } from '../hooks/useInterfaceMode';
 import { WellnessDisclaimer } from '../widgets';
 import { cn } from '../lib/utils';
 
@@ -74,17 +78,38 @@ function ReminderRow({
   );
 }
 
-const TOTAL_STEPS = 6;
+// Список шагов — динамический, не фиксированное число: шаг выбора питомца
+// физически отсутствует в последовательности при выборе классического режима
+// (а не просто скрывается условием), поэтому прогресс-бар и нумерация шагов
+// всегда соответствуют реальному пути пользователя.
+//
+// То же самое для сигнала «мало времени» (шаг experience): шаг выбора питомца
+// пропускается и для него (дефолтный питомец назначается автоматически, сменить
+// можно в /settings) — это ортогонально классическому режиму, оба условия просто
+// складываются. Шаг «reminders» из последовательности не убирается (он остаётся
+// нумерованным экраном), но при «мало времени» рендерит один пресет вместо трёх
+// переключателей — см. currentStep === 'reminders' ниже.
+type StepKey = 'welcome' | 'mode' | 'goals' | 'experience' | 'reminders' | 'pet' | 'action';
+
+function buildSteps(interfaceMode: InterfaceMode, quickStart: boolean): StepKey[] {
+  const steps: StepKey[] = ['welcome', 'mode', 'goals', 'experience', 'reminders'];
+  if (interfaceMode === InterfaceMode.Companion && !quickStart) steps.push('pet');
+  steps.push('action');
+  return steps;
+}
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { needsOnboarding, isLoading, complete } = useOnboarding();
   const setPet = useSetPet();
+  const setInterfaceMode = useSetInterfaceMode();
 
   const [step, setStep] = useState(0);
+  const [interfaceMode, setInterfaceModeState] = useState<InterfaceMode>(InterfaceMode.Companion);
   const [goals, setGoals] = useState<string[]>([]);
   const [expLevel, setExpLevel] = useState<ExpLevel>(ExpLevel.Beginner);
+  const [quickStart, setQuickStart] = useState(false);
   const [dailyReminder, setDailyReminder] = useState(false);
   const [reminderTime, setReminderTime] = useState('09:00');
   const [afternoonReminder, setAfternoonReminder] = useState(false);
@@ -94,6 +119,10 @@ export default function OnboardingPage() {
   const [petType, setPetType] = useState<string>('puff');
   const [petName, setPetName] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const steps = useMemo(() => buildSteps(interfaceMode, quickStart), [interfaceMode, quickStart]);
+  const currentStep = steps[step] ?? 'welcome';
+  const isClassic = interfaceMode === InterfaceMode.Classic;
 
   // navigate() during render updates the router while OnboardingPage is
   // still rendering, which React warns about ("Cannot update a component
@@ -117,20 +146,41 @@ export default function OnboardingPage() {
     setGoals((prev) => (prev.includes(key) ? prev.filter((g) => g !== key) : [...prev, key]));
   };
 
-  const handleFinish = async (destination = '/my-day') => {
-    setSaving(true);
-    try {
-      await complete({
-        goals,
-        experienceLevel: expLevel,
+  // При «мало времени» шаг напоминаний схлопывается в один пресет — вечернее
+  // напоминание с гибким окном (Сессия 4), а не три отдельных решения по слотам.
+  const reminderPayload = quickStart
+    ? {
+        dailyReminder: false,
+        afternoonReminder: false,
+        eveningReminder,
+        eveningTime,
+        eveningMode: 'window' as const,
+        eveningWindowStart: '20:00',
+        eveningWindowEnd: '23:00',
+      }
+    : {
         dailyReminder,
         reminderTime,
         afternoonReminder,
         afternoonTime,
         eveningReminder,
         eveningTime,
+      };
+
+  const handleFinish = async (destination = '/my-day') => {
+    setSaving(true);
+    try {
+      await complete({
+        goals,
+        experienceLevel: expLevel,
+        ...reminderPayload,
       });
-      if (petName.trim() || petType !== 'puff') {
+      // Режим сохраняется на User (не в UserPreference), поэтому отдельный вызов.
+      // Отправляем всегда, а не только для классического — иначе повторный заход
+      // в онбординг (например, после сброса localStorage) не перезапишет ранее
+      // выбранный классический режим обратно на дефолтный companion.
+      await setInterfaceMode.mutateAsync(interfaceMode);
+      if (!isClassic && (petName.trim() || petType !== 'puff')) {
         await setPet.mutateAsync({ petType, petName: petName.trim() || null });
       }
       navigate(destination, { replace: true });
@@ -150,9 +200,9 @@ export default function OnboardingPage() {
       <Card className="w-full max-w-md">
         <CardContent className="pt-6 text-center space-y-6">
           <div className="flex justify-center gap-1.5">
-            {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+            {steps.map((key, i) => (
               <div
-                key={i}
+                key={key}
                 className={`h-1.5 w-8 rounded-full transition-colors duration-200 ${
                   i === step ? 'bg-primary' : 'bg-muted'
                 }`}
@@ -160,7 +210,7 @@ export default function OnboardingPage() {
             ))}
           </div>
 
-          {step === 0 && (
+          {currentStep === 'welcome' && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t('onboarding2.welcomeTitle')}
@@ -170,12 +220,74 @@ export default function OnboardingPage() {
                 <Button variant="ghost" onClick={handleSkip} disabled={saving}>
                   {t('onboarding.skip')}
                 </Button>
-                <Button onClick={() => setStep(1)}>{t('onboarding.next')}</Button>
+                <Button onClick={() => setStep(step + 1)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
 
-          {step === 1 && (
+          {currentStep === 'mode' && (
+            <>
+              <h2 className="text-xl font-semibold text-foreground font-serif">
+                {t('onboarding2.modeTitle')}
+              </h2>
+              <p className="text-muted-foreground text-sm">{t('onboarding2.modeDesc')}</p>
+              <div className="flex flex-col gap-3">
+                {(
+                  [
+                    { mode: InterfaceMode.Companion, icon: PawPrint },
+                    { mode: InterfaceMode.Classic, icon: NotebookPen },
+                  ] as const
+                ).map(({ mode, icon: Icon }) => {
+                  const isActive = interfaceMode === mode;
+                  const titleKey =
+                    mode === InterfaceMode.Companion
+                      ? 'onboarding2.modeCompanionTitle'
+                      : 'onboarding2.modeClassicTitle';
+                  const descKey =
+                    mode === InterfaceMode.Companion
+                      ? 'onboarding2.modeCompanionDesc'
+                      : 'onboarding2.modeClassicDesc';
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setInterfaceModeState(mode)}
+                      aria-pressed={isActive}
+                      className={cn(
+                        'flex items-center gap-3 p-4 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 text-left cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        isActive
+                          ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                          : 'border-border bg-card shadow-neumorphic-sm',
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'w-11 h-11 rounded-full grid place-items-center shrink-0',
+                          isActive
+                            ? 'bg-primary/10 text-primary'
+                            : 'bg-muted text-muted-foreground',
+                        )}
+                      >
+                        <Icon aria-hidden="true" className="w-5 h-5" />
+                      </span>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">{t(titleKey)}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{t(descKey)}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={handleSkip} disabled={saving}>
+                  {t('onboarding.skip')}
+                </Button>
+                <Button onClick={() => setStep(step + 1)}>{t('onboarding.next')}</Button>
+              </div>
+            </>
+          )}
+
+          {currentStep === 'goals' && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t('onboarding2.goalsTitle')}
@@ -200,15 +312,15 @@ export default function OnboardingPage() {
                 ))}
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" onClick={handleSkip} disabled={saving}>
-                  {t('onboarding.skip')}
+                <Button variant="ghost" onClick={() => setStep(step - 1)}>
+                  {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(2)}>{t('onboarding.next')}</Button>
+                <Button onClick={() => setStep(step + 1)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
 
-          {step === 2 && (
+          {currentStep === 'experience' && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t('onboarding2.expTitle')}
@@ -239,57 +351,110 @@ export default function OnboardingPage() {
                   </button>
                 ))}
               </div>
+              <label className="flex items-center justify-between gap-3 rounded-xl bg-card shadow-neumorphic-sm p-3 cursor-pointer text-left">
+                <div className="flex items-center gap-3">
+                  <span className="w-9 h-9 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0">
+                    <Zap aria-hidden="true" className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {t('onboarding2.quickStartTitle')}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {t('onboarding2.quickStartDesc')}
+                    </p>
+                  </div>
+                </div>
+                <ToggleSwitch
+                  checked={quickStart}
+                  onCheckedChange={(next) => {
+                    setQuickStart(next);
+                    if (next) setEveningReminder(true);
+                  }}
+                  aria-label={t('onboarding2.quickStartTitle')}
+                />
+              </label>
               <div className="flex gap-2">
-                <Button variant="ghost" onClick={() => setStep(1)}>
+                <Button variant="ghost" onClick={() => setStep(step - 1)}>
                   {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(3)}>{t('onboarding.next')}</Button>
+                <Button onClick={() => setStep(step + 1)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
 
-          {step === 3 && (
+          {currentStep === 'reminders' && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t('onboarding2.reminderTitle')}
               </h2>
-              <p className="text-muted-foreground text-sm">{t('onboarding2.reminderDesc')}</p>
-              <div className="flex flex-col gap-4 text-left pt-1">
-                <ReminderRow
-                  icon={Bell}
-                  label={t('settings.slotMorning')}
-                  checked={dailyReminder}
-                  time={reminderTime}
-                  onToggle={setDailyReminder}
-                  onTime={setReminderTime}
-                />
-                <ReminderRow
-                  icon={SunMedium}
-                  label={t('settings.slotDay')}
-                  checked={afternoonReminder}
-                  time={afternoonTime}
-                  onToggle={setAfternoonReminder}
-                  onTime={setAfternoonTime}
-                />
-                <ReminderRow
-                  icon={Moon}
-                  label={t('settings.slotEvening')}
-                  checked={eveningReminder}
-                  time={eveningTime}
-                  onToggle={setEveningReminder}
-                  onTime={setEveningTime}
-                />
-              </div>
+              <p className="text-muted-foreground text-sm">
+                {quickStart ? t('onboarding2.reminderQuickDesc') : t('onboarding2.reminderDesc')}
+              </p>
+              {quickStart ? (
+                <div className="flex flex-col gap-3 text-left pt-1">
+                  <div className="flex items-center justify-between gap-3 rounded-xl bg-card shadow-neumorphic-sm p-3">
+                    <div className="flex items-center gap-3">
+                      <span className="w-9 h-9 rounded-full bg-primary/10 text-primary grid place-items-center shrink-0">
+                        <Moon aria-hidden="true" className="w-4 h-4" />
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          {t('settings.slotEvening')}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {t('onboarding2.reminderQuickPreset')}
+                        </p>
+                      </div>
+                    </div>
+                    <ToggleSwitch
+                      checked={eveningReminder}
+                      onCheckedChange={setEveningReminder}
+                      aria-label={t('settings.slotEvening')}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('onboarding2.reminderQuickHint')}
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 text-left pt-1">
+                  <ReminderRow
+                    icon={Bell}
+                    label={t('settings.slotMorning')}
+                    checked={dailyReminder}
+                    time={reminderTime}
+                    onToggle={setDailyReminder}
+                    onTime={setReminderTime}
+                  />
+                  <ReminderRow
+                    icon={SunMedium}
+                    label={t('settings.slotDay')}
+                    checked={afternoonReminder}
+                    time={afternoonTime}
+                    onToggle={setAfternoonReminder}
+                    onTime={setAfternoonTime}
+                  />
+                  <ReminderRow
+                    icon={Moon}
+                    label={t('settings.slotEvening')}
+                    checked={eveningReminder}
+                    time={eveningTime}
+                    onToggle={setEveningReminder}
+                    onTime={setEveningTime}
+                  />
+                </div>
+              )}
               <div className="flex gap-2">
-                <Button variant="ghost" onClick={() => setStep(2)}>
+                <Button variant="ghost" onClick={() => setStep(step - 1)}>
                   {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(4)}>{t('onboarding.next')}</Button>
+                <Button onClick={() => setStep(step + 1)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
 
-          {step === 4 && (
+          {currentStep === 'pet' && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t('onboarding2.petTitle')}
@@ -368,15 +533,15 @@ export default function OnboardingPage() {
               <p className="text-xs text-muted-foreground">{t('onboarding2.petMoreHint')}</p>
 
               <div className="flex gap-2">
-                <Button variant="ghost" onClick={() => setStep(3)}>
+                <Button variant="ghost" onClick={() => setStep(step - 1)}>
                   {t('common.back')}
                 </Button>
-                <Button onClick={() => setStep(5)}>{t('onboarding.next')}</Button>
+                <Button onClick={() => setStep(step + 1)}>{t('onboarding.next')}</Button>
               </div>
             </>
           )}
 
-          {step === 5 && (
+          {currentStep === 'action' && (
             <>
               <h2 className="text-xl font-semibold text-foreground font-serif">
                 {t('onboarding2.actionTitle')}
@@ -424,7 +589,7 @@ export default function OnboardingPage() {
               </div>
               <WellnessDisclaimer variant="compact" />
               <div className="flex gap-2">
-                <Button variant="ghost" onClick={() => setStep(4)}>
+                <Button variant="ghost" onClick={() => setStep(step - 1)}>
                   {t('common.back')}
                 </Button>
                 <Button onClick={() => handleFinish('/')} disabled={saving} className="btn-neon">

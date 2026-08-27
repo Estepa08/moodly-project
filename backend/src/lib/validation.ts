@@ -30,6 +30,10 @@ export const registerSchema = z.object({
   keySalt: keyField,
   recoveryWrappedKey: keyField,
   recoverySalt: keyField,
+  // Инвайт-механика (Сессия 8, three-personas-design-gaps.md): только
+  // логируется в /auth/register, нигде не сверяется и не хранится — см.
+  // комментарий над использованием в routes/auth.ts.
+  referralCode: z.string().max(64).optional(),
 });
 
 export const loginSchema = z.object({
@@ -57,9 +61,15 @@ export const setKeysSchema = z.object({
 
 export const updateMeSchema = z.object({
   name: z.string().max(100).optional(),
+  interfaceMode: z.enum(['companion', 'classic']).optional(),
 });
 
 const timeField = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'HH:MM expected');
+
+// Режим слота напоминания: "exact" — точное время (как раньше), "window" —
+// гибкое окно, сервер сам выбирает случайный момент отправки внутри границ
+// (см. backend/src/jobs/reminder-scheduler.ts).
+const reminderModeField = z.enum(['exact', 'window']);
 
 export const updatePreferencesSchema = z
   .object({
@@ -67,10 +77,19 @@ export const updatePreferencesSchema = z
     experienceLevel: z.string().max(50).optional(),
     dailyReminder: z.boolean().optional(),
     reminderTime: timeField.optional(),
+    reminderMode: reminderModeField.optional(),
+    reminderWindowStart: timeField.optional(),
+    reminderWindowEnd: timeField.optional(),
     afternoonReminder: z.boolean().optional(),
     afternoonTime: timeField.optional(),
+    afternoonMode: reminderModeField.optional(),
+    afternoonWindowStart: timeField.optional(),
+    afternoonWindowEnd: timeField.optional(),
     eveningReminder: z.boolean().optional(),
     eveningTime: timeField.optional(),
+    eveningMode: reminderModeField.optional(),
+    eveningWindowStart: timeField.optional(),
+    eveningWindowEnd: timeField.optional(),
     onboardingDone: z.boolean().optional(),
     showSupportResources: z.boolean().optional(),
   })

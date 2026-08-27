@@ -1,16 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Moon, Star } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
 
 interface EmotionLimitProps {
   tier: string;
   dailyLimit: number;
   resetsAt: string;
-  onLearnMore: () => void;
 }
 
-export default function EmotionLimit({ tier, dailyLimit, onLearnMore }: EmotionLimitProps) {
+export default function EmotionLimit({ tier, dailyLimit }: EmotionLimitProps) {
   const { t } = useTranslation();
   const isPremium = tier === 'premium';
 
@@ -37,9 +35,11 @@ export default function EmotionLimit({ tier, dailyLimit, onLearnMore }: EmotionL
           <p className="text-xs text-muted-foreground mt-1">{t('emotionLab.premiumOfferDesc')}</p>
         </div>
 
-        <Button onClick={onLearnMore} className="mt-5">
-          {t('emotionLab.learnMore')}
-        </Button>
+        {/* До запуска биллинга подписка нигде не покупается (см.
+            docs/audit/market-readiness-audit.md, раздел «Монетизация»), поэтому
+            здесь нет кликабельного CTA — только нейтральная пометка без ложного
+            обещания перехода к покупке. */}
+        <p className="mt-5 text-xs text-muted-foreground">{t('emotionLab.moreAttemptsSoon')}</p>
       </CardContent>
     </Card>
   );
