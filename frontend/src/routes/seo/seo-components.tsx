@@ -7,15 +7,16 @@ import { Card } from '../../components/ui/card';
 import Reveal from '../../components/Reveal';
 import { cn } from '../../lib/utils';
 import { withCanonical } from '../../lib/seo';
+import { getPostsByCategory, type CategorySlug } from '../blog/posts';
 
 function SeoHeader() {
   const { t } = useTranslation();
   const nav = [
     { href: '/mood-diary', label: t('seo.nav.moodDiary') },
     { href: '/anxiety-test', label: t('seo.nav.anxietyTest') },
+    { href: '/thinking-habits-test', label: t('seo.nav.thinkingHabits') },
+    { href: '/sleep-hygiene-guide', label: t('seo.nav.sleepHygiene') },
     { href: '/blog', label: t('seo.nav.blog') },
-    { href: '/privacy', label: t('seo.nav.privacy') },
-    { href: '/terms', label: t('seo.nav.terms') },
   ];
 
   return (
@@ -241,6 +242,40 @@ function CtaBanner({
   );
 }
 
+function RelatedBlogPosts({
+  category,
+  title,
+  limit = 3,
+}: {
+  category: CategorySlug;
+  title: string;
+  limit?: number;
+}) {
+  const posts = getPostsByCategory(category).slice(0, limit);
+  if (posts.length === 0) return null;
+
+  return (
+    <section className="mx-auto max-w-6xl px-4 sm:px-6 pb-16">
+      <h2 className="text-center text-xl sm:text-2xl font-extrabold text-foreground">{title}</h2>
+      <div className="mt-6 grid sm:grid-cols-3 gap-4">
+        {posts.map((post, i) => (
+          <Reveal key={post.slug} delay={i * 80} className="h-full">
+            <Link
+              to={`/blog/${post.slug}`}
+              className="block h-full rounded-2xl border border-border bg-card p-5 shadow-neumorphic-sm hover:shadow-clay-lg transition-shadow"
+            >
+              <p className="text-sm font-bold text-foreground">{post.title}</p>
+              <p className="mt-2 text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                {post.excerpt}
+              </p>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SeoDisclaimer({ lines }: { lines: string[] }) {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6 pb-10 text-center">
@@ -258,6 +293,9 @@ function SeoFooter() {
   const product = [
     { label: t('seo.nav.moodDiary'), to: '/mood-diary' },
     { label: t('seo.nav.anxietyTest'), to: '/anxiety-test' },
+    { label: t('seo.nav.anxietySelfHelp'), to: '/anxiety-self-help' },
+    { label: t('seo.nav.thinkingHabits'), to: '/thinking-habits-test' },
+    { label: t('seo.nav.sleepHygiene'), to: '/sleep-hygiene-guide' },
     { label: t('seo.nav.blog'), to: '/blog' },
   ];
   const company = [
@@ -318,6 +356,7 @@ export {
   StepsGrid,
   FaqAccordion,
   CtaBanner,
+  RelatedBlogPosts,
   SeoDisclaimer,
   SeoFooter,
   type Breadcrumb,

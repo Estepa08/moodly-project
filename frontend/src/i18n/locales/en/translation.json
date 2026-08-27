@@ -2131,6 +2131,9 @@
     "nav": {
       "moodDiary": "Mood diary",
       "anxietyTest": "Anxiety test",
+      "thinkingHabits": "Thinking habits",
+      "sleepHygiene": "Sleep hygiene",
+      "anxietySelfHelp": "Anxiety self-help",
       "privacy": "Privacy",
       "terms": "Terms",
       "start": "Start free",
@@ -2140,7 +2143,8 @@
       "about": "A mood diary that cares about you — 30 seconds a day.",
       "product": "Product",
       "company": "Company"
-    }
+    },
+    "relatedArticles": "From the blog"
   },
   "seoPages": {
     "moodDiary": {
@@ -2355,6 +2359,10 @@
           "a": "About 3 minutes. You can review answers before saving the result."
         },
         "title": "Frequently asked questions"
+      },
+      "related": {
+        "text": "Already know your anxiety level?",
+        "link": "Anxiety self-help practices"
       },
       "cta": {
         "title": "Learn your anxiety level",
@@ -2729,6 +2737,7 @@
       "author": "Moodly Team",
       "updated": "Updated",
       "related": "Read next",
+      "tryTool": "Try it now:",
       "notFound": "Post not found",
       "cta": {
         "title": "Try Moodly free",
