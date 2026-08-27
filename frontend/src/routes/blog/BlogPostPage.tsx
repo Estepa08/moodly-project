@@ -10,7 +10,13 @@ import {
   SeoFooter,
 } from '../seo/seo-components';
 import { PostCard } from './PostCard';
-import { getPostBySlug, getRelatedPosts, getCategoryName, formatDate, type CategorySlug } from './posts';
+import {
+  getPostBySlug,
+  getRelatedPosts,
+  getCategoryName,
+  formatDate,
+  type CategorySlug,
+} from './posts';
 
 const CATEGORY_KEYS: Record<string, string> = {
   journal: 'seoPages.blog.categories.journal',
