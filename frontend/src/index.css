@@ -653,29 +653,6 @@
   background-image: linear-gradient(160deg, hsl(var(--pet-gradient-1)), hsl(var(--pet-gradient-2)));
 }
 
-/* --- Карточка дня: разные «рубашки» под вчера/сегодня/завтра — тонкая
-   текстура поверх цветового тона, чтобы карточки различались с первого
-   взгляда, не превращаясь в отдельный визуальный язык. */
-.card-back-pattern-past {
-  background-image: repeating-radial-gradient(
-    circle at 50% 42%,
-    hsl(var(--foreground) / 0.05) 0,
-    hsl(var(--foreground) / 0.05) 1px,
-    transparent 1px,
-    transparent 11px
-  );
-}
-
-.card-back-pattern-future {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    hsl(var(--foreground) / 0.04) 0,
-    hsl(var(--foreground) / 0.04) 2px,
-    transparent 2px,
-    transparent 13px
-  );
-}
-
 /* --- Scroll-reveal (useReveal) --- */
 .reveal {
   opacity: 0;

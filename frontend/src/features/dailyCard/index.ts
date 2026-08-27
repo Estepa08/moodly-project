@@ -1,7 +1,8 @@
 export { default as DailyMotivationCard } from './DailyMotivationCard';
-export { useDailyCard } from './useDailyCard';
+export { useCardHistory } from './useCardHistory';
 export {
   getTodayCard,
+  getCardRange,
   getDayNumber,
   getOrCreateAnchorDateKey,
   isOpenedToday,
