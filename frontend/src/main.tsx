@@ -11,6 +11,8 @@ import './index.css';
 // Применяет сохранённый масштаб текста к document.documentElement сразу при
 // импорте (до первого рендера) — см. features/accessibility/textScale.ts.
 import './features/accessibility/textScale';
+// То же самое для глобальной цветовой темы — см. lib/colorTheme.ts.
+import './lib/colorTheme';
 import i18n from './i18n/i18n';
 import { getErrorMessage } from './lib/error-messages';
 import { ApiError } from './lib/api-error';

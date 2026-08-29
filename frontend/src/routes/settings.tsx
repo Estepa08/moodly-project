@@ -27,6 +27,7 @@ import {
   Mail,
   ScrollText,
   Type,
+  Palette,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { ToggleSwitch } from '../components/ui/toggle-switch';
@@ -45,12 +46,26 @@ import { InterfaceMode } from '../lib/constants';
 import { useInterfaceMode, useSetInterfaceMode } from '../hooks/useInterfaceMode';
 import { TextScale, getTextScale, setTextScale } from '../features/accessibility/textScale';
 import InviteFriendCard from '../features/referral/InviteFriendCard';
+import {
+  COLOR_THEMES,
+  COLOR_THEME_SWATCH,
+  getColorTheme,
+  setColorTheme,
+  type ColorThemeId,
+} from '../lib/colorTheme';
 
 const TEXT_SCALE_OPTIONS: { value: TextScale; labelKey: string; previewRem: string }[] = [
   { value: TextScale.Normal, labelKey: 'settings.textScaleNormal', previewRem: '1.125rem' },
   { value: TextScale.Large, labelKey: 'settings.textScaleLarge', previewRem: '1.375rem' },
   { value: TextScale.XLarge, labelKey: 'settings.textScaleXLarge', previewRem: '1.625rem' },
 ];
+
+const COLOR_THEME_LABEL_KEY: Record<ColorThemeId, string> = {
+  warm: 'settings.colorThemeWarm',
+  calm: 'settings.colorThemeCalm',
+  bold: 'settings.colorThemeBold',
+  neon: 'settings.colorThemeNeon',
+};
 
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
@@ -68,6 +83,7 @@ export default function SettingsPage() {
   const { mode: interfaceMode, isClassic } = useInterfaceMode();
   const setInterfaceMode = useSetInterfaceMode();
   const [textScale, setTextScaleState] = useState<TextScale>(getTextScale());
+  const [colorTheme, setColorThemeState] = useState<ColorThemeId>(getColorTheme());
 
   const handleModeChange = (next: InterfaceMode) => {
     if (next === interfaceMode || setInterfaceMode.isPending) return;
@@ -80,6 +96,12 @@ export default function SettingsPage() {
     if (next === textScale) return;
     setTextScaleState(next);
     setTextScale(next);
+  };
+
+  const handleColorThemeChange = (next: ColorThemeId) => {
+    if (next === colorTheme) return;
+    setColorThemeState(next);
+    setColorTheme(next);
   };
 
   const toggleCompanion = () => {
@@ -291,6 +313,46 @@ export default function SettingsPage() {
                   </span>
                   <span className="text-xs font-medium text-foreground text-center">
                     {t(labelKey)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Palette aria-hidden="true" className="w-4 h-4" />
+            {t('settings.colorThemeSection')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-xs text-muted-foreground">{t('settings.colorThemeSectionDesc')}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {COLOR_THEMES.map((value) => {
+              const isActive = colorTheme === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => handleColorThemeChange(value)}
+                  aria-pressed={isActive}
+                  className={cn(
+                    'flex items-center gap-2 p-3 rounded-xl border-2 transition-[color,background-color,border-color,box-shadow,transform] duration-150 cursor-pointer active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    isActive
+                      ? 'border-primary bg-primary/5 shadow-neumorphic-sm'
+                      : 'border-border bg-card shadow-neumorphic-sm',
+                  )}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="w-5 h-5 rounded-full shrink-0"
+                    style={{ background: COLOR_THEME_SWATCH[value] }}
+                  />
+                  <span className="text-xs font-medium text-foreground text-left">
+                    {t(COLOR_THEME_LABEL_KEY[value])}
                   </span>
                 </button>
               );
