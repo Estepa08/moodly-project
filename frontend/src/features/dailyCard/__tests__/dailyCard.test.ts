@@ -15,8 +15,6 @@ import {
   isFavorite,
   toggleFavorite,
   removeFavorite,
-  getCardTheme,
-  setCardTheme,
 } from '../dailyCard';
 
 function fakeStorage(): SafeStorage {
@@ -183,18 +181,5 @@ describe('избранное', () => {
     toggleFavorite({ dayNumber: 5, principle: 'relatedness', text: 'C' }, storage);
     removeFavorite(5, storage);
     expect(getFavorites(storage)).toEqual([]);
-  });
-});
-
-describe('getCardTheme / setCardTheme', () => {
-  it('по умолчанию "warm", хранит валидный выбор, игнорирует мусор в storage', () => {
-    const storage = fakeStorage();
-    expect(getCardTheme(storage)).toBe('warm');
-
-    setCardTheme('neon', storage);
-    expect(getCardTheme(storage)).toBe('neon');
-
-    storage.setItem('moodly_daily_card_theme', 'not-a-real-theme');
-    expect(getCardTheme(storage)).toBe('warm');
   });
 });

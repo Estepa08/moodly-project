@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { History, Lock, Sparkles, Star, X } from 'lucide-react';
 import { useCardHistory, type DayCardViewModel } from './useCardHistory';
 import { useFavorites } from './useFavorites';
-import { useCardTheme } from './useCardTheme';
+import { useColorTheme } from '../../hooks/useColorTheme';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import ClaimBurst from '../gamification/ClaimBurst';
 import { ModalShell } from '../../components/ui/modal-shell';
 import { cn } from '../../lib/utils';
-import { CARD_THEMES, type CardTheme, type MotivationPrinciple } from './dailyCard';
+import type { ColorThemeId } from '../../lib/colorTheme';
+import type { MotivationPrinciple } from './dailyCard';
 
 // «Карточка дня»: вариант B+C из product-strategy обсуждения — персональный
 // день-индекс (useCardHistory) + открытие явным тапом. Лента вертикальных,
@@ -28,12 +29,14 @@ import { CARD_THEMES, type CardTheme, type MotivationPrinciple } from './dailyCa
 // к конкретной дате, ключ — day-номер расписания, чтобы при следующем
 // годовом цикле та же цитата не задвоилась в списке.
 //
-// Цветовой стиль (ThemeSpec / THEMES) — переключаемая «кожа» виджета,
-// выбор персистится (useCardTheme). 'warm' — единственная тема, завязанная
-// на семантические токены приложения (hsl(var(--x))) и потому следующая за
-// его светлой/тёмной темой; остальные три — самодостаточные «скины» с
-// фиксированными цветами (в духе Calm/Headspace, Duolingo и Linear/Arc),
-// не зависящие от темы всего приложения — как отдельная накладка на виджет.
+// Цветовой стиль (ThemeSpec / THEMES) следует глобальной цветовой теме
+// приложения (/settings → lib/colorTheme.ts) — тот же выбор перекрашивает
+// весь UI через CSS-переменные на <html>, поэтому sectionBg/title/accent/
+// front у всех четырёх тем здесь буквально совпадают (hsl(var(--x))).
+// Единственное, что остаётся специфичным для этого виджета — bespoke
+// арт-дирекшн флип-карты (tones/medallionGlow/pressGlow/pressPulse), не
+// сводимая к простой замене переменных (напр. Duo Bold намеренно плоский,
+// без размытого свечения — см. medallionGlow ниже).
 
 const PRINCIPLE_LABEL_KEY: Record<MotivationPrinciple, string> = {
   autonomy: 'dailyCard.principle.autonomy',
@@ -64,8 +67,6 @@ interface ToneSpec {
 }
 
 interface ThemeSpec {
-  name: string;
-  swatch: string;
   sectionBg: string;
   title: string;
   mutedLabel: string;
@@ -80,15 +81,27 @@ interface ThemeSpec {
   pressPulse: boolean;
 }
 
-const THEMES: Record<CardTheme, ThemeSpec> = {
+// sectionBg/title/mutedLabel/accent/slotBg/front одинаковы для всех тем —
+// глобальная тема (data-color-theme на <html>, см. index.css) уже подставляет
+// нужные значения в эти CSS-переменные.
+const SHARED_SURFACE = {
+  sectionBg: 'hsl(var(--card))',
+  title: 'hsl(var(--muted-foreground))',
+  mutedLabel: 'hsl(var(--muted-foreground))',
+  accent: 'hsl(var(--accent))',
+  slotBg: 'hsl(var(--card))',
+  front: {
+    bg: 'hsl(var(--card))',
+    border: 'hsl(var(--border))',
+    text: 'hsl(var(--foreground))',
+    muted: 'hsl(var(--muted-foreground))',
+    shine: 'hsl(var(--foreground) / 0.14)',
+  },
+};
+
+const THEMES: Record<ColorThemeId, ThemeSpec> = {
   warm: {
-    name: 'Тёплый',
-    swatch: 'hsl(24 55% 48%)',
-    sectionBg: 'hsl(var(--card))',
-    title: 'hsl(var(--muted-foreground))',
-    mutedLabel: 'hsl(var(--muted-foreground))',
-    accent: 'hsl(var(--accent))',
-    slotBg: 'hsl(var(--card))',
+    ...SHARED_SURFACE,
     medallionGlow: true,
     tones: {
       past: {
@@ -116,13 +129,6 @@ const THEMES: Record<CardTheme, ThemeSpec> = {
         text: 'hsl(var(--foreground))',
       },
     },
-    front: {
-      bg: 'hsl(var(--card))',
-      border: 'hsl(var(--border))',
-      text: 'hsl(var(--foreground))',
-      muted: 'hsl(var(--muted-foreground))',
-      shine: 'hsl(var(--foreground) / 0.14)',
-    },
     pressGlow: [
       '0 0 0 2px hsl(24 100% 58% / 1)',
       '0 0 8px 2px hsl(24 100% 58% / 0.95)',
@@ -132,13 +138,7 @@ const THEMES: Record<CardTheme, ThemeSpec> = {
     pressPulse: true,
   },
   calm: {
-    name: 'Aurora Calm',
-    swatch: '#7c6fe0',
-    sectionBg: '#f6f4fc',
-    title: '#5b5480',
-    mutedLabel: '#7a749e',
-    accent: '#6a5acd',
-    slotBg: '#f6f4fc',
+    ...SHARED_SURFACE,
     medallionGlow: true,
     tones: {
       past: {
@@ -166,25 +166,12 @@ const THEMES: Record<CardTheme, ThemeSpec> = {
         text: '#3d3b57',
       },
     },
-    front: {
-      bg: '#fbfaff',
-      border: 'rgba(124,111,224,0.3)',
-      text: '#3d3b57',
-      muted: '#7a749e',
-      shine: 'rgba(61,59,87,0.12)',
-    },
     pressGlow:
       '0 0 0 2px rgba(124,111,224,0.9), 0 0 14px 4px rgba(124,111,224,0.55), 0 0 32px 10px rgba(79,182,166,0.45)',
     pressPulse: true,
   },
   bold: {
-    name: 'Duo Bold',
-    swatch: '#ff7a45',
-    sectionBg: '#fff9ec',
-    title: '#2b2b28',
-    mutedLabel: '#2b2b28',
-    accent: '#d9531e',
-    slotBg: '#fff9ec',
+    ...SHARED_SURFACE,
     medallionGlow: false,
     tones: {
       past: {
@@ -212,24 +199,11 @@ const THEMES: Record<CardTheme, ThemeSpec> = {
         text: '#2b2b28',
       },
     },
-    front: {
-      bg: '#fff2e8',
-      border: '#2b2b28',
-      text: '#2b2b28',
-      muted: '#6b6355',
-      shine: 'rgba(43,43,40,0.14)',
-    },
     pressGlow: '0 0 0 3px #2b2b28, 0 0 0 6px #ff7a45',
     pressPulse: false,
   },
   neon: {
-    name: 'Midnight Neon',
-    swatch: '#b98cff',
-    sectionBg: '#111116',
-    title: '#9a9aa8',
-    mutedLabel: '#7d7d92',
-    accent: '#b98cff',
-    slotBg: '#111116',
+    ...SHARED_SURFACE,
     medallionGlow: true,
     tones: {
       past: {
@@ -257,13 +231,6 @@ const THEMES: Record<CardTheme, ThemeSpec> = {
         text: '#e7e2f5',
       },
     },
-    front: {
-      bg: '#1c1c24',
-      border: 'rgba(185,140,255,0.35)',
-      text: '#e7e2f5',
-      muted: '#9a9aa8',
-      shine: 'rgba(231,226,245,0.16)',
-    },
     pressGlow:
       '0 0 0 2px #b98cff, 0 0 10px 3px #b98cff, 0 0 26px 8px rgba(94,234,212,0.7), 0 0 46px 16px rgba(94,234,212,0.4)',
     pressPulse: true,
@@ -281,7 +248,7 @@ export default function DailyMotivationCard() {
   const { t } = useTranslation();
   const history = useCardHistory();
   const { favorites, isFavorite, toggle, remove } = useFavorites();
-  const { theme: themeId, setTheme } = useCardTheme();
+  const { theme: themeId } = useColorTheme();
   const theme = THEMES[themeId];
   const reducedMotion = useReducedMotion();
   const todayRef = useRef<HTMLDivElement>(null);
@@ -306,7 +273,6 @@ export default function DailyMotivationCard() {
           {t('dailyCard.title')}
         </p>
         <div className="flex items-center gap-3">
-          <ThemePicker themeId={themeId} accent={theme.accent} onChange={setTheme} t={t} />
           <button
             type="button"
             onClick={() => setFavoritesOpen(true)}
@@ -368,48 +334,6 @@ export default function DailyMotivationCard() {
         t={t}
       />
     </section>
-  );
-}
-
-// --- Переключатель цветового стиля: ряд кружков-образцов в шапке ---
-function ThemePicker({
-  themeId,
-  accent,
-  onChange,
-  t,
-}: {
-  themeId: CardTheme;
-  accent: string;
-  onChange: (theme: CardTheme) => void;
-  t: TFn;
-}) {
-  return (
-    <div
-      role="radiogroup"
-      aria-label={t('dailyCard.theme.label')}
-      className="flex items-center gap-1.5"
-    >
-      {CARD_THEMES.map((id) => {
-        const spec = THEMES[id];
-        const active = id === themeId;
-        return (
-          <button
-            key={id}
-            type="button"
-            role="radio"
-            aria-checked={active}
-            aria-label={`${t('dailyCard.theme.select')}: ${spec.name}`}
-            onClick={() => onChange(id)}
-            className="w-4 h-4 rounded-full transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            style={{
-              background: spec.swatch,
-              outline: active ? `2px solid ${accent}` : 'none',
-              outlineOffset: 2,
-            }}
-          />
-        );
-      })}
-    </div>
   );
 }
 

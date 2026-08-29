@@ -1485,6 +1485,12 @@
     "textScaleNormal": "Обычный",
     "textScaleLarge": "Крупный",
     "textScaleXLarge": "Очень крупный",
+    "colorThemeSection": "Цветовая тема",
+    "colorThemeSectionDesc": "Применяется во всём приложении, сохраняется на этом устройстве",
+    "colorThemeWarm": "Тёплый",
+    "colorThemeCalm": "Aurora Calm",
+    "colorThemeBold": "Duo Bold",
+    "colorThemeNeon": "Midnight Neon",
     "inviteSection": "Пригласить друга",
     "inviteSectionDesc": "Отправьте личную ссылку на Moodly тому, кому она может пригодиться.",
     "inviteButton": "Пригласить друга",
@@ -3663,10 +3669,6 @@
       "modalTitle": "Избранные высказывания",
       "modalDescription": "Цитаты, которые ты сохранил(а) из карточки дня.",
       "empty": "Пока пусто — открой понравившуюся карточку и нажми на звезду."
-    },
-    "theme": {
-      "label": "Стиль карточки",
-      "select": "Выбрать стиль"
     }
   }
 }

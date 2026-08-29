@@ -214,21 +214,3 @@ export function removeFavorite(
   storage.setJSON(FAVORITES_KEY, next);
   return next;
 }
-
-// --- Цветовой стиль карточки: переключаемая «кожа» виджета ---
-export const CARD_THEMES = ['warm', 'calm', 'bold', 'neon'] as const;
-export type CardTheme = (typeof CARD_THEMES)[number];
-
-const THEME_KEY = 'moodly_daily_card_theme';
-const DEFAULT_THEME: CardTheme = 'warm';
-
-export function getCardTheme(storage: SafeStorage = safeLocalStorage): CardTheme {
-  const stored = storage.getItem(THEME_KEY);
-  return (CARD_THEMES as readonly string[]).includes(stored ?? '')
-    ? (stored as CardTheme)
-    : DEFAULT_THEME;
-}
-
-export function setCardTheme(theme: CardTheme, storage: SafeStorage = safeLocalStorage): void {
-  storage.setItem(THEME_KEY, theme);
-}

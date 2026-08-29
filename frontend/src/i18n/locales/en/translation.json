@@ -1478,6 +1478,12 @@
     "textScaleNormal": "Normal",
     "textScaleLarge": "Large",
     "textScaleXLarge": "Extra large",
+    "colorThemeSection": "Color theme",
+    "colorThemeSectionDesc": "Applies across the whole app, saved on this device",
+    "colorThemeWarm": "Warm",
+    "colorThemeCalm": "Aurora Calm",
+    "colorThemeBold": "Duo Bold",
+    "colorThemeNeon": "Midnight Neon",
     "inviteSection": "Invite a friend",
     "inviteSectionDesc": "Send your personal Moodly link to someone who might like it.",
     "inviteButton": "Invite a friend",
@@ -3634,10 +3640,6 @@
       "modalTitle": "Favorite quotes",
       "modalDescription": "Quotes you've saved from the card of the day.",
       "empty": "Nothing yet — open a card you like and tap the star."
-    },
-    "theme": {
-      "label": "Card style",
-      "select": "Choose style"
     }
   }
 }
