@@ -1484,6 +1484,8 @@
     "colorThemeCalm": "Aurora Calm",
     "colorThemeBold": "Duo Bold",
     "colorThemeNeon": "Midnight Neon",
+    "seasonalParticlesToggleLabel": "Seasonal particles",
+    "seasonalParticlesToggleDesc": "A light background animation for the time of year — leaves, snow, petals",
     "inviteSection": "Invite a friend",
     "inviteSectionDesc": "Send your personal Moodly link to someone who might like it.",
     "inviteButton": "Invite a friend",

@@ -42,6 +42,10 @@ import {
   setSpeechBubbleHidden,
 } from '../features/gamification/speechBubbleVisibility';
 import { isRewardSoundEnabled, setRewardSoundEnabled } from '../features/gamification/rewardSound';
+import {
+  isSeasonalParticlesHidden,
+  setSeasonalParticlesHidden,
+} from '../features/ambience/seasonalParticlesVisibility';
 import { InterfaceMode } from '../lib/constants';
 import { useInterfaceMode, useSetInterfaceMode } from '../hooks/useInterfaceMode';
 import { TextScale, getTextScale, setTextScale } from '../features/accessibility/textScale';
@@ -77,6 +81,7 @@ export default function SettingsPage() {
   const [companionHidden, setCompanionHiddenState] = useState(isCompanionHidden());
   const [speechHidden, setSpeechHiddenState] = useState(isSpeechBubbleHidden());
   const [soundEnabled, setSoundEnabledState] = useState(isRewardSoundEnabled());
+  const [particlesHidden, setParticlesHiddenState] = useState(isSeasonalParticlesHidden());
   const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawError, setWithdrawError] = useState('');
@@ -120,6 +125,12 @@ export default function SettingsPage() {
     const next = !soundEnabled;
     setSoundEnabledState(next);
     setRewardSoundEnabled(next);
+  };
+
+  const toggleParticles = () => {
+    const next = !particlesHidden;
+    setParticlesHiddenState(next);
+    setSeasonalParticlesHidden(next);
   };
 
   const handleDelete = async () => {
@@ -357,6 +368,20 @@ export default function SettingsPage() {
                 </button>
               );
             })}
+          </div>
+
+          <div className="flex items-center justify-between gap-4 pt-3 border-t border-border/60">
+            <div>
+              <p className="text-sm font-medium">{t('settings.seasonalParticlesToggleLabel')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t('settings.seasonalParticlesToggleDesc')}
+              </p>
+            </div>
+            <ToggleSwitch
+              checked={!particlesHidden}
+              onCheckedChange={toggleParticles}
+              aria-label={t('settings.seasonalParticlesToggleLabel')}
+            />
           </div>
         </CardContent>
       </Card>

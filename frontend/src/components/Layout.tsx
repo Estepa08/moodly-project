@@ -16,6 +16,7 @@ import Breadcrumbs from '../components/ui/breadcrumbs';
 
 const FloatingCompanion = lazy(() => import('../features/gamification/FloatingCompanion'));
 const LayoutModals = lazy(() => import('../layout/LayoutModals'));
+const SeasonalParticles = lazy(() => import('../features/ambience/SeasonalParticles'));
 
 // Автологаут при бездействии: 10 минут без активности → выход из аккаунта.
 const IDLE_LOGOUT_MS = 10 * 60 * 1000;
@@ -58,10 +59,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-background">
+      <Suspense fallback={null}>
+        <SeasonalParticles />
+      </Suspense>
       <SkipLink />
       <Sidebar />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="relative z-0 flex-1 flex flex-col min-w-0">
         <header
           className={`top-0 z-10 bg-card/80 mx-4 mt-4 mb-2 rounded-xl shadow-neumorphic px-5 py-3 flex items-center justify-between ${
             isReducedMotion ? '' : 'backdrop-blur-md'

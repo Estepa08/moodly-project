@@ -33,7 +33,7 @@ export default function Sidebar() {
   return (
     <nav
       aria-label={t('nav.dashboard')}
-      className="hidden md:flex flex-col w-60 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
+      className="relative z-0 hidden md:flex flex-col w-60 bg-card border-r border-border shadow-neumorphic-inset p-4 gap-2"
     >
       <div
         className="text-lg font-serif font-bold text-primary mb-4 px-3 text-balance"
